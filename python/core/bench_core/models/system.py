@@ -1,4 +1,4 @@
-"""Companion signals (filled by the runner in milestone 7), data imports and system checks."""
+"""Companion signals (filled by the Droplet runner), data imports and system checks."""
 
 from __future__ import annotations
 
@@ -6,27 +6,34 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import BigInteger, CheckConstraint, ForeignKey, Integer, String, Text
+from sqlalchemy import BigInteger, CheckConstraint, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from bench_core.models.base import Base, CreatedAt, UUIDPrimaryKey
 
 
 class CompanionSignal(UUIDPrimaryKey, CreatedAt, Base):
-    """Per-token signals from an open-weight model reading a transcript."""
+    """Per-token signals from an open-weight model reading a transcript, for one
+    companion run. ``values[i]`` belongs to the token at ``offsets[i]``, a pair of
+    character offsets into the message text; ``char_start`` and ``char_end`` span them."""
 
     __tablename__ = "companion_signal"
     __table_args__ = (
         CheckConstraint("kind IN ('probe', 'persona_vector', 'nla')", name="known_kind"),
+        Index("ix_companion_signal_run_message", "run_id", "message_id"),
     )
 
+    run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("run.id"))
     message_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("message.id"))
     model: Mapped[str] = mapped_column(String(200))
     kind: Mapped[str] = mapped_column(String(20))
     name: Mapped[str] = mapped_column(String(200))
     token_start: Mapped[int] = mapped_column(Integer)
     token_end: Mapped[int] = mapped_column(Integer)
+    char_start: Mapped[int] = mapped_column(Integer)
+    char_end: Mapped[int] = mapped_column(Integer)
     values: Mapped[list[Any]]
+    offsets: Mapped[list[Any]]
     explanation: Mapped[str | None] = mapped_column(Text)
 
 

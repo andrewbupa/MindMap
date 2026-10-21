@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import csv
 import io
-import shutil
-import subprocess
 from pathlib import Path
 
 import httpx
@@ -16,25 +14,13 @@ from bench_core.models import AuditEvent, User
 from bench_core.registry import load_registry, sync_registry
 from testsupport.lens import explore_run, lens_run, run_lens, scripted_judges
 from testsupport.oidc import FakeOIDCClient, sign_in_as
+from testsupport.reports import pdf_text
 
 
 @pytest.fixture
 async def registry(db: AsyncSession) -> None:
     await sync_registry(db, load_registry(REPO_ROOT), "abc123")
     await db.commit()
-
-
-def pdf_text(data: bytes, tmp_path: Path) -> str | None:
-    """The PDF's text, when poppler's pdftotext is installed."""
-    binary = shutil.which("pdftotext")
-    if binary is None:
-        return None
-    path = tmp_path / "report.pdf"
-    path.write_bytes(data)
-    text = subprocess.run(  # noqa: S603 - a fixed binary on a file the test wrote
-        [binary, str(path), "-"], check=True, capture_output=True, text=True
-    ).stdout
-    return " ".join(text.split())
 
 
 async def test_lens_disagreements_reach_the_review_queue(

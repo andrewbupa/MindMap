@@ -32,6 +32,8 @@ x-python: &python
     # The development model needs no provider key. To use real models, set
     # BENCH_MODELS_FILE=/app/config/models.yaml and ANTHROPIC_API_KEY in .env.compose.
     BENCH_MODELS_FILE: ${BENCH_MODELS_FILE:-/app/config/models.dev.yaml}
+    # The local worker takes every queue, companion included, with the lexicon reader.
+    BENCH_COMPANION_FILE: ${BENCH_COMPANION_FILE:-/app/config/companion.dev.yaml}
   depends_on:
     postgres:
       condition: service_healthy

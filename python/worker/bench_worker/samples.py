@@ -168,7 +168,8 @@ async def execute(sample_id: uuid.UUID, plan: Plan) -> None:
     try:
         outcome = await work.run()
     except Exception as error:
-        final = claim.attempts >= MAX_ATTEMPTS
+        # Inputs that changed under the work will not change back on a retry.
+        final = claim.attempts >= MAX_ATTEMPTS or isinstance(error, SampleChanged)
         log.warning("sample %s failed (attempt %s): %s", sample_id, claim.attempts, error)
         await record_failure(sample_id, error, final=final)
         if final:

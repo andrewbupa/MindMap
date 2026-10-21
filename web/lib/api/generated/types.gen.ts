@@ -463,6 +463,238 @@ export type ChatMessageIn = {
 };
 
 /**
+ * CompanionLaunch
+ */
+export type CompanionLaunch = {
+    /**
+     * Reader
+     */
+    reader: string;
+    /**
+     * Source Run
+     */
+    source_run: string;
+    /**
+     * Transcripts
+     *
+     * Read only these transcripts; all of them when empty.
+     */
+    transcripts?: Array<string> | null;
+};
+
+/**
+ * CompanionReaderOut
+ */
+export type CompanionReaderOut = {
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Model
+     */
+    model: string;
+    /**
+     * Runner
+     */
+    runner: string;
+    /**
+     * Signals
+     */
+    signals: Array<CompanionSignalSpecOut>;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * CompanionRunOut
+ */
+export type CompanionRunOut = {
+    /**
+     * Agreements
+     */
+    agreements: Array<SignalAgreementOut>;
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    /**
+     * Dropped
+     */
+    dropped: {
+        [key: string]: number;
+    };
+    /**
+     * The Lens run the signals are compared with.
+     */
+    lens_run: RunOut | null;
+    /**
+     * Lens Runs
+     *
+     * Finished Lens runs on the same source run.
+     */
+    lens_runs: Array<RunOut>;
+    reader: CompanionReaderOut;
+    run: RunOut;
+    /**
+     * Samples
+     */
+    samples: Array<CompanionSampleOut>;
+    source: RunOut;
+};
+
+/**
+ * CompanionRunSummary
+ */
+export type CompanionRunSummary = {
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    reader: CompanionReaderOut;
+    run: RunOut;
+    source: RunOut;
+};
+
+/**
+ * CompanionSampleOut
+ */
+export type CompanionSampleOut = {
+    /**
+     * Attempts
+     */
+    attempts: number;
+    /**
+     * Detail
+     */
+    detail: {
+        [key: string]: unknown;
+    };
+    /**
+     * Epoch
+     */
+    epoch: number;
+    /**
+     * Error
+     */
+    error: string | null;
+    /**
+     * Heartbeat At
+     */
+    heartbeat_at: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Sample Index
+     */
+    sample_index: number;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Tokens Used
+     */
+    tokens_used: number;
+};
+
+/**
+ * CompanionSignalOut
+ */
+export type CompanionSignalOut = {
+    /**
+     * Char End
+     */
+    char_end: number;
+    /**
+     * Char Start
+     */
+    char_start: number;
+    /**
+     * Explanation
+     */
+    explanation: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Kind
+     */
+    kind: string;
+    /**
+     * Label
+     */
+    label: string | null;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Peak
+     */
+    peak: number;
+    /**
+     * Present At
+     */
+    present_at: number | null;
+    /**
+     * Tokens
+     */
+    tokens: Array<TokenValueOut>;
+};
+
+/**
+ * CompanionSignalSpecOut
+ */
+export type CompanionSignalSpecOut = {
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Kind
+     */
+    kind: string;
+    /**
+     * Label
+     */
+    label: string | null;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Present At
+     */
+    present_at: number | null;
+};
+
+/**
+ * CompanionTranscriptOut
+ */
+export type CompanionTranscriptOut = {
+    reader: CompanionReaderOut;
+    run: RunOut;
+    /**
+     * Signals
+     */
+    signals: Array<CompanionSignalOut>;
+};
+
+/**
  * ConsensusOut
  */
 export type ConsensusOut = {
@@ -2170,6 +2402,24 @@ export type ReplyLensOut = {
 };
 
 /**
+ * ReplyRefOut
+ */
+export type ReplyRefOut = {
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
  * ReviewIn
  */
 export type ReviewIn = {
@@ -2732,6 +2982,68 @@ export type SignOutOut = {
 };
 
 /**
+ * SignalAgreementOut
+ */
+export type SignalAgreementOut = {
+    /**
+     * Agreement
+     *
+     * Share of replies where both agree.
+     */
+    agreement: number | null;
+    /**
+     * Both
+     */
+    both: Array<ReplyRefOut>;
+    /**
+     * Companion Only
+     */
+    companion_only: Array<ReplyRefOut>;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Kind
+     */
+    kind: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Lens Only
+     */
+    lens_only: Array<ReplyRefOut>;
+    /**
+     * Neither
+     */
+    neither: Array<ReplyRefOut>;
+    /**
+     * Positive
+     *
+     * Of replies either flags, the share both flag.
+     */
+    positive: number | null;
+    /**
+     * Present At
+     */
+    present_at: number;
+    /**
+     * Replies
+     */
+    replies: number;
+    /**
+     * Signal
+     */
+    signal: string;
+    /**
+     * Trust Status
+     */
+    trust_status: string | null;
+};
+
+/**
  * SignedUrlOut
  */
 export type SignedUrlOut = {
@@ -2831,6 +3143,24 @@ export type TaxonomyOut = {
      * Version
      */
     version: string;
+};
+
+/**
+ * TokenValueOut
+ */
+export type TokenValueOut = {
+    /**
+     * End
+     */
+    end: number;
+    /**
+     * Start
+     */
+    start: number;
+    /**
+     * Value
+     */
+    value: number;
 };
 
 /**
@@ -3240,6 +3570,208 @@ export type LogoutResponses = {
 };
 
 export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
+
+export type ListReadersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/companion/readers';
+};
+
+export type ListReadersResponses = {
+    /**
+     * Response List Readers
+     *
+     * Successful Response
+     */
+    200: Array<CompanionReaderOut>;
+};
+
+export type ListReadersResponse = ListReadersResponses[keyof ListReadersResponses];
+
+export type ListCompanionRunsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Source Run
+         */
+        source_run?: string | null;
+    };
+    url: '/api/companion/runs';
+};
+
+export type ListCompanionRunsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListCompanionRunsError = ListCompanionRunsErrors[keyof ListCompanionRunsErrors];
+
+export type ListCompanionRunsResponses = {
+    /**
+     * Response List Companion Runs
+     *
+     * Successful Response
+     */
+    200: Array<CompanionRunSummary>;
+};
+
+export type ListCompanionRunsResponse = ListCompanionRunsResponses[keyof ListCompanionRunsResponses];
+
+export type LaunchCompanionData = {
+    body: CompanionLaunch;
+    path?: never;
+    query?: never;
+    url: '/api/companion/runs';
+};
+
+export type LaunchCompanionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LaunchCompanionError = LaunchCompanionErrors[keyof LaunchCompanionErrors];
+
+export type LaunchCompanionResponses = {
+    /**
+     * Successful Response
+     */
+    201: RunOut;
+};
+
+export type LaunchCompanionResponse = LaunchCompanionResponses[keyof LaunchCompanionResponses];
+
+export type ReadCompanionRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: {
+        /**
+         * Lens Run
+         */
+        lens_run?: string | null;
+    };
+    url: '/api/companion/runs/{run_id}';
+};
+
+export type ReadCompanionRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadCompanionRunError = ReadCompanionRunErrors[keyof ReadCompanionRunErrors];
+
+export type ReadCompanionRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: CompanionRunOut;
+};
+
+export type ReadCompanionRunResponse = ReadCompanionRunResponses[keyof ReadCompanionRunResponses];
+
+export type CancelCompanionRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/companion/runs/{run_id}/cancel';
+};
+
+export type CancelCompanionRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CancelCompanionRunError = CancelCompanionRunErrors[keyof CancelCompanionRunErrors];
+
+export type CancelCompanionRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunOut;
+};
+
+export type CancelCompanionRunResponse = CancelCompanionRunResponses[keyof CancelCompanionRunResponses];
+
+export type StreamCompanionRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/companion/runs/{run_id}/events';
+};
+
+export type StreamCompanionRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StreamCompanionRunError = StreamCompanionRunErrors[keyof StreamCompanionRunErrors];
+
+export type StreamCompanionRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ReadCompanionTranscriptData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+        /**
+         * Transcript Id
+         */
+        transcript_id: string;
+    };
+    query?: never;
+    url: '/api/companion/runs/{run_id}/transcripts/{transcript_id}';
+};
+
+export type ReadCompanionTranscriptErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadCompanionTranscriptError = ReadCompanionTranscriptErrors[keyof ReadCompanionTranscriptErrors];
+
+export type ReadCompanionTranscriptResponses = {
+    /**
+     * Successful Response
+     */
+    200: CompanionTranscriptOut;
+};
+
+export type ReadCompanionTranscriptResponse = ReadCompanionTranscriptResponses[keyof ReadCompanionTranscriptResponses];
 
 export type ListDimensionsData = {
     body?: never;

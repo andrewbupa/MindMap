@@ -15,6 +15,7 @@ from bench_api import auth
 from bench_api.routes import (
     agents,
     audit_log,
+    companion,
     explore,
     gold,
     health,
@@ -107,6 +108,7 @@ def create_app() -> FastAPI:
         explore.router,
         measure.router,
         lens.router,
+        companion.router,
         review.router,
         gold.router,
         reports.router,

@@ -89,6 +89,10 @@ jobs:
         run: doctl apps spec validate --schema-only .do/app.yaml
       - name: Compose file is valid
         run: docker compose config --quiet
+      - name: Runner compose file is valid
+        run: |
+          sudo install -d /etc/bench && sudo touch /etc/bench/runner.env
+          BENCH_GIT_COMMIT=ci DOCKER_GID=999 docker compose -f infra/runner/compose.yaml config --quiet
 
   images:
     runs-on: ubuntu-24.04

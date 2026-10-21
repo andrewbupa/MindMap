@@ -11,8 +11,8 @@ from __future__ import annotations
 import logging
 
 from bench_core.queue import app
-from bench_worker.tasks import explore, lens, maintenance, measure, system_check
+from bench_worker.tasks import companion, explore, lens, maintenance, measure, system_check
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
-__all__ = ["app", "explore", "lens", "maintenance", "measure", "system_check"]
+__all__ = ["app", "companion", "explore", "lens", "maintenance", "measure", "system_check"]

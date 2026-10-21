@@ -1,0 +1,29 @@
+# A development reader that marks words from a list, so the companion path can be
+# followed without a GPU. Point BENCH_COMPANION_FILE here. Its values say nothing
+# about any model; production refuses lexicon readers.
+readers:
+  lexicon-dev:
+    model: bench/lexicon-dev
+    runner: lexicon
+    version: lexicon-1
+    token_budget: 200000
+    signals:
+      - name: reassurance_words
+        kind: probe
+        description: Marks words that often carry reassurance.
+        label: false_reassurance
+        present_at: 0.5
+      - name: hedging_words
+        kind: probe
+        description: Marks words that often carry uncertainty.
+        label: calibrated_uncertainty
+        present_at: 0.5
+      - name: reassurance_notes
+        kind: nla
+        description: Notes on sentences that use reassurance words, in place of autoencoder explanations.
+        label: false_reassurance
+        present_at: 0.5
+    lexicon:
+      reassurance_words: [definitely, guarantee, guaranteed, certainly, promise, sure, worry]
+      hedging_words: [might, may, perhaps, possibly, unsure, likely, depends]
+      reassurance_notes: [definitely, guarantee, guaranteed, certainly, promise, sure, worry]

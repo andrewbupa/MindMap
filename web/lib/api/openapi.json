@@ -805,6 +805,408 @@
         "title": "ChatMessageIn",
         "type": "object"
       },
+      "CompanionLaunch": {
+        "properties": {
+          "reader": {
+            "title": "Reader",
+            "type": "string"
+          },
+          "source_run": {
+            "format": "uuid",
+            "title": "Source Run",
+            "type": "string"
+          },
+          "transcripts": {
+            "anyOf": [
+              {
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Read only these transcripts; all of them when empty.",
+            "title": "Transcripts"
+          }
+        },
+        "required": [
+          "source_run",
+          "reader"
+        ],
+        "title": "CompanionLaunch",
+        "type": "object"
+      },
+      "CompanionReaderOut": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "runner": {
+            "title": "Runner",
+            "type": "string"
+          },
+          "signals": {
+            "items": {
+              "$ref": "#/components/schemas/CompanionSignalSpecOut"
+            },
+            "title": "Signals",
+            "type": "array"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "model",
+          "runner",
+          "version",
+          "signals"
+        ],
+        "title": "CompanionReaderOut",
+        "type": "object"
+      },
+      "CompanionRunOut": {
+        "properties": {
+          "agreements": {
+            "items": {
+              "$ref": "#/components/schemas/SignalAgreementOut"
+            },
+            "title": "Agreements",
+            "type": "array"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "dropped": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Dropped",
+            "type": "object"
+          },
+          "lens_run": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The Lens run the signals are compared with."
+          },
+          "lens_runs": {
+            "description": "Finished Lens runs on the same source run.",
+            "items": {
+              "$ref": "#/components/schemas/RunOut"
+            },
+            "title": "Lens Runs",
+            "type": "array"
+          },
+          "reader": {
+            "$ref": "#/components/schemas/CompanionReaderOut"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/CompanionSampleOut"
+            },
+            "title": "Samples",
+            "type": "array"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "reader",
+          "counts",
+          "samples",
+          "dropped",
+          "lens_run",
+          "lens_runs",
+          "agreements"
+        ],
+        "title": "CompanionRunOut",
+        "type": "object"
+      },
+      "CompanionRunSummary": {
+        "properties": {
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "reader": {
+            "$ref": "#/components/schemas/CompanionReaderOut"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "reader",
+          "counts"
+        ],
+        "title": "CompanionRunSummary",
+        "type": "object"
+      },
+      "CompanionSampleOut": {
+        "properties": {
+          "attempts": {
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "detail": {
+            "additionalProperties": true,
+            "title": "Detail",
+            "type": "object"
+          },
+          "epoch": {
+            "title": "Epoch",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "heartbeat_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Heartbeat At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "sample_index": {
+            "title": "Sample Index",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "tokens_used": {
+            "title": "Tokens Used",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "sample_index",
+          "epoch",
+          "status",
+          "attempts",
+          "heartbeat_at",
+          "tokens_used",
+          "error",
+          "detail"
+        ],
+        "title": "CompanionSampleOut",
+        "type": "object"
+      },
+      "CompanionSignalOut": {
+        "properties": {
+          "char_end": {
+            "title": "Char End",
+            "type": "integer"
+          },
+          "char_start": {
+            "title": "Char Start",
+            "type": "integer"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "peak": {
+            "title": "Peak",
+            "type": "number"
+          },
+          "present_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Present At"
+          },
+          "tokens": {
+            "items": {
+              "$ref": "#/components/schemas/TokenValueOut"
+            },
+            "title": "Tokens",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "message_id",
+          "name",
+          "kind",
+          "label",
+          "present_at",
+          "char_start",
+          "char_end",
+          "tokens",
+          "peak",
+          "explanation"
+        ],
+        "title": "CompanionSignalOut",
+        "type": "object"
+      },
+      "CompanionSignalSpecOut": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "present_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Present At"
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "description",
+          "label",
+          "present_at"
+        ],
+        "title": "CompanionSignalSpecOut",
+        "type": "object"
+      },
+      "CompanionTranscriptOut": {
+        "properties": {
+          "reader": {
+            "$ref": "#/components/schemas/CompanionReaderOut"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "signals": {
+            "items": {
+              "$ref": "#/components/schemas/CompanionSignalOut"
+            },
+            "title": "Signals",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run",
+          "reader",
+          "signals"
+        ],
+        "title": "CompanionTranscriptOut",
+        "type": "object"
+      },
       "ConsensusOut": {
         "properties": {
           "by_judge": {
@@ -3573,6 +3975,31 @@
         "title": "ReplyLensOut",
         "type": "object"
       },
+      "ReplyRefOut": {
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message_id",
+          "transcript_id",
+          "index"
+        ],
+        "title": "ReplyRefOut",
+        "type": "object"
+      },
       "ReviewIn": {
         "properties": {
           "annotation_id": {
@@ -4600,6 +5027,114 @@
         "title": "SignOutOut",
         "type": "object"
       },
+      "SignalAgreementOut": {
+        "properties": {
+          "agreement": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Share of replies where both agree.",
+            "title": "Agreement"
+          },
+          "both": {
+            "items": {
+              "$ref": "#/components/schemas/ReplyRefOut"
+            },
+            "title": "Both",
+            "type": "array"
+          },
+          "companion_only": {
+            "items": {
+              "$ref": "#/components/schemas/ReplyRefOut"
+            },
+            "title": "Companion Only",
+            "type": "array"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "lens_only": {
+            "items": {
+              "$ref": "#/components/schemas/ReplyRefOut"
+            },
+            "title": "Lens Only",
+            "type": "array"
+          },
+          "neither": {
+            "items": {
+              "$ref": "#/components/schemas/ReplyRefOut"
+            },
+            "title": "Neither",
+            "type": "array"
+          },
+          "positive": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Of replies either flags, the share both flag.",
+            "title": "Positive"
+          },
+          "present_at": {
+            "title": "Present At",
+            "type": "number"
+          },
+          "replies": {
+            "title": "Replies",
+            "type": "integer"
+          },
+          "signal": {
+            "title": "Signal",
+            "type": "string"
+          },
+          "trust_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trust Status"
+          }
+        },
+        "required": [
+          "signal",
+          "kind",
+          "label",
+          "family",
+          "trust_status",
+          "present_at",
+          "replies",
+          "agreement",
+          "positive",
+          "both",
+          "lens_only",
+          "companion_only",
+          "neither"
+        ],
+        "title": "SignalAgreementOut",
+        "type": "object"
+      },
       "SignedUrlOut": {
         "properties": {
           "expires_in": {
@@ -4775,6 +5310,29 @@
           "labels"
         ],
         "title": "TaxonomyOut",
+        "type": "object"
+      },
+      "TokenValueOut": {
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "integer"
+          },
+          "start": {
+            "title": "Start",
+            "type": "integer"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "value"
+        ],
+        "title": "TokenValueOut",
         "type": "object"
       },
       "ToolOut": {
@@ -5462,6 +6020,339 @@
         "summary": "Logout",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/companion/readers": {
+      "get": {
+        "operationId": "list_readers",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CompanionReaderOut"
+                  },
+                  "title": "Response List Readers",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Readers",
+        "tags": [
+          "companion"
+        ]
+      }
+    },
+    "/api/companion/runs": {
+      "get": {
+        "operationId": "list_companion_runs",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "source_run",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source Run"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CompanionRunSummary"
+                  },
+                  "title": "Response List Companion Runs",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Companion Runs",
+        "tags": [
+          "companion"
+        ]
+      },
+      "post": {
+        "operationId": "launch_companion",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompanionLaunch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Launch Companion",
+        "tags": [
+          "companion"
+        ]
+      }
+    },
+    "/api/companion/runs/{run_id}": {
+      "get": {
+        "description": "The run, and its signals beside a Lens run on the same source: the one asked\nfor, or the latest finished one.",
+        "operationId": "read_companion_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lens_run",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lens Run"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanionRunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Companion Run",
+        "tags": [
+          "companion"
+        ]
+      }
+    },
+    "/api/companion/runs/{run_id}/cancel": {
+      "post": {
+        "operationId": "cancel_companion_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Companion Run",
+        "tags": [
+          "companion"
+        ]
+      }
+    },
+    "/api/companion/runs/{run_id}/events": {
+      "get": {
+        "operationId": "stream_companion_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "itemSchema": {
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    },
+                    "event": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "retry": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stream Companion Run",
+        "tags": [
+          "companion"
+        ]
+      }
+    },
+    "/api/companion/runs/{run_id}/transcripts/{transcript_id}": {
+      "get": {
+        "operationId": "read_companion_transcript",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "transcript_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transcript Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanionTranscriptOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Companion Transcript",
+        "tags": [
+          "companion"
         ]
       }
     },

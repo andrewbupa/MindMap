@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import uuid
 from types import SimpleNamespace
 
@@ -8,6 +9,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bench_core import queue
+from bench_core.config import REPO_ROOT
 from bench_core.models import SystemCheck
 from bench_core.storage import get_storage
 from bench_worker.app import app
@@ -75,3 +77,20 @@ async def test_stalled_jobs_are_requeued(db: AsyncSession) -> None:
         await db.execute(text("SELECT status FROM procrastinate_jobs WHERE id = :j"), {"j": job_id})
     ).scalar_one()
     assert status == "todo"
+
+
+def test_every_task_has_a_queue_some_worker_takes() -> None:
+    """App Platform's worker takes the platform queues; the Droplet runner takes the rest."""
+    spec = (REPO_ROOT / ".do" / "app.yaml").read_text()
+    listed = re.search(r"worker --queues (\S+)", spec)
+    assert listed is not None
+    assert tuple(listed.group(1).split(",")) == queue.PLATFORM_QUEUES
+    compose = (REPO_ROOT / "infra" / "runner" / "compose.yaml").read_text()
+    runner = re.search(r"worker --queues (\S+)", compose)
+    assert runner is not None
+    assert tuple(runner.group(1).split(",")) == queue.RUNNER_QUEUES
+    known = set(queue.PLATFORM_QUEUES + queue.RUNNER_QUEUES)
+    # Procrastinate's own tasks sit on its builtin queue; Bench never defers them.
+    ours = {name: task.queue for name, task in app.tasks.items() if "procrastinate" not in name}
+    assert set(ours.values()) <= known
+    assert ours["companion_sample"] == queue.COMPANION_QUEUE

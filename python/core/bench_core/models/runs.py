@@ -36,6 +36,8 @@ class RunKind(StrEnum):
     playground = "playground"
     # Bloom's understanding and ideation for one behaviour version.
     scenarios = "scenarios"
+    # An open-weight model's per-token signals on a finished run (bench_core.companion).
+    companion = "companion"
 
 
 class RunStatus(StrEnum):
@@ -127,6 +129,8 @@ class RunSample(UUIDPrimaryKey, CreatedAt, Base):
     tokens_used: Mapped[int] = mapped_column(BigInteger, default=0, server_default="0")
     log_uri: Mapped[str | None] = mapped_column(String(1000))
     error: Mapped[str | None] = mapped_column(Text)
+    # What the sample's engine reported beyond tokens, such as signals it dropped.
+    detail: Mapped[dict[str, Any]] = mapped_column(default=dict, server_default="{}")
 
 
 class Transcript(UUIDPrimaryKey, CreatedAt, Base):

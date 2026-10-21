@@ -1,0 +1,26 @@
+# The Droplet runner. deploy.sh builds the image and starts this; see README.md.
+# Secrets live in /etc/bench/runner.env on the Droplet, never in this repository.
+name: bench-runner
+
+services:
+  runner:
+    image: bench-runner:${BENCH_GIT_COMMIT:?set by deploy.sh}
+    # One job at a time: a companion reader fills the GPU, and Inspect runs one
+    # eval per process. Add Droplets, not concurrency, to go faster.
+    command: procrastinate --app=bench_worker.app.app worker --queues sandbox,companion --concurrency 1
+    env_file: /etc/bench/runner.env
+    environment:
+      BENCH_GIT_COMMIT: ${BENCH_GIT_COMMIT}
+      BENCH_COMPANION_FILE: /app/config/companion.yaml
+    volumes:
+      # Jobs start sibling containers on the host's daemon. Access to this socket is
+      # root on the host, which is why the runner is a Droplet of its own.
+      - /var/run/docker.sock:/var/run/docker.sock
+    group_add:
+      - ${DOCKER_GID:?set by deploy.sh}
+    # Like App Platform: SIGTERM, then 120 seconds for the running job to finish.
+    stop_grace_period: 120s
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: 50m, max-file: "5" }

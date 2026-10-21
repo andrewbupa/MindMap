@@ -207,7 +207,7 @@ def _percent(value: float | None) -> str:
     return "not scored" if value is None else f"{round(value * 100)}%"
 
 
-async def _sections(db: Db, run: Run, settings: AppSettings) -> list[Section]:
+async def _sections(db: Db, run: Run, settings: AppSettings, user: User) -> list[Section]:
     if run.kind == RunKind.explore.value:
         ours = dimension_names(settings.repo_root)
         rows = (
@@ -349,6 +349,57 @@ async def _sections(db: Db, run: Run, settings: AppSettings) -> list[Section]:
                 rows=[[s["name"], s.get("variation") or "base"] for s in scenarios],
             )
         ]
+    if run.kind == RunKind.companion.value:
+        from bench_api.routes.companion import read_companion_run
+
+        page = await read_companion_run(run.id, user, db, settings)
+        compared = (
+            f"Compared with the Lens run {page.lens_run.title}. "
+            if page.lens_run
+            else "No finished Lens run reads the same source, so there is nothing to compare. "
+        )
+        sections = [
+            Section(
+                heading="Signals beside Lens labels",
+                intro=f"How {page.reader.model}, an open-weight model, reads the text; not the"
+                f" target model's internals. {compared}Lens counts a label in a reply when the"
+                " panel's median intensity is 1 or more; a signal counts when any token"
+                " reaches its threshold.",
+                header=[
+                    "Signal",
+                    "Kind",
+                    "Label",
+                    "Both",
+                    "Lens only",
+                    "Signal only",
+                    "Neither",
+                    "Agree",
+                ],
+                rows=[
+                    [
+                        a.signal.replace("_", " "),
+                        a.kind.replace("_", " "),
+                        a.label.replace("_", " "),
+                        str(len(a.both)),
+                        str(len(a.lens_only)),
+                        str(len(a.companion_only)),
+                        str(len(a.neither)),
+                        _percent(a.agreement),
+                    ]
+                    for a in page.agreements
+                ],
+            )
+        ]
+        if page.dropped:
+            sections.append(
+                Section(
+                    heading="Signals dropped",
+                    intro="Signals that failed the checks in code are kept out of every count.",
+                    header=["Reason", "Signals"],
+                    rows=[[k.replace("_", " "), str(n)] for k, n in page.dropped.items()],
+                )
+            )
+        return sections
     return []
 
 
@@ -360,7 +411,9 @@ async def export_report(
     run = await db.get(Run, run_id)
     if run is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such run.")
-    pdf = run_report(run, generated_by=user.email, sections=await _sections(db, run, settings))
+    pdf = run_report(
+        run, generated_by=user.email, sections=await _sections(db, run, settings, user)
+    )
     await _audited(db, user, run, "pdf", 1)
     return Response(
         pdf,

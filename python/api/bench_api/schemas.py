@@ -849,3 +849,94 @@ class FullThinkingOut(BaseModel):
     message_id: uuid.UUID
     index: int
     thinking_full: str
+
+
+class CompanionSignalSpecOut(BaseModel):
+    name: str
+    kind: str
+    description: str
+    label: str | None
+    present_at: float | None
+
+
+class CompanionReaderOut(BaseModel):
+    key: str
+    model: str
+    runner: str
+    version: str
+    signals: list[CompanionSignalSpecOut]
+
+
+class CompanionLaunch(BaseModel):
+    source_run: uuid.UUID
+    reader: str
+    transcripts: list[uuid.UUID] | None = Field(
+        default=None, description="Read only these transcripts; all of them when empty."
+    )
+
+
+class CompanionRunSummary(BaseModel):
+    run: RunOut
+    source: RunOut
+    reader: CompanionReaderOut
+    counts: dict[str, int]
+
+
+class CompanionSampleOut(SampleOut):
+    detail: dict[str, Any]
+
+
+class ReplyRefOut(BaseModel):
+    message_id: uuid.UUID
+    transcript_id: uuid.UUID
+    index: int
+
+
+class SignalAgreementOut(BaseModel):
+    signal: str
+    kind: str
+    label: str
+    family: str
+    trust_status: str | None
+    present_at: float
+    replies: int
+    agreement: float | None = Field(description="Share of replies where both agree.")
+    positive: float | None = Field(description="Of replies either flags, the share both flag.")
+    both: list[ReplyRefOut]
+    lens_only: list[ReplyRefOut]
+    companion_only: list[ReplyRefOut]
+    neither: list[ReplyRefOut]
+
+
+class CompanionRunOut(CompanionRunSummary):
+    samples: list[CompanionSampleOut]
+    dropped: dict[str, int]
+    lens_run: RunOut | None = Field(description="The Lens run the signals are compared with.")
+    lens_runs: list[RunOut] = Field(description="Finished Lens runs on the same source run.")
+    agreements: list[SignalAgreementOut]
+
+
+class TokenValueOut(BaseModel):
+    start: int
+    end: int
+    value: float
+
+
+class CompanionSignalOut(BaseModel):
+    id: uuid.UUID
+    message_id: uuid.UUID
+    name: str
+    kind: str
+    label: str | None
+    present_at: float | None
+    char_start: int
+    char_end: int
+    tokens: list[TokenValueOut]
+    peak: float
+    explanation: str | None
+
+
+class CompanionTranscriptOut(BaseModel):
+    run: RunOut
+    reader: CompanionReaderOut
+    signals: list[CompanionSignalOut]
