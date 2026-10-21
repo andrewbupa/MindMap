@@ -1,7 +1,7 @@
 """Operational commands that run inside the Python image.
 
 python -m bench_worker.cli migrate          apply migrations, then sync the registry (pre-deploy)
-python -m bench_worker.cli sync-registry    load agents/ from git into Postgres
+python -m bench_worker.cli sync-registry    load agents/ and the Lens taxonomy into Postgres
 python -m bench_worker.cli scan-synthetic   check agents/, seeds/ and config/ for personal data
 python -m bench_worker.cli ensure-bucket    create the storage bucket (local only)
 python -m bench_worker.cli seed-demo        all three, for local development
@@ -20,6 +20,7 @@ from botocore.exceptions import BotoCoreError, ClientError
 
 from bench_core.config import Environment, get_settings
 from bench_core.db import session_scope
+from bench_core.lens.taxonomy import load_lens, sync_lens
 from bench_core.provenance import current_git_commit
 from bench_core.registry import load_registry, sync_registry
 from bench_core.storage import get_storage
@@ -58,8 +59,10 @@ async def sync() -> None:
     settings = get_settings()
     registry = load_registry(settings.repo_root)
     commit = current_git_commit(settings.repo_root, settings.git_commit)
+    lens = load_lens(settings.repo_root)
     async with session_scope() as db:
         report = await sync_registry(db, registry, commit)
+        await sync_lens(db, lens, commit)
     for label, items in (
         ("agents", report.agents_added),
         ("prompt versions", report.prompts_added),
@@ -70,6 +73,7 @@ async def sync() -> None:
             print(f"added {label}: {', '.join(items)}")
     if not report.changed:
         print("registry is up to date")
+    print(f"Lens taxonomy {lens.taxonomy.version} is loaded")
 
 
 def migrate() -> None:
