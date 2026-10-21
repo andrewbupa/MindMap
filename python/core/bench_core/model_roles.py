@@ -10,7 +10,7 @@ import re
 from decimal import Decimal
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
@@ -26,11 +26,34 @@ class ModelRolesError(ValueError):
     pass
 
 
+# Anthropic returns full thinking, not a summary, only to accounts granted this beta.
+FULL_THINKING_BETA = "dev-full-thinking-2025-05-14"
+
+
 class RoleConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     model: str
     generate: dict[str, Any] = Field(default_factory=dict)
+    # "full" asks for full thinking; set it only once Anthropic has granted access.
+    thinking: Literal["summary", "full"] = "summary"
+
+    @model_validator(mode="after")
+    def _full_thinking_is_anthropic(self) -> RoleConfig:
+        if self.thinking == "full" and self.family != "anthropic":
+            raise ValueError("full thinking is an Anthropic beta; use it on Anthropic roles only")
+        return self
+
+    @property
+    def call_generate(self) -> dict[str, Any]:
+        """The generate settings a run records and sends, with the full-thinking beta
+        header when this role asks for full thinking."""
+        if self.thinking != "full":
+            return dict(self.generate)
+        headers = dict(self.generate.get("extra_headers") or {})
+        betas = [b for b in headers.get("anthropic-beta", "").split(",") if b.strip()]
+        headers["anthropic-beta"] = ",".join(dict.fromkeys([*betas, FULL_THINKING_BETA]))
+        return {**self.generate, "extra_headers": headers}
 
     @field_validator("model")
     @classmethod

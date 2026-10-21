@@ -10,13 +10,14 @@ from fastapi.sse import EventSourceResponse, ServerSentEvent
 from inspect_petri import judge_dimensions
 from sqlalchemy import select
 
-from bench_api.deps import AppSettings, AuthorUser, Db, ReaderUser
+from bench_api.deps import AppSettings, AuthorUser, Db, OversightUser, ReaderUser
 from bench_api.models_dep import Roles
 from bench_api.run_control import cancel_run, status_events
 from bench_api.schemas import (
     DimensionOut,
     ExploreLaunch,
     ExploreRunOut,
+    FullThinkingOut,
     JudgeReference,
     MessageOut,
     RunOut,
@@ -283,6 +284,40 @@ async def transcript_log(transcript_id: uuid.UUID, user: ReaderUser, db: Db) -> 
         url=storage.signed_url(key, filename=f"{transcript.id}.eval"),
         expires_in=storage.signed_url_seconds,
     )
+
+
+@router.get("/transcripts/{transcript_id}/thinking")
+async def read_full_thinking(
+    transcript_id: uuid.UUID, user: OversightUser, db: Db
+) -> list[FullThinkingOut]:
+    """Full thinking, where Anthropic granted it: for admins and compliance only, and
+    every read is audited. Lens never reads it."""
+    transcript = await db.get(Transcript, transcript_id)
+    if transcript is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such transcript.")
+    scenario = await db.get(Scenario, transcript.scenario_id) if transcript.scenario_id else None
+    _check_content_notes(user, scenario)
+    rows = (
+        await db.execute(
+            select(Message)
+            .where(Message.transcript_id == transcript.id, Message.thinking_full.is_not(None))
+            .order_by(Message.index)
+        )
+    ).scalars()
+    found = [
+        FullThinkingOut(message_id=m.id, index=m.index, thinking_full=m.thinking_full or "")
+        for m in rows
+    ]
+    await audit.record(
+        db,
+        "transcript.full_thinking",
+        actor_id=user.id,
+        target_type="transcript",
+        target_id=transcript.id,
+        detail={"messages": len(found)},
+    )
+    await db.commit()
+    return found
 
 
 def _check_content_notes(user: User, scenario: Scenario | None) -> None:

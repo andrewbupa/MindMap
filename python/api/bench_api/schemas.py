@@ -197,6 +197,9 @@ class MessageOut(Out):
     role: str
     content: str
     thinking_summary: str | None
+    has_full_thinking: bool = Field(
+        default=False, description="Full thinking is stored; admins and compliance can read it."
+    )
     tool_calls: list[dict[str, Any]] | None
     tool_call_id: str | None
     model: str | None
@@ -840,3 +843,9 @@ class LensDisputeOut(BaseModel):
 class LensQueueOut(BaseModel):
     items: list[LensDisputeOut]
     hidden_for_content_notes: int
+
+
+class FullThinkingOut(BaseModel):
+    message_id: uuid.UUID
+    index: int
+    thinking_full: str

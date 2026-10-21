@@ -86,7 +86,7 @@ async def create_lens_run(
         "taxonomy_sha": taxonomy.sha256,
         "families": families,
         "panel": panel,
-        "generate": {role: roles.role(role).generate for role in panel},
+        "generate": {role: roles.role(role).call_generate for role in panel},
         "transcripts": [str(t.id) for t in transcripts],
     }
     provenance = Provenance(

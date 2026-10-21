@@ -13,7 +13,7 @@ from inspect_ai.log import EvalSample
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bench_core.models import Score, Transcript
-from bench_core.transcripts import append_messages
+from bench_core.transcripts import Thinking, append_messages
 from bench_worker.explore.runner import JUDGE_SCORER
 
 SCALE_MAX = 10.0
@@ -45,6 +45,7 @@ async def index_sample(
     log_uri: str,
     judge_model: str,
     source: str = "petri_judge",
+    thinking: Thinking = "summary",
 ) -> Transcript:
     score = (sample.scores or {}).get(JUDGE_SCORER)
     metadata: dict[str, Any] = dict(score.metadata or {}) if score else {}
@@ -66,7 +67,7 @@ async def index_sample(
     )
     db.add(transcript)
     await db.flush()
-    await append_messages(db, transcript, list(sample.messages))
+    await append_messages(db, transcript, list(sample.messages), thinking)
 
     values = score.value if score and isinstance(score.value, dict) else {}
     for dimension, value in sorted(values.items()):

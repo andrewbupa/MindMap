@@ -115,7 +115,9 @@ async def create_generation_run(
         "num_scenarios": source.definition.num_scenarios,
         "variations": sorted(source.definition.variations),
         "models": {name: roles.role(role).model for name, role in GENERATION_ROLES.items()},
-        "generate": {name: roles.role(role).generate for name, role in GENERATION_ROLES.items()},
+        "generate": {
+            name: roles.role(role).call_generate for name, role in GENERATION_ROLES.items()
+        },
     }
     provenance = Provenance(
         git_commit=git_commit,
@@ -252,7 +254,8 @@ def measure_config(
         "epochs": options.epochs,
         "compaction": options.compaction,
         "models": {name: roles.role(role).model for name, role in ROLLOUT_ROLES.items()},
-        "generate": {name: roles.role(role).generate for name, role in ROLLOUT_ROLES.items()},
+        "generate": {name: roles.role(role).call_generate for name, role in ROLLOUT_ROLES.items()},
+        "thinking": {"target": roles.role("target").thinking},
     }
 
 

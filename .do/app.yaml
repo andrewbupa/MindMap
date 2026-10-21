@@ -142,7 +142,8 @@ workers:
       deploy_on_push: true
     source_dir: /
     dockerfile_path: python/Dockerfile
-    run_command: procrastinate --app=bench_worker.app.app worker
+    # Sandbox and companion jobs are left for the Droplet runner (infra/runner).
+    run_command: procrastinate --app=bench_worker.app.app worker --queues default,runs
     instance_size_slug: apps-s-1vcpu-2gb
     instance_count: 1
     # Jobs get 100 s to finish after SIGTERM (bench_core.queue.WORKER_DEFAULTS).

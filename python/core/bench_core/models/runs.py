@@ -164,6 +164,10 @@ class Message(UUIDPrimaryKey, Base):
     model: Mapped[str | None] = mapped_column(String(200))
     meta: Mapped[dict[str, Any]] = mapped_column(default=dict, server_default="{}")
 
+    @property
+    def has_full_thinking(self) -> bool:
+        return bool(self.thinking_full)
+
 
 class Score(UUIDPrimaryKey, CreatedAt, Base):
     """A judge's score on one transcript: a Petri dimension or Bloom presence."""

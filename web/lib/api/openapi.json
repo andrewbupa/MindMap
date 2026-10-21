@@ -1312,6 +1312,30 @@
         "title": "FitOut",
         "type": "object"
       },
+      "FullThinkingOut": {
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "thinking_full": {
+            "title": "Thinking Full",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message_id",
+          "index",
+          "thinking_full"
+        ],
+        "title": "FullThinkingOut",
+        "type": "object"
+      },
       "GeneratedDimensionOut": {
         "properties": {
           "description": {
@@ -2975,6 +2999,12 @@
           "content": {
             "title": "Content",
             "type": "string"
+          },
+          "has_full_thinking": {
+            "default": false,
+            "description": "Full thinking is stored; admins and compliance can read it.",
+            "title": "Has Full Thinking",
+            "type": "boolean"
           },
           "id": {
             "format": "uuid",
@@ -5805,6 +5835,54 @@
           }
         },
         "summary": "Transcript Log",
+        "tags": [
+          "explore"
+        ]
+      }
+    },
+    "/api/explore/transcripts/{transcript_id}/thinking": {
+      "get": {
+        "description": "Full thinking, where Anthropic granted it: for admins and compliance only, and\nevery read is audited. Lens never reads it.",
+        "operationId": "read_full_thinking",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transcript_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transcript Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FullThinkingOut"
+                  },
+                  "title": "Response Read Full Thinking",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Full Thinking",
         "tags": [
           "explore"
         ]

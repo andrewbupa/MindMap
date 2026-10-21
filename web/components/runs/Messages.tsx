@@ -56,6 +56,7 @@ export function MessageView({
       >
         <div className={styles.role}>
           Agent{message.thinking_summary ? " · has a thinking summary" : ""}
+          {message.has_full_thinking ? " · has full thinking (restricted)" : ""}
         </div>
         {message.content}
         {calls.map((call) => (

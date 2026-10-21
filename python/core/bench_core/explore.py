@@ -65,7 +65,8 @@ def run_config(
         "epochs": options.epochs,
         "compaction": options.compaction,
         "models": {name: roles.role(role).model for name, role in ROLES.items()},
-        "generate": {name: roles.role(role).generate for name, role in ROLES.items()},
+        "generate": {name: roles.role(role).call_generate for name, role in ROLES.items()},
+        "thinking": {"target": roles.role("target").thinking},
     }
 
 

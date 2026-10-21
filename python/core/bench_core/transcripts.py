@@ -13,7 +13,7 @@ import tempfile
 import uuid
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from inspect_ai.log import (
     EvalConfig,
@@ -57,7 +57,14 @@ def key_from_uri(uri: str) -> str:
     return uri.split("/", 3)[3]
 
 
-def message_row(transcript_id: uuid.UUID, index: int, message: ChatMessage) -> Message:
+Thinking = Literal["summary", "full"]
+
+
+def message_row(
+    transcript_id: uuid.UUID, index: int, message: ChatMessage, thinking_kind: Thinking = "summary"
+) -> Message:
+    """One stored message. Reasoning is a summary unless the run asked for, and was
+    granted, full thinking; it is stored in the column that says which it is."""
     thinking: str | None = None
     tool_calls: list[Any] | None = None
     content = message.text
@@ -70,7 +77,8 @@ def message_row(transcript_id: uuid.UUID, index: int, message: ChatMessage) -> M
         index=index,
         role=message.role,
         content=content,
-        thinking_summary=thinking,
+        thinking_summary=thinking if thinking_kind == "summary" else None,
+        thinking_full=thinking if thinking_kind == "full" else None,
         tool_calls=tool_calls,
         tool_call_id=message.tool_call_id if isinstance(message, ChatMessageTool) else None,
         model=message.model if isinstance(message, ChatMessageAssistant) else None,
@@ -79,7 +87,10 @@ def message_row(transcript_id: uuid.UUID, index: int, message: ChatMessage) -> M
 
 
 async def append_messages(
-    db: AsyncSession, transcript: Transcript, messages: list[ChatMessage]
+    db: AsyncSession,
+    transcript: Transcript,
+    messages: list[ChatMessage],
+    thinking: Thinking = "summary",
 ) -> list[Message]:
     start = (
         await db.execute(
@@ -88,7 +99,7 @@ async def append_messages(
             )
         )
     ).scalar_one()
-    rows = [message_row(transcript.id, start + i, m) for i, m in enumerate(messages)]
+    rows = [message_row(transcript.id, start + i, m, thinking) for i, m in enumerate(messages)]
     db.add_all(rows)
     await db.flush()
     return rows

@@ -2,7 +2,8 @@ import Link from "next/link";
 
 import { Notice, PageHeader } from "@/components/ui";
 import { listDimensions, readTranscript } from "@/lib/api";
-import { serverClient } from "@/lib/api/server";
+import { getMe, serverClient } from "@/lib/api/server";
+import { hasRole } from "@/lib/auth";
 
 import { TranscriptReader } from "./TranscriptReader";
 
@@ -15,9 +16,10 @@ export default async function TranscriptPage({
 }) {
   const { transcriptId } = await params;
   const client = await serverClient();
-  const [{ data, error, response }, { data: dimensions }] = await Promise.all([
+  const [{ data, error, response }, { data: dimensions }, user] = await Promise.all([
     readTranscript({ client, path: { transcript_id: transcriptId } }),
     listDimensions({ client, throwOnError: true }),
+    getMe(),
   ]);
   if (!data) {
     const detail = (error as { detail?: unknown } | undefined)?.detail;
@@ -35,5 +37,11 @@ export default async function TranscriptPage({
       </>
     );
   }
-  return <TranscriptReader transcript={data} dimensions={dimensions} />;
+  return (
+    <TranscriptReader
+      transcript={data}
+      dimensions={dimensions}
+      canReadFullThinking={user !== null && hasRole(user, "compliance")}
+    />
+  );
 }

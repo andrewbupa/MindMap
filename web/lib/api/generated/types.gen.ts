@@ -767,6 +767,24 @@ export type FitOut = {
 };
 
 /**
+ * FullThinkingOut
+ */
+export type FullThinkingOut = {
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Thinking Full
+     */
+    thinking_full: string;
+};
+
+/**
  * GeneratedDimensionOut
  */
 export type GeneratedDimensionOut = {
@@ -1789,6 +1807,12 @@ export type MessageOut = {
      * Content
      */
     content: string;
+    /**
+     * Has Full Thinking
+     *
+     * Full thinking is stored; admins and compliance can read it.
+     */
+    has_full_thinking?: boolean;
     /**
      * Id
      */
@@ -3457,6 +3481,38 @@ export type TranscriptLogResponses = {
 };
 
 export type TranscriptLogResponse = TranscriptLogResponses[keyof TranscriptLogResponses];
+
+export type ReadFullThinkingData = {
+    body?: never;
+    path: {
+        /**
+         * Transcript Id
+         */
+        transcript_id: string;
+    };
+    query?: never;
+    url: '/api/explore/transcripts/{transcript_id}/thinking';
+};
+
+export type ReadFullThinkingErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadFullThinkingError = ReadFullThinkingErrors[keyof ReadFullThinkingErrors];
+
+export type ReadFullThinkingResponses = {
+    /**
+     * Response Read Full Thinking
+     *
+     * Successful Response
+     */
+    200: Array<FullThinkingOut>;
+};
+
+export type ReadFullThinkingResponse = ReadFullThinkingResponses[keyof ReadFullThinkingResponses];
 
 export type HealthData = {
     body?: never;

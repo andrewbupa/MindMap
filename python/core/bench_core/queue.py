@@ -16,6 +16,13 @@ from bench_core.db import libpq_url
 
 DEFAULT_QUEUE = "default"
 RUNS_QUEUE = "runs"
+# Work App Platform cannot host, taken by the Droplet runner (infra/runner): Docker
+# sandboxes for Dish, and GPU work for the open-model companion.
+SANDBOX_QUEUE = "sandbox"
+COMPANION_QUEUE = "companion"
+# What the App Platform worker listens to; the runner takes the rest.
+PLATFORM_QUEUES = (DEFAULT_QUEUE, RUNS_QUEUE)
+RUNNER_QUEUES = (SANDBOX_QUEUE, COMPANION_QUEUE)
 
 # Every deploy restarts the worker. App Platform sends SIGTERM and waits for the
 # component's termination grace period (120 s in .do/app.yaml) before killing it,

@@ -78,6 +78,7 @@ class ExploreWork:
             sample=outcome.sample,
             log_uri=outcome.log_uri,
             judge_model=self.claim.config["models"]["judge"],
+            thinking=self.claim.config.get("thinking", {}).get("target", "summary"),
         )
 
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 
+import { FullThinking } from "@/components/runs/FullThinking";
 import { MessageView } from "@/components/runs/Messages";
 import styles from "@/components/runs/runs.module.css";
 import { Badge, Card, LinkButton, Notice, PageHeader, sentenceCase } from "@/components/ui";
@@ -68,9 +69,11 @@ function ScoreTable({
 export function TranscriptReader({
   transcript,
   dimensions,
+  canReadFullThinking = false,
 }: {
   transcript: TranscriptOut;
   dimensions: DimensionOut[];
+  canReadFullThinking?: boolean;
 }) {
   const [error, setError] = useState<string | null>(null);
   const builtins = useRef<HTMLDetailsElement>(null);
@@ -183,6 +186,9 @@ export function TranscriptReader({
               <ScoreTable scores={rest} byName={byName} />
             </details>
           </Card>
+          {transcript.messages.some((message) => message.has_full_thinking) ? (
+            <FullThinking transcriptId={transcript.id} allowed={canReadFullThinking} />
+          ) : null}
         </aside>
       </div>
     </>
