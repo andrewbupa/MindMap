@@ -50,7 +50,7 @@ function ScoreTable({
           return (
             <tr key={score.id} id={`score-${score.dimension}`}>
               <th scope="row" title={dimension?.description}>
-                {dimension?.display_name ?? score.dimension}
+                {dimension?.display_name ?? sentenceCase(score.dimension.replaceAll("_", " "))}
               </th>
               <td>
                 <Badge tone={tone}>
@@ -83,6 +83,12 @@ export function TranscriptReader({
     return Number(right?.custom) - Number(left?.custom) || a.dimension.localeCompare(b.dimension);
   });
   const explanation = transcript.scores[0]?.explanation;
+  const measure = transcript.run.kind === "measure";
+  const presence = measure ? String(transcript.run.config.presence_dimension ?? "") : null;
+  const runHref = `/${measure ? "measure" : "explore"}/runs/${transcript.run.id}`;
+  const scenarioName = (transcript.scenario_key ?? "Transcript").split("/").pop() ?? "Transcript";
+  const leading = scores.filter((s) => (measure ? s.dimension === presence : byName.get(s.dimension)?.custom));
+  const rest = scores.filter((s) => !leading.includes(s));
 
   // A heatmap cell links to #score-<dimension>; open the built-ins if that is where it points.
   useEffect(() => {
@@ -106,9 +112,9 @@ export function TranscriptReader({
 
   return (
     <>
-      <PageHeader title={sentenceCase((transcript.scenario_key ?? "Transcript").replaceAll("-", " "))}>
+      <PageHeader title={sentenceCase(scenarioName.replaceAll("-", " ").replaceAll("_", " "))}>
         <p>
-          From <Link href={`/explore/runs/${transcript.run.id}`}>{transcript.run.title}</Link>
+          From <Link href={runHref}>{transcript.run.title}</Link>
           {transcript.epoch > 1 ? `, repetition ${transcript.epoch}` : ""}.{" "}
           <LinkButton onClick={openLog}>Download the Inspect log</LinkButton> to open it in Inspect
           View.
@@ -165,13 +171,16 @@ export function TranscriptReader({
             ) : null}
           </Card>
           <Card title="Scores">
-            <ScoreTable scores={scores.filter((s) => byName.get(s.dimension)?.custom)} byName={byName} />
+            {measure ? (
+              <p className={styles.quiet}>
+                Presence of the behaviour; the rate counts {String(transcript.run.config.threshold ?? 7)} or
+                more.
+              </p>
+            ) : null}
+            <ScoreTable scores={leading} byName={byName} />
             <details ref={builtins}>
-              <summary>Petri&apos;s built-in dimensions</summary>
-              <ScoreTable
-                scores={scores.filter((s) => !byName.get(s.dimension)?.custom)}
-                byName={byName}
-              />
+              <summary>{measure ? "Realism and evaluation awareness" : "Petri\u2019s built-in dimensions"}</summary>
+              <ScoreTable scores={rest} byName={byName} />
             </details>
           </Card>
         </aside>

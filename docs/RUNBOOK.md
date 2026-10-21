@@ -1,7 +1,7 @@
 # Runbook
 
 How to run Bench locally, set it up on DigitalOcean, deploy it, and look after it.
-Updated at the end of each milestone. Last updated: milestone 3.
+Updated at the end of each milestone. Last updated: milestone 4.
 
 ## Local development
 
@@ -168,6 +168,24 @@ recorded; a sample whose seed changed under it fails rather than run the new tex
 **Opening a sample in Inspect View.** On a transcript page, download the Inspect
 log, then run `inspect view --log-dir <folder>` locally.
 
+**Measuring a behaviour.** Measure, then the behaviour, then "Generate scenarios".
+Generation is one job: Bloom writes its understanding of the behaviour, then the
+scenarios and a variation of each. It is stored once and never changes. Then
+"Start a suite on this scenario set": choose the prompt versions and repetitions
+(three by default). Each scenario at each repetition runs as its own job, and the
+behaviour page charts the newest finished run per prompt version. Cite a rate
+with its run's seed hash.
+
+**Changing a behaviour.** Edit `seeds/bloom/<behaviour>/BEHAVIOR.md` and merge.
+That is a new behaviour version with no scenarios: generate a new set, and rerun
+suites on it. Earlier sets and their rates stay readable but are not compared
+with the new ones. Never commit a `scenarios/` folder there; Bench refuses it.
+
+**A generation failed.** Its error is on the behaviour page, under generation runs.
+"Look like they contain real personal data" means the synthetic-data scan caught
+something in what the model wrote; generate again, and if it repeats, tighten the
+behaviour's `instructions.ideation`.
+
 **The audit log** is append-only in Postgres. Compliance and admins read it in
 Settings, audit log.
 
@@ -180,10 +198,32 @@ approves an import.
 
 | Provider | Used for | Retention terms | Zero data retention | Confirmed by, date |
 | --- | --- | --- | --- | --- |
-| Anthropic | Target, auditor, judge A, scanner (`config/models.yaml`) | To confirm for our account | To confirm. Claude Fable 5.1 is not available under zero data retention | |
+| Anthropic | Target, auditor, judge A, scanner, Bloom scenarios (`config/models.yaml`) | To confirm for our account | To confirm. Claude Fable 5.1 is not available under zero data retention | |
 | Second judge family | To be chosen in milestone 5 | To confirm | To confirm | |
 
 ## Milestone status
+
+### Milestone 4: measure
+
+Built: five behaviours in `seeds/bloom/` in petri_bloom 0.2.6's format; scenario
+generation as a one-job run whose output is a write-once scenario set; suites of
+one run per prompt version, with a job per scenario and repetition that runs
+Bloom's own task with its auditor aimed at Bench's Petri target, so the agent's
+real prompt stays fixed; rollouts indexed into the shared transcript and score
+tables; elicitation rates with each repetition's rate and their range; the
+behaviour page with its rate chart and table, the highest-scoring transcripts,
+the scenario set page, the suite form and the run page.
+
+Verified: in the tests, generation with the development model (six scenarios,
+one presence dimension, a read-only set) and a two-repetition suite with
+scripted judges (rate 5 of 12, repetitions 50% and 33%, our prompt in the
+target's system message, Bloom's task in the log); refusals for a changed
+behaviour, a changed scenario set and an agent the behaviour is not for. In a
+browser with the development model: generation, a two-version suite run by the
+worker, and the chart, tables, run page and transcript in light and dark.
+
+Waiting on: an Anthropic key in production, to generate real scenarios and run
+suites with real models; answers to the open questions in docs/DECISIONS.md.
 
 ### Milestone 3: explore
 

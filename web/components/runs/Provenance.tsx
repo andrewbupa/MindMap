@@ -16,6 +16,17 @@ const STATUS_TONES: Record<string, Tone> = {
   stopped_at_budget: "warn",
 };
 
+const SEED_NOTES: Record<string, string> = {
+  explore: "Over the seeds used and every judge rubric",
+  measure: "Over the behaviour and its scenario set. Cite rates with it.",
+  scenarios: "Over the behaviour's definition and examples",
+};
+
+const ROUTES: Record<string, string> = {
+  petri_target: "Petri target: the agent's real prompt, scenario context in a delimited block",
+  openai_endpoint: "The adapter's OpenAI-compatible endpoint",
+};
+
 export function StatusBadge({ status }: { status: string }) {
   return <Badge tone={STATUS_TONES[status] ?? "neutral"}>{sentenceCase(status)}</Badge>;
 }
@@ -33,6 +44,7 @@ export function Provenance({ run }: { run: RunOut }) {
   }
 
   const perSample = run.kind === "explore" || run.kind === "measure";
+  const seedNote = SEED_NOTES[run.kind] ?? "Over the seeds this run used";
   const log = run.log_uri ? (
     <LinkButton onClick={openLog} title="Download the Inspect .eval log">
       Inspect log
@@ -74,6 +86,12 @@ export function Provenance({ run }: { run: RunOut }) {
           <th scope="row">Mode</th>
           <td>{run.adapter_mode ? sentenceCase(run.adapter_mode) : "Not applicable"}</td>
         </tr>
+        {run.route ? (
+          <tr>
+            <th scope="row">Route</th>
+            <td>{ROUTES[run.route] ?? run.route}</td>
+          </tr>
+        ) : null}
         <tr>
           <th scope="row">Config hash</th>
           <td>
@@ -91,7 +109,7 @@ export function Provenance({ run }: { run: RunOut }) {
             <td>
               <Mono>{run.seed_hash.slice(0, 16)}</Mono>
               <br />
-              <span className={styles.quiet}>Over the seeds used and every judge rubric</span>
+              <span className={styles.quiet}>{seedNote}</span>
             </td>
           </tr>
         ) : null}
@@ -142,7 +160,7 @@ export function Provenance({ run }: { run: RunOut }) {
           <th scope="row">Finished</th>
           <td>{formatWhen(run.finished_at, "Still running")}</td>
         </tr>
-        {perSample ? null : (
+        {perSample || run.kind === "scenarios" ? null : (
           <tr>
             <th scope="row">Transcript</th>
             <td>

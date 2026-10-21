@@ -4,6 +4,130 @@ Every design choice, and every place the brief and a library's current
 documentation disagree. Current documentation wins; the entry says so. Newest
 milestone first within each section.
 
+## Milestone 4: measure
+
+### Where the brief and current documentation differ
+
+**Bloom itself has moved.** `safety-research/bloom` says it "has a new home" and
+"will not receive updates"; its last commit is 7a18428 (2026-05-07) and its last
+release v1.1.0. Its successor is Meridian Labs' `petri_bloom`, an implementation
+of Bloom on Petri and Inspect, and this is the "Petri 3 Bloom integration" the
+brief asks us to check first. Bench pins `petri-bloom==0.2.6` (the PyPI source
+matches the repository's head apart from one comment), and CLAUDE.md's "pin
+bloom" applies to it. The frozen repository had no Inspect dependency, wrote
+Petri-style JSON rather than `.eval` logs, reached targets through LiteLLM with no
+per-target base URL, and had its evaluator write a fresh system prompt for every
+rollout.
+
+**Behaviour folders use petri_bloom's format.** The brief asks for `seed.yaml`,
+`behaviors.json` and `models.json` per behaviour, "as Bloom expects". petri_bloom
+expects `BEHAVIOR.md` (YAML front matter and the definition) and an optional
+`examples/` folder, and chooses models per call rather than per folder. Bench's
+behaviours live in `seeds/bloom/<behaviour>/BEHAVIOR.md`; models come from the
+`scenarios` role in `config/models.yaml`.
+
+**Our prompt stays fixed without the OpenAI-compatible route.** petri_bloom's
+`bloom_audit` has no target parameter, but its solver can be replaced. Bench keeps
+Bloom's task (its dataset, judge with Bloom's instructions, viewer and metadata)
+and swaps in Bloom's auditor, with the same tools and system message, aimed at
+Bench's Petri target from Explore. The target keeps the agent's real prompt and
+passes whatever the auditor stages as a `<scenario_context>` block. Every Measure
+run records `route: petri_target`. The OpenAI-compatible endpoint stays available
+as the brief's fallback route, unused.
+
+**Bloom's auditor and ideation are told our setting.** Bloom's auditor prompt asks
+the auditor to write the target's system prompt, and its ideation prompt asks for
+"the system prompt to the target model" and encourages real company names. Each
+behaviour's `instructions.ideation` and `instructions.evaluation` (which petri_bloom
+appends to those prompts) say that the agent's prompt is fixed, that staged text
+arrives as context, which synthetic records exist, that no real organisations or
+people may appear, and that the target must never be asked to show its reasoning.
+
+**Forced tool choice degrades on current Claude models.** petri_bloom's generation
+forces each `submit_*` tool. Claude Opus 5.5 rejects forced tool choice; Inspect
+0.3.282's Anthropic provider detects such models and sends `auto` with a warning,
+and petri_bloom retries when a reply has no tool call. Petri's judge and Scout do
+not force tools.
+
+**No elicitation rate ships with petri_bloom.** Neither petri_bloom nor Petri
+computes one, so Bench does (`bench_core.measure.rates`): the share of scored
+rollouts with presence 7 or more out of 10, as the brief and Bloom's original code define
+it. Bloom's original counted unparsed scores as 0; Bench counts rollouts the judge
+did not score apart, shows how many there were, and leaves them out of the rate.
+
+**The presence dimension is found by tag.** petri_bloom's ideation names the
+presence dimension itself and tags it `behavior`; Bench requires exactly one such
+dimension in a scenario set and records its name on the set and on every run.
+
+**Variation lineage is not recorded.** petri_bloom writes `variation: <axis>` on a
+variation but nothing linking it to its base scenario, so Bench shows each
+variation's axis but not which base scenario it came from.
+
+### Design choices
+
+**Scenarios are generated in Bench and stored in Postgres, once.** Generation is a
+run of kind `scenarios` with one sample job, so it shares Explore's lifecycle,
+budget, cancel and status stream. petri_bloom runs in memory on the behaviour as
+it is in git; the result (its Behavior, with understanding, scenarios and
+dimensions) is written once as a `scenario_set` row, read-only after its run
+closes, and each generated seed becomes a `scenario` row with source `bloom`.
+Folders in git hold only the definitions; a `scenarios/` folder there is refused,
+so a set always has a run, models and a hash behind it.
+
+**A behaviour version is its folder's content.** Its seed hash is a hash over
+`BEHAVIOR.md` and its examples. A behaviour row is created for each version on
+first use and by `sync-registry`, and never edited.
+
+**A suite is one run per prompt version on one scenario set.** Each run has one
+sample job per scenario and repetition (three by default), recorded with the suite
+id. Its seed hash covers the behaviour's seed hash and the scenario set's content
+hash, so a rate cited with it names exactly the scenarios behind it. Before a
+rollout starts, the job checks the prompt, tools, scenario set hash and the
+scenario's text against what the run recorded.
+
+**Spread is the range of repetition rates.** Each repetition (an Inspect epoch
+run as its own job) gets its own rate. Pages show the pooled rate, each
+repetition's rate, and their lowest-to-highest range; the API also returns the
+sample standard deviation. Severity is shown as the mean presence score.
+
+**Rates are compared only within a scenario set.** The behaviour page charts the
+newest finished run per prompt version on the selected scenario set; other sets
+and earlier runs are listed, never mixed into the chart.
+
+**Measure transcripts share Explore's tables and reader.** Rollouts are indexed
+into `transcript`, `message` and `score` (source `bloom_judge`), so Lens and
+expert review read them like any other transcript. Presence scores of 7 or more
+join the review queue under the same rule as Petri's dimensions. The reader shows
+presence first and links back to the Measure run.
+
+**Generated text is scanned for personal data.** Before a scenario set is stored,
+everything the model wrote (understanding, scenarios, generated rubrics) goes
+through the synthetic-data scan; a finding fails the generation. Petri's own
+built-in rubrics are skipped, since they ship with an example address.
+
+**The development model plays Bloom's generator.** Offered a `submit_*` tool it
+returns two placeholder scenarios, a variation per axis and one presence
+dimension, so generation and suites run locally without keys.
+
+**Generation usage comes from Inspect's usage record.** petri_bloom calls models
+outside an eval, so Bench resets and reads Inspect's per-task usage record
+(`init_model_usage`, `model_usage`, internal functions in 0.3.282) around it.
+
+**Chart colour.** The rate chart uses one series colour, `--color-chart-1`
+(`#2a78d6` light, `#3987e5` dark), which passes the palette checks against both
+surfaces; the site's accent blue reads as grey at chart scale.
+
+### Open questions
+
+1. **Which model generates scenarios?** The `scenarios` role uses Claude Opus 5.5
+   at high effort. A different family from the target would keep generation and
+   rollout independent; worth deciding with the judge question from Milestone 3.
+2. **How many scenarios?** Each behaviour asks for 4 base scenarios with two
+   variation axes, so about 12 scenarios and 36 rollouts per prompt version.
+   Bloom's authors used 50 or more. Larger sets narrow the spread and cost more.
+3. **Reviewing generated scenarios.** Sets are generated in Bench and read there.
+   Should an expert approve a set before suites can use it?
+
 ## Milestone 3: explore
 
 ### Where the brief and current documentation differ
@@ -86,26 +210,6 @@ proves the pipeline locally; its scores mean nothing.
 2. **Built-in seeds.** Petri ships 173 seeds; the brief suggests adding those
    matching our tags. Petri's tags (sycophancy, privacy violation, deception)
    suit some of our risks. Which should join our runs?
-
-## Milestone 4: measure (findings recorded early)
-
-**The original Bloom repository is frozen.** `safety-research/bloom` says it "has a
-new home" and "will not receive updates"; its last commit is 7a18428 (2026-05-07)
-and its last release v1.1.0. The successor is Meridian Labs' `petri_bloom`, an
-implementation of Bloom on Petri and Inspect (Python 3.12, `inspect-petri>=3.0.11`).
-This is the "Petri 3 Bloom integration" the brief asks us to check first. It runs
-as an Inspect task, writes standard Inspect logs, and keeps scenarios as editable
-markdown reused across targets. Measure will pin `petri_bloom` rather than the
-frozen repository, and CLAUDE.md's "pin bloom" applies to it.
-
-Facts about the frozen repository that shaped this choice: it has no Inspect
-dependency and writes Petri-style JSON transcripts, not `.eval` logs; it calls
-targets through LiteLLM with no per-target base URL, so pointing it at our
-endpoint means process-wide environment variables; and at rollout its evaluator
-writes a fresh system prompt for every rollout, with no option to keep the
-target's own. Its elicitation rate is the share of rollouts scoring above 6 of 10
-for behaviour presence, pooled over variations and repetitions, with unparsed
-scores counted as 0.
 
 ## Milestone 2: agents and adapter
 

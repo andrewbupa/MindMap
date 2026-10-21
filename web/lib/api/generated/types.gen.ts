@@ -183,6 +183,138 @@ export type AuditEventOut = {
 };
 
 /**
+ * BehaviourDetail
+ */
+export type BehaviourDetail = {
+    /**
+     * Agents
+     */
+    agents: Array<string>;
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Definition
+     */
+    definition: string;
+    /**
+     * A generation run still in progress.
+     */
+    generating: RunOut | null;
+    /**
+     * Generations
+     */
+    generations: Array<RunOut>;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Num Scenarios
+     */
+    num_scenarios: number;
+    /**
+     * Runs
+     *
+     * Measure runs on the selected set.
+     */
+    runs: Array<MeasureRunSummary>;
+    /**
+     * The newest scenario set for this behaviour version.
+     */
+    scenario_set: ScenarioSetSummary | null;
+    /**
+     * Scenario Sets
+     */
+    scenario_sets: Array<ScenarioSetSummary>;
+    /**
+     * Scenario Type
+     */
+    scenario_type: string | null;
+    /**
+     * Seed Hash
+     */
+    seed_hash: string;
+    /**
+     * Selected Set
+     */
+    selected_set: string | null;
+    /**
+     * Tags
+     */
+    tags: Array<string>;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Top Rollouts
+     *
+     * The highest presence scores.
+     */
+    top_rollouts: Array<RolloutOut>;
+    /**
+     * Variations
+     */
+    variations: Array<string>;
+};
+
+/**
+ * BehaviourSummary
+ */
+export type BehaviourSummary = {
+    /**
+     * Agents
+     */
+    agents: Array<string>;
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Definition
+     */
+    definition: string;
+    /**
+     * A generation run still in progress.
+     */
+    generating: RunOut | null;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Num Scenarios
+     */
+    num_scenarios: number;
+    /**
+     * The newest scenario set for this behaviour version.
+     */
+    scenario_set: ScenarioSetSummary | null;
+    /**
+     * Scenario Type
+     */
+    scenario_type: string | null;
+    /**
+     * Seed Hash
+     */
+    seed_hash: string;
+    /**
+     * Tags
+     */
+    tags: Array<string>;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Variations
+     */
+    variations: Array<string>;
+};
+
+/**
  * ChatCompletionIn
  */
 export type ChatCompletionIn = {
@@ -305,6 +437,73 @@ export type DimensionOut = {
 };
 
 /**
+ * ElicitationOut
+ */
+export type ElicitationOut = {
+    /**
+     * By Epoch
+     */
+    by_epoch: Array<EpochTallyOut>;
+    overall: TallyOut;
+    /**
+     * Spread High
+     *
+     * The highest repetition's rate.
+     */
+    spread_high: number | null;
+    /**
+     * Spread Low
+     *
+     * The lowest repetition's rate.
+     */
+    spread_low: number | null;
+    /**
+     * Stdev
+     *
+     * Sample standard deviation of repetition rates.
+     */
+    stdev: number | null;
+    /**
+     * Threshold
+     */
+    threshold: number;
+};
+
+/**
+ * EpochTallyOut
+ */
+export type EpochTallyOut = {
+    /**
+     * Elicited
+     *
+     * Scored rollouts at or above the threshold.
+     */
+    elicited: number;
+    /**
+     * Epoch
+     */
+    epoch: number;
+    /**
+     * Mean Score
+     */
+    mean_score: number | null;
+    /**
+     * Rate
+     */
+    rate: number | null;
+    /**
+     * Rollouts
+     *
+     * Rollouts the judge scored.
+     */
+    rollouts: number;
+    /**
+     * Unscored
+     */
+    unscored: number;
+};
+
+/**
  * ExploreLaunch
  */
 export type ExploreLaunch = {
@@ -383,6 +582,60 @@ export type ExploreRunOut = {
      * Version
      */
     version: string;
+};
+
+/**
+ * GeneratedDimensionOut
+ */
+export type GeneratedDimensionOut = {
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Presence
+     */
+    presence: boolean;
+    /**
+     * Rubric
+     */
+    rubric: string | null;
+    /**
+     * Tags
+     */
+    tags: Array<string>;
+};
+
+/**
+ * GeneratedScenarioOut
+ */
+export type GeneratedScenarioOut = {
+    /**
+     * Id
+     *
+     * The sample id Bloom gives the scenario.
+     */
+    id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Scenario Row
+     */
+    scenario_row: string | null;
+    /**
+     * Seed
+     */
+    seed: string;
+    /**
+     * Variation
+     */
+    variation: string | null;
 };
 
 /**
@@ -465,6 +718,126 @@ export type MeUpdate = {
      * Sensitive Opt In
      */
     sensitive_opt_in: boolean;
+};
+
+/**
+ * MeasureLaunch
+ */
+export type MeasureLaunch = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Compaction
+     *
+     * Let Petri summarise long audits.
+     */
+    compaction?: boolean;
+    /**
+     * Epochs
+     *
+     * Repetitions of every scenario.
+     */
+    epochs?: number;
+    /**
+     * Max Turns
+     */
+    max_turns?: number;
+    /**
+     * Scenario Set
+     */
+    scenario_set: string;
+    /**
+     * Token Budget
+     *
+     * Per prompt version.
+     */
+    token_budget?: number | null;
+    /**
+     * Versions
+     */
+    versions: Array<string>;
+};
+
+/**
+ * MeasureRunOut
+ */
+export type MeasureRunOut = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Behaviour
+     */
+    behaviour: string;
+    /**
+     * By Scenario
+     */
+    by_scenario: Array<ScenarioTallyOut>;
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    elicitation: ElicitationOut;
+    /**
+     * Rollouts
+     */
+    rollouts: Array<RolloutOut>;
+    run: RunOut;
+    /**
+     * Samples
+     */
+    samples: Array<SampleOut>;
+    /**
+     * Scenario Set
+     */
+    scenario_set: string;
+    /**
+     * Suite
+     */
+    suite: string;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * MeasureRunSummary
+ */
+export type MeasureRunSummary = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Behaviour
+     */
+    behaviour: string;
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    elicitation: ElicitationOut;
+    run: RunOut;
+    /**
+     * Scenario Set
+     */
+    scenario_set: string;
+    /**
+     * Suite
+     */
+    suite: string;
+    /**
+     * Version
+     */
+    version: string;
 };
 
 /**
@@ -906,6 +1279,56 @@ export type ReviewQueueOut = {
 export type Role = 'author' | 'reviewer' | 'compliance' | 'admin';
 
 /**
+ * RolloutOut
+ */
+export type RolloutOut = {
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Epoch
+     */
+    epoch: number;
+    /**
+     * Run Id
+     */
+    run_id: string;
+    /**
+     * Sample Index
+     */
+    sample_index: number;
+    /**
+     * Scenario
+     */
+    scenario: string;
+    /**
+     * Score
+     */
+    score: number | null;
+    /**
+     * Score Id
+     */
+    score_id: string | null;
+    /**
+     * Summary
+     */
+    summary: string | null;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+    /**
+     * Variation
+     */
+    variation: string | null;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
  * RunOut
  */
 export type RunOut = {
@@ -913,6 +1336,10 @@ export type RunOut = {
      * Adapter Mode
      */
     adapter_mode: string | null;
+    /**
+     * Behaviour Id
+     */
+    behaviour_id: string | null;
     /**
      * Config
      */
@@ -975,6 +1402,12 @@ export type RunOut = {
      * Prompt Sha
      */
     prompt_sha: string | null;
+    /**
+     * Route
+     *
+     * How the agent was reached, for Measure runs.
+     */
+    route: string | null;
     /**
      * Seed Hash
      */
@@ -1041,6 +1474,130 @@ export type SampleOut = {
      * Tokens Used
      */
     tokens_used: number;
+};
+
+/**
+ * ScenarioGenerate
+ */
+export type ScenarioGenerate = {
+    /**
+     * Token Budget
+     */
+    token_budget?: number | null;
+};
+
+/**
+ * ScenarioSetOut
+ */
+export type ScenarioSetOut = {
+    /**
+     * Behaviour
+     */
+    behaviour: string;
+    /**
+     * Dimensions
+     */
+    dimensions: Array<GeneratedDimensionOut>;
+    generation: RunOut;
+    /**
+     * Scenarios
+     */
+    scenarios: Array<GeneratedScenarioOut>;
+    /**
+     * Scientific Motivation
+     */
+    scientific_motivation: string | null;
+    summary: ScenarioSetSummary;
+    /**
+     * Understanding
+     */
+    understanding: string | null;
+};
+
+/**
+ * ScenarioSetSummary
+ */
+export type ScenarioSetSummary = {
+    /**
+     * Behaviour Id
+     */
+    behaviour_id: string;
+    /**
+     * Behaviour Seed Hash
+     */
+    behaviour_seed_hash: string;
+    /**
+     * Content Hash
+     */
+    content_hash: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Current
+     *
+     * Generated from the behaviour as it is in git now.
+     */
+    current: boolean;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Model
+     */
+    model: string;
+    /**
+     * Presence Dimension
+     */
+    presence_dimension: string;
+    /**
+     * Run Id
+     */
+    run_id: string;
+    /**
+     * Scenario Count
+     */
+    scenario_count: number;
+};
+
+/**
+ * ScenarioTallyOut
+ */
+export type ScenarioTallyOut = {
+    /**
+     * Elicited
+     *
+     * Scored rollouts at or above the threshold.
+     */
+    elicited: number;
+    /**
+     * Mean Score
+     */
+    mean_score: number | null;
+    /**
+     * Rate
+     */
+    rate: number | null;
+    /**
+     * Rollouts
+     *
+     * Rollouts the judge scored.
+     */
+    rollouts: number;
+    /**
+     * Scenario
+     */
+    scenario: string;
+    /**
+     * Unscored
+     */
+    unscored: number;
+    /**
+     * Variation
+     */
+    variation: string | null;
 };
 
 /**
@@ -1216,6 +1773,36 @@ export type SystemCheckOut = {
      * Status
      */
     status: string;
+};
+
+/**
+ * TallyOut
+ */
+export type TallyOut = {
+    /**
+     * Elicited
+     *
+     * Scored rollouts at or above the threshold.
+     */
+    elicited: number;
+    /**
+     * Mean Score
+     */
+    mean_score: number | null;
+    /**
+     * Rate
+     */
+    rate: number | null;
+    /**
+     * Rollouts
+     *
+     * Rollouts the judge scored.
+     */
+    rollouts: number;
+    /**
+     * Unscored
+     */
+    unscored: number;
 };
 
 /**
@@ -1939,6 +2526,266 @@ export type UpdateMeResponses = {
 };
 
 export type UpdateMeResponse = UpdateMeResponses[keyof UpdateMeResponses];
+
+export type ListBehavioursData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/measure/behaviours';
+};
+
+export type ListBehavioursResponses = {
+    /**
+     * Response List Behaviours
+     *
+     * Successful Response
+     */
+    200: Array<BehaviourSummary>;
+};
+
+export type ListBehavioursResponse = ListBehavioursResponses[keyof ListBehavioursResponses];
+
+export type ReadBehaviourData = {
+    body?: never;
+    path: {
+        /**
+         * Key
+         */
+        key: string;
+    };
+    query?: {
+        /**
+         * Scenario Set
+         */
+        scenario_set?: string | null;
+    };
+    url: '/api/measure/behaviours/{key}';
+};
+
+export type ReadBehaviourErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadBehaviourError = ReadBehaviourErrors[keyof ReadBehaviourErrors];
+
+export type ReadBehaviourResponses = {
+    /**
+     * Successful Response
+     */
+    200: BehaviourDetail;
+};
+
+export type ReadBehaviourResponse = ReadBehaviourResponses[keyof ReadBehaviourResponses];
+
+export type GenerateScenarioSetData = {
+    body: ScenarioGenerate;
+    path: {
+        /**
+         * Key
+         */
+        key: string;
+    };
+    query?: never;
+    url: '/api/measure/behaviours/{key}/scenario-sets';
+};
+
+export type GenerateScenarioSetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GenerateScenarioSetError = GenerateScenarioSetErrors[keyof GenerateScenarioSetErrors];
+
+export type GenerateScenarioSetResponses = {
+    /**
+     * Successful Response
+     */
+    201: RunOut;
+};
+
+export type GenerateScenarioSetResponse = GenerateScenarioSetResponses[keyof GenerateScenarioSetResponses];
+
+export type ListMeasureRunsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Behaviour
+         */
+        behaviour?: string | null;
+    };
+    url: '/api/measure/runs';
+};
+
+export type ListMeasureRunsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListMeasureRunsError = ListMeasureRunsErrors[keyof ListMeasureRunsErrors];
+
+export type ListMeasureRunsResponses = {
+    /**
+     * Response List Measure Runs
+     *
+     * Successful Response
+     */
+    200: Array<MeasureRunSummary>;
+};
+
+export type ListMeasureRunsResponse = ListMeasureRunsResponses[keyof ListMeasureRunsResponses];
+
+export type LaunchMeasureData = {
+    body: MeasureLaunch;
+    path?: never;
+    query?: never;
+    url: '/api/measure/runs';
+};
+
+export type LaunchMeasureErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LaunchMeasureError = LaunchMeasureErrors[keyof LaunchMeasureErrors];
+
+export type LaunchMeasureResponses = {
+    /**
+     * Response Launch Measure
+     *
+     * Successful Response
+     */
+    201: Array<RunOut>;
+};
+
+export type LaunchMeasureResponse = LaunchMeasureResponses[keyof LaunchMeasureResponses];
+
+export type ReadMeasureRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/measure/runs/{run_id}';
+};
+
+export type ReadMeasureRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadMeasureRunError = ReadMeasureRunErrors[keyof ReadMeasureRunErrors];
+
+export type ReadMeasureRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: MeasureRunOut;
+};
+
+export type ReadMeasureRunResponse = ReadMeasureRunResponses[keyof ReadMeasureRunResponses];
+
+export type CancelMeasureRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/measure/runs/{run_id}/cancel';
+};
+
+export type CancelMeasureRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CancelMeasureRunError = CancelMeasureRunErrors[keyof CancelMeasureRunErrors];
+
+export type CancelMeasureRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunOut;
+};
+
+export type CancelMeasureRunResponse = CancelMeasureRunResponses[keyof CancelMeasureRunResponses];
+
+export type StreamMeasureRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/measure/runs/{run_id}/events';
+};
+
+export type StreamMeasureRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StreamMeasureRunError = StreamMeasureRunErrors[keyof StreamMeasureRunErrors];
+
+export type StreamMeasureRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ReadScenarioSetData = {
+    body?: never;
+    path: {
+        /**
+         * Scenario Set Id
+         */
+        scenario_set_id: string;
+    };
+    query?: never;
+    url: '/api/measure/scenario-sets/{scenario_set_id}';
+};
+
+export type ReadScenarioSetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadScenarioSetError = ReadScenarioSetErrors[keyof ReadScenarioSetErrors];
+
+export type ReadScenarioSetResponses = {
+    /**
+     * Successful Response
+     */
+    200: ScenarioSetOut;
+};
+
+export type ReadScenarioSetResponse = ReadScenarioSetResponses[keyof ReadScenarioSetResponses];
 
 export type ModelRolesData = {
     body?: never;

@@ -291,6 +291,255 @@
         "title": "AuditEventOut",
         "type": "object"
       },
+      "BehaviourDetail": {
+        "properties": {
+          "agents": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Agents",
+            "type": "array"
+          },
+          "content_notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Content Notes",
+            "type": "array"
+          },
+          "definition": {
+            "title": "Definition",
+            "type": "string"
+          },
+          "generating": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "A generation run still in progress."
+          },
+          "generations": {
+            "items": {
+              "$ref": "#/components/schemas/RunOut"
+            },
+            "title": "Generations",
+            "type": "array"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "num_scenarios": {
+            "title": "Num Scenarios",
+            "type": "integer"
+          },
+          "runs": {
+            "description": "Measure runs on the selected set.",
+            "items": {
+              "$ref": "#/components/schemas/MeasureRunSummary"
+            },
+            "title": "Runs",
+            "type": "array"
+          },
+          "scenario_set": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScenarioSetSummary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The newest scenario set for this behaviour version."
+          },
+          "scenario_sets": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioSetSummary"
+            },
+            "title": "Scenario Sets",
+            "type": "array"
+          },
+          "scenario_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Type"
+          },
+          "seed_hash": {
+            "title": "Seed Hash",
+            "type": "string"
+          },
+          "selected_set": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selected Set"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "top_rollouts": {
+            "description": "The highest presence scores.",
+            "items": {
+              "$ref": "#/components/schemas/RolloutOut"
+            },
+            "title": "Top Rollouts",
+            "type": "array"
+          },
+          "variations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Variations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "definition",
+          "agents",
+          "tags",
+          "variations",
+          "num_scenarios",
+          "scenario_type",
+          "content_notes",
+          "seed_hash",
+          "scenario_set",
+          "generating",
+          "scenario_sets",
+          "generations",
+          "selected_set",
+          "runs",
+          "top_rollouts"
+        ],
+        "title": "BehaviourDetail",
+        "type": "object"
+      },
+      "BehaviourSummary": {
+        "properties": {
+          "agents": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Agents",
+            "type": "array"
+          },
+          "content_notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Content Notes",
+            "type": "array"
+          },
+          "definition": {
+            "title": "Definition",
+            "type": "string"
+          },
+          "generating": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "A generation run still in progress."
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "num_scenarios": {
+            "title": "Num Scenarios",
+            "type": "integer"
+          },
+          "scenario_set": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScenarioSetSummary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The newest scenario set for this behaviour version."
+          },
+          "scenario_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Type"
+          },
+          "seed_hash": {
+            "title": "Seed Hash",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "variations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Variations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "definition",
+          "agents",
+          "tags",
+          "variations",
+          "num_scenarios",
+          "scenario_type",
+          "content_notes",
+          "seed_hash",
+          "scenario_set",
+          "generating"
+        ],
+        "title": "BehaviourSummary",
+        "type": "object"
+      },
       "ChatCompletionIn": {
         "additionalProperties": true,
         "properties": {
@@ -536,6 +785,124 @@
         "title": "DimensionOut",
         "type": "object"
       },
+      "ElicitationOut": {
+        "properties": {
+          "by_epoch": {
+            "items": {
+              "$ref": "#/components/schemas/EpochTallyOut"
+            },
+            "title": "By Epoch",
+            "type": "array"
+          },
+          "overall": {
+            "$ref": "#/components/schemas/TallyOut"
+          },
+          "spread_high": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The highest repetition's rate.",
+            "title": "Spread High"
+          },
+          "spread_low": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The lowest repetition's rate.",
+            "title": "Spread Low"
+          },
+          "stdev": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Sample standard deviation of repetition rates.",
+            "title": "Stdev"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "number"
+          }
+        },
+        "required": [
+          "threshold",
+          "overall",
+          "by_epoch",
+          "spread_low",
+          "spread_high",
+          "stdev"
+        ],
+        "title": "ElicitationOut",
+        "type": "object"
+      },
+      "EpochTallyOut": {
+        "properties": {
+          "elicited": {
+            "description": "Scored rollouts at or above the threshold.",
+            "title": "Elicited",
+            "type": "integer"
+          },
+          "epoch": {
+            "title": "Epoch",
+            "type": "integer"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          },
+          "rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate"
+          },
+          "rollouts": {
+            "description": "Rollouts the judge scored.",
+            "title": "Rollouts",
+            "type": "integer"
+          },
+          "unscored": {
+            "title": "Unscored",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rollouts",
+          "elicited",
+          "unscored",
+          "rate",
+          "mean_score",
+          "epoch"
+        ],
+        "title": "EpochTallyOut",
+        "type": "object"
+      },
       "ExploreLaunch": {
         "properties": {
           "agent": {
@@ -678,6 +1045,98 @@
         "title": "ExploreRunOut",
         "type": "object"
       },
+      "GeneratedDimensionOut": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "presence": {
+            "title": "Presence",
+            "type": "boolean"
+          },
+          "rubric": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rubric"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "tags",
+          "rubric",
+          "presence"
+        ],
+        "title": "GeneratedDimensionOut",
+        "type": "object"
+      },
+      "GeneratedScenarioOut": {
+        "properties": {
+          "id": {
+            "description": "The sample id Bloom gives the scenario.",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "scenario_row": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Row"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "string"
+          },
+          "variation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variation"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "variation",
+          "seed",
+          "scenario_row"
+        ],
+        "title": "GeneratedScenarioOut",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -806,6 +1265,193 @@
           "sensitive_opt_in"
         ],
         "title": "MeUpdate",
+        "type": "object"
+      },
+      "MeasureLaunch": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "compaction": {
+            "default": true,
+            "description": "Let Petri summarise long audits.",
+            "title": "Compaction",
+            "type": "boolean"
+          },
+          "epochs": {
+            "default": 3,
+            "description": "Repetitions of every scenario.",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Epochs",
+            "type": "integer"
+          },
+          "max_turns": {
+            "default": 15,
+            "maximum": 60.0,
+            "minimum": 2.0,
+            "title": "Max Turns",
+            "type": "integer"
+          },
+          "scenario_set": {
+            "format": "uuid",
+            "title": "Scenario Set",
+            "type": "string"
+          },
+          "token_budget": {
+            "anyOf": [
+              {
+                "minimum": 10000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Per prompt version.",
+            "title": "Token Budget"
+          },
+          "versions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Versions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "agent",
+          "versions",
+          "scenario_set"
+        ],
+        "title": "MeasureLaunch",
+        "type": "object"
+      },
+      "MeasureRunOut": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "behaviour": {
+            "title": "Behaviour",
+            "type": "string"
+          },
+          "by_scenario": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioTallyOut"
+            },
+            "title": "By Scenario",
+            "type": "array"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "elicitation": {
+            "$ref": "#/components/schemas/ElicitationOut"
+          },
+          "rollouts": {
+            "items": {
+              "$ref": "#/components/schemas/RolloutOut"
+            },
+            "title": "Rollouts",
+            "type": "array"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/SampleOut"
+            },
+            "title": "Samples",
+            "type": "array"
+          },
+          "scenario_set": {
+            "format": "uuid",
+            "title": "Scenario Set",
+            "type": "string"
+          },
+          "suite": {
+            "title": "Suite",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run",
+          "agent",
+          "version",
+          "behaviour",
+          "scenario_set",
+          "suite",
+          "counts",
+          "elicitation",
+          "samples",
+          "rollouts",
+          "by_scenario"
+        ],
+        "title": "MeasureRunOut",
+        "type": "object"
+      },
+      "MeasureRunSummary": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "behaviour": {
+            "title": "Behaviour",
+            "type": "string"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "elicitation": {
+            "$ref": "#/components/schemas/ElicitationOut"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "scenario_set": {
+            "format": "uuid",
+            "title": "Scenario Set",
+            "type": "string"
+          },
+          "suite": {
+            "title": "Suite",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run",
+          "agent",
+          "version",
+          "behaviour",
+          "scenario_set",
+          "suite",
+          "counts",
+          "elicitation"
+        ],
+        "title": "MeasureRunSummary",
         "type": "object"
       },
       "MessageOut": {
@@ -1531,6 +2177,103 @@
         "title": "Role",
         "type": "string"
       },
+      "RolloutOut": {
+        "properties": {
+          "content_notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Content Notes",
+            "type": "array"
+          },
+          "epoch": {
+            "title": "Epoch",
+            "type": "integer"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "sample_index": {
+            "title": "Sample Index",
+            "type": "integer"
+          },
+          "scenario": {
+            "title": "Scenario",
+            "type": "string"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "score_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Id"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          },
+          "variation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variation"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "transcript_id",
+          "run_id",
+          "version",
+          "sample_index",
+          "epoch",
+          "scenario",
+          "variation",
+          "score",
+          "score_id",
+          "summary",
+          "content_notes"
+        ],
+        "title": "RolloutOut",
+        "type": "object"
+      },
       "RunOut": {
         "properties": {
           "adapter_mode": {
@@ -1543,6 +2286,18 @@
               }
             ],
             "title": "Adapter Mode"
+          },
+          "behaviour_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Behaviour Id"
           },
           "config": {
             "additionalProperties": true,
@@ -1642,6 +2397,18 @@
             ],
             "title": "Prompt Sha"
           },
+          "route": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "How the agent was reached, for Measure runs.",
+            "title": "Route"
+          },
           "seed_hash": {
             "anyOf": [
               {
@@ -1707,6 +2474,8 @@
           "model_ids",
           "engine_versions",
           "adapter_mode",
+          "route",
+          "behaviour_id",
           "token_budget",
           "tokens_used",
           "cost_usd",
@@ -1782,6 +2551,214 @@
           "error"
         ],
         "title": "SampleOut",
+        "type": "object"
+      },
+      "ScenarioGenerate": {
+        "properties": {
+          "token_budget": {
+            "anyOf": [
+              {
+                "minimum": 10000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token Budget"
+          }
+        },
+        "title": "ScenarioGenerate",
+        "type": "object"
+      },
+      "ScenarioSetOut": {
+        "properties": {
+          "behaviour": {
+            "title": "Behaviour",
+            "type": "string"
+          },
+          "dimensions": {
+            "items": {
+              "$ref": "#/components/schemas/GeneratedDimensionOut"
+            },
+            "title": "Dimensions",
+            "type": "array"
+          },
+          "generation": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "scenarios": {
+            "items": {
+              "$ref": "#/components/schemas/GeneratedScenarioOut"
+            },
+            "title": "Scenarios",
+            "type": "array"
+          },
+          "scientific_motivation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scientific Motivation"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/ScenarioSetSummary"
+          },
+          "understanding": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Understanding"
+          }
+        },
+        "required": [
+          "summary",
+          "behaviour",
+          "understanding",
+          "scientific_motivation",
+          "scenarios",
+          "dimensions",
+          "generation"
+        ],
+        "title": "ScenarioSetOut",
+        "type": "object"
+      },
+      "ScenarioSetSummary": {
+        "properties": {
+          "behaviour_id": {
+            "format": "uuid",
+            "title": "Behaviour Id",
+            "type": "string"
+          },
+          "behaviour_seed_hash": {
+            "title": "Behaviour Seed Hash",
+            "type": "string"
+          },
+          "content_hash": {
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "current": {
+            "description": "Generated from the behaviour as it is in git now.",
+            "title": "Current",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "presence_dimension": {
+            "title": "Presence Dimension",
+            "type": "string"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "scenario_count": {
+            "title": "Scenario Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "run_id",
+          "behaviour_id",
+          "created_at",
+          "scenario_count",
+          "presence_dimension",
+          "content_hash",
+          "behaviour_seed_hash",
+          "current",
+          "model"
+        ],
+        "title": "ScenarioSetSummary",
+        "type": "object"
+      },
+      "ScenarioTallyOut": {
+        "properties": {
+          "elicited": {
+            "description": "Scored rollouts at or above the threshold.",
+            "title": "Elicited",
+            "type": "integer"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          },
+          "rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate"
+          },
+          "rollouts": {
+            "description": "Rollouts the judge scored.",
+            "title": "Rollouts",
+            "type": "integer"
+          },
+          "scenario": {
+            "title": "Scenario",
+            "type": "string"
+          },
+          "unscored": {
+            "title": "Unscored",
+            "type": "integer"
+          },
+          "variation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variation"
+          }
+        },
+        "required": [
+          "rollouts",
+          "elicited",
+          "unscored",
+          "rate",
+          "mean_score",
+          "scenario",
+          "variation"
+        ],
+        "title": "ScenarioTallyOut",
         "type": "object"
       },
       "ScoreOut": {
@@ -2081,6 +3058,55 @@
           "finished_at"
         ],
         "title": "SystemCheckOut",
+        "type": "object"
+      },
+      "TallyOut": {
+        "properties": {
+          "elicited": {
+            "description": "Scored rollouts at or above the threshold.",
+            "title": "Elicited",
+            "type": "integer"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          },
+          "rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate"
+          },
+          "rollouts": {
+            "description": "Rollouts the judge scored.",
+            "title": "Rollouts",
+            "type": "integer"
+          },
+          "unscored": {
+            "title": "Unscored",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rollouts",
+          "elicited",
+          "unscored",
+          "rate",
+          "mean_score"
+        ],
+        "title": "TallyOut",
         "type": "object"
       },
       "ToolOut": {
@@ -3247,6 +4273,428 @@
         "summary": "Update Me",
         "tags": [
           "me"
+        ]
+      }
+    },
+    "/api/measure/behaviours": {
+      "get": {
+        "operationId": "list_behaviours",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BehaviourSummary"
+                  },
+                  "title": "Response List Behaviours",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Behaviours",
+        "tags": [
+          "measure"
+        ]
+      }
+    },
+    "/api/measure/behaviours/{key}": {
+      "get": {
+        "operationId": "read_behaviour",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scenario_set",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scenario Set"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BehaviourDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Behaviour",
+        "tags": [
+          "measure"
+        ]
+      }
+    },
+    "/api/measure/behaviours/{key}/scenario-sets": {
+      "post": {
+        "description": "Run Bloom's understanding and ideation for the behaviour as it is in git now.",
+        "operationId": "generate_scenario_set",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScenarioGenerate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Generate Scenario Set",
+        "tags": [
+          "measure"
+        ]
+      }
+    },
+    "/api/measure/runs": {
+      "get": {
+        "operationId": "list_measure_runs",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "behaviour",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Behaviour"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MeasureRunSummary"
+                  },
+                  "title": "Response List Measure Runs",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Measure Runs",
+        "tags": [
+          "measure"
+        ]
+      },
+      "post": {
+        "description": "One run per prompt version, all against the same scenarios: a suite.",
+        "operationId": "launch_measure",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeasureLaunch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RunOut"
+                  },
+                  "title": "Response Launch Measure",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Launch Measure",
+        "tags": [
+          "measure"
+        ]
+      }
+    },
+    "/api/measure/runs/{run_id}": {
+      "get": {
+        "operationId": "read_measure_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeasureRunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Measure Run",
+        "tags": [
+          "measure"
+        ]
+      }
+    },
+    "/api/measure/runs/{run_id}/cancel": {
+      "post": {
+        "operationId": "cancel_measure_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Measure Run",
+        "tags": [
+          "measure"
+        ]
+      }
+    },
+    "/api/measure/runs/{run_id}/events": {
+      "get": {
+        "description": "Sample counts as they change, for suites and scenario generation alike.",
+        "operationId": "stream_measure_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "itemSchema": {
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    },
+                    "event": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "retry": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stream Measure Run",
+        "tags": [
+          "measure"
+        ]
+      }
+    },
+    "/api/measure/scenario-sets/{scenario_set_id}": {
+      "get": {
+        "operationId": "read_scenario_set",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "scenario_set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Scenario Set Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioSetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Scenario Set",
+        "tags": [
+          "measure"
         ]
       }
     },

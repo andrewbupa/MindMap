@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, ExportScoresData, ExportScoresErrors, ExportScoresResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, ListAgentsData, ListAgentsResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, RunProvenanceData, RunProvenanceErrors, RunProvenanceResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
+import type { CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, CancelMeasureRunData, CancelMeasureRunErrors, CancelMeasureRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, ExportScoresData, ExportScoresErrors, ExportScoresResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, GenerateScenarioSetData, GenerateScenarioSetErrors, GenerateScenarioSetResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, LaunchMeasureData, LaunchMeasureErrors, LaunchMeasureResponses, ListAgentsData, ListAgentsResponses, ListBehavioursData, ListBehavioursResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListMeasureRunsData, ListMeasureRunsErrors, ListMeasureRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadBehaviourData, ReadBehaviourErrors, ReadBehaviourResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadMeasureRunData, ReadMeasureRunErrors, ReadMeasureRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadScenarioSetData, ReadScenarioSetErrors, ReadScenarioSetResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, RunProvenanceData, RunProvenanceErrors, RunProvenanceResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, StreamMeasureRunData, StreamMeasureRunErrors, StreamMeasureRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -136,6 +136,71 @@ export const updateMe = <ThrowOnError extends boolean = false>(options: Options<
         ...options.headers
     }
 });
+
+/**
+ * List Behaviours
+ */
+export const listBehaviours = <ThrowOnError extends boolean = false>(options?: Options<ListBehavioursData, ThrowOnError>): RequestResult<ListBehavioursResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListBehavioursResponses, unknown, ThrowOnError>({ url: '/api/measure/behaviours', ...options });
+
+/**
+ * Read Behaviour
+ */
+export const readBehaviour = <ThrowOnError extends boolean = false>(options: Options<ReadBehaviourData, ThrowOnError>): RequestResult<ReadBehaviourResponses, ReadBehaviourErrors, ThrowOnError> => (options.client ?? client).get<ReadBehaviourResponses, ReadBehaviourErrors, ThrowOnError>({ url: '/api/measure/behaviours/{key}', ...options });
+
+/**
+ * Generate Scenario Set
+ *
+ * Run Bloom's understanding and ideation for the behaviour as it is in git now.
+ */
+export const generateScenarioSet = <ThrowOnError extends boolean = false>(options: Options<GenerateScenarioSetData, ThrowOnError>): RequestResult<GenerateScenarioSetResponses, GenerateScenarioSetErrors, ThrowOnError> => (options.client ?? client).post<GenerateScenarioSetResponses, GenerateScenarioSetErrors, ThrowOnError>({
+    url: '/api/measure/behaviours/{key}/scenario-sets',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Measure Runs
+ */
+export const listMeasureRuns = <ThrowOnError extends boolean = false>(options?: Options<ListMeasureRunsData, ThrowOnError>): RequestResult<ListMeasureRunsResponses, ListMeasureRunsErrors, ThrowOnError> => (options?.client ?? client).get<ListMeasureRunsResponses, ListMeasureRunsErrors, ThrowOnError>({ url: '/api/measure/runs', ...options });
+
+/**
+ * Launch Measure
+ *
+ * One run per prompt version, all against the same scenarios: a suite.
+ */
+export const launchMeasure = <ThrowOnError extends boolean = false>(options: Options<LaunchMeasureData, ThrowOnError>): RequestResult<LaunchMeasureResponses, LaunchMeasureErrors, ThrowOnError> => (options.client ?? client).post<LaunchMeasureResponses, LaunchMeasureErrors, ThrowOnError>({
+    url: '/api/measure/runs',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Measure Run
+ */
+export const readMeasureRun = <ThrowOnError extends boolean = false>(options: Options<ReadMeasureRunData, ThrowOnError>): RequestResult<ReadMeasureRunResponses, ReadMeasureRunErrors, ThrowOnError> => (options.client ?? client).get<ReadMeasureRunResponses, ReadMeasureRunErrors, ThrowOnError>({ url: '/api/measure/runs/{run_id}', ...options });
+
+/**
+ * Cancel Measure Run
+ */
+export const cancelMeasureRun = <ThrowOnError extends boolean = false>(options: Options<CancelMeasureRunData, ThrowOnError>): RequestResult<CancelMeasureRunResponses, CancelMeasureRunErrors, ThrowOnError> => (options.client ?? client).post<CancelMeasureRunResponses, CancelMeasureRunErrors, ThrowOnError>({ url: '/api/measure/runs/{run_id}/cancel', ...options });
+
+/**
+ * Stream Measure Run
+ *
+ * Sample counts as they change, for suites and scenario generation alike.
+ */
+export const streamMeasureRun = <ThrowOnError extends boolean = false>(options: Options<StreamMeasureRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamMeasureRunResponses>> => (options.client ?? client).sse.get<StreamMeasureRunResponses, StreamMeasureRunErrors, ThrowOnError>({ url: '/api/measure/runs/{run_id}/events', ...options });
+
+/**
+ * Read Scenario Set
+ */
+export const readScenarioSet = <ThrowOnError extends boolean = false>(options: Options<ReadScenarioSetData, ThrowOnError>): RequestResult<ReadScenarioSetResponses, ReadScenarioSetErrors, ThrowOnError> => (options.client ?? client).get<ReadScenarioSetResponses, ReadScenarioSetErrors, ThrowOnError>({ url: '/api/measure/scenario-sets/{scenario_set_id}', ...options });
 
 /**
  * Model Roles

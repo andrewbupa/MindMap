@@ -44,6 +44,10 @@
   --color-danger: #9b2c2c;
   --color-danger-bg: #f7e3e1;
 
+  /* Charts. One series uses chart-1; it passes the palette checks on each surface. */
+  --color-chart-1: #2a78d6;
+  --color-chart-grid: #e2ded6;
+
   /* Lens label families. Saturation carries intensity, so keep hues distinct. */
   --family-care: #b4537a;
   --family-collaboration: #3a7d6b;
@@ -69,5 +73,7 @@
     --color-warn-bg: #3a2c15;
     --color-danger: #f0958c;
     --color-danger-bg: #3d1f1c;
+    --color-chart-1: #3987e5;
+    --color-chart-grid: #3a3934;
   }
 }
