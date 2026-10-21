@@ -1,0 +1,15 @@
+# Local front door, standing in for App Platform's ingress: /api goes to the API,
+# /bench to the mock identity provider, everything else to the web app.
+# Caddy forwards the original Host header, so the identity provider's issuer is
+# http://bench.localhost:3000/bench for the browser and the API alike.
+:3000 {
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+	handle /bench/* {
+		reverse_proxy mock-oidc:8080
+	}
+	handle {
+		reverse_proxy web:3000
+	}
+}

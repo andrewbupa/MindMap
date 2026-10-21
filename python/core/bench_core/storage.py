@@ -57,17 +57,12 @@ class Storage:
         self.bucket = settings.spaces_bucket
         self.region = settings.spaces_region
         self.signed_url_seconds = settings.signed_url_seconds
-        self._client: S3Client = boto3.client(
-            "s3",
-            endpoint_url=settings.spaces_endpoint,
-            region_name=settings.spaces_region,
-            aws_access_key_id=settings.spaces_key.get_secret_value(),
-            aws_secret_access_key=settings.spaces_secret.get_secret_value(),
-            config=Config(
-                signature_version="s3v4",
-                s3={"addressing_style": "virtual" if _is_spaces(settings) else "path"},
-                retries={"max_attempts": 5, "mode": "standard"},
-            ),
+        self._client = _client(settings, settings.spaces_endpoint)
+        # Signed URLs are opened by browsers, which may reach storage by another
+        # name than our containers do (locally, localhost rather than s3).
+        public = settings.spaces_public_endpoint or settings.spaces_endpoint
+        self._signer = (
+            self._client if public == settings.spaces_endpoint else _client(settings, public)
         )
 
     def put_bytes(self, key: str, data: bytes, content_type: str) -> StoredObject:
@@ -118,7 +113,7 @@ class Storage:
         params: dict[str, str] = {"Bucket": self.bucket, "Key": key}
         if filename:
             params["ResponseContentDisposition"] = f'attachment; filename="{filename}"'
-        return self._client.generate_presigned_url(
+        return self._signer.generate_presigned_url(
             "get_object", Params=params, ExpiresIn=self.signed_url_seconds
         )
 
@@ -145,8 +140,20 @@ class Storage:
         return await asyncio.to_thread(self.put_file, key, path, content_type)
 
 
-def _is_spaces(settings: Settings) -> bool:
-    return settings.spaces_endpoint.rstrip("/").endswith("digitaloceanspaces.com")
+def _client(settings: Settings, endpoint: str) -> S3Client:
+    spaces = endpoint.rstrip("/").endswith("digitaloceanspaces.com")
+    return boto3.client(
+        "s3",
+        endpoint_url=endpoint,
+        region_name=settings.spaces_region,
+        aws_access_key_id=settings.spaces_key.get_secret_value(),
+        aws_secret_access_key=settings.spaces_secret.get_secret_value(),
+        config=Config(
+            signature_version="s3v4",
+            s3={"addressing_style": "virtual" if spaces else "path"},
+            retries={"max_attempts": 5, "mode": "standard"},
+        ),
+    )
 
 
 @lru_cache

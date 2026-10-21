@@ -1,0 +1,164 @@
+# DigitalOcean App Platform spec for Bench. Deploys on every push to main.
+#
+# Validate without a token:   make spec   (doctl apps spec validate --schema-only)
+# Create the app once:        doctl apps create --spec .do/app.yaml
+# Apply later changes:        doctl apps update <app-id> --spec .do/app.yaml
+#
+# Secrets (type: SECRET) carry no value here. Set them once in the control panel;
+# App Platform encrypts them. To keep them across `doctl apps update`, copy the
+# encrypted EV[...] values from `doctl apps spec get <app-id>` into this file.
+# Never commit a plaintext secret. See docs/RUNBOOK.md.
+name: bench
+# Sydney: App Platform region syd, with Postgres and Spaces in syd1.
+region: syd
+# Server-sent events must not be buffered or cached at the edge.
+disable_edge_cache: true
+disable_email_obfuscation: true
+
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+
+envs:
+  - key: BENCH_ENVIRONMENT
+    value: production
+    scope: RUN_TIME
+  - key: BENCH_PUBLIC_URL
+    value: ${APP_URL}
+    scope: RUN_TIME
+  - key: BENCH_SPACES_ENDPOINT
+    value: https://syd1.digitaloceanspaces.com
+    scope: RUN_TIME
+  - key: BENCH_SPACES_REGION
+    value: syd1
+    scope: RUN_TIME
+  - key: BENCH_SPACES_BUCKET
+    value: bench-logs
+    scope: RUN_TIME
+  - key: BENCH_SPACES_KEY
+    type: SECRET
+    scope: RUN_TIME
+  - key: BENCH_SPACES_SECRET
+    type: SECRET
+    scope: RUN_TIME
+  # Only App Platform's load balancer can reach the API, so Uvicorn may trust
+  # its X-Forwarded-* headers.
+  - key: FORWARDED_ALLOW_IPS
+    value: "*"
+    scope: RUN_TIME
+
+ingress:
+  rules:
+    - match:
+        path:
+          prefix: /api
+      component:
+        name: api
+        preserve_path_prefix: true
+    - match:
+        path:
+          prefix: /
+      component:
+        name: web
+
+services:
+  - name: web
+    github:
+      repo: andrewbupa/MindMap
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    dockerfile_path: web/Dockerfile
+    http_port: 3000
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+    health_check:
+      http_path: /healthz
+    envs:
+      - key: BENCH_API_INTERNAL_URL
+        value: ${api.PRIVATE_URL}
+        scope: RUN_TIME
+
+  - name: api
+    github:
+      repo: andrewbupa/MindMap
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    dockerfile_path: python/Dockerfile
+    run_command: uvicorn bench_api.main:app --host 0.0.0.0 --port 8000
+    http_port: 8000
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+    health_check:
+      http_path: /api/health/ready
+    liveness_health_check:
+      http_path: /api/health
+    termination:
+      drain_seconds: 30
+      grace_period_seconds: 100
+    envs: &python_envs
+      - key: BENCH_GIT_COMMIT
+        value: ${_self.COMMIT_HASH}
+        scope: RUN_TIME
+      - key: BENCH_DATABASE_URL
+        value: ${db.DATABASE_URL}
+        scope: RUN_TIME
+      - key: BENCH_DATABASE_CA_CERT
+        value: ${db.CA_CERT}
+        scope: RUN_TIME
+      - key: BENCH_OIDC_METADATA_URL
+        value: https://login.example.invalid/.well-known/openid-configuration
+        scope: RUN_TIME
+      - key: BENCH_OIDC_CLIENT_ID
+        value: set-me
+        scope: RUN_TIME
+      - key: BENCH_OIDC_CLIENT_SECRET
+        type: SECRET
+        scope: RUN_TIME
+      - key: BENCH_OIDC_ROLE_MAP
+        value: ""
+        scope: RUN_TIME
+      - key: BENCH_BOOTSTRAP_ADMINS
+        value: ""
+        scope: RUN_TIME
+      - key: BENCH_SESSION_SECRET
+        type: SECRET
+        scope: RUN_TIME
+
+workers:
+  - name: worker
+    github:
+      repo: andrewbupa/MindMap
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    dockerfile_path: python/Dockerfile
+    run_command: procrastinate --app=bench_worker.app.app worker
+    instance_size_slug: apps-s-1vcpu-2gb
+    instance_count: 1
+    # Jobs get 100 s to finish after SIGTERM (bench_core.queue.WORKER_DEFAULTS).
+    termination:
+      grace_period_seconds: 120
+    envs: *python_envs
+
+jobs:
+  - name: migrate
+    kind: PRE_DEPLOY
+    github:
+      repo: andrewbupa/MindMap
+      branch: main
+    source_dir: /
+    dockerfile_path: python/Dockerfile
+    run_command: alembic upgrade head
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    envs: *python_envs
+
+databases:
+  - name: db
+    engine: PG
+    version: "17"
+    production: true
+    cluster_name: bench-pg
+    db_name: bench
+    db_user: bench

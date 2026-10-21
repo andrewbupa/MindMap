@@ -1,0 +1,119 @@
+# Local development: everything Bench needs, behind one front door at
+# http://bench.localhost:3000 (browsers resolve *.localhost to this machine).
+#
+#   make dev        build and start everything
+#   make dev-down   stop, keeping data
+name: bench
+
+x-python: &python
+  build:
+    context: .
+    dockerfile: python/Dockerfile
+  image: bench-python:dev
+  env_file:
+    - path: .env.compose
+      required: false
+  environment: &python-env
+    BENCH_ENVIRONMENT: local
+    BENCH_GIT_COMMIT: ${BENCH_GIT_COMMIT:-unknown}
+    BENCH_PUBLIC_URL: http://bench.localhost:3000
+    BENCH_DATABASE_URL: postgresql://bench:bench@postgres:5432/bench
+    BENCH_SPACES_ENDPOINT: http://s3:8333
+    BENCH_SPACES_PUBLIC_ENDPOINT: http://localhost:8333
+    BENCH_SPACES_REGION: syd1
+    BENCH_SPACES_BUCKET: bench-logs
+    BENCH_SPACES_KEY: bench
+    BENCH_SPACES_SECRET: bench-secret
+    BENCH_OIDC_METADATA_URL: http://bench.localhost:3000/bench/.well-known/openid-configuration
+    BENCH_OIDC_CLIENT_ID: bench-local
+    BENCH_OIDC_CLIENT_SECRET: bench-local-secret
+    BENCH_BOOTSTRAP_ADMINS: admin@example.test
+    BENCH_SESSION_SECRET: local-only-session-secret-change-me
+  depends_on:
+    postgres:
+      condition: service_healthy
+    s3:
+      condition: service_started
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: bench
+      POSTGRES_PASSWORD: bench
+      POSTGRES_DB: bench
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "bench"]
+      interval: 2s
+      retries: 30
+
+  # MinIO's community images are retired (see docs/DECISIONS.md); SeaweedFS
+  # serves the S3 API locally instead. With no identities configured it accepts
+  # any credentials.
+  s3:
+    image: chrislusf/seaweedfs:4.48
+    command: server -s3 -s3.port=8333 -dir=/data -volume.max=0 -master.volumeSizeLimitMB=256
+    ports:
+      - "8333:8333"
+    volumes:
+      - s3data:/data
+
+  mock-oidc:
+    image: ghcr.io/navikt/mock-oauth2-server:6.1.2
+    environment:
+      SERVER_PORT: "8080"
+      JSON_CONFIG_PATH: /config/mock-oidc.json
+    volumes:
+      - ./infra/dev/mock-oidc.json:/config/mock-oidc.json:ro
+
+  migrate:
+    <<: *python
+    command: ["sh", "-c", "alembic upgrade head && python -m bench_worker.cli ensure-bucket"]
+    restart: "no"
+
+  api:
+    <<: *python
+    command: ["uvicorn", "bench_api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  worker:
+    <<: *python
+    command: ["procrastinate", "--app=bench_worker.app.app", "worker"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    image: bench-web:dev
+    environment:
+      BENCH_API_INTERNAL_URL: http://api:8000
+    depends_on:
+      - api
+
+  front:
+    image: caddy:2.11.7
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./infra/dev/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        aliases:
+          - bench.localhost
+    depends_on:
+      - web
+      - api
+      - mock-oidc
+
+volumes:
+  pgdata:
+  s3data:

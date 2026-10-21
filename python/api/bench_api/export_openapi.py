@@ -1,6 +1,6 @@
 """Write the API's OpenAPI schema to a file, for generating the web client.
 
-    uv run python -m bench_api.export_openapi ../web/lib/api/openapi.json
+uv run python -m bench_api.export_openapi ../web/lib/api/openapi.json
 """
 
 from __future__ import annotations

@@ -24,3 +24,12 @@ def test_round_trip_and_signed_url(s3_server: str) -> None:
     assert "checks/one.json" in storage.list_keys("checks/")
     url = storage.signed_url("checks/one.json", filename="one.json")
     assert "X-Amz-Signature=" in url and "X-Amz-Expires=300" in url
+
+
+def test_signed_urls_can_use_a_public_endpoint(s3_server: str) -> None:
+    from bench_core.config import Settings
+    from bench_core.storage import Storage
+
+    settings = Settings(spaces_endpoint=s3_server, spaces_public_endpoint="http://localhost:8333")
+    url = Storage(settings).signed_url("checks/one.json")
+    assert url.startswith("http://localhost:8333/bench-test/checks/one.json?")

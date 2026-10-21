@@ -42,8 +42,10 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://bench:bench@localhost:5432/bench"
     database_ca_cert: SecretStr | None = None
 
-    # Spaces, or any S3-compatible store (MinIO locally).
+    # Spaces, or any S3-compatible store (SeaweedFS in docker-compose, moto in tests).
     spaces_endpoint: str = "http://localhost:9000"
+    # Where browsers reach storage, if not at spaces_endpoint. Used only for signed URLs.
+    spaces_public_endpoint: str | None = None
     spaces_region: str = "syd1"
     spaces_bucket: str = "bench-logs"
     spaces_key: SecretStr = SecretStr("bench")
