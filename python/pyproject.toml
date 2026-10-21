@@ -1,0 +1,70 @@
+[project]
+name = "bench-workspace"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["core", "api", "worker"]
+
+[tool.uv.sources]
+bench-core = { workspace = true }
+bench-api = { workspace = true }
+bench-worker = { workspace = true }
+
+[dependency-groups]
+dev = [
+  "bench-core",
+  "bench-api",
+  "bench-worker",
+  "ruff>=0.17",
+  "mypy>=2.4",
+  "pytest>=8.4",
+  "pytest-asyncio>=1.2",
+  "moto[server]>=5.1",
+  "boto3-stubs[s3]>=1.43",
+  "types-pyyaml>=6.0",
+  "asgi-lifespan>=2.1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "ASYNC", "S", "RUF"]
+ignore = ["S101", "S311"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["bench_core", "bench_api", "bench_worker"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S105", "S106"]
+"conftest.py" = ["S105", "S106"]
+# Migrations build DDL from constants defined in the same file.
+"**/migrations/versions/*" = ["E501", "S608"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["bench_core.*"]
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["authlib.*", "moto.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["core/tests", "api/tests", "worker/tests"]
+addopts = "--import-mode=importlib"
