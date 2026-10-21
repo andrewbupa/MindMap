@@ -9,12 +9,24 @@ from __future__ import annotations
 from typing import Any
 
 import procrastinate
+from procrastinate.app import WorkerOptions
 
 from bench_core.config import get_settings
 from bench_core.db import libpq_url
 
 DEFAULT_QUEUE = "default"
 RUNS_QUEUE = "runs"
+
+# Every deploy restarts the worker. App Platform sends SIGTERM and waits for the
+# component's termination grace period (120 s in .do/app.yaml) before killing it,
+# so running jobs get 100 s to finish. Anything killed mid-flight is left "doing"
+# with a stale heartbeat and is re-queued by the retry_stalled_jobs task.
+WORKER_DEFAULTS: WorkerOptions = {
+    "shutdown_graceful_timeout": 100,
+    "update_heartbeat_interval": 10,
+    "stalled_worker_timeout": 30,
+    "delete_jobs": "successful",
+}
 
 
 def build_app(import_paths: list[str] | None = None) -> procrastinate.App:
@@ -26,6 +38,7 @@ def build_app(import_paths: list[str] | None = None) -> procrastinate.App:
             max_size=5,
         ),
         import_paths=import_paths or [],
+        worker_defaults=WORKER_DEFAULTS,
     )
 
 
