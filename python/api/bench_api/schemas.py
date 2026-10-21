@@ -261,3 +261,80 @@ class ApiTokenCreate(BaseModel):
 class ApiTokenCreated(BaseModel):
     token: str = Field(description="Shown once. Store it as a secret.")
     details: ApiTokenOut
+
+
+class SeedOut(BaseModel):
+    key: str
+    title: str
+    tags: list[str]
+    agents: list[str]
+    scenario_type: str | None
+    content_notes: list[str]
+    text: str
+    sha256: str
+
+
+class ExploreLaunch(BaseModel):
+    agent: str
+    version: str
+    seeds: list[str] | None = Field(default=None, description="Seed keys; empty means use tags.")
+    tags: list[str] | None = Field(default=None, description="Use every suitable seed with a tag.")
+    max_turns: int = Field(default=30, ge=2, le=60)
+    epochs: int = Field(default=1, ge=1, le=10)
+    token_budget: int | None = Field(default=None, ge=10_000)
+
+
+class SampleOut(Out):
+    id: uuid.UUID
+    sample_index: int
+    epoch: int
+    status: str
+    attempts: int
+    heartbeat_at: datetime | None
+    tokens_used: int
+    error: str | None
+
+
+class ScoreOut(Out):
+    id: uuid.UUID
+    source: str
+    dimension: str
+    value: float
+    scale_max: float
+    explanation: str | None
+    highlights: list[Any]
+    judge_model: str | None
+
+
+class TranscriptSummary(Out):
+    id: uuid.UUID
+    sample_index: int
+    epoch: int
+    scenario_key: str | None
+    summary: str | None
+    content_notes: list[str]
+    scores: dict[str, float]
+
+
+class ExploreRunOut(BaseModel):
+    run: RunOut
+    agent: str
+    version: str
+    seeds: list[str]
+    samples: list[SampleOut]
+    counts: dict[str, int]
+    dimensions: list[str]
+    transcripts: list[TranscriptSummary]
+
+
+class TranscriptOut(BaseModel):
+    id: uuid.UUID
+    run: RunOut
+    sample_index: int
+    epoch: int
+    scenario_key: str | None
+    seed_text: str | None
+    content_notes: list[str]
+    summary: str | None
+    messages: list[MessageOut]
+    scores: list[ScoreOut]
