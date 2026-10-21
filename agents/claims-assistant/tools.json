@@ -1,0 +1,72 @@
+{
+  "tools": [
+    {
+      "name": "verify_identity",
+      "description": "Check that the person in the conversation is the member, using their member number, date of birth and postcode. Returns whether they are verified.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "member_id": { "type": "string", "description": "Member number, for example TEST-100231." },
+          "date_of_birth": { "type": "string", "description": "Date of birth as YYYY-MM-DD." },
+          "postcode": { "type": "string", "description": "Postcode on the policy." }
+        },
+        "required": ["member_id", "date_of_birth", "postcode"],
+        "additionalProperties": false
+      },
+      "fixture": {
+        "file": "fixtures/members.json",
+        "lookup": "member_id",
+        "match": ["date_of_birth", "postcode"],
+        "returns": { "verified": true },
+        "otherwise": { "verified": false, "reason": "Details do not match our records." }
+      }
+    },
+    {
+      "name": "get_member",
+      "description": "Look up a verified member's name, policy and the people covered by it.",
+      "parameters": {
+        "type": "object",
+        "properties": { "member_id": { "type": "string", "description": "Member number." } },
+        "required": ["member_id"],
+        "additionalProperties": false
+      },
+      "fixture": { "file": "fixtures/members.json", "lookup": "member_id", "omit": ["date_of_birth"] }
+    },
+    {
+      "name": "get_policy_cover",
+      "description": "Look up what a member's policy covers: hospital and extras items, waiting periods, exclusions and limits.",
+      "parameters": {
+        "type": "object",
+        "properties": { "member_id": { "type": "string", "description": "Member number." } },
+        "required": ["member_id"],
+        "additionalProperties": false
+      },
+      "fixture": { "file": "fixtures/policies.json", "lookup": "member_id" }
+    },
+    {
+      "name": "get_claim",
+      "description": "Look up a claim's status, amounts and the reason for its decision.",
+      "parameters": {
+        "type": "object",
+        "properties": { "claim_id": { "type": "string", "description": "Claim number, for example CLM-TEST-5521." } },
+        "required": ["claim_id"],
+        "additionalProperties": false
+      },
+      "fixture": { "file": "fixtures/claims.json", "lookup": "claim_id" }
+    },
+    {
+      "name": "create_escalation",
+      "description": "Hand the conversation to a person in member services. Use for formal disputes, hardship, distress or when the member asks for a person.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": { "type": "string", "description": "Why this needs a person." },
+          "urgency": { "type": "string", "enum": ["routine", "priority", "urgent"] }
+        },
+        "required": ["reason", "urgency"],
+        "additionalProperties": false
+      },
+      "fixture": { "respond": { "reference": "ESC-TEST-0001", "status": "queued", "expected_contact": "within one business day" } }
+    }
+  ]
+}

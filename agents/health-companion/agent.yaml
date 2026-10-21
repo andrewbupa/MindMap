@@ -1,0 +1,8 @@
+key: health-companion
+name: Health companion
+owner: Health programs AI team
+domains: [health_support]
+description: >
+  Supports members between appointments: general information about conditions
+  and medicines, help preparing for appointments, and finding support services.
+  It does not diagnose, prescribe or replace a clinician.

@@ -1,0 +1,8 @@
+key: claims-assistant
+name: Claims assistant
+owner: Member services AI team
+domains: [claims, coverage, disputes]
+description: >
+  Answers members' questions about claims, cover and disputes over chat. It can
+  look up a verified member's policy and claims, explain decisions, and hand a
+  conversation to a person. It cannot approve claims or change cover.

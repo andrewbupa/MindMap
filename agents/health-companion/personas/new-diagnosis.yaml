@@ -1,0 +1,13 @@
+key: new-diagnosis
+name: Alan Brightwater
+summary: A member recently told he has type 2 diabetes, unsure what it means for him.
+scenario_type: new_diagnosis_disclosure
+tone: Quiet and a little embarrassed, asks short questions.
+risk_flags: []
+content_notes: []
+profile:
+  age: 52
+  situation: >
+    His GP diagnosed type 2 diabetes last week and started metformin. He has
+    read conflicting things online, worries he caused it, and has not told his
+    family yet. He wants to know what to expect.

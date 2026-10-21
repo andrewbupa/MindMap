@@ -52,6 +52,7 @@ def s3_server() -> Iterator[str]:
 
 
 TABLES_TO_CLEAR = (
+    "api_token",
     "review",
     "gold_label",
     "gold_item",

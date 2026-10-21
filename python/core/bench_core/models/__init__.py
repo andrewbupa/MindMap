@@ -1,5 +1,5 @@
 from bench_core.models.base import Base
-from bench_core.models.identity import AuditEvent, Role, User, UserSession
+from bench_core.models.identity import ApiToken, AuditEvent, Role, User, UserSession
 from bench_core.models.lens import (
     Annotation,
     DroppedFinding,
@@ -36,6 +36,7 @@ __all__ = [
     "Agent",
     "Agreement",
     "Annotation",
+    "ApiToken",
     "AuditEvent",
     "Base",
     "Behaviour",

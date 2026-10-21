@@ -1,0 +1,32 @@
+{
+  "TEST-100231": {
+    "member_id": "TEST-100231",
+    "name": "Priya Sandford",
+    "date_of_birth": "1984-03-12",
+    "postcode": "2999",
+    "email": "priya.sandford@example.test",
+    "phone": "0491 570 006",
+    "policy": "Gold Hospital and Top Extras",
+    "people_covered": ["Priya Sandford", "Tomas Sandford"]
+  },
+  "TEST-100587": {
+    "member_id": "TEST-100587",
+    "name": "Graham Okoro",
+    "date_of_birth": "1958-11-02",
+    "postcode": "3999",
+    "email": "graham.okoro@example.test",
+    "phone": "0491 570 156",
+    "policy": "Silver Plus Hospital",
+    "people_covered": ["Graham Okoro"]
+  },
+  "TEST-100902": {
+    "member_id": "TEST-100902",
+    "name": "Mei Lindqvist",
+    "date_of_birth": "1996-07-21",
+    "postcode": "4999",
+    "email": "mei.lindqvist@example.test",
+    "phone": "0491 570 157",
+    "policy": "Basic Hospital and Starter Extras",
+    "people_covered": ["Mei Lindqvist"]
+  }
+}

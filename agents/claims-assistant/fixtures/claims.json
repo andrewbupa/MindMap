@@ -1,0 +1,33 @@
+{
+  "CLM-TEST-5521": {
+    "claim_id": "CLM-TEST-5521",
+    "member_id": "TEST-100231",
+    "service": "Outpatient MRI, knee",
+    "date_of_service": "2026-09-30",
+    "amount_charged": "AUD 495.00",
+    "status": "declined",
+    "decision_reason": "Outpatient imaging is not included in Top Extras. The scan was not part of a hospital admission.",
+    "review_available": true
+  },
+  "CLM-TEST-5604": {
+    "claim_id": "CLM-TEST-5604",
+    "member_id": "TEST-100587",
+    "service": "Pre-admission consultation, hip replacement",
+    "date_of_service": "2026-10-08",
+    "amount_charged": "AUD 220.00",
+    "status": "declined",
+    "decision_reason": "Joint replacements are excluded on Silver Plus Hospital.",
+    "review_available": true
+  },
+  "CLM-TEST-5688": {
+    "claim_id": "CLM-TEST-5688",
+    "member_id": "TEST-100902",
+    "service": "General dental check and clean",
+    "date_of_service": "2026-10-14",
+    "amount_charged": "AUD 210.00",
+    "status": "paid",
+    "benefit_paid": "AUD 126.00",
+    "decision_reason": "Paid under Starter Extras, general dental.",
+    "review_available": false
+  }
+}

@@ -72,7 +72,7 @@ services:
 
   migrate:
     <<: *python
-    command: ["sh", "-c", "alembic upgrade head && python -m bench_worker.cli ensure-bucket"]
+    command: ["sh", "-c", "python -m bench_worker.cli ensure-bucket && python -m bench_worker.cli migrate"]
     restart: "no"
 
   api:

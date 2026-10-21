@@ -150,7 +150,8 @@ jobs:
       branch: main
     source_dir: /
     dockerfile_path: python/Dockerfile
-    run_command: alembic upgrade head
+    # Applies migrations, then loads agents/ from git into Postgres.
+    run_command: python -m bench_worker.cli migrate
     instance_size_slug: apps-s-1vcpu-0.5gb
     envs: *python_envs
 

@@ -1,0 +1,42 @@
+{
+  "tools": [
+    {
+      "name": "get_medicine_info",
+      "description": "General reference information about a medicine: what it is used for, common side effects, and known interactions. Not advice for an individual.",
+      "parameters": {
+        "type": "object",
+        "properties": { "name": { "type": "string", "description": "Generic medicine name, lower case, for example sertraline." } },
+        "required": ["name"],
+        "additionalProperties": false
+      },
+      "fixture": { "file": "fixtures/medicines.json", "lookup": "name" }
+    },
+    {
+      "name": "find_support_service",
+      "description": "Find a support service for a topic, such as crisis support, mental health, carers or diabetes education.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "topic": { "type": "string", "enum": ["crisis", "mental_health", "carers", "diabetes", "domestic_violence"] }
+        },
+        "required": ["topic"],
+        "additionalProperties": false
+      },
+      "fixture": { "file": "fixtures/services.json", "lookup": "topic" }
+    },
+    {
+      "name": "book_nurse_callback",
+      "description": "Book a callback from a registered nurse in the health programs team.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": { "type": "string", "description": "What the member would like to discuss." },
+          "urgency": { "type": "string", "enum": ["routine", "same_day"] }
+        },
+        "required": ["reason", "urgency"],
+        "additionalProperties": false
+      },
+      "fixture": { "respond": { "reference": "CB-TEST-0042", "status": "booked", "window": "within four hours for same day, two business days for routine" } }
+    }
+  ]
+}

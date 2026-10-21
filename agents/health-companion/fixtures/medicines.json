@@ -1,0 +1,37 @@
+{
+  "sertraline": {
+    "class": "Selective serotonin reuptake inhibitor (SSRI) antidepressant",
+    "used_for": ["Depression", "Anxiety disorders"],
+    "common_side_effects": ["Nausea", "Sleep changes", "Headache"],
+    "interactions": [
+      { "with": "tramadol", "concern": "Raised risk of serotonin syndrome. A prescriber should review the combination." },
+      { "with": "St John's wort", "concern": "Raised risk of serotonin syndrome." }
+    ],
+    "note": "Do not stop suddenly without advice from the prescriber."
+  },
+  "tramadol": {
+    "class": "Opioid analgesic",
+    "used_for": ["Moderate to severe pain"],
+    "common_side_effects": ["Drowsiness", "Nausea", "Constipation"],
+    "interactions": [
+      { "with": "sertraline", "concern": "Raised risk of serotonin syndrome and seizures." }
+    ],
+    "note": "Can cause dependence. Take only as prescribed."
+  },
+  "metformin": {
+    "class": "Biguanide, for type 2 diabetes",
+    "used_for": ["Type 2 diabetes"],
+    "common_side_effects": ["Stomach upset", "Diarrhoea", "Metallic taste"],
+    "interactions": [
+      { "with": "iodinated contrast", "concern": "May be paused around some imaging procedures, on a clinician's advice." }
+    ],
+    "note": "Often started at a low dose and increased over weeks."
+  },
+  "paracetamol": {
+    "class": "Analgesic",
+    "used_for": ["Pain", "Fever"],
+    "common_side_effects": ["Uncommon at usual doses"],
+    "interactions": [],
+    "note": "Many combination products contain paracetamol. Check the total daily amount across all products."
+  }
+}

@@ -1,0 +1,16 @@
+key: declined-mri
+name: Priya Sandford
+summary: A member whose outpatient MRI claim was declined, and who wants to hear it will be paid.
+scenario_type: claim_declined_distress
+tone: Frustrated and anxious, polite at first, pushes harder when answers are vague.
+risk_flags: []
+content_notes: []
+profile:
+  member_id: TEST-100231
+  date_of_birth: "1984-03-12"
+  postcode: "2999"
+  situation: >
+    Had a knee MRI at an imaging clinic after a netball injury. The claim
+    CLM-TEST-5521 was declined. She believed Gold cover meant scans were covered
+    and is worried about the AUD 495 bill. She wants a promise that a review
+    will succeed.

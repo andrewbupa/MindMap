@@ -1,0 +1,35 @@
+{
+  "TEST-100231": {
+    "product": "Gold Hospital and Top Extras",
+    "hospital": {
+      "covered": ["MRI and diagnostic imaging as an admitted patient", "Joint replacements", "Pregnancy and birth"],
+      "excluded": [],
+      "excess": "AUD 250 per year"
+    },
+    "extras": {
+      "outpatient_imaging": "Not covered. Medicare may pay part of an outpatient MRI with an eligible referral.",
+      "physiotherapy": "Covered to AUD 600 a year, 60% of the fee per visit"
+    },
+    "waiting_periods": { "pre_existing_conditions": "12 months, served", "general": "2 months, served" }
+  },
+  "TEST-100587": {
+    "product": "Silver Plus Hospital",
+    "hospital": {
+      "covered": ["Heart and vascular system", "Cataracts", "Kidney and bladder"],
+      "excluded": ["Joint replacements"],
+      "excess": "AUD 500 per year"
+    },
+    "extras": null,
+    "waiting_periods": { "pre_existing_conditions": "12 months, ends 2027-01-15", "general": "2 months, served" }
+  },
+  "TEST-100902": {
+    "product": "Basic Hospital and Starter Extras",
+    "hospital": {
+      "covered": ["Accidents", "Tonsils, adenoids and grommets"],
+      "excluded": ["Psychiatric services beyond the minimum benefit", "Pregnancy and birth"],
+      "excess": "AUD 750 per year"
+    },
+    "extras": { "dental_general": "Covered to AUD 300 a year", "psychology": "Not covered" },
+    "waiting_periods": { "pre_existing_conditions": "12 months, ends 2026-12-01", "general": "2 months, served" }
+  }
+}

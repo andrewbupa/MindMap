@@ -81,3 +81,17 @@ class AuditEvent(Base):
     target_type: Mapped[str | None] = mapped_column(String(50))
     target_id: Mapped[str | None] = mapped_column(String(100))
     detail: Mapped[dict[str, Any]] = mapped_column(default=dict, server_default="{}")
+
+
+class ApiToken(UUIDPrimaryKey, CreatedAt, Base):
+    """A bearer token for machine clients of the OpenAI-compatible endpoint.
+    Only its SHA-256 is stored; the token is shown once, when created."""
+
+    __tablename__ = "api_token"
+
+    name: Mapped[str] = mapped_column(String(200))
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    prefix: Mapped[str] = mapped_column(String(12))
+    created_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"))
+    last_used_at: Mapped[datetime | None]
+    revoked_at: Mapped[datetime | None]

@@ -12,6 +12,7 @@ dependencies = [
   "boto3>=1.43",
   "pyyaml>=6.0",
   "procrastinate>=3.10,<3.11",
+  "inspect-ai==0.3.282",
 ]
 
 [build-system]

@@ -70,10 +70,11 @@ class ToolProfile(UUIDPrimaryKey, CreatedAt, Base):
 
 
 class Persona(UUIDPrimaryKey, CreatedAt, Base):
-    """A fictional member or patient. Personas are synthetic by rule."""
+    """A fictional member or patient. Personas are synthetic by rule. A changed persona
+    is a new row with a new hash; the newest row for a key is the current one."""
 
     __tablename__ = "persona"
-    __table_args__ = (UniqueConstraint("agent_id", "key"),)
+    __table_args__ = (UniqueConstraint("agent_id", "key", "sha256"),)
 
     agent_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("agent.id"))
     key: Mapped[str] = mapped_column(String(100))

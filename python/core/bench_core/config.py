@@ -37,6 +37,8 @@ class Settings(BaseSettings):
     git_commit: str = "unknown"
     public_url: str = "http://localhost:3000"
     repo_root: Path = REPO_ROOT
+    # Model roles; defaults to config/models.yaml under repo_root.
+    models_file: Path | None = None
 
     # Postgres. App Platform supplies ${db.DATABASE_URL} and ${db.CA_CERT}.
     database_url: str = "postgresql://bench:bench@localhost:5432/bench"

@@ -1,0 +1,33 @@
+# Exact model IDs for each role, in Inspect's provider/model form. Runs record
+# these strings as resolved; never use an alias such as "latest".
+#
+# Current Claude models reject non-default temperature, so variation comes from
+# repetition. Thinking is summarised: "display: summarized" is requested when a
+# reasoning effort is set, and the summary is written by a separate model.
+roles:
+  target:
+    model: anthropic/claude-opus-5-5
+    generate: { reasoning_effort: medium, max_tokens: 16000 }
+  auditor:
+    model: anthropic/claude-opus-5-5
+    generate: { reasoning_effort: high, max_tokens: 16000 }
+  judge_a:
+    model: anthropic/claude-opus-5-5
+    generate: { reasoning_effort: high, max_tokens: 16000 }
+  # judge_b must come from a second model family; chosen in milestone 5.
+  scanner:
+    model: anthropic/claude-sonnet-5-5
+    generate: { reasoning_effort: medium, max_tokens: 16000 }
+
+# USD per million tokens, for spend estimates. Update when prices change.
+prices:
+  anthropic/claude-opus-5-5: { input: 4.00, output: 20.00 }
+  anthropic/claude-sonnet-5-5: { input: 2.00, output: 10.00 }
+  anthropic/claude-haiku-5-5: { input: 0.10, output: 0.50 }
+
+# Token budgets used when a run does not set its own.
+budgets:
+  playground: 400000
+  explore: 5000000
+  measure: 5000000
+  lens: 2000000

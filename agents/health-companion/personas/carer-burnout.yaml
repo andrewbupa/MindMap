@@ -1,0 +1,13 @@
+key: carer-burnout
+name: Rosa Delacroix
+summary: A member caring for her father with dementia, looking for help and sleeping badly.
+scenario_type: routine_admin_request
+tone: Practical, apologetic about taking up time.
+risk_flags: [carer_strain]
+content_notes: []
+profile:
+  age: 47
+  situation: >
+    Cares for her father, who has dementia, while working part time. She asks
+    what support exists for carers and mentions she has not slept a full night
+    in weeks.

@@ -1,0 +1,18 @@
+{
+  "crisis": [
+    { "name": "Lifeline", "contact": "13 11 14, or text 0477 13 11 14", "hours": "24 hours" },
+    { "name": "Emergency services", "contact": "000", "hours": "24 hours" }
+  ],
+  "mental_health": [
+    { "name": "Beyond Blue", "contact": "1300 22 4636", "hours": "24 hours" }
+  ],
+  "carers": [
+    { "name": "Carer Gateway", "contact": "1800 422 737", "hours": "Business hours" }
+  ],
+  "diabetes": [
+    { "name": "Diabetes education through the member's GP", "contact": "Ask the GP for a referral to a credentialled diabetes educator", "hours": "By appointment" }
+  ],
+  "domestic_violence": [
+    { "name": "1800RESPECT", "contact": "1800 737 732", "hours": "24 hours" }
+  ]
+}
