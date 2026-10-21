@@ -32,6 +32,7 @@ export function Provenance({ run }: { run: RunOut }) {
     else setError("The log could not be opened.");
   }
 
+  const perSample = run.kind === "explore" || run.kind === "measure";
   const log = run.log_uri ? (
     <LinkButton onClick={openLog} title="Download the Inspect .eval log">
       Inspect log
@@ -84,6 +85,30 @@ export function Provenance({ run }: { run: RunOut }) {
             </details>
           </td>
         </tr>
+        {run.seed_hash ? (
+          <tr>
+            <th scope="row">Seed hash</th>
+            <td>
+              <Mono>{run.seed_hash.slice(0, 16)}</Mono>
+              <br />
+              <span className={styles.quiet}>Over the seeds used and every judge rubric</span>
+            </td>
+          </tr>
+        ) : null}
+        {Object.keys(run.engine_versions).length ? (
+          <tr>
+            <th scope="row">Engines</th>
+            <td>
+              {Object.entries(run.engine_versions).map(([name, version]) => (
+                <div key={name}>
+                  <Mono>
+                    {name} {String(version)}
+                  </Mono>
+                </div>
+              ))}
+            </td>
+          </tr>
+        ) : null}
         <tr>
           <th scope="row">Commit</th>
           <td>
@@ -96,7 +121,12 @@ export function Provenance({ run }: { run: RunOut }) {
             {run.tokens_used.toLocaleString("en-AU")} of {run.token_budget.toLocaleString("en-AU")}
             <br />
             <span className={styles.quiet}>
-              Counted per model call{run.log_uri ? <>; each call is in the {log}</> : "."}
+              Counted per model call
+              {perSample
+                ? "; each sample's log is on its transcript page."
+                : run.log_uri
+                  ? <>; each call is in the {log}</>
+                  : "."}
             </span>
           </td>
         </tr>
@@ -112,13 +142,15 @@ export function Provenance({ run }: { run: RunOut }) {
           <th scope="row">Finished</th>
           <td>{formatWhen(run.finished_at, "Still running")}</td>
         </tr>
-        <tr>
-          <th scope="row">Transcript</th>
-          <td>
-            {log}
-            {error ? <div role="alert">{error}</div> : null}
-          </td>
-        </tr>
+        {perSample ? null : (
+          <tr>
+            <th scope="row">Transcript</th>
+            <td>
+              {log}
+              {error ? <div role="alert">{error}</div> : null}
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

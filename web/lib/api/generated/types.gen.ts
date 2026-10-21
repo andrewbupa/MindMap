@@ -844,6 +844,12 @@ export type RunOut = {
      */
     created_at: string;
     /**
+     * Engine Versions
+     */
+    engine_versions: {
+        [key: string]: unknown;
+    };
+    /**
      * Error
      */
     error: string | null;
@@ -1515,50 +1521,50 @@ export type ListDimensionsResponses = {
 
 export type ListDimensionsResponse = ListDimensionsResponses[keyof ListDimensionsResponses];
 
-export type ListRunsData = {
+export type ListExploreRunsData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/api/explore/runs';
 };
 
-export type ListRunsResponses = {
+export type ListExploreRunsResponses = {
     /**
-     * Response List Runs
+     * Response List Explore Runs
      *
      * Successful Response
      */
     200: Array<RunOut>;
 };
 
-export type ListRunsResponse = ListRunsResponses[keyof ListRunsResponses];
+export type ListExploreRunsResponse = ListExploreRunsResponses[keyof ListExploreRunsResponses];
 
-export type LaunchData = {
+export type LaunchExploreData = {
     body: ExploreLaunch;
     path?: never;
     query?: never;
     url: '/api/explore/runs';
 };
 
-export type LaunchErrors = {
+export type LaunchExploreErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type LaunchError = LaunchErrors[keyof LaunchErrors];
+export type LaunchExploreError = LaunchExploreErrors[keyof LaunchExploreErrors];
 
-export type LaunchResponses = {
+export type LaunchExploreResponses = {
     /**
      * Successful Response
      */
     201: RunOut;
 };
 
-export type LaunchResponse = LaunchResponses[keyof LaunchResponses];
+export type LaunchExploreResponse = LaunchExploreResponses[keyof LaunchExploreResponses];
 
-export type ReadRunData = {
+export type ReadExploreRunData = {
     body?: never;
     path: {
         /**
@@ -1570,25 +1576,25 @@ export type ReadRunData = {
     url: '/api/explore/runs/{run_id}';
 };
 
-export type ReadRunErrors = {
+export type ReadExploreRunErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ReadRunError = ReadRunErrors[keyof ReadRunErrors];
+export type ReadExploreRunError = ReadExploreRunErrors[keyof ReadExploreRunErrors];
 
-export type ReadRunResponses = {
+export type ReadExploreRunResponses = {
     /**
      * Successful Response
      */
     200: ExploreRunOut;
 };
 
-export type ReadRunResponse = ReadRunResponses[keyof ReadRunResponses];
+export type ReadExploreRunResponse = ReadExploreRunResponses[keyof ReadExploreRunResponses];
 
-export type CancelRunData = {
+export type CancelExploreRunData = {
     body?: never;
     path: {
         /**
@@ -1600,25 +1606,25 @@ export type CancelRunData = {
     url: '/api/explore/runs/{run_id}/cancel';
 };
 
-export type CancelRunErrors = {
+export type CancelExploreRunErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type CancelRunError = CancelRunErrors[keyof CancelRunErrors];
+export type CancelExploreRunError = CancelExploreRunErrors[keyof CancelExploreRunErrors];
 
-export type CancelRunResponses = {
+export type CancelExploreRunResponses = {
     /**
      * Successful Response
      */
     200: RunOut;
 };
 
-export type CancelRunResponse = CancelRunResponses[keyof CancelRunResponses];
+export type CancelExploreRunResponse = CancelExploreRunResponses[keyof CancelExploreRunResponses];
 
-export type StreamRunData = {
+export type StreamExploreRunData = {
     body?: never;
     path: {
         /**
@@ -1630,16 +1636,16 @@ export type StreamRunData = {
     url: '/api/explore/runs/{run_id}/events';
 };
 
-export type StreamRunErrors = {
+export type StreamExploreRunErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type StreamRunError = StreamRunErrors[keyof StreamRunErrors];
+export type StreamExploreRunError = StreamExploreRunErrors[keyof StreamExploreRunErrors];
 
-export type StreamRunResponses = {
+export type StreamExploreRunResponses = {
     /**
      * Successful Response
      */
@@ -1974,7 +1980,7 @@ export type SayResponses = {
 
 export type SayResponse = SayResponses[keyof SayResponses];
 
-export type ReadRun2Data = {
+export type ReadRunData = {
     body?: never;
     path: {
         /**
@@ -1986,23 +1992,23 @@ export type ReadRun2Data = {
     url: '/api/runs/{run_id}';
 };
 
-export type ReadRun2Errors = {
+export type ReadRunErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ReadRun2Error = ReadRun2Errors[keyof ReadRun2Errors];
+export type ReadRunError = ReadRunErrors[keyof ReadRunErrors];
 
-export type ReadRun2Responses = {
+export type ReadRunResponses = {
     /**
      * Successful Response
      */
     200: RunOut;
 };
 
-export type ReadRun2Response = ReadRun2Responses[keyof ReadRun2Responses];
+export type ReadRunResponse = ReadRunResponses[keyof ReadRunResponses];
 
 export type RunLogData = {
     body?: never;

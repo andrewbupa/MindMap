@@ -4,6 +4,89 @@ Every design choice, and every place the brief and a library's current
 documentation disagree. Current documentation wins; the entry says so. Newest
 milestone first within each section.
 
+## Milestone 3: explore
+
+### Where the brief and current documentation differ
+
+**Inspect runs one eval at a time per process.** `eval_async` refuses concurrent
+calls in one process. The worker serialises audits behind a lock, so samples on
+one worker run one after another; to run more at once, raise the worker's
+`instance_count`. Other jobs (system checks, housekeeping) still run alongside.
+
+**Petri cannot resume a sample.** Its auditor and target keep their state in
+memory with no checkpoints, and Inspect's checkpointing needs an agent that
+calls it, which Petri's does not. With one sample per job, a sample interrupted
+by a deploy is re-queued by `retry_stalled_jobs` and re-run from the start. This
+meets the brief's aim (a deploy never loses an audit) at sample granularity.
+
+**A judge dimension directory replaces Petri's defaults.** To keep Petri's 38
+built-in dimensions alongside our six, the runner passes Petri's names plus our
+parsed rubrics, as Petri's docs describe.
+
+**Highlights are text, not structure.** The judge's highlights, summary and
+reasons are free text citing `[Mn]`; Petri resolves each cite to a message id in
+`scanner_references`. Bench stores those references with each transcript and
+maps them to message positions, so every cite links to its message. Cites into
+branches the auditor rolled back keep their id but no position.
+
+**Compaction needs tiktoken's encoding file.** Petri's auditor compaction counts
+tokens with tiktoken, which downloads an encoding on first use. Production can
+fetch it (cached in `TIKTOKEN_CACHE_DIR`); compaction is a recorded run option,
+on by default.
+
+### Design choices
+
+**Our target, inside Petri.** `bench_worker.explore.target` follows Petri's own
+target agent and TargetContext protocol. The auditor's system message becomes
+the context block after our real prompt (its message id kept, so rollbacks
+replay cleanly), the model sees our real tool schemas, and every tool call is
+answered from fixtures inside the target. The auditor therefore runs with
+`target_tools="none"`: it plays the member and sees only the agent's replies, as
+a member would, while the judge sees the whole conversation including tool
+calls. Letting the auditor simulate tool results instead is not offered yet.
+
+**One sample per job.** Each seed at each repetition is its own job on the
+`runs` queue, with a heartbeat on its `run_sample` row, one retry for failures,
+and a check that the seed, prompt and tool profile still match what the run
+recorded (a mismatch fails the sample without retrying). The run closes when no
+sample is queued or running: succeeded if any sample succeeded (failures are
+noted on the run), failed if all failed, stopped at budget if the budget ran out.
+
+**Per-sample logs.** Each sample's `.eval` log is stored at
+`runs/<run>/samples/<index>-e<epoch>.eval`, and indexed as one transcript: the
+target's surviving conversation, the judge's summary and highlights, and one
+score row per dimension (scale 1 to 10). The transcript page offers the log for
+download, to open in Inspect View; hosting Inspect View inside Bench can follow.
+
+**Token budgets.** Each sample is given the run's remaining tokens as Inspect's
+`token_limit`; a sample that hits it is stored and marked stopped at budget, and
+samples that start after the budget is spent stop without running.
+
+**Reviewer care in Explore.** A transcript whose seed carries a content note
+opens only for people who have opted in under Settings, preferences, and the
+same applies to its log.
+
+**The heatmap.** Rows are transcripts, columns are dimensions with ours first,
+then a handful of Petri's most telling (concerning, needs attention,
+disappointing, user over system prompt, sycophancy, over-refusal, admirable,
+scenario realism), with a switch to show all. Cells are tinted by Petri's
+palette for each dimension (red where higher is worse, green where higher is
+better), and every cell links to the transcript and that score.
+
+**The development model plays every Petri role.** Offered the auditor's tools it
+runs a two-turn audit; offered the judge's tool it scores everything 1. That
+proves the pipeline locally; its scores mean nothing.
+
+### Open questions
+
+1. **Auditor and judge models.** All three roles use Claude Opus 5.5 for now.
+   Should the judge be a different model from the target? The rule that no
+   family judges itself alone is written for Lens; it may be worth applying to
+   Explore's judge too.
+2. **Built-in seeds.** Petri ships 173 seeds; the brief suggests adding those
+   matching our tags. Petri's tags (sycophancy, privacy violation, deception)
+   suit some of our risks. Which should join our runs?
+
 ## Milestone 4: measure (findings recorded early)
 
 **The original Bloom repository is frozen.** `safety-research/bloom` says it "has a

@@ -94,7 +94,7 @@ async def list_dimensions(_: ReaderUser, settings: AppSettings) -> list[Dimensio
 
 
 @router.post("/runs", status_code=status.HTTP_201_CREATED)
-async def launch(
+async def launch_explore(
     body: ExploreLaunch, user: AuthorUser, db: Db, settings: AppSettings, roles: Roles
 ) -> RunOut:
     try:
@@ -132,7 +132,7 @@ async def launch(
 
 
 @router.get("/runs")
-async def list_runs(_: ReaderUser, db: Db) -> list[RunOut]:
+async def list_explore_runs(_: ReaderUser, db: Db) -> list[RunOut]:
     runs = (
         await db.execute(
             select(Run)
@@ -182,7 +182,7 @@ async def _transcripts(db: Db, run: Run) -> list[TranscriptSummary]:
 
 
 @router.get("/runs/{run_id}")
-async def read_run(
+async def read_explore_run(
     run_id: uuid.UUID, _: ReaderUser, db: Db, settings: AppSettings
 ) -> ExploreRunOut:
     run = await _explore_run(db, run_id)
@@ -214,7 +214,9 @@ async def read_run(
 
 
 @router.get("/runs/{run_id}/events", response_class=EventSourceResponse)
-async def stream_run(run_id: uuid.UUID, _: ReaderUser, db: Db) -> AsyncIterator[ServerSentEvent]:
+async def stream_explore_run(
+    run_id: uuid.UUID, _: ReaderUser, db: Db
+) -> AsyncIterator[ServerSentEvent]:
     """Sample counts as they change. Clients reconnect after the stream ends, or poll."""
     await _explore_run(db, run_id)
     last: dict[str, object] | None = None
@@ -237,7 +239,7 @@ async def stream_run(run_id: uuid.UUID, _: ReaderUser, db: Db) -> AsyncIterator[
 
 
 @router.post("/runs/{run_id}/cancel")
-async def cancel_run(run_id: uuid.UUID, user: AuthorUser, db: Db) -> RunOut:
+async def cancel_explore_run(run_id: uuid.UUID, user: AuthorUser, db: Db) -> RunOut:
     run = await _explore_run(db, run_id)
     if run.launched_by != user.id and not user.has_role(Role.admin):
         raise HTTPException(

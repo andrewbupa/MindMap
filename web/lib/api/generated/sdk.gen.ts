@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CancelRunData, CancelRunErrors, CancelRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchData, LaunchErrors, LaunchResponses, ListAgentsData, ListAgentsResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListRunsData, ListRunsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadMeData, ReadMeResponses, ReadRun2Data, ReadRun2Errors, ReadRun2Responses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, SayData, SayErrors, SayResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamRunData, StreamRunErrors, StreamRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
+import type { CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, ListAgentsData, ListAgentsResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, SayData, SayErrors, SayResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -56,14 +56,14 @@ export const logout = <ThrowOnError extends boolean = false>(options?: Options<L
 export const listDimensions = <ThrowOnError extends boolean = false>(options?: Options<ListDimensionsData, ThrowOnError>): RequestResult<ListDimensionsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListDimensionsResponses, unknown, ThrowOnError>({ url: '/api/explore/dimensions', ...options });
 
 /**
- * List Runs
+ * List Explore Runs
  */
-export const listRuns = <ThrowOnError extends boolean = false>(options?: Options<ListRunsData, ThrowOnError>): RequestResult<ListRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListRunsResponses, unknown, ThrowOnError>({ url: '/api/explore/runs', ...options });
+export const listExploreRuns = <ThrowOnError extends boolean = false>(options?: Options<ListExploreRunsData, ThrowOnError>): RequestResult<ListExploreRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListExploreRunsResponses, unknown, ThrowOnError>({ url: '/api/explore/runs', ...options });
 
 /**
- * Launch
+ * Launch Explore
  */
-export const launch = <ThrowOnError extends boolean = false>(options: Options<LaunchData, ThrowOnError>): RequestResult<LaunchResponses, LaunchErrors, ThrowOnError> => (options.client ?? client).post<LaunchResponses, LaunchErrors, ThrowOnError>({
+export const launchExplore = <ThrowOnError extends boolean = false>(options: Options<LaunchExploreData, ThrowOnError>): RequestResult<LaunchExploreResponses, LaunchExploreErrors, ThrowOnError> => (options.client ?? client).post<LaunchExploreResponses, LaunchExploreErrors, ThrowOnError>({
     url: '/api/explore/runs',
     ...options,
     headers: {
@@ -73,21 +73,21 @@ export const launch = <ThrowOnError extends boolean = false>(options: Options<La
 });
 
 /**
- * Read Run
+ * Read Explore Run
  */
-export const readRun = <ThrowOnError extends boolean = false>(options: Options<ReadRunData, ThrowOnError>): RequestResult<ReadRunResponses, ReadRunErrors, ThrowOnError> => (options.client ?? client).get<ReadRunResponses, ReadRunErrors, ThrowOnError>({ url: '/api/explore/runs/{run_id}', ...options });
+export const readExploreRun = <ThrowOnError extends boolean = false>(options: Options<ReadExploreRunData, ThrowOnError>): RequestResult<ReadExploreRunResponses, ReadExploreRunErrors, ThrowOnError> => (options.client ?? client).get<ReadExploreRunResponses, ReadExploreRunErrors, ThrowOnError>({ url: '/api/explore/runs/{run_id}', ...options });
 
 /**
- * Cancel Run
+ * Cancel Explore Run
  */
-export const cancelRun = <ThrowOnError extends boolean = false>(options: Options<CancelRunData, ThrowOnError>): RequestResult<CancelRunResponses, CancelRunErrors, ThrowOnError> => (options.client ?? client).post<CancelRunResponses, CancelRunErrors, ThrowOnError>({ url: '/api/explore/runs/{run_id}/cancel', ...options });
+export const cancelExploreRun = <ThrowOnError extends boolean = false>(options: Options<CancelExploreRunData, ThrowOnError>): RequestResult<CancelExploreRunResponses, CancelExploreRunErrors, ThrowOnError> => (options.client ?? client).post<CancelExploreRunResponses, CancelExploreRunErrors, ThrowOnError>({ url: '/api/explore/runs/{run_id}/cancel', ...options });
 
 /**
- * Stream Run
+ * Stream Explore Run
  *
  * Sample counts as they change. Clients reconnect after the stream ends, or poll.
  */
-export const streamRun = <ThrowOnError extends boolean = false>(options: Options<StreamRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamRunResponses>> => (options.client ?? client).sse.get<StreamRunResponses, StreamRunErrors, ThrowOnError>({ url: '/api/explore/runs/{run_id}/events', ...options });
+export const streamExploreRun = <ThrowOnError extends boolean = false>(options: Options<StreamExploreRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamExploreRunResponses>> => (options.client ?? client).sse.get<StreamExploreRunResponses, StreamExploreRunErrors, ThrowOnError>({ url: '/api/explore/runs/{run_id}/events', ...options });
 
 /**
  * List Seeds
@@ -186,7 +186,7 @@ export const say = <ThrowOnError extends boolean = false>(options: Options<SayDa
 /**
  * Read Run
  */
-export const readRun2 = <ThrowOnError extends boolean = false>(options: Options<ReadRun2Data, ThrowOnError>): RequestResult<ReadRun2Responses, ReadRun2Errors, ThrowOnError> => (options.client ?? client).get<ReadRun2Responses, ReadRun2Errors, ThrowOnError>({ url: '/api/runs/{run_id}', ...options });
+export const readRun = <ThrowOnError extends boolean = false>(options: Options<ReadRunData, ThrowOnError>): RequestResult<ReadRunResponses, ReadRunErrors, ThrowOnError> => (options.client ?? client).get<ReadRunResponses, ReadRunErrors, ThrowOnError>({ url: '/api/runs/{run_id}', ...options });
 
 /**
  * Run Log

@@ -62,6 +62,7 @@
   background: var(--color-surface-muted);
   color: var(--color-text-muted);
   margin-right: var(--space-1);
+  white-space: nowrap;
 }
 
 .ok {

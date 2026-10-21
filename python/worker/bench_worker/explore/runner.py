@@ -8,6 +8,7 @@ interrupted sample is re-run from the start; one sample per job keeps that cheap
 
 from __future__ import annotations
 
+import asyncio
 import os
 import shutil
 import tempfile
@@ -29,6 +30,10 @@ from bench_worker.explore.target import bench_target
 os.environ.setdefault("INSPECT_DISPLAY", "none")
 
 JUDGE_SCORER = "audit_judge"
+
+# Inspect refuses concurrent eval_async calls in one process, so audits in a worker
+# run one at a time and the queue waits. Add worker instances to run more at once.
+EVAL_LOCK = asyncio.Lock()
 
 # Builds the model for a role ("auditor", "target" or "judge") from its recorded ID and settings.
 ModelFactory = Callable[[str, str, dict[str, Any]], Model]
@@ -95,16 +100,17 @@ async def run_audit(
             role: models(role, config["models"][role], config["generate"].get(role, {}))
             for role in ("auditor", "target", "judge")
         }
-        logs = await eval_async(
-            task,
-            model_roles=roles,
-            log_dir=str(Path(scratch) / "logs"),
-            log_format="eval",
-            token_limit=token_limit,
-            fail_on_error=False,
-            tags=["bench", f"run:{run_id}"],
-            metadata={"bench_run_id": run_id, "seed": seed.key, "epoch": epoch},
-        )
+        async with EVAL_LOCK:
+            logs = await eval_async(
+                task,
+                model_roles=roles,
+                log_dir=str(Path(scratch) / "logs"),
+                log_format="eval",
+                token_limit=token_limit,
+                fail_on_error=False,
+                tags=["bench", f"run:{run_id}"],
+                metadata={"bench_run_id": run_id, "seed": seed.key, "epoch": epoch},
+            )
         location = logs[0].location
         log = await read_eval_log_async(location)
         uri = f"s3://{storage.bucket}/{sample_key(run_id, index, epoch)}"

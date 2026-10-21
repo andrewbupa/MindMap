@@ -23,14 +23,21 @@ export function useLiveStatus<T extends { status: string }>({
   intervalMs?: number;
 }): T | null {
   const [value, setValue] = useState<T | null>(initial);
+  // Callers often pass fresh functions and objects each render; read them through refs
+  // so the stream is opened once per URL rather than on every render.
   const pollRef = useRef(poll);
+  const doneRef = useRef(done);
+  const initialRef = useRef(initial);
 
   useEffect(() => {
     pollRef.current = poll;
+    doneRef.current = done;
   });
 
   useEffect(() => {
-    if (!streamUrl || (initial && done(initial))) return;
+    const start = initialRef.current;
+    const done = (next: T) => doneRef.current(next);
+    if (!streamUrl || (start && done(start))) return;
     let stopped = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -71,7 +78,7 @@ export function useLiveStatus<T extends { status: string }>({
       source.close();
       clearTimeout(timer);
     };
-  }, [streamUrl, initial, done, intervalMs]);
+  }, [streamUrl, intervalMs]);
 
   return value;
 }

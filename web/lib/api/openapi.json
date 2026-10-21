@@ -1384,6 +1384,11 @@
             "title": "Created At",
             "type": "string"
           },
+          "engine_versions": {
+            "additionalProperties": true,
+            "title": "Engine Versions",
+            "type": "object"
+          },
           "error": {
             "anyOf": [
               {
@@ -1522,6 +1527,7 @@
           "seed_hash",
           "taxonomy_version",
           "model_ids",
+          "engine_versions",
           "adapter_mode",
           "token_budget",
           "tokens_used",
@@ -2556,7 +2562,7 @@
     },
     "/api/explore/runs": {
       "get": {
-        "operationId": "list_runs",
+        "operationId": "list_explore_runs",
         "responses": {
           "200": {
             "content": {
@@ -2565,7 +2571,7 @@
                   "items": {
                     "$ref": "#/components/schemas/RunOut"
                   },
-                  "title": "Response List Runs",
+                  "title": "Response List Explore Runs",
                   "type": "array"
                 }
               }
@@ -2573,13 +2579,13 @@
             "description": "Successful Response"
           }
         },
-        "summary": "List Runs",
+        "summary": "List Explore Runs",
         "tags": [
           "explore"
         ]
       },
       "post": {
-        "operationId": "launch",
+        "operationId": "launch_explore",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2612,7 +2618,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Launch",
+        "summary": "Launch Explore",
         "tags": [
           "explore"
         ]
@@ -2620,7 +2626,7 @@
     },
     "/api/explore/runs/{run_id}": {
       "get": {
-        "operationId": "read_run",
+        "operationId": "read_explore_run",
         "parameters": [
           {
             "in": "path",
@@ -2655,7 +2661,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Read Run",
+        "summary": "Read Explore Run",
         "tags": [
           "explore"
         ]
@@ -2663,7 +2669,7 @@
     },
     "/api/explore/runs/{run_id}/cancel": {
       "post": {
-        "operationId": "cancel_run",
+        "operationId": "cancel_explore_run",
         "parameters": [
           {
             "in": "path",
@@ -2698,7 +2704,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Cancel Run",
+        "summary": "Cancel Explore Run",
         "tags": [
           "explore"
         ]
@@ -2707,7 +2713,7 @@
     "/api/explore/runs/{run_id}/events": {
       "get": {
         "description": "Sample counts as they change. Clients reconnect after the stream ends, or poll.",
-        "operationId": "stream_run",
+        "operationId": "stream_explore_run",
         "parameters": [
           {
             "in": "path",
@@ -2757,7 +2763,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Stream Run",
+        "summary": "Stream Explore Run",
         "tags": [
           "explore"
         ]

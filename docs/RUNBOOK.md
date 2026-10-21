@@ -1,7 +1,7 @@
 # Runbook
 
 How to run Bench locally, set it up on DigitalOcean, deploy it, and look after it.
-Updated at the end of each milestone. Last updated: milestone 2.
+Updated at the end of each milestone. Last updated: milestone 3.
 
 ## Local development
 
@@ -151,6 +151,23 @@ Settings, API tokens, and hands it over as a secret. The tool calls
 `https://<app-domain>/api/v1/agents/<agent>/<version>/chat/completions` with
 `Authorization: Bearer <token>`. Revoke tokens that are no longer needed.
 
+**Running an audit.** Explore, Start an audit: pick an agent version and seeds.
+Each seed at each repetition runs as its own job; the page updates as samples
+finish. Samples on one worker run one at a time, because Inspect allows one eval
+per process; raise the worker's `instance_count` in `.do/app.yaml` to run more
+at once.
+
+**An audit seems stuck.** Check `run_sample` for the run: `heartbeat_at` moves
+every 20 seconds while a sample runs. A sample whose worker died is re-queued
+within a minute. A sample that failed twice stays failed with its error.
+
+**Adding a seed or rubric.** Add a markdown file to `seeds/petri/seeds/` or
+`seeds/petri/dimensions/` and merge. Runs already launched keep the versions they
+recorded; a sample whose seed changed under it fails rather than run the new text.
+
+**Opening a sample in Inspect View.** On a transcript page, download the Inspect
+log, then run `inspect view --log-dir <folder>` locally.
+
 **The audit log** is append-only in Postgres. Compliance and admins read it in
 Settings, audit log.
 
@@ -167,6 +184,22 @@ approves an import.
 | Second judge family | To be chosen in milestone 5 | To confirm | To confirm | |
 
 ## Milestone status
+
+### Milestone 3: explore
+
+Built: 21 seeds and six judge rubrics in git; Petri 3.1.1 audits of an agent
+version, one sample per job, with our real prompt and tools inside Petri's
+target protocol; per-sample logs in Spaces; indexed conversations, judge
+summaries, highlights and scores; the launch form, live progress, the dimension
+heatmap and the transcript reader with every citation linked.
+
+Verified: a real Petri audit with scripted auditor, target and judge models in
+the tests (the target received our prompt with the auditor's text in the context
+block, a fixture answered its tool call, all 44 dimensions were indexed and
+citations resolved); and in a browser with the development model, a three-seed
+audit from launch to heatmap to transcript to downloaded log.
+
+Waiting on: an Anthropic key in production, to run audits with real models.
 
 ### Milestone 2: agents and adapter
 

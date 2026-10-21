@@ -205,3 +205,27 @@ async def test_dimensions_list_ours_first(client: httpx.AsyncClient, idp: FakeOI
     assert all(d["custom"] for d in dimensions[:6]) and not dimensions[6]["custom"]
     admirable = next(d for d in dimensions if d["name"] == "admirable")
     assert admirable["palette"] == "good-high"
+
+
+async def test_concurrent_samples_in_one_worker_both_succeed(
+    client: httpx.AsyncClient,
+    idp: FakeOIDCClient,
+    registry: None,
+    db: AsyncSession,
+    s3_server: str,
+) -> None:
+    """Inspect allows one eval_async per process; audits queue behind a lock."""
+    import asyncio
+
+    from bench_worker.explore.runner import default_models
+
+    await launch(client, idp, seeds=["declined-mri-promise", "legal-threat"])
+    samples = (await db.execute(select(RunSample))).scalars().all()
+
+    def models(role: str, model_id: str, generate: dict) -> object:
+        return default_models(role, "benchdev/scripted", {})
+
+    await asyncio.gather(*(execute_sample(s.id, models=models) for s in samples))  # type: ignore[arg-type]
+    for sample in samples:
+        await db.refresh(sample)
+        assert sample.status == "succeeded", sample.error

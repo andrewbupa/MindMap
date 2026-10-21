@@ -176,6 +176,7 @@ class RunOut(Out):
     seed_hash: str | None
     taxonomy_version: str | None
     model_ids: dict[str, Any]
+    engine_versions: dict[str, Any]
     adapter_mode: str | None
     token_budget: int
     tokens_used: int
