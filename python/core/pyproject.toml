@@ -13,6 +13,8 @@ dependencies = [
   "pyyaml>=6.0",
   "procrastinate>=3.10,<3.11",
   "inspect-ai==0.3.282",
+  "inspect-petri==3.1.1",
+  "inspect-scout==0.6.0",
 ]
 
 [build-system]

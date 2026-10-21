@@ -4,6 +4,26 @@ Every design choice, and every place the brief and a library's current
 documentation disagree. Current documentation wins; the entry says so. Newest
 milestone first within each section.
 
+## Milestone 4: measure (findings recorded early)
+
+**The original Bloom repository is frozen.** `safety-research/bloom` says it "has a
+new home" and "will not receive updates"; its last commit is 7a18428 (2026-05-07)
+and its last release v1.1.0. The successor is Meridian Labs' `petri_bloom`, an
+implementation of Bloom on Petri and Inspect (Python 3.12, `inspect-petri>=3.0.11`).
+This is the "Petri 3 Bloom integration" the brief asks us to check first. It runs
+as an Inspect task, writes standard Inspect logs, and keeps scenarios as editable
+markdown reused across targets. Measure will pin `petri_bloom` rather than the
+frozen repository, and CLAUDE.md's "pin bloom" applies to it.
+
+Facts about the frozen repository that shaped this choice: it has no Inspect
+dependency and writes Petri-style JSON transcripts, not `.eval` logs; it calls
+targets through LiteLLM with no per-target base URL, so pointing it at our
+endpoint means process-wide environment variables; and at rollout its evaluator
+writes a fresh system prompt for every rollout, with no option to keep the
+target's own. Its elicitation rate is the share of rollouts scoring above 6 of 10
+for behaviour presence, pooled over variations and repetitions, with unparsed
+scores counted as 0.
+
 ## Milestone 2: agents and adapter
 
 ### Where the brief and current documentation differ
