@@ -1,0 +1,12 @@
+# Model roles for local development without provider keys. Point BENCH_MODELS_FILE
+# here to use Bench's deterministic development model. Never use in production.
+roles:
+  target:
+    model: benchdev/scripted
+    generate: { reasoning_effort: medium, max_tokens: 4000 }
+  auditor:
+    model: benchdev/scripted
+  judge_a:
+    model: benchdev/scripted
+budgets:
+  playground: 400000

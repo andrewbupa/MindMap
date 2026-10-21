@@ -43,9 +43,20 @@ export default async function SettingsPage() {
           </p>
         </Card>
       ) : null}
-      <Card title="Coming later">
-        <p>Model roles, run budgets and provider retention notes arrive with milestones 2 and 3.</p>
+      <Card title="Model roles and budgets">
+        <p>
+          The exact model behind each role, and the default token budget for each kind of run.{" "}
+          <Link href="/settings/models">Model roles</Link>
+        </p>
       </Card>
+      {admin ? (
+        <Card title="API tokens">
+          <p>
+            Issue and revoke tokens for tools that call an agent version directly.{" "}
+            <Link href="/settings/tokens">API tokens</Link>
+          </p>
+        </Card>
+      ) : null}
     </>
   );
 }

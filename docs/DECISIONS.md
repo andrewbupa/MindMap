@@ -4,6 +4,110 @@ Every design choice, and every place the brief and a library's current
 documentation disagree. Current documentation wins; the entry says so. Newest
 milestone first within each section.
 
+## Milestone 2: agents and adapter
+
+### Where the brief and current documentation differ
+
+**Thinking display must be requested.** Current Claude models default thinking
+display to "omitted", which returns empty thinking text. Inspect 0.3.282 sends
+`display: "summarized"` whenever a reasoning effort is set, so every role in
+`config/models.yaml` sets `reasoning_effort`. With Anthropic's full-thinking beta
+enabled, Inspect drops `display` and the API returns full thinking; the
+`thinking_full` column is ready for that case. Source: Claude Platform docs,
+"Thinking"; Inspect's Anthropic provider.
+
+**Sampling settings are refused at load.** Current Claude models reject
+non-default `temperature`, `top_p` and `top_k`. `config/models.yaml` refuses them,
+and the OpenAI-compatible endpoint ignores them and lists them under
+`bench.ignored_parameters`, so variation comes from repetition as the brief says.
+
+**Effort defaults differ by model.** Claude Opus 5.5 defaults to `medium` effort,
+one level below Claude Opus 5, so every role sets its effort explicitly.
+
+**Inspect's synchronous log functions break a running event loop.** Bench calls
+`write_eval_log_async` and `read_eval_log_async` from async code.
+
+### Design choices
+
+**Agents live in git.** `agents/<key>/` holds `agent.yaml`, `prompts/v<n>.md`
+(front matter, then the prompt exactly as the agent receives it), `tools.json`
+and `personas/`. The prompt's SHA-256 is taken over the text after the front
+matter, trimmed. The pre-deploy job (`python -m bench_worker.cli migrate`) applies
+migrations and then syncs the registry, replacing the brief's bare `alembic
+upgrade head` so a deploy always knows what git says we test.
+
+**What a run tested never changes.** A stored prompt version refuses edits, and
+the sync refuses a version file whose text changed: a new prompt is a new
+version file. Tool profiles and personas are identified by hash, so a changed
+fixture or persona becomes a new row and old runs keep pointing at what they
+used. Postgres triggers make these rows write-once.
+
+**Fixtures answer tools deterministically.** Each tool in `tools.json` binds to a
+fixture: a fixed response, a record looked up by one argument, or a match on
+several arguments (identity checks). Fields can be withheld (`omit`), so a date
+of birth used for verification is never returned by a lookup.
+
+**The adapter sits on Inspect's model layer.** Petri, Bloom and Scout already use
+Inspect, and it gives one interface across providers for the two-family judge
+panel in milestone 5. In deployed mode the caller's system text (an auditor's
+scenario, Bloom's generated system prompt, the playground's context box) goes
+into a `<scenario_context>` block after our prompt, introduced by one neutral
+line. Open mode passes the caller's prompt through and offers no tools.
+
+**No refusal fallbacks.** Anthropic recommends server-side refusal fallbacks for
+new code. Bench does not enable them: a fallback would let a different model
+answer for the target or a judge, which would misattribute behaviour and break
+provenance. A refusal is recorded as a refusal (`TurnEnd.refused`), which is
+itself a finding.
+
+**Conversations keep the full Inspect message.** Each message row stores its
+visible text and thinking summary for querying, and the complete Inspect message
+in `meta.inspect`. Thinking blocks are passed back unchanged with their
+signatures, as current models require, and the transcript can be written out
+exactly.
+
+**Playground conversations are runs.** Starting one records the commit, config
+and its hash, prompt SHA, tool profile hash and resolved model ID; a run refuses
+to start without a commit. Spend is counted on every turn, a conversation that
+reaches its token budget stops after the turn in progress, and finishing writes
+the `.eval` log to Spaces and makes the run read-only. Only the person who
+started a conversation (or an admin) can add to it. A transcript's `log_uri` is
+empty until the log exists.
+
+**Personas guide the person, not the agent.** In the playground a persona is a
+script for the tester; the agent sees only what goes in the context box, as it
+would see only what connected systems show.
+
+**The OpenAI-compatible endpoint uses API tokens.** Admins issue and revoke
+tokens in Settings; only their SHA-256 is stored and each is shown once. Tool
+calls are answered from fixtures by default, with intermediate steps returned in
+`bench.steps`; `bench_tool_results: "simulated"` returns the tool calls for the
+caller to answer. Streaming is not supported yet.
+
+**A development model.** `benchdev/scripted` is a deterministic Inspect provider
+in `bench_core.agents.dev_model`. It calls a tool when it sees a claim or member
+number and answers plainly with a short thinking summary, so the playground and
+endpoint run end to end without provider keys. `config/models.dev.yaml` uses
+it; docker-compose defaults to that file. Production refuses any role that names
+a development model.
+
+**Personal data scan.** `bench_core.synthetic` checks emails (reserved domains
+only), phone numbers (ACMA's fictional ranges and public service lines only),
+Medicare numbers (by check digit), long identifiers (they must carry a `TEST`
+marker) and, for imports, given names. A test runs it over `agents/`, `seeds/`
+and `config/` on every CI run. The import flow that uses it, with admin approval,
+arrives with the first import, in milestone 5.
+
+### Open questions
+
+1. **Provider retention.** Confirm Anthropic's retention terms and zero data
+   retention status for our account. Claude Fable 5.1 requires 30-day retention
+   and is unavailable under zero data retention, so it should not be a role
+   while synthetic-only is the rule.
+2. **Context framing.** Is a neutral "context from connected systems" block the
+   right stand-in for how production agents receive member data? If production
+   uses tool results or a different wrapper, the adapter should match it.
+
 ## Milestone 1: foundations
 
 ### Where the brief and current documentation differ

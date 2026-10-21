@@ -29,6 +29,9 @@ x-python: &python
     BENCH_OIDC_CLIENT_SECRET: bench-local-secret
     BENCH_BOOTSTRAP_ADMINS: admin@example.test
     BENCH_SESSION_SECRET: local-only-session-secret-change-me
+    # The development model needs no provider key. To use real models, set
+    # BENCH_MODELS_FILE=/app/config/models.yaml and ANTHROPIC_API_KEY in .env.compose.
+    BENCH_MODELS_FILE: ${BENCH_MODELS_FILE:-/app/config/models.dev.yaml}
   depends_on:
     postgres:
       condition: service_healthy

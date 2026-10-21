@@ -15,8 +15,9 @@ from typing import Any
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
-from bench_core.config import get_settings
+from bench_core.config import Environment, get_settings
 
+DEV_FAMILIES = {"benchdev", "mockllm"}
 MODEL_ID = re.compile(r"^[a-z0-9-]+/[A-Za-z0-9._:/-]+$")
 ALIAS = re.compile(r"(latest|preview|\*|:default$)", re.IGNORECASE)
 
@@ -105,4 +106,10 @@ def load_model_roles(path: Path) -> ModelRoles:
 @lru_cache
 def get_model_roles() -> ModelRoles:
     settings = get_settings()
-    return load_model_roles(settings.models_file or settings.repo_root / "config" / "models.yaml")
+    path = settings.models_file or Path("config/models.yaml")
+    roles = load_model_roles(path if path.is_absolute() else settings.repo_root / path)
+    if settings.environment is Environment.production:
+        dev = sorted(name for name, role in roles.roles.items() if role.family in DEV_FAMILIES)
+        if dev:
+            raise ModelRolesError(f"development models cannot be used in production: {dev}")
+    return roles

@@ -54,3 +54,20 @@ def test_cost_estimates() -> None:
 def test_families() -> None:
     assert model_family("anthropic/claude-opus-5-5") == "anthropic"
     assert model_family("openai/gpt-x") == "openai"
+
+
+def test_production_refuses_development_models(monkeypatch: pytest.MonkeyPatch) -> None:
+    from bench_core import model_roles
+    from bench_core.config import Environment, Settings
+
+    settings = Settings(
+        models_file=Path("config/models.dev.yaml"),
+        session_secret="not-the-local-default-but-long-enough",
+        public_url="https://bench.example.test",
+        environment=Environment.production,
+    )
+    monkeypatch.setattr(model_roles, "get_settings", lambda: settings)
+    model_roles.get_model_roles.cache_clear()
+    with pytest.raises(ModelRolesError, match="development models"):
+        model_roles.get_model_roles()
+    model_roles.get_model_roles.cache_clear()

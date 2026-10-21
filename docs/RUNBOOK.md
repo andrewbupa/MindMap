@@ -1,7 +1,7 @@
 # Runbook
 
 How to run Bench locally, set it up on DigitalOcean, deploy it, and look after it.
-Updated at the end of each milestone. Last updated: milestone 1.
+Updated at the end of each milestone. Last updated: milestone 2.
 
 ## Local development
 
@@ -24,6 +24,11 @@ claims box:
 
 `admin@example.test` is a bootstrap admin locally. Any other email signs in with
 no role until an admin grants one in Settings, users.
+
+Locally, agents answer through Bench's development model (`benchdev/scripted`),
+which needs no provider key. To use real models, set `BENCH_MODELS_FILE` to
+`/app/config/models.yaml` and `ANTHROPIC_API_KEY` in `.env.compose` (compose) or
+`.env` (without Docker).
 
 `make dev-down` stops everything and keeps data. Signed URLs open on
 `http://localhost:8333`, where compose publishes SeaweedFS.
@@ -55,7 +60,7 @@ ghcr.io/navikt/mock-oauth2-server:6.1.2`), then open <http://localhost:3000>.
 | `make migrate` | Alembic migrations against `BENCH_DATABASE_URL` |
 | `make openapi` | Regenerate `web/lib/api` from the API schema |
 | `make spec` | Check `.do/app.yaml` against App Platform's schema |
-| `make seed-demo` | Load synthetic demo data (agents arrive in milestone 2) |
+| `make seed-demo` | Scan synthetic content, create the bucket, and load `agents/` |
 
 Tests expect a database `bench_test` owned by user `bench` (password `bench`) on
 `localhost:5432`, or set `BENCH_DATABASE_URL`. They migrate it from scratch.
@@ -88,6 +93,7 @@ Do these in order. Everything lives in the Sydney region.
    | `BENCH_OIDC_METADATA_URL`, `BENCH_OIDC_CLIENT_ID` | The identity provider registration (not secret) |
    | `BENCH_BOOTSTRAP_ADMINS` | Comma-separated emails of the first admins |
    | `BENCH_OIDC_ROLE_MAP` | Optional JSON, e.g. `{"bench-reviewers": "reviewer"}` |
+   | `ANTHROPIC_API_KEY` | The Anthropic console; one key per environment |
 
 5. **Keep secrets in the spec encrypted.** Run `doctl apps spec get <app-id>` and
    copy the `EV[...]` values it shows into `.do/app.yaml`, so later `doctl apps
@@ -97,8 +103,8 @@ Do these in order. Everything lives in the Sydney region.
 ## Deploying
 
 Every push to `main` deploys. App Platform builds both images, runs the `migrate`
-job (`alembic upgrade head`), and only if it succeeds replaces the services and
-the worker. A failed migration should stop the deploy and leave the previous
+job (`python -m bench_worker.cli migrate`: Alembic migrations, then the agent
+registry sync), and only if it succeeds replaces the services and the worker. A failed migration should stop the deploy and leave the previous
 version running; answers on DigitalOcean's community forum say so, though the job docs
 do not. Confirm this on the first deploy that carries a migration.
 
@@ -136,6 +142,15 @@ OAuth state cookie. Sessions themselves live in Postgres; to end them all, run
 **Upgrading Procrastinate.** See docs/DECISIONS.md: add an Alembic revision that
 applies its new SQL migration files, then bump the version pin.
 
+**Adding a prompt version.** Add `agents/<agent>/prompts/v<n>.md` with front matter
+(`version`, `author`, `notes`) and merge. Never edit a version that has been
+deployed: the deploy will fail, by design, until the edit becomes a new file.
+
+**A tool needs Bench to call an agent.** An admin creates an API token in
+Settings, API tokens, and hands it over as a secret. The tool calls
+`https://<app-domain>/api/v1/agents/<agent>/<version>/chat/completions` with
+`Authorization: Bearer <token>`. Revoke tokens that are no longer needed.
+
 **The audit log** is append-only in Postgres. Compliance and admins read it in
 Settings, audit log.
 
@@ -148,10 +163,27 @@ approves an import.
 
 | Provider | Used for | Retention terms | Zero data retention | Confirmed by, date |
 | --- | --- | --- | --- | --- |
-| Anthropic | To be set in milestone 2 | To confirm | To confirm | |
+| Anthropic | Target, auditor, judge A, scanner (`config/models.yaml`) | To confirm for our account | To confirm. Claude Fable 5.1 is not available under zero data retention | |
 | Second judge family | To be chosen in milestone 5 | To confirm | To confirm | |
 
 ## Milestone status
+
+### Milestone 2: agents and adapter
+
+Built: two synthetic agents in git with prompt versions, tools, fixtures and
+personas; the registry sync; model roles; the personal-data scan; the adapter in
+deployed and open modes; Inspect transcripts in Spaces; the agents area with
+side-by-side prompt diffs; the playground; API tokens and the OpenAI-compatible
+endpoint.
+
+Verified locally in a browser with the development model: an author picks
+claims assistant v2 and a persona, chats, the agent looks up a claim through a
+fixture, the thinking summary shows in its own pane, finishing saves the run,
+and the downloaded `.eval` file opens in Inspect with the run's provenance. The
+endpoint is covered by API tests.
+
+Waiting on: an Anthropic key in production, to try real models; and the
+production setup from milestone 1.
 
 ### Milestone 1: foundations
 

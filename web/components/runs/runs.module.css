@@ -1,0 +1,111 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (max-width: 60rem) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.bubble {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  white-space: pre-wrap;
+}
+
+.user {
+  background: var(--color-surface-muted);
+  margin-left: 15%;
+}
+
+.assistant {
+  margin-right: 10%;
+  cursor: pointer;
+}
+
+.selected {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.role {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.tool {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-right: 10%;
+}
+
+.tool pre,
+.system pre {
+  white-space: pre-wrap;
+  font-size: var(--text-xs);
+  background: var(--color-surface-muted);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.system {
+  font-size: var(--text-sm);
+}
+
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.composer textarea {
+  font: inherit;
+  min-height: 5rem;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pane {
+  position: sticky;
+  top: var(--space-4);
+}
+
+.thinking {
+  white-space: pre-wrap;
+  font-size: var(--text-sm);
+}
+
+.quiet {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.provenance th {
+  width: 40%;
+  font-weight: 600;
+}
