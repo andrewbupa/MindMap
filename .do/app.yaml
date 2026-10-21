@@ -129,6 +129,10 @@ services:
       - key: ANTHROPIC_API_KEY
         type: SECRET
         scope: RUN_TIME
+      # The Lens panel's second family (judge_b).
+      - key: OPENAI_API_KEY
+        type: SECRET
+        scope: RUN_TIME
 
 workers:
   - name: worker

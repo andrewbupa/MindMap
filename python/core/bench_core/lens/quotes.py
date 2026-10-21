@@ -15,8 +15,11 @@ class DropReason(StrEnum):
     empty = "empty_quote"
     not_found = "quote_not_found"
     unknown_message = "unknown_message"
+    not_a_reply = "not_an_agent_reply"
     unknown_label = "unknown_label"
     bad_intensity = "intensity_out_of_range"
+    # The judge gave no answer Bench could read for a whole family.
+    no_answer = "no_valid_answer"
 
 
 @dataclass(frozen=True)

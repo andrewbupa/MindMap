@@ -14,7 +14,11 @@ roles:
   judge_a:
     model: anthropic/claude-opus-5-5
     generate: { reasoning_effort: high, max_tokens: 16000 }
-  # judge_b must come from a second model family; chosen in milestone 5.
+  # A second model family, so no family judges its own outputs alone. The ID is the
+  # newest OpenAI model in Inspect 0.3.282's model database; see docs/DECISIONS.md.
+  judge_b:
+    model: openai/gpt-6.1-sol
+    generate: { reasoning_effort: high, max_tokens: 16000 }
   scanner:
     model: anthropic/claude-sonnet-5-5
     generate: { reasoning_effort: medium, max_tokens: 16000 }
@@ -23,6 +27,10 @@ roles:
   scenarios:
     model: anthropic/claude-opus-5-5
     generate: { reasoning_effort: high }
+
+# Judges that score together. Lens needs two or three, from at least two families.
+panels:
+  lens: [judge_a, judge_b]
 
 # USD per million tokens, for spend estimates. Update when prices change.
 prices:

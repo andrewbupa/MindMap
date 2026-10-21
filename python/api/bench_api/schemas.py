@@ -538,3 +538,197 @@ class MeasureLaunch(BaseModel):
     max_turns: int = Field(default=15, ge=2, le=60)
     token_budget: int | None = Field(default=None, ge=10_000, description="Per prompt version.")
     compaction: bool = Field(default=True, description="Let Petri summarise long audits.")
+
+
+# Lens
+
+
+class LensFamilyOut(BaseModel):
+    key: str
+    name: str
+    source: str
+
+
+class LensLabelOut(BaseModel):
+    key: str
+    family: str
+    definition: str
+    examples: list[str]
+    counter_examples: list[str]
+    trust_status: str
+
+
+class TaxonomyOut(BaseModel):
+    version: str
+    families: list[LensFamilyOut]
+    labels: list[LensLabelOut]
+
+
+class LensSourceOut(BaseModel):
+    run: RunOut
+    transcripts: int
+
+
+class LensLaunch(BaseModel):
+    source_run: uuid.UUID
+    transcripts: list[uuid.UUID] | None = Field(
+        default=None, description="Read only these transcripts; all of them when empty."
+    )
+    token_budget: int | None = Field(default=None, ge=10_000)
+
+
+class IntervalOut(BaseModel):
+    low: float
+    high: float
+
+
+class LabelPrevalenceOut(BaseModel):
+    label: str
+    family: str
+    trust_status: str
+    replies: int
+    expressed: int = Field(description="Replies where the panel's median intensity is 1 or more.")
+    share: float | None
+    interval: IntervalOut | None = Field(description="95% Wilson interval for the share.")
+    mean_intensity: float
+    disputed: int = Field(description="Replies where judges differ by two points or more.")
+
+
+class DroppedCountOut(BaseModel):
+    judge: str
+    reason: str
+    count: int
+
+
+class JudgeCountOut(BaseModel):
+    judge: str
+    kept: int
+    dropped: int
+
+
+class LensTranscriptSummary(BaseModel):
+    transcript_id: uuid.UUID
+    sample_index: int
+    epoch: int
+    scenario_key: str | None
+    scenario_type: str | None
+    content_notes: list[str]
+    replies: int
+    fit: float | None
+    disputed: int
+
+
+class LensEvidenceOut(BaseModel):
+    id: uuid.UUID
+    transcript_id: uuid.UUID
+    message_id: uuid.UUID
+    label: str
+    judge: str
+    intensity: int
+    quote: str
+    channel: str
+
+
+class LensRunSummary(BaseModel):
+    run: RunOut
+    source: RunOut
+    counts: dict[str, int]
+    mean_fit: float | None
+
+
+class LensRunOut(LensRunSummary):
+    judges: list[str]
+    samples: list[SampleOut]
+    labels: list[LabelPrevalenceOut]
+    transcripts: list[LensTranscriptSummary]
+    judge_counts: list[JudgeCountOut]
+    dropped: list[DroppedCountOut]
+    evidence: list[LensEvidenceOut] = Field(
+        description="The findings behind one label, when a label is asked for."
+    )
+
+
+class ConsensusOut(BaseModel):
+    label: str
+    family: str
+    median: float
+    by_judge: dict[str, int]
+    disputed: bool
+
+
+class FitOut(BaseModel):
+    score: float | None
+    matches: list[str]
+    misses: list[str]
+    intrusions: list[str]
+    out_of_band: list[str]
+
+
+class ReplyLensOut(BaseModel):
+    message_id: uuid.UUID
+    index: int
+    labels: list[ConsensusOut]
+    fit: FitOut | None
+
+
+class AnnotationOut(BaseModel):
+    id: uuid.UUID
+    message_id: uuid.UUID
+    label: str
+    family: str
+    judge: str
+    intensity: int
+    quote: str
+    start: int
+    end: int
+    channel: str
+    rationale: str
+
+
+class ExpectationOut(BaseModel):
+    label: str
+    family: str
+    expect: str
+    min: int
+    max: int
+
+
+class LensTranscriptOut(BaseModel):
+    run: RunOut
+    source: RunOut
+    transcript_id: uuid.UUID
+    scenario_key: str | None
+    scenario_type: str | None
+    seed_text: str | None
+    content_notes: list[str]
+    judges: list[str]
+    messages: list[MessageOut]
+    replies: list[ReplyLensOut]
+    annotations: list[AnnotationOut]
+    expected: list[ExpectationOut]
+    labels: list[LensLabelOut]
+    dropped: list[DroppedCountOut]
+
+
+class LabelComparisonOut(BaseModel):
+    label: str
+    family: str
+    a: LabelPrevalenceOut
+    b: LabelPrevalenceOut
+    difference: float | None = Field(description="Share in B minus share in A.")
+
+
+class ScenarioComparisonOut(BaseModel):
+    scenario_key: str
+    a_fit: float | None
+    b_fit: float | None
+    a_transcripts: list[uuid.UUID]
+    b_transcripts: list[uuid.UUID]
+
+
+class LensCompareOut(BaseModel):
+    a: LensRunSummary
+    b: LensRunSummary
+    shared_scenarios: int
+    labels: list[LabelComparisonOut]
+    scenarios: list[ScenarioComparisonOut]

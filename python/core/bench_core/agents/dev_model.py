@@ -6,8 +6,12 @@ As a target it looks up any claim number or member number it sees with the agent
 tools, then answers plainly, with a short thinking summary. Offered Petri's auditor
 tools it runs a two-turn audit; offered Petri's judge tool it scores every dimension
 1. Offered one of Bloom's ``submit_*`` tools it returns two small synthetic scenarios,
-a variation per axis and one presence dimension. That lets Explore and Measure go
-end to end locally. Its scenarios are placeholders and its scores mean nothing.
+a variation per axis and one presence dimension. Offered a Lens scanner's answer tool
+it labels the first sentence of each reply. ``benchpeer/scripted`` is the same model
+under a second family name, so the Lens panel rules hold locally; it scores some
+labels two points higher and paraphrases its first quote, which Bench then drops.
+That lets Explore, Measure and Lens go end to end locally. Its scenarios are
+placeholders and its scores mean nothing.
 """
 
 from __future__ import annotations
@@ -34,6 +38,11 @@ from inspect_ai.tool import ToolCall, ToolChoice, ToolInfo
 
 CLAIM = re.compile(r"\bCLM-TEST-\d+\b", re.IGNORECASE)
 VARIATION_AXIS = re.compile(r"^\s+- ([a-z_]+): ", re.MULTILINE)
+# Scout renders each message as "[M3] ASSISTANT:" and a thinking summary in tags.
+REPLY = re.compile(r"\[(M\d+)\] ASSISTANT:\n(.*?)(?=\n\[M\d+\] |\Z)", re.DOTALL)
+TRANSCRIPT = re.compile(r"<transcript>\n(.*)\n</transcript>", re.DOTALL)
+THINKING = re.compile(r"<thinking_summary>(.*?)</thinking_summary>", re.DOTALL)
+SENTENCE = re.compile(r"[^.!?\n]+[.!?]?")
 MEMBER = re.compile(r"\bTEST-\d{6}\b", re.IGNORECASE)
 
 
@@ -52,7 +61,14 @@ def benchdev() -> type[ModelAPI]:
     return ScriptedDevModel
 
 
+@modelapi(name="benchpeer")
+def benchpeer() -> type[ModelAPI]:
+    return PeerDevModel
+
+
 class ScriptedDevModel(ModelAPI):
+    family = "benchdev"
+
     def __init__(
         self,
         model_name: str,
@@ -70,12 +86,15 @@ class ScriptedDevModel(ModelAPI):
         tool_choice: ToolChoice,
         config: GenerateConfig,
     ) -> ModelOutput:
-        model = f"benchdev/{self.model_name}"
+        model = f"{self.family}/{self.model_name}"
         names = {tool.name for tool in tools}
         if "set_system_message" in names and "send_message" in names:
             return self._audit(input, model)
-        if "answer" in names:
-            return self._judge(next(t for t in tools if t.name == "answer"), input, model)
+        answer = next((t for t in tools if t.name == "answer"), None)
+        if answer is not None and "results" in answer.parameters.properties:
+            return self._lens(answer, input, model)
+        if answer is not None:
+            return self._judge(answer, input, model)
         if submit := next((t.name for t in tools if t.name in BLOOM_SUBMIT), None):
             return self._calls(input, model, (submit, BLOOM_SUBMIT[submit](input)))
         last_user = next((m for m in reversed(input) if isinstance(m, ChatMessageUser)), None)
@@ -171,6 +190,49 @@ class ScriptedDevModel(ModelAPI):
                 arguments[name] = "Development model: no real judgement was made [M2]."
         return self._calls(input, model, ("answer", arguments))
 
+    def _lens(self, tool: ToolInfo, input: list[ChatMessage], model: str) -> ModelOutput:
+        item = tool.parameters.properties["results"].items
+        label = (item.properties or {}).get("label") if item else None
+        labels = [str(v) for v in (label.enum or [])] if label else []
+        prompt = _last_user_text(input)
+        if (section := TRANSCRIPT.search(prompt)) is not None:
+            prompt = section.group(1)
+        results: list[dict[str, Any]] = []
+        for ordinal, (cite, text) in enumerate(REPLY.findall(prompt)):
+            summary = THINKING.search(text)
+            visible = THINKING.sub("", text.split("\nTool Call:")[0]).strip()
+            sentence = SENTENCE.match(visible)
+            if not labels or not sentence:
+                continue
+            quote = sentence.group(0).strip()
+            intensity = 1 if ordinal % 2 else 2
+            if self.family == "benchpeer":
+                intensity = 3 if ordinal % 2 else 2
+                if not results:
+                    quote = f"{quote} (paraphrased)"
+            results.append(
+                {
+                    "label": labels[ordinal % len(labels)],
+                    "message": f"[{cite}]",
+                    "part": "reply",
+                    "quote": quote,
+                    "intensity": intensity,
+                    "explanation": "Development model: a placeholder finding.",
+                }
+            )
+            if summary and ordinal == 0:
+                results.append(
+                    {
+                        "label": labels[-1],
+                        "message": f"[{cite}]",
+                        "part": "thinking_summary",
+                        "quote": summary.group(1).strip(),
+                        "intensity": 1,
+                        "explanation": "Development model: a placeholder finding.",
+                    }
+                )
+        return self._calls(input, model, ("answer", {"results": results}))
+
 
 def _last_user_text(input: list[ChatMessage]) -> str:
     return next((m.text for m in reversed(input) if isinstance(m, ChatMessageUser)), "")
@@ -231,3 +293,7 @@ BLOOM_SUBMIT: dict[str, Any] = {
         ]
     },
 }
+
+
+class PeerDevModel(ScriptedDevModel):
+    family = "benchpeer"

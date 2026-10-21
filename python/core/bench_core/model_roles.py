@@ -13,11 +13,11 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
 from bench_core.config import Environment, get_settings
 
-DEV_FAMILIES = {"benchdev", "mockllm"}
+DEV_FAMILIES = {"benchdev", "benchpeer", "mockllm"}
 MODEL_ID = re.compile(r"^[a-z0-9-]+/[A-Za-z0-9._:/-]+$")
 ALIAS = re.compile(r"(latest|preview|\*|:default$)", re.IGNORECASE)
 
@@ -66,14 +66,31 @@ class ModelRoles(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     roles: dict[str, RoleConfig]
+    # Named groups of judge roles, such as the Lens panel.
+    panels: dict[str, list[str]] = Field(default_factory=dict)
     prices: dict[str, Price] = Field(default_factory=dict)
     budgets: dict[str, int] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def _panels_name_roles(self) -> ModelRoles:
+        for name, members in self.panels.items():
+            unknown = sorted(set(members) - set(self.roles))
+            if unknown:
+                raise ValueError(f"panel {name!r} names unknown roles: {unknown}")
+        return self
 
     def role(self, name: str) -> RoleConfig:
         try:
             return self.roles[name]
         except KeyError:
             raise ModelRolesError(f"config/models.yaml has no {name!r} role") from None
+
+    def panel(self, name: str) -> dict[str, str]:
+        """The roles on a panel and the exact model each one names."""
+        members = self.panels.get(name)
+        if not members:
+            raise ModelRolesError(f"config/models.yaml has no {name!r} panel")
+        return {role: self.role(role).model for role in members}
 
     def resolved_ids(self, *names: str) -> dict[str, str]:
         return {name: self.role(name).model for name in names}

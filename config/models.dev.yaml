@@ -8,7 +8,12 @@ roles:
     model: benchdev/scripted
   judge_a:
     model: benchdev/scripted
+  # A second development "family", so the Lens panel rules hold locally too.
+  judge_b:
+    model: benchpeer/scripted
   scenarios:
     model: benchdev/scripted
+panels:
+  lens: [judge_a, judge_b]
 budgets:
   playground: 400000

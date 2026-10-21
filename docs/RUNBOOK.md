@@ -94,6 +94,7 @@ Do these in order. Everything lives in the Sydney region.
    | `BENCH_BOOTSTRAP_ADMINS` | Comma-separated emails of the first admins |
    | `BENCH_OIDC_ROLE_MAP` | Optional JSON, e.g. `{"bench-reviewers": "reviewer"}` |
    | `ANTHROPIC_API_KEY` | The Anthropic console; one key per environment |
+   | `OPENAI_API_KEY` | The OpenAI platform; for the Lens panel's second judge |
 
 5. **Keep secrets in the spec encrypted.** Run `doctl apps spec get <app-id>` and
    copy the `EV[...]` values it shows into `.do/app.yaml`, so later `doctl apps
@@ -199,7 +200,7 @@ approves an import.
 | Provider | Used for | Retention terms | Zero data retention | Confirmed by, date |
 | --- | --- | --- | --- | --- |
 | Anthropic | Target, auditor, judge A, scanner, Bloom scenarios (`config/models.yaml`) | To confirm for our account | To confirm. Claude Fable 5.1 is not available under zero data retention | |
-| Second judge family | To be chosen in milestone 5 | To confirm | To confirm | |
+| OpenAI | Judge B on the Lens panel (`openai/gpt-6.1-sol`) | To confirm for our account | To confirm | |
 
 ## Milestone status
 
