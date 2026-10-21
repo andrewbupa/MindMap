@@ -1,0 +1,73 @@
+/*
+ * Design tokens. Placeholder values until the first Claude Design handoff lands
+ * in design/; components read only these variables, so the handoff can replace
+ * this file without touching component code.
+ */
+:root {
+  color-scheme: light dark;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.625rem;
+  --leading: 1.5;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --content-width: 72rem;
+
+  --color-bg: #fbfaf8;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f3f1ed;
+  --color-border: #e2ded6;
+  --color-text: #1d1c1a;
+  --color-text-muted: #5f5b54;
+  --color-accent: #2f5d8a;
+  --color-accent-text: #ffffff;
+  --color-focus: #2f5d8a;
+  --color-ok: #2e6b3f;
+  --color-ok-bg: #e5f1e8;
+  --color-warn: #8a5a12;
+  --color-warn-bg: #f8ecd8;
+  --color-danger: #9b2c2c;
+  --color-danger-bg: #f7e3e1;
+
+  /* Lens label families. Saturation carries intensity, so keep hues distinct. */
+  --family-care: #b4537a;
+  --family-collaboration: #3a7d6b;
+  --family-judgement: #3f5fa8;
+  --family-curiosity: #a8731f;
+  --family-risk: #a63d32;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #151513;
+    --color-surface: #1d1d1a;
+    --color-surface-muted: #262622;
+    --color-border: #3a3934;
+    --color-text: #eeebe5;
+    --color-text-muted: #a9a49b;
+    --color-accent: #8db4dc;
+    --color-accent-text: #10202f;
+    --color-focus: #8db4dc;
+    --color-ok: #8fcb9c;
+    --color-ok-bg: #1f3325;
+    --color-warn: #e3b36a;
+    --color-warn-bg: #3a2c15;
+    --color-danger: #f0958c;
+    --color-danger-bg: #3d1f1c;
+  }
+}

@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response, status
 from fastapi.responses import JSONResponse
+from fastapi.routing import APIRoute
 from starlette.middleware.sessions import SessionMiddleware
 
 from bench_api import auth
@@ -21,6 +22,11 @@ SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 CSRF_HEADER = "x-bench-request"
 # Requests that carry their own credentials rather than the session cookie.
 CSRF_EXEMPT_PREFIXES = ("/api/v1/",)
+
+
+def operation_id(route: APIRoute) -> str:
+    """Name operations after their handler, so the web client reads ``readMe()``."""
+    return route.name
 
 
 @asynccontextmanager
@@ -39,6 +45,7 @@ def create_app() -> FastAPI:
         docs_url="/api/docs",
         redoc_url=None,
         lifespan=lifespan,
+        generate_unique_id_function=operation_id,
     )
 
     @app.middleware("http")
