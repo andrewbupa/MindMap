@@ -1,0 +1,118 @@
+from __future__ import annotations
+
+import csv
+import io
+import shutil
+import subprocess
+from pathlib import Path
+
+import httpx
+import pytest
+from sqlalchemy import select, update
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from bench_core.config import REPO_ROOT
+from bench_core.models import AuditEvent, User
+from bench_core.registry import load_registry, sync_registry
+from testsupport.lens import explore_run, lens_run, run_lens, scripted_judges
+from testsupport.oidc import FakeOIDCClient, sign_in_as
+
+
+@pytest.fixture
+async def registry(db: AsyncSession) -> None:
+    await sync_registry(db, load_registry(REPO_ROOT), "abc123")
+    await db.commit()
+
+
+def pdf_text(data: bytes, tmp_path: Path) -> str | None:
+    """The PDF's text, when poppler's pdftotext is installed."""
+    binary = shutil.which("pdftotext")
+    if binary is None:
+        return None
+    path = tmp_path / "report.pdf"
+    path.write_bytes(data)
+    text = subprocess.run(  # noqa: S603 - a fixed binary on a file the test wrote
+        [binary, str(path), "-"], check=True, capture_output=True, text=True
+    ).stdout
+    return " ".join(text.split())
+
+
+async def test_lens_disagreements_reach_the_review_queue(
+    client: httpx.AsyncClient,
+    idp: FakeOIDCClient,
+    registry: None,
+    db: AsyncSession,
+    s3_server: str,
+) -> None:
+    source = await explore_run(client, idp, db)
+    run = await lens_run(client, source["id"])
+    await run_lens(db, run, scripted_judges)
+    await sign_in_as(client, idp, "rev@example.test")
+    await db.execute(
+        update(User).where(User.email == "rev@example.test").values(roles=["reviewer"])
+    )
+    await db.commit()
+
+    queue = (await client.get("/api/review/lens-queue")).json()
+    (item,) = queue["items"]
+    assert item["label"] == "false_reassurance" and item["median"] == 1.5
+    assert item["by_judge"] == {"anthropic/claude-opus-5-5": 3, "openai/gpt-6.1-sol": 0}
+    assert [a["quote"] for a in item["annotations"]] == ["Here is what was decided."]
+
+    verdict = await client.post(
+        "/api/review",
+        json={
+            "annotation_id": item["annotations"][0]["id"],
+            "verdict": "disagree",
+            "corrected_intensity": 0,
+            "notes": "A plain statement of the decision, not reassurance.",
+        },
+    )
+    assert verdict.status_code == 201, verdict.text
+    assert (await client.get("/api/review/lens-queue")).json()["items"] == []
+
+
+async def test_reports_export_pdf_and_findings_with_provenance(
+    client: httpx.AsyncClient,
+    idp: FakeOIDCClient,
+    registry: None,
+    db: AsyncSession,
+    s3_server: str,
+    tmp_path: Path,
+) -> None:
+    source = await explore_run(client, idp, db)
+    run = await lens_run(client, source["id"])
+    await run_lens(db, run, scripted_judges)
+
+    listed = {r["id"] for r in (await client.get("/api/reports/runs")).json()}
+    assert {source["id"], run["id"]} <= listed
+
+    for target in (source, run):
+        response = await client.get(f"/api/reports/runs/{target['id']}/report.pdf")
+        assert response.status_code == 200
+        assert response.headers["content-type"] == "application/pdf"
+        assert response.content.startswith(b"%PDF")
+        text = pdf_text(response.content, tmp_path)
+        if text is not None:
+            assert "Provenance" in text and target["config_hash"] in text
+            assert (target["seed_hash"] or "") in text
+    if text := pdf_text(
+        (await client.get(f"/api/reports/runs/{run['id']}/report.pdf")).content, tmp_path
+    ):
+        assert "Labels across every reply" in text and "calibrated uncertainty" in text
+
+    findings = await client.get(f"/api/reports/runs/{run['id']}/findings.csv")
+    rows = list(csv.DictReader(io.StringIO(findings.text)))
+    assert len(rows) == 4
+    assert {r["taxonomy_version"] for r in rows} == {"2026.10.1"}
+    assert {r["run_id"] for r in rows} == {run["id"]}
+    assert "Here is what was decided." in {r["quote"] for r in rows}
+    missing = await client.get(f"/api/reports/runs/{source['id']}/findings.csv")
+    assert missing.status_code == 404
+
+    exports = (
+        (await db.execute(select(AuditEvent).where(AuditEvent.action == "report.export")))
+        .scalars()
+        .all()
+    )
+    assert {e.detail["format"] for e in exports} == {"pdf", "csv-findings"}

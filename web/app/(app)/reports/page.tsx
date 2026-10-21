@@ -1,29 +1,32 @@
 import { StatusBadge } from "@/components/runs/Provenance";
-import { Card, PageHeader, formatWhen } from "@/components/ui";
-import { listExploreRuns } from "@/lib/api";
+import { Card, PageHeader, formatWhen, sentenceCase } from "@/components/ui";
+import { listReportRuns } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";
 
 export const metadata = { title: "Reports" };
 
+const FINISHED = new Set(["succeeded", "failed", "cancelled", "stopped_at_budget"]);
+
 export default async function ReportsPage() {
-  const { data: runs } = await listExploreRuns({ client: await serverClient(), throwOnError: true });
+  const { data: runs } = await listReportRuns({ client: await serverClient(), throwOnError: true });
   return (
     <>
       <PageHeader title="Reports">
         <p>
-          Export a run&apos;s scores with its full provenance on every row: commit, config hash,
-          prompt, seed hash, taxonomy version and the exact models. Every export is recorded in the
-          audit log. PDF reports and comparisons follow.
+          Export a run with its full provenance: commit, config hash, prompt, seed hash, taxonomy
+          version and the exact models. The PDF opens with all of it; every CSV row carries it.
+          Every export is recorded in the audit log.
         </p>
       </PageHeader>
-      <Card title="Audits">
+      <Card title="Runs">
         {runs.length === 0 ? (
-          <p>No audits yet.</p>
+          <p>No runs yet.</p>
         ) : (
           <table>
             <thead>
               <tr>
-                <th scope="col">Audit</th>
+                <th scope="col">Run</th>
+                <th scope="col">Kind</th>
                 <th scope="col">Status</th>
                 <th scope="col">Started</th>
                 <th scope="col">Exports</th>
@@ -33,13 +36,30 @@ export default async function ReportsPage() {
               {runs.map((run) => (
                 <tr key={run.id}>
                   <td>{run.title}</td>
+                  <td>{sentenceCase(run.kind)}</td>
                   <td>
                     <StatusBadge status={run.status} />
                   </td>
                   <td>{formatWhen(run.created_at)}</td>
                   <td>
-                    <a href={`/api/reports/runs/${run.id}/scores.csv`}>Scores (CSV)</a>
-                    {" · "}
+                    {FINISHED.has(run.status) ? (
+                      <>
+                        <a href={`/api/reports/runs/${run.id}/report.pdf`}>Report (PDF)</a>
+                        {run.kind === "explore" || run.kind === "measure" ? (
+                          <>
+                            {" · "}
+                            <a href={`/api/reports/runs/${run.id}/scores.csv`}>Scores (CSV)</a>
+                          </>
+                        ) : null}
+                        {run.kind === "lens" ? (
+                          <>
+                            {" · "}
+                            <a href={`/api/reports/runs/${run.id}/findings.csv`}>Findings (CSV)</a>
+                          </>
+                        ) : null}
+                        {" · "}
+                      </>
+                    ) : null}
                     <a href={`/api/reports/runs/${run.id}/provenance`}>Provenance (JSON)</a>
                   </td>
                 </tr>

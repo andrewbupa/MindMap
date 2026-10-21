@@ -158,7 +158,7 @@ async def _source(db: Db, run: Run) -> Run:
     return source
 
 
-def _prevalence(replies: list[ReplyLens], labels: Iterable[LabelInfo]) -> list[LabelPrevalenceOut]:
+def label_shares(replies: list[ReplyLens], labels: Iterable[LabelInfo]) -> list[LabelPrevalenceOut]:
     chosen = list(labels)
     shares = prevalence(replies, [label.key for label in chosen])
     result = []
@@ -263,7 +263,7 @@ async def read_lens_run(
         **summary.model_dump(),
         judges=lens.judges,
         samples=[SampleOut.model_validate(sample) for sample in samples],
-        labels=_prevalence(lens.replies, lens.labels),
+        labels=label_shares(lens.replies, lens.labels),
         transcripts=[
             LensTranscriptSummary(
                 transcript_id=t.transcript.id,
@@ -406,8 +406,8 @@ async def compare_lens_runs(
     shared = sorted(set(groups_a) & set(groups_b))
     replies_a = [r for key in shared for t in groups_a[key] for r in t.replies]
     replies_b = [r for key in shared for t in groups_b[key] for r in t.replies]
-    side_a = {p.label: p for p in _prevalence(replies_a, lens_a.labels)}
-    side_b = {p.label: p for p in _prevalence(replies_b, lens_b.labels)}
+    side_a = {p.label: p for p in label_shares(replies_a, lens_a.labels)}
+    side_b = {p.label: p for p in label_shares(replies_b, lens_b.labels)}
     labels = []
     for label in lens_a.labels:
         if label.key not in side_b:

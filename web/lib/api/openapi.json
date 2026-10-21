@@ -129,6 +129,64 @@
         "title": "AgentSummary",
         "type": "object"
       },
+      "AgreementOut": {
+        "properties": {
+          "alpha": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alpha"
+          },
+          "comparison": {
+            "title": "Comparison",
+            "type": "string"
+          },
+          "computed_at": {
+            "format": "date-time",
+            "title": "Computed At",
+            "type": "string"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "judge_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Judge Model"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "n_units": {
+            "title": "N Units",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "label",
+          "family",
+          "comparison",
+          "judge_model",
+          "alpha",
+          "n_units",
+          "computed_at"
+        ],
+        "title": "AgreementOut",
+        "type": "object"
+      },
       "AnnotationOut": {
         "properties": {
           "channel": {
@@ -1346,6 +1404,453 @@
         "title": "GeneratedScenarioOut",
         "type": "object"
       },
+      "GoldItemDetail": {
+        "properties": {
+          "content_notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Content Notes",
+            "type": "array"
+          },
+          "gold_set": {
+            "format": "uuid",
+            "title": "Gold Set",
+            "type": "string"
+          },
+          "gold_set_name": {
+            "title": "Gold Set Name",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/LensLabelOut"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/MessageOut"
+            },
+            "title": "Messages",
+            "type": "array"
+          },
+          "mine": {
+            "description": "Your ratings only; others stay hidden.",
+            "items": {
+              "$ref": "#/components/schemas/GoldRatingOut"
+            },
+            "title": "Mine",
+            "type": "array"
+          },
+          "next_item": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Item"
+          },
+          "replies": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Replies",
+            "type": "array"
+          },
+          "scenario_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Key"
+          },
+          "seed_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seed Text"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "gold_set",
+          "gold_set_name",
+          "transcript_id",
+          "scenario_key",
+          "seed_text",
+          "content_notes",
+          "messages",
+          "replies",
+          "labels",
+          "mine",
+          "next_item"
+        ],
+        "title": "GoldItemDetail",
+        "type": "object"
+      },
+      "GoldItemOut": {
+        "properties": {
+          "content_notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Content Notes",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "labelled_by_me": {
+            "title": "Labelled By Me",
+            "type": "boolean"
+          },
+          "labellers": {
+            "title": "Labellers",
+            "type": "integer"
+          },
+          "scenario_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Key"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "transcript_id",
+          "scenario_key",
+          "content_notes",
+          "labellers",
+          "labelled_by_me"
+        ],
+        "title": "GoldItemOut",
+        "type": "object"
+      },
+      "GoldItemsAdd": {
+        "properties": {
+          "seed": {
+            "default": 0,
+            "title": "Seed",
+            "type": "integer"
+          },
+          "size": {
+            "default": 20,
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Size",
+            "type": "integer"
+          },
+          "source_run": {
+            "format": "uuid",
+            "title": "Source Run",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_run"
+        ],
+        "title": "GoldItemsAdd",
+        "type": "object"
+      },
+      "GoldRatingIn": {
+        "properties": {
+          "intensity": {
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Intensity",
+            "type": "integer"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "quote": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote"
+          }
+        },
+        "required": [
+          "message_id",
+          "label",
+          "intensity"
+        ],
+        "title": "GoldRatingIn",
+        "type": "object"
+      },
+      "GoldRatingOut": {
+        "properties": {
+          "intensity": {
+            "title": "Intensity",
+            "type": "integer"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "quote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote"
+          }
+        },
+        "required": [
+          "message_id",
+          "label",
+          "intensity",
+          "quote"
+        ],
+        "title": "GoldRatingOut",
+        "type": "object"
+      },
+      "GoldRatingsIn": {
+        "properties": {
+          "ratings": {
+            "items": {
+              "$ref": "#/components/schemas/GoldRatingIn"
+            },
+            "title": "Ratings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ratings"
+        ],
+        "title": "GoldRatingsIn",
+        "type": "object"
+      },
+      "GoldSetCreate": {
+        "properties": {
+          "description": {
+            "default": "",
+            "maxLength": 5000,
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Name",
+            "type": "string"
+          },
+          "seed": {
+            "default": 0,
+            "description": "The same seed always draws the same items.",
+            "title": "Seed",
+            "type": "integer"
+          },
+          "size": {
+            "default": 60,
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Size",
+            "type": "integer"
+          },
+          "source_run": {
+            "format": "uuid",
+            "title": "Source Run",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "source_run"
+        ],
+        "title": "GoldSetCreate",
+        "type": "object"
+      },
+      "GoldSetOut": {
+        "properties": {
+          "agreement": {
+            "items": {
+              "$ref": "#/components/schemas/AgreementOut"
+            },
+            "title": "Agreement",
+            "type": "array"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "fully_labelled": {
+            "description": "Items rated by at least two experts.",
+            "title": "Fully Labelled",
+            "type": "integer"
+          },
+          "hidden_for_content_notes": {
+            "title": "Hidden For Content Notes",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "title": "Items",
+            "type": "integer"
+          },
+          "items_list": {
+            "items": {
+              "$ref": "#/components/schemas/GoldItemOut"
+            },
+            "title": "Items List",
+            "type": "array"
+          },
+          "labelled_by_me": {
+            "title": "Labelled By Me",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "taxonomy_version": {
+            "title": "Taxonomy Version",
+            "type": "string"
+          },
+          "trust": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Trust",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "taxonomy_version",
+          "created_at",
+          "items",
+          "fully_labelled",
+          "labelled_by_me",
+          "items_list",
+          "hidden_for_content_notes",
+          "agreement",
+          "trust"
+        ],
+        "title": "GoldSetOut",
+        "type": "object"
+      },
+      "GoldSetSummary": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "fully_labelled": {
+            "description": "Items rated by at least two experts.",
+            "title": "Fully Labelled",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "title": "Items",
+            "type": "integer"
+          },
+          "labelled_by_me": {
+            "title": "Labelled By Me",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "taxonomy_version": {
+            "title": "Taxonomy Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "taxonomy_version",
+          "created_at",
+          "items",
+          "fully_labelled",
+          "labelled_by_me"
+        ],
+        "title": "GoldSetSummary",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1612,6 +2117,95 @@
         "title": "LensCompareOut",
         "type": "object"
       },
+      "LensDisputeOut": {
+        "properties": {
+          "annotations": {
+            "items": {
+              "$ref": "#/components/schemas/AnnotationOut"
+            },
+            "title": "Annotations",
+            "type": "array"
+          },
+          "by_judge": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "By Judge",
+            "type": "object"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "lens_run_id": {
+            "format": "uuid",
+            "title": "Lens Run Id",
+            "type": "string"
+          },
+          "lens_run_title": {
+            "title": "Lens Run Title",
+            "type": "string"
+          },
+          "median": {
+            "title": "Median",
+            "type": "number"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "reply_text": {
+            "title": "Reply Text",
+            "type": "string"
+          },
+          "reviewed_by_me": {
+            "title": "Reviewed By Me",
+            "type": "boolean"
+          },
+          "reviews": {
+            "title": "Reviews",
+            "type": "integer"
+          },
+          "scenario_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Key"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "lens_run_id",
+          "lens_run_title",
+          "transcript_id",
+          "scenario_key",
+          "message_id",
+          "reply_text",
+          "label",
+          "family",
+          "median",
+          "by_judge",
+          "annotations",
+          "reviews",
+          "reviewed_by_me"
+        ],
+        "title": "LensDisputeOut",
+        "type": "object"
+      },
       "LensEvidenceOut": {
         "properties": {
           "channel": {
@@ -1770,6 +2364,27 @@
           "source_run"
         ],
         "title": "LensLaunch",
+        "type": "object"
+      },
+      "LensQueueOut": {
+        "properties": {
+          "hidden_for_content_notes": {
+            "title": "Hidden For Content Notes",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/LensDisputeOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "hidden_for_content_notes"
+        ],
+        "title": "LensQueueOut",
         "type": "object"
       },
       "LensRunOut": {
@@ -6347,6 +6962,69 @@
         ]
       }
     },
+    "/api/reports/runs": {
+      "get": {
+        "description": "Recent runs of every kind, for export.",
+        "operationId": "list_report_runs",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RunOut"
+                  },
+                  "title": "Response List Report Runs",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Report Runs",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/reports/runs/{run_id}/findings.csv": {
+      "get": {
+        "description": "One row per Lens finding, with the run's provenance. Quotes from transcripts with\ncontent notes are left blank.",
+        "operationId": "export_findings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Findings",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
     "/api/reports/runs/{run_id}/provenance": {
       "get": {
         "description": "Everything needed to reproduce the run, including its full config.",
@@ -6388,6 +7066,43 @@
           }
         },
         "summary": "Run Provenance",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/reports/runs/{run_id}/report.pdf": {
+      "get": {
+        "description": "A printable report of one run, opening with its full provenance.",
+        "operationId": "export_report",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Report",
         "tags": [
           "reports"
         ]
@@ -6466,6 +7181,377 @@
           }
         },
         "summary": "Create Review",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/api/review/gold-sets": {
+      "get": {
+        "operationId": "list_gold_sets",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GoldSetSummary"
+                  },
+                  "title": "Response List Gold Sets",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Gold Sets",
+        "tags": [
+          "gold"
+        ]
+      },
+      "post": {
+        "operationId": "create_gold_set",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoldSetCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoldSetSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Gold Set",
+        "tags": [
+          "gold"
+        ]
+      }
+    },
+    "/api/review/gold-sets/{set_id}": {
+      "get": {
+        "operationId": "read_gold_set",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Set Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoldSetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Gold Set",
+        "tags": [
+          "gold"
+        ]
+      }
+    },
+    "/api/review/gold-sets/{set_id}/agreement": {
+      "post": {
+        "operationId": "compute_gold_agreement",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Set Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AgreementOut"
+                  },
+                  "title": "Response Compute Gold Agreement",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Compute Gold Agreement",
+        "tags": [
+          "gold"
+        ]
+      }
+    },
+    "/api/review/gold-sets/{set_id}/items": {
+      "post": {
+        "operationId": "add_gold_items",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Set Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoldItemsAdd"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoldSetSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Add Gold Items",
+        "tags": [
+          "gold"
+        ]
+      }
+    },
+    "/api/review/gold-sets/{set_id}/items/{item_id}": {
+      "get": {
+        "operationId": "read_gold_item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Set Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoldItemDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Gold Item",
+        "tags": [
+          "gold"
+        ]
+      }
+    },
+    "/api/review/gold-sets/{set_id}/items/{item_id}/ratings": {
+      "put": {
+        "operationId": "save_gold_ratings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Set Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoldRatingsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GoldRatingOut"
+                  },
+                  "title": "Response Save Gold Ratings",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Gold Ratings",
+        "tags": [
+          "gold"
+        ]
+      }
+    },
+    "/api/review/lens-queue": {
+      "get": {
+        "description": "Replies where Lens judges differ by two points or more on a label, newest runs\nfirst. A verdict is recorded on a judge's finding and never changes it.",
+        "operationId": "lens_queue",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LensQueueOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Lens Queue",
         "tags": [
           "review"
         ]

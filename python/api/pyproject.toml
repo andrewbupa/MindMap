@@ -10,6 +10,7 @@ dependencies = [
   "authlib>=1.9",
   "httpx2>=2.16",
   "itsdangerous>=2.2",
+  "reportlab==5.0.1",
 ]
 
 [tool.uv.sources]

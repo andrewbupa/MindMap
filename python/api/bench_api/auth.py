@@ -104,6 +104,28 @@ async def sign_in(
             select(User).where(User.oidc_issuer == issuer, User.oidc_subject == subject)
         )
     ).scalar_one_or_none()
+    holder = (await db.execute(select(User).where(User.email == email))).scalar_one_or_none()
+    if holder is not None and holder is not user:
+        # Never relink an account by email: whoever can change their address at the
+        # identity provider could otherwise sign in as someone else.
+        await audit.record(
+            db,
+            "auth.refused",
+            actor_id=None,
+            target_type="user",
+            target_id=holder.id,
+            detail={
+                "reason": "email_held_by_another_identity",
+                "issuer": issuer,
+                "subject": subject,
+            },
+        )
+        await db.commit()
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            "That email address belongs to another sign-in identity. Ask an admin to check"
+            " your account.",
+        )
     before: list[str] = []
     if user is None:
         user = User(email=email, name=name, oidc_issuer=issuer, oidc_subject=subject, roles=[])

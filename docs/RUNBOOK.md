@@ -1,7 +1,7 @@
 # Runbook
 
 How to run Bench locally, set it up on DigitalOcean, deploy it, and look after it.
-Updated at the end of each milestone. Last updated: milestone 5.
+Updated at the end of each milestone. Last updated: milestone 6.
 
 ## Local development
 
@@ -204,6 +204,32 @@ Scout scanners: `scout scan bench_worker/lens/scanners.py -T <log folder> --mode
 <model>` runs them over any folder of Inspect logs, writing Scout's own results
 locally. Bench does not import those results.
 
+**Building the gold set.** An admin creates a gold set under Review, Gold sets:
+choose a finished run and how many transcripts (60 to start); the same seed draws
+the same items. Each expert opens the set and labels transcripts one after another;
+ratings stay private to each expert. Once two experts have labelled the items, an
+admin computes agreement, which updates every label's trust badge. Compute again
+after more labelling; earlier results are kept.
+
+**Lens disagreements.** Reviewers find them under Review, Lens disagreements. Each
+verdict is stored beside the judges' findings.
+
+**Exporting a run.** Reports lists every run. Finished runs export a PDF report
+that opens with the full provenance, scores (Explore, Measure) or findings (Lens)
+as CSV, and the provenance as JSON. Every export is in the audit log.
+
+**Someone cannot sign in: "belongs to another sign-in identity".** Their email
+already belongs to an account with a different identity-provider subject, for
+example after they were re-created at the provider. Bench never relinks accounts
+by email on its own. Find the `auth.refused` event in Settings, audit log, which
+records the new issuer and subject; confirm with the person and the identity
+provider's admins that the new identity is theirs; then move the account to it:
+
+```sql
+UPDATE "user" SET oidc_issuer = '<issuer>', oidc_subject = '<subject>'
+WHERE email = '<email>';
+```
+
 **The audit log** is append-only in Postgres. Compliance and admins read it in
 Settings, audit log.
 
@@ -220,6 +246,28 @@ approves an import.
 | OpenAI | Judge B on the Lens panel (`openai/gpt-6.1-sol`) | To confirm for our account | To confirm | |
 
 ## Milestone status
+
+### Milestone 6: review and reports
+
+Built: gold sets drawn from finished runs by a seeded sample; blind labelling of
+every label on every reply; Krippendorff's alpha per label between experts and
+between each judge and the experts' median, kept with its time; trust badges set
+from the experts' alpha; Lens disagreements in the review queue with verdicts on
+each finding; PDF reports for every run kind that open with full provenance; a
+Lens findings CSV; the Reports page for every run; and a clear refusal when an
+email arrives from a different sign-in identity.
+
+Verified: in the tests, two experts labelling six transcripts blind, agreement of
+1.0 on a label they agreed on and trust set to trusted, a systematic disagreement
+retired, judges' alphas against the experts, refusals for non-reviewers and for
+ratings on the member's messages; a Lens disagreement reviewed and leaving the
+queue; PDF text carrying the run's config and seed hashes; the findings CSV
+carrying provenance on every row; and the sign-in refusal with its audit event. In
+a browser: a gold set created, labelled by two experts, agreement computed, the
+disagreement queue, the Reports page and a downloaded PDF.
+
+Waiting on: expert reviewers to label the first 60-transcript gold set with real
+models' transcripts; answers to the open questions in docs/DECISIONS.md.
 
 ### Milestone 5: lens
 

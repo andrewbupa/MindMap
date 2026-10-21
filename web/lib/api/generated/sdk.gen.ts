@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, CancelLensRunData, CancelLensRunErrors, CancelLensRunResponses, CancelMeasureRunData, CancelMeasureRunErrors, CancelMeasureRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CompareLensRunsData, CompareLensRunsErrors, CompareLensRunsResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, ExportScoresData, ExportScoresErrors, ExportScoresResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, GenerateScenarioSetData, GenerateScenarioSetErrors, GenerateScenarioSetResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, LaunchLensData, LaunchLensErrors, LaunchLensResponses, LaunchMeasureData, LaunchMeasureErrors, LaunchMeasureResponses, ListAgentsData, ListAgentsResponses, ListBehavioursData, ListBehavioursResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListLensRunsData, ListLensRunsResponses, ListLensSourcesData, ListLensSourcesResponses, ListMeasureRunsData, ListMeasureRunsErrors, ListMeasureRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadBehaviourData, ReadBehaviourErrors, ReadBehaviourResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadLensRunData, ReadLensRunErrors, ReadLensRunResponses, ReadLensTranscriptData, ReadLensTranscriptErrors, ReadLensTranscriptResponses, ReadMeasureRunData, ReadMeasureRunErrors, ReadMeasureRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadScenarioSetData, ReadScenarioSetErrors, ReadScenarioSetResponses, ReadTaxonomyData, ReadTaxonomyResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, RunProvenanceData, RunProvenanceErrors, RunProvenanceResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, StreamLensRunData, StreamLensRunErrors, StreamLensRunResponses, StreamMeasureRunData, StreamMeasureRunErrors, StreamMeasureRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
+import type { AddGoldItemsData, AddGoldItemsErrors, AddGoldItemsResponses, CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, CancelLensRunData, CancelLensRunErrors, CancelLensRunResponses, CancelMeasureRunData, CancelMeasureRunErrors, CancelMeasureRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CompareLensRunsData, CompareLensRunsErrors, CompareLensRunsResponses, ComputeGoldAgreementData, ComputeGoldAgreementErrors, ComputeGoldAgreementResponses, CreateGoldSetData, CreateGoldSetErrors, CreateGoldSetResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, ExportFindingsData, ExportFindingsErrors, ExportFindingsResponses, ExportReportData, ExportReportErrors, ExportReportResponses, ExportScoresData, ExportScoresErrors, ExportScoresResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, GenerateScenarioSetData, GenerateScenarioSetErrors, GenerateScenarioSetResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, LaunchLensData, LaunchLensErrors, LaunchLensResponses, LaunchMeasureData, LaunchMeasureErrors, LaunchMeasureResponses, LensQueueData, LensQueueErrors, LensQueueResponses, ListAgentsData, ListAgentsResponses, ListBehavioursData, ListBehavioursResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListGoldSetsData, ListGoldSetsResponses, ListLensRunsData, ListLensRunsResponses, ListLensSourcesData, ListLensSourcesResponses, ListMeasureRunsData, ListMeasureRunsErrors, ListMeasureRunsResponses, ListReportRunsData, ListReportRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadBehaviourData, ReadBehaviourErrors, ReadBehaviourResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadGoldItemData, ReadGoldItemErrors, ReadGoldItemResponses, ReadGoldSetData, ReadGoldSetErrors, ReadGoldSetResponses, ReadLensRunData, ReadLensRunErrors, ReadLensRunResponses, ReadLensTranscriptData, ReadLensTranscriptErrors, ReadLensTranscriptResponses, ReadMeasureRunData, ReadMeasureRunErrors, ReadMeasureRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadScenarioSetData, ReadScenarioSetErrors, ReadScenarioSetResponses, ReadTaxonomyData, ReadTaxonomyResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, RunProvenanceData, RunProvenanceErrors, RunProvenanceResponses, SaveGoldRatingsData, SaveGoldRatingsErrors, SaveGoldRatingsResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, StreamLensRunData, StreamLensRunErrors, StreamLensRunResponses, StreamMeasureRunData, StreamMeasureRunErrors, StreamMeasureRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -307,11 +307,33 @@ export const say = <ThrowOnError extends boolean = false>(options: Options<SayDa
 });
 
 /**
+ * List Report Runs
+ *
+ * Recent runs of every kind, for export.
+ */
+export const listReportRuns = <ThrowOnError extends boolean = false>(options?: Options<ListReportRunsData, ThrowOnError>): RequestResult<ListReportRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListReportRunsResponses, unknown, ThrowOnError>({ url: '/api/reports/runs', ...options });
+
+/**
+ * Export Findings
+ *
+ * One row per Lens finding, with the run's provenance. Quotes from transcripts with
+ * content notes are left blank.
+ */
+export const exportFindings = <ThrowOnError extends boolean = false>(options: Options<ExportFindingsData, ThrowOnError>): RequestResult<ExportFindingsResponses, ExportFindingsErrors, ThrowOnError> => (options.client ?? client).get<ExportFindingsResponses, ExportFindingsErrors, ThrowOnError>({ url: '/api/reports/runs/{run_id}/findings.csv', ...options });
+
+/**
  * Run Provenance
  *
  * Everything needed to reproduce the run, including its full config.
  */
 export const runProvenance = <ThrowOnError extends boolean = false>(options: Options<RunProvenanceData, ThrowOnError>): RequestResult<RunProvenanceResponses, RunProvenanceErrors, ThrowOnError> => (options.client ?? client).get<RunProvenanceResponses, RunProvenanceErrors, ThrowOnError>({ url: '/api/reports/runs/{run_id}/provenance', ...options });
+
+/**
+ * Export Report
+ *
+ * A printable report of one run, opening with its full provenance.
+ */
+export const exportReport = <ThrowOnError extends boolean = false>(options: Options<ExportReportData, ThrowOnError>): RequestResult<ExportReportResponses, ExportReportErrors, ThrowOnError> => (options.client ?? client).get<ExportReportResponses, ExportReportErrors, ThrowOnError>({ url: '/api/reports/runs/{run_id}/report.pdf', ...options });
 
 /**
  * Export Scores
@@ -332,6 +354,70 @@ export const createReview = <ThrowOnError extends boolean = false>(options: Opti
         ...options.headers
     }
 });
+
+/**
+ * List Gold Sets
+ */
+export const listGoldSets = <ThrowOnError extends boolean = false>(options?: Options<ListGoldSetsData, ThrowOnError>): RequestResult<ListGoldSetsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListGoldSetsResponses, unknown, ThrowOnError>({ url: '/api/review/gold-sets', ...options });
+
+/**
+ * Create Gold Set
+ */
+export const createGoldSet = <ThrowOnError extends boolean = false>(options: Options<CreateGoldSetData, ThrowOnError>): RequestResult<CreateGoldSetResponses, CreateGoldSetErrors, ThrowOnError> => (options.client ?? client).post<CreateGoldSetResponses, CreateGoldSetErrors, ThrowOnError>({
+    url: '/api/review/gold-sets',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Gold Set
+ */
+export const readGoldSet = <ThrowOnError extends boolean = false>(options: Options<ReadGoldSetData, ThrowOnError>): RequestResult<ReadGoldSetResponses, ReadGoldSetErrors, ThrowOnError> => (options.client ?? client).get<ReadGoldSetResponses, ReadGoldSetErrors, ThrowOnError>({ url: '/api/review/gold-sets/{set_id}', ...options });
+
+/**
+ * Compute Gold Agreement
+ */
+export const computeGoldAgreement = <ThrowOnError extends boolean = false>(options: Options<ComputeGoldAgreementData, ThrowOnError>): RequestResult<ComputeGoldAgreementResponses, ComputeGoldAgreementErrors, ThrowOnError> => (options.client ?? client).post<ComputeGoldAgreementResponses, ComputeGoldAgreementErrors, ThrowOnError>({ url: '/api/review/gold-sets/{set_id}/agreement', ...options });
+
+/**
+ * Add Gold Items
+ */
+export const addGoldItems = <ThrowOnError extends boolean = false>(options: Options<AddGoldItemsData, ThrowOnError>): RequestResult<AddGoldItemsResponses, AddGoldItemsErrors, ThrowOnError> => (options.client ?? client).post<AddGoldItemsResponses, AddGoldItemsErrors, ThrowOnError>({
+    url: '/api/review/gold-sets/{set_id}/items',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Gold Item
+ */
+export const readGoldItem = <ThrowOnError extends boolean = false>(options: Options<ReadGoldItemData, ThrowOnError>): RequestResult<ReadGoldItemResponses, ReadGoldItemErrors, ThrowOnError> => (options.client ?? client).get<ReadGoldItemResponses, ReadGoldItemErrors, ThrowOnError>({ url: '/api/review/gold-sets/{set_id}/items/{item_id}', ...options });
+
+/**
+ * Save Gold Ratings
+ */
+export const saveGoldRatings = <ThrowOnError extends boolean = false>(options: Options<SaveGoldRatingsData, ThrowOnError>): RequestResult<SaveGoldRatingsResponses, SaveGoldRatingsErrors, ThrowOnError> => (options.client ?? client).put<SaveGoldRatingsResponses, SaveGoldRatingsErrors, ThrowOnError>({
+    url: '/api/review/gold-sets/{set_id}/items/{item_id}/ratings',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Lens Queue
+ *
+ * Replies where Lens judges differ by two points or more on a label, newest runs
+ * first. A verdict is recorded on a judge's finding and never changes it.
+ */
+export const lensQueue = <ThrowOnError extends boolean = false>(options?: Options<LensQueueData, ThrowOnError>): RequestResult<LensQueueResponses, LensQueueErrors, ThrowOnError> => (options?.client ?? client).get<LensQueueResponses, LensQueueErrors, ThrowOnError>({ url: '/api/review/lens-queue', ...options });
 
 /**
  * Score Queue

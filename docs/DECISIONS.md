@@ -4,6 +4,75 @@ Every design choice, and every place the brief and a library's current
 documentation disagree. Current documentation wins; the entry says so. Newest
 milestone first within each section.
 
+## Milestone 6: review and reports
+
+### Where the brief and current documentation differ
+
+**ReportLab 5 has no published release notes we could reach.** Bench pins
+`reportlab==5.0.1` (August 2026) for PDF reports. Its documentation host is blocked
+here and no 5.0 notes turned up, so the integration uses only Platypus calls whose
+signatures were read from the installed package (`SimpleDocTemplate`, `Paragraph`,
+`Table`, `TableStyle`, `Spacer`), and the tests extract the PDF's text to check the
+provenance landed. ReportLab ships no type information, so mypy skips it.
+
+### Design choices
+
+**Gold items are a seeded sample.** An admin creates a gold set from a finished run:
+the items are the first N transcripts when ordered by a hash of the seed and the
+transcript id, so the same seed always draws the same items. More items can be
+added from other runs. The set records the taxonomy version it was labelled with.
+
+**Labelling is blind and complete.** An expert rates every label on every reply of
+an item, from 0 to 3, starting from absent, and saving replaces their own ratings.
+They never see the judges' findings or another expert's ratings. Storing the zeros
+as well as the findings lets agreement tell "absent" from "not rated".
+
+**Agreement.** For each label, Krippendorff's alpha (ordinal) over units of one
+reply: between the experts, and, for each Lens judge, between that judge and the
+median of the experts' ratings. The judge's value is its highest intensity for the
+label in the reply, or 0, taken from the newest finished Lens run with the same
+taxonomy version that read the transcript. Every computation is kept with its time;
+pages show the newest.
+
+**Trust follows the experts' alpha.** Computing agreement sets each label's trust:
+trusted from 0.8, provisional from 0.667, retired below, and unrated with fewer
+than ten pairable ratings or no variation. The badge shows wherever the label
+does: the label reference, Lens run pages, the findings pane and the gold set.
+Judges' alphas inform the choice of judges but do not set trust.
+
+**Lens disagreements join the review queue.** Every reply where judges differ by
+two points or more on a label, from the twenty newest finished Lens runs, appears
+under Review, Lens disagreements. The reviewer gives the intensity they would, and
+Bench records it against each judge's finding as agree or disagree with a
+corrected intensity. Verdicts never change findings.
+
+**PDF reports open with provenance.** Each run's PDF starts with every provenance
+field (commit, config hash, prompt SHA, seed hash, taxonomy version, models,
+engines, route, tokens, cost, times) in a monospace column, then sections for the
+run's kind: Explore scores on our dimensions, Measure rates by repetition and by
+scenario, Lens label shares with intervals and each judge's kept and dropped
+findings, or a scenario set's scenarios. Summaries from transcripts with content
+notes are left out of the PDF; quotes from them are left blank in the findings CSV.
+
+**Every export is audited,** as before: the audit log records the format and the
+number of rows.
+
+**Sign-in never relinks an account by email.** If an identity provider sends an
+email address that already belongs to a different issuer and subject, sign-in is
+refused with a clear message and an `auth.refused` audit event, rather than
+attaching the new identity to the existing account. Found while testing, where it
+had produced a server error.
+
+### Open questions
+
+1. **Who labels the gold set?** The brief asks for 60 transcripts labelled by two
+   experts each. Which reviewers, and should a clinician and a claims specialist
+   label the items that touch their field?
+2. **Agreement with one judge or the panel?** Bench reports each judge against the
+   experts. The panel's median could be reported too, as the number Lens shows.
+3. **Retired labels.** A retired label still appears in Lens views with its badge.
+   Should Lens stop reporting it, or keep it visible for comparison?
+
 ## Milestone 5: lens
 
 ### Where the brief and current documentation differ

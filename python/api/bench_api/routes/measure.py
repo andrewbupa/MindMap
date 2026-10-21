@@ -180,7 +180,7 @@ def _elicitation(result: Elicitation) -> ElicitationOut:
     )
 
 
-async def _rollouts(db: Db, runs: Iterable[Run]) -> dict[uuid.UUID, list[RolloutOut]]:
+async def measure_rollouts(db: Db, runs: Iterable[Run]) -> dict[uuid.UUID, list[RolloutOut]]:
     """Every indexed rollout of these Measure runs, with its presence score."""
     by_id = {run.id: run for run in runs}
     result: dict[uuid.UUID, list[RolloutOut]] = {run_id: [] for run_id in by_id}
@@ -228,7 +228,7 @@ async def _rollouts(db: Db, runs: Iterable[Run]) -> dict[uuid.UUID, list[Rollout
     return result
 
 
-def _rates(run: Run, rollouts: list[RolloutOut]) -> Elicitation:
+def measure_rates(run: Run, rollouts: list[RolloutOut]) -> Elicitation:
     return elicitation(
         (Rollout(scenario=r.scenario, epoch=r.epoch, score=r.score) for r in rollouts),
         threshold=float(run.config.get("threshold", 7)),
@@ -245,7 +245,7 @@ async def _run_summary(db: Db, run: Run, rollouts: list[RolloutOut]) -> MeasureR
         scenario_set=uuid.UUID(config["scenario_set"]),
         suite=config["suite"],
         counts=await explore.sample_counts(db, run.id),
-        elicitation=_elicitation(_rates(run, rollouts)),
+        elicitation=_elicitation(measure_rates(run, rollouts)),
     )
 
 
@@ -287,7 +287,7 @@ async def read_behaviour(
                 )
             ).scalars()
         )
-    rollouts = await _rollouts(db, runs)
+    rollouts = await measure_rollouts(db, runs)
     top = sorted(
         (r for run_rollouts in rollouts.values() for r in run_rollouts if r.score is not None),
         key=lambda r: -(r.score or 0),
@@ -444,7 +444,7 @@ async def list_measure_runs(
     if behaviour:
         query = query.where(Run.config["behaviour"].astext == behaviour)
     runs = list((await db.execute(query.order_by(Run.created_at.desc()).limit(100))).scalars())
-    rollouts = await _rollouts(db, runs)
+    rollouts = await measure_rollouts(db, runs)
     return [await _run_summary(db, run, rollouts[run.id]) for run in runs]
 
 
@@ -465,8 +465,8 @@ async def read_measure_run(run_id: uuid.UUID, _: ReaderUser, db: Db) -> MeasureR
             .order_by(RunSample.epoch, RunSample.sample_index)
         )
     ).scalars()
-    rollouts = (await _rollouts(db, [run]))[run.id]
-    rates = _rates(run, rollouts)
+    rollouts = (await measure_rollouts(db, [run]))[run.id]
+    rates = measure_rates(run, rollouts)
     variations = {r.scenario: r.variation for r in rollouts}
     summary = await _run_summary(db, run, rollouts)
     return MeasureRunOut(

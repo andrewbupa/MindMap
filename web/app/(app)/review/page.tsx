@@ -5,6 +5,7 @@ import { scoreQueue } from "@/lib/api";
 import { getMe, serverClient } from "@/lib/api/server";
 import { hasRole } from "@/lib/auth";
 
+import { ReviewNav } from "./ReviewNav";
 import { ScoreQueue } from "./ScoreQueue";
 
 export const metadata = { title: "Review" };
@@ -26,10 +27,10 @@ export default async function ReviewPage() {
       <PageHeader title="Review">
         <p>
           Judge scores worth an expert&apos;s eye, highest first. Your verdict is recorded beside
-          the judge&apos;s score; it never changes it. Lens findings and gold-set labelling join
-          this page with milestone 5 and 6.
+          the judge&apos;s score; it never changes it.
         </p>
       </PageHeader>
+      <ReviewNav current="/review" />
       {data.hidden_for_content_notes > 0 ? (
         <Notice>
           {data.hidden_for_content_notes} items touch self-harm, abuse or bereavement and are

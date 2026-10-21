@@ -3,6 +3,7 @@ edits what it judges. Items with content notes appear only for reviewers who opt
 
 from __future__ import annotations
 
+import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -10,8 +11,19 @@ from inspect_petri import judge_dimensions
 from sqlalchemy import func, select
 
 from bench_api.deps import AppSettings, Db, ReaderUser, require_role
-from bench_api.schemas import ReviewIn, ReviewOut, ReviewQueueOut, ScoreOut, ScoreReviewItem
+from bench_api.schemas import (
+    AnnotationOut,
+    LensDisputeOut,
+    LensQueueOut,
+    ReviewIn,
+    ReviewOut,
+    ReviewQueueOut,
+    ScoreOut,
+    ScoreReviewItem,
+)
 from bench_core import audit
+from bench_core.lens.read import load_run_lens
+from bench_core.lens.taxonomy import load_lens
 from bench_core.models import (
     Annotation,
     Message,
@@ -83,6 +95,97 @@ async def score_queue(
         if len(items) >= limit:
             break
     return ReviewQueueOut(items=items, hidden_for_content_notes=hidden)
+
+
+LENS_RUNS = 20
+
+
+@router.get("/lens-queue")
+async def lens_queue(
+    user: ReviewerUser, db: Db, settings: AppSettings, limit: int = 50
+) -> LensQueueOut:
+    """Replies where Lens judges differ by two points or more on a label, newest runs
+    first. A verdict is recorded on a judge's finding and never changes it."""
+    order = [label.key for label in load_lens(settings.repo_root).taxonomy.labels]
+    runs = (
+        await db.execute(
+            select(Run)
+            .where(Run.kind == "lens", Run.status == "succeeded")
+            .order_by(Run.created_at.desc())
+            .limit(LENS_RUNS)
+        )
+    ).scalars()
+    mine = set(
+        (
+            await db.execute(
+                select(Review.annotation_id).where(
+                    Review.reviewer_id == user.id, Review.annotation_id.is_not(None)
+                )
+            )
+        ).scalars()
+    )
+    counts = dict(
+        (
+            await db.execute(
+                select(Review.annotation_id, func.count())
+                .where(Review.annotation_id.is_not(None))
+                .group_by(Review.annotation_id)
+            )
+        ).all()
+    )
+    items: list[LensDisputeOut] = []
+    hidden = 0
+    for run in runs:
+        lens = await load_run_lens(db, run, order=order)
+        families = {label.key: label.family for label in lens.labels}
+        for transcript in lens.transcripts:
+            notes = transcript.scenario.content_notes if transcript.scenario else []
+            text = {str(m.id): m.content for m in transcript.messages}
+            for reply in transcript.replies:
+                for key in reply.disputed:
+                    if notes and not user.sensitive_opt_in:
+                        hidden += 1
+                        continue
+                    found = [e for e in reply.evidence if e.label == key and e.channel == "content"]
+                    ids = [uuid.UUID(e.id) for e in found]
+                    if any(i in mine for i in ids):
+                        continue
+                    consensus = reply.labels[key]
+                    items.append(
+                        LensDisputeOut(
+                            lens_run_id=run.id,
+                            lens_run_title=run.title,
+                            transcript_id=transcript.transcript.id,
+                            scenario_key=transcript.scenario.key if transcript.scenario else None,
+                            message_id=uuid.UUID(reply.message_id),
+                            reply_text=text.get(reply.message_id, ""),
+                            label=key,
+                            family=families.get(key, ""),
+                            median=consensus.median,
+                            by_judge=consensus.by_judge,
+                            annotations=[
+                                AnnotationOut(
+                                    id=uuid.UUID(e.id),
+                                    message_id=uuid.UUID(e.message_id),
+                                    label=e.label,
+                                    family=families.get(e.label, ""),
+                                    judge=e.judge,
+                                    intensity=e.intensity,
+                                    quote=e.quote,
+                                    start=e.start,
+                                    end=e.end,
+                                    channel=e.channel,
+                                    rationale=e.rationale,
+                                )
+                                for e in found
+                            ],
+                            reviews=sum(counts.get(i, 0) for i in ids),
+                            reviewed_by_me=False,
+                        )
+                    )
+                    if len(items) >= limit:
+                        return LensQueueOut(items=items, hidden_for_content_notes=hidden)
+    return LensQueueOut(items=items, hidden_for_content_notes=hidden)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)

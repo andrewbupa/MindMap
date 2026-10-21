@@ -61,7 +61,8 @@ strict = true
 
 
 [[tool.mypy.overrides]]
-module = ["authlib.*"]
+# Neither ships type information; reportlab 5 has no published stubs yet.
+module = ["authlib.*", "reportlab.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

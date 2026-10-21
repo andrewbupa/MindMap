@@ -90,6 +90,40 @@ export type AgentSummary = {
 };
 
 /**
+ * AgreementOut
+ */
+export type AgreementOut = {
+    /**
+     * Alpha
+     */
+    alpha: number | null;
+    /**
+     * Comparison
+     */
+    comparison: string;
+    /**
+     * Computed At
+     */
+    computed_at: string;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Judge Model
+     */
+    judge_model: string | null;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * N Units
+     */
+    n_units: number;
+};
+
+/**
  * AnnotationOut
  */
 export type AnnotationOut = {
@@ -787,6 +821,290 @@ export type GeneratedScenarioOut = {
 };
 
 /**
+ * GoldItemDetail
+ */
+export type GoldItemDetail = {
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Gold Set
+     */
+    gold_set: string;
+    /**
+     * Gold Set Name
+     */
+    gold_set_name: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Labels
+     */
+    labels: Array<LensLabelOut>;
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    /**
+     * Mine
+     *
+     * Your ratings only; others stay hidden.
+     */
+    mine: Array<GoldRatingOut>;
+    /**
+     * Next Item
+     */
+    next_item: string | null;
+    /**
+     * Replies
+     */
+    replies: Array<string>;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Seed Text
+     */
+    seed_text: string | null;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
+ * GoldItemOut
+ */
+export type GoldItemOut = {
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Labelled By Me
+     */
+    labelled_by_me: boolean;
+    /**
+     * Labellers
+     */
+    labellers: number;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
+ * GoldItemsAdd
+ */
+export type GoldItemsAdd = {
+    /**
+     * Seed
+     */
+    seed?: number;
+    /**
+     * Size
+     */
+    size?: number;
+    /**
+     * Source Run
+     */
+    source_run: string;
+};
+
+/**
+ * GoldRatingIn
+ */
+export type GoldRatingIn = {
+    /**
+     * Intensity
+     */
+    intensity: number;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Quote
+     */
+    quote?: string | null;
+};
+
+/**
+ * GoldRatingOut
+ */
+export type GoldRatingOut = {
+    /**
+     * Intensity
+     */
+    intensity: number;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Quote
+     */
+    quote: string | null;
+};
+
+/**
+ * GoldRatingsIn
+ */
+export type GoldRatingsIn = {
+    /**
+     * Ratings
+     */
+    ratings: Array<GoldRatingIn>;
+};
+
+/**
+ * GoldSetCreate
+ */
+export type GoldSetCreate = {
+    /**
+     * Description
+     */
+    description?: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Seed
+     *
+     * The same seed always draws the same items.
+     */
+    seed?: number;
+    /**
+     * Size
+     */
+    size?: number;
+    /**
+     * Source Run
+     */
+    source_run: string;
+};
+
+/**
+ * GoldSetOut
+ */
+export type GoldSetOut = {
+    /**
+     * Agreement
+     */
+    agreement: Array<AgreementOut>;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Fully Labelled
+     *
+     * Items rated by at least two experts.
+     */
+    fully_labelled: number;
+    /**
+     * Hidden For Content Notes
+     */
+    hidden_for_content_notes: number;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Items
+     */
+    items: number;
+    /**
+     * Items List
+     */
+    items_list: Array<GoldItemOut>;
+    /**
+     * Labelled By Me
+     */
+    labelled_by_me: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Taxonomy Version
+     */
+    taxonomy_version: string;
+    /**
+     * Trust
+     */
+    trust: {
+        [key: string]: string;
+    };
+};
+
+/**
+ * GoldSetSummary
+ */
+export type GoldSetSummary = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Fully Labelled
+     *
+     * Items rated by at least two experts.
+     */
+    fully_labelled: number;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Items
+     */
+    items: number;
+    /**
+     * Labelled By Me
+     */
+    labelled_by_me: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Taxonomy Version
+     */
+    taxonomy_version: string;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -953,6 +1271,66 @@ export type LensCompareOut = {
 };
 
 /**
+ * LensDisputeOut
+ */
+export type LensDisputeOut = {
+    /**
+     * Annotations
+     */
+    annotations: Array<AnnotationOut>;
+    /**
+     * By Judge
+     */
+    by_judge: {
+        [key: string]: number;
+    };
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Lens Run Id
+     */
+    lens_run_id: string;
+    /**
+     * Lens Run Title
+     */
+    lens_run_title: string;
+    /**
+     * Median
+     */
+    median: number;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Reply Text
+     */
+    reply_text: string;
+    /**
+     * Reviewed By Me
+     */
+    reviewed_by_me: boolean;
+    /**
+     * Reviews
+     */
+    reviews: number;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
  * LensEvidenceOut
  */
 export type LensEvidenceOut = {
@@ -1056,6 +1434,20 @@ export type LensLaunch = {
      * Read only these transcripts; all of them when empty.
      */
     transcripts?: Array<string> | null;
+};
+
+/**
+ * LensQueueOut
+ */
+export type LensQueueOut = {
+    /**
+     * Hidden For Content Notes
+     */
+    hidden_for_content_notes: number;
+    /**
+     * Items
+     */
+    items: Array<LensDisputeOut>;
 };
 
 /**
@@ -3800,6 +4192,52 @@ export type SayResponses = {
 
 export type SayResponse = SayResponses[keyof SayResponses];
 
+export type ListReportRunsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/reports/runs';
+};
+
+export type ListReportRunsResponses = {
+    /**
+     * Response List Report Runs
+     *
+     * Successful Response
+     */
+    200: Array<RunOut>;
+};
+
+export type ListReportRunsResponse = ListReportRunsResponses[keyof ListReportRunsResponses];
+
+export type ExportFindingsData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/reports/runs/{run_id}/findings.csv';
+};
+
+export type ExportFindingsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ExportFindingsError = ExportFindingsErrors[keyof ExportFindingsErrors];
+
+export type ExportFindingsResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type RunProvenanceData = {
     body?: never;
     path: {
@@ -3833,6 +4271,34 @@ export type RunProvenanceResponses = {
 };
 
 export type RunProvenanceResponse = RunProvenanceResponses[keyof RunProvenanceResponses];
+
+export type ExportReportData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/reports/runs/{run_id}/report.pdf';
+};
+
+export type ExportReportErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ExportReportError = ExportReportErrors[keyof ExportReportErrors];
+
+export type ExportReportResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type ExportScoresData = {
     body?: never;
@@ -3886,6 +4352,241 @@ export type CreateReviewResponses = {
 };
 
 export type CreateReviewResponse = CreateReviewResponses[keyof CreateReviewResponses];
+
+export type ListGoldSetsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/review/gold-sets';
+};
+
+export type ListGoldSetsResponses = {
+    /**
+     * Response List Gold Sets
+     *
+     * Successful Response
+     */
+    200: Array<GoldSetSummary>;
+};
+
+export type ListGoldSetsResponse = ListGoldSetsResponses[keyof ListGoldSetsResponses];
+
+export type CreateGoldSetData = {
+    body: GoldSetCreate;
+    path?: never;
+    query?: never;
+    url: '/api/review/gold-sets';
+};
+
+export type CreateGoldSetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateGoldSetError = CreateGoldSetErrors[keyof CreateGoldSetErrors];
+
+export type CreateGoldSetResponses = {
+    /**
+     * Successful Response
+     */
+    201: GoldSetSummary;
+};
+
+export type CreateGoldSetResponse = CreateGoldSetResponses[keyof CreateGoldSetResponses];
+
+export type ReadGoldSetData = {
+    body?: never;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+    };
+    query?: never;
+    url: '/api/review/gold-sets/{set_id}';
+};
+
+export type ReadGoldSetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadGoldSetError = ReadGoldSetErrors[keyof ReadGoldSetErrors];
+
+export type ReadGoldSetResponses = {
+    /**
+     * Successful Response
+     */
+    200: GoldSetOut;
+};
+
+export type ReadGoldSetResponse = ReadGoldSetResponses[keyof ReadGoldSetResponses];
+
+export type ComputeGoldAgreementData = {
+    body?: never;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+    };
+    query?: never;
+    url: '/api/review/gold-sets/{set_id}/agreement';
+};
+
+export type ComputeGoldAgreementErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ComputeGoldAgreementError = ComputeGoldAgreementErrors[keyof ComputeGoldAgreementErrors];
+
+export type ComputeGoldAgreementResponses = {
+    /**
+     * Response Compute Gold Agreement
+     *
+     * Successful Response
+     */
+    200: Array<AgreementOut>;
+};
+
+export type ComputeGoldAgreementResponse = ComputeGoldAgreementResponses[keyof ComputeGoldAgreementResponses];
+
+export type AddGoldItemsData = {
+    body: GoldItemsAdd;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+    };
+    query?: never;
+    url: '/api/review/gold-sets/{set_id}/items';
+};
+
+export type AddGoldItemsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AddGoldItemsError = AddGoldItemsErrors[keyof AddGoldItemsErrors];
+
+export type AddGoldItemsResponses = {
+    /**
+     * Successful Response
+     */
+    201: GoldSetSummary;
+};
+
+export type AddGoldItemsResponse = AddGoldItemsResponses[keyof AddGoldItemsResponses];
+
+export type ReadGoldItemData = {
+    body?: never;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+        /**
+         * Item Id
+         */
+        item_id: string;
+    };
+    query?: never;
+    url: '/api/review/gold-sets/{set_id}/items/{item_id}';
+};
+
+export type ReadGoldItemErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadGoldItemError = ReadGoldItemErrors[keyof ReadGoldItemErrors];
+
+export type ReadGoldItemResponses = {
+    /**
+     * Successful Response
+     */
+    200: GoldItemDetail;
+};
+
+export type ReadGoldItemResponse = ReadGoldItemResponses[keyof ReadGoldItemResponses];
+
+export type SaveGoldRatingsData = {
+    body: GoldRatingsIn;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+        /**
+         * Item Id
+         */
+        item_id: string;
+    };
+    query?: never;
+    url: '/api/review/gold-sets/{set_id}/items/{item_id}/ratings';
+};
+
+export type SaveGoldRatingsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SaveGoldRatingsError = SaveGoldRatingsErrors[keyof SaveGoldRatingsErrors];
+
+export type SaveGoldRatingsResponses = {
+    /**
+     * Response Save Gold Ratings
+     *
+     * Successful Response
+     */
+    200: Array<GoldRatingOut>;
+};
+
+export type SaveGoldRatingsResponse = SaveGoldRatingsResponses[keyof SaveGoldRatingsResponses];
+
+export type LensQueueData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/review/lens-queue';
+};
+
+export type LensQueueErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LensQueueError = LensQueueErrors[keyof LensQueueErrors];
+
+export type LensQueueResponses = {
+    /**
+     * Successful Response
+     */
+    200: LensQueueOut;
+};
+
+export type LensQueueResponse = LensQueueResponses[keyof LensQueueResponses];
 
 export type ScoreQueueData = {
     body?: never;

@@ -45,8 +45,8 @@ def _coincidences(units: Iterable[Iterable[float]]) -> tuple[dict[tuple[float, f
     return o, pairable
 
 
-def alpha(
-    data: Mapping[Hashable, Mapping[Hashable, float | None]], metric: Metric = "ordinal"
+def alpha[U: Hashable, C: Hashable](
+    data: Mapping[U, Mapping[C, float | None]], metric: Metric = "ordinal"
 ) -> float | None:
     """Alpha for ``data[unit][coder] = value`` (None or absent for missing).
 
@@ -83,7 +83,7 @@ def alpha(
     return 1 - observed / expected
 
 
-def pairable_values(data: Mapping[Hashable, Mapping[Hashable, float | None]]) -> int:
+def pairable_values[U: Hashable, C: Hashable](data: Mapping[U, Mapping[C, float | None]]) -> int:
     return sum(
         len(present)
         for present in ([v for v in coders.values() if v is not None] for coders in data.values())

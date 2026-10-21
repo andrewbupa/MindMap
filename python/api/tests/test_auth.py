@@ -146,3 +146,17 @@ async def test_sign_out_ends_the_session(client: httpx.AsyncClient, idp: FakeOID
     assert response.json()["redirect"].startswith("https://idp.example.test/logout?")
     assert "id_token_hint=fake-id-token" in response.json()["redirect"]
     assert (await client.get("/api/me")).status_code == 401
+
+
+async def test_an_email_held_by_another_identity_is_refused(
+    client: httpx.AsyncClient, idp: FakeOIDCClient, db: AsyncSession
+) -> None:
+    await sign_in_as(client, idp, "admin@example.test")
+    refused = await sign_in_as(client, idp, "admin@example.test", sub="someone-else")
+    assert refused.status_code == 409 and "another sign-in identity" in refused.text
+    events = (
+        (await db.execute(select(AuditEvent).where(AuditEvent.action == "auth.refused")))
+        .scalars()
+        .all()
+    )
+    assert [e.detail["reason"] for e in events] == ["email_held_by_another_identity"]

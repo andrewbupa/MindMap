@@ -732,3 +732,111 @@ class LensCompareOut(BaseModel):
     shared_scenarios: int
     labels: list[LabelComparisonOut]
     scenarios: list[ScenarioComparisonOut]
+
+
+# Gold sets
+
+
+class GoldSetCreate(BaseModel):
+    name: str = Field(min_length=3, max_length=200)
+    description: str = Field(default="", max_length=5000)
+    source_run: uuid.UUID
+    size: int = Field(default=60, ge=1, le=500)
+    seed: int = Field(default=0, description="The same seed always draws the same items.")
+
+
+class GoldItemsAdd(BaseModel):
+    source_run: uuid.UUID
+    size: int = Field(default=20, ge=1, le=500)
+    seed: int = 0
+
+
+class GoldSetSummary(BaseModel):
+    id: uuid.UUID
+    name: str
+    description: str
+    taxonomy_version: str
+    created_at: datetime
+    items: int
+    fully_labelled: int = Field(description="Items rated by at least two experts.")
+    labelled_by_me: int
+
+
+class GoldItemOut(BaseModel):
+    id: uuid.UUID
+    transcript_id: uuid.UUID
+    scenario_key: str | None
+    content_notes: list[str]
+    labellers: int
+    labelled_by_me: bool
+
+
+class AgreementOut(BaseModel):
+    label: str
+    family: str
+    comparison: str
+    judge_model: str | None
+    alpha: float | None
+    n_units: int
+    computed_at: datetime
+
+
+class GoldSetOut(GoldSetSummary):
+    items_list: list[GoldItemOut]
+    hidden_for_content_notes: int
+    agreement: list[AgreementOut]
+    trust: dict[str, str]
+
+
+class GoldRatingIn(BaseModel):
+    message_id: uuid.UUID
+    label: str
+    intensity: int = Field(ge=0, le=3)
+    quote: str | None = Field(default=None, max_length=2000)
+
+
+class GoldRatingsIn(BaseModel):
+    ratings: list[GoldRatingIn]
+
+
+class GoldRatingOut(BaseModel):
+    message_id: uuid.UUID
+    label: str
+    intensity: int
+    quote: str | None
+
+
+class GoldItemDetail(BaseModel):
+    id: uuid.UUID
+    gold_set: uuid.UUID
+    gold_set_name: str
+    transcript_id: uuid.UUID
+    scenario_key: str | None
+    seed_text: str | None
+    content_notes: list[str]
+    messages: list[MessageOut]
+    replies: list[uuid.UUID]
+    labels: list[LensLabelOut]
+    mine: list[GoldRatingOut] = Field(description="Your ratings only; others stay hidden.")
+    next_item: uuid.UUID | None
+
+
+class LensDisputeOut(BaseModel):
+    lens_run_id: uuid.UUID
+    lens_run_title: str
+    transcript_id: uuid.UUID
+    scenario_key: str | None
+    message_id: uuid.UUID
+    reply_text: str
+    label: str
+    family: str
+    median: float
+    by_judge: dict[str, int]
+    annotations: list[AnnotationOut]
+    reviews: int
+    reviewed_by_me: bool
+
+
+class LensQueueOut(BaseModel):
+    items: list[LensDisputeOut]
+    hidden_for_content_notes: int
