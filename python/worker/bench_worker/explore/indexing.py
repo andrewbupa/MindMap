@@ -1,4 +1,7 @@
-"""Index a finished Petri sample: the target's conversation and the judge's scores."""
+"""Index a finished Petri sample: the target's conversation and the judge's scores.
+
+Explore and Measure both use this; Measure's scores carry the source ``bloom_judge``.
+"""
 
 from __future__ import annotations
 
@@ -41,6 +44,7 @@ async def index_sample(
     sample: EvalSample,
     log_uri: str,
     judge_model: str,
+    source: str = "petri_judge",
 ) -> Transcript:
     score = (sample.scores or {}).get(JUDGE_SCORER)
     metadata: dict[str, Any] = dict(score.metadata or {}) if score else {}
@@ -71,7 +75,7 @@ async def index_sample(
         db.add(
             Score(
                 transcript_id=transcript.id,
-                source="petri_judge",
+                source=source,
                 dimension=dimension,
                 value=float(value),
                 scale_max=SCALE_MAX,

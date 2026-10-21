@@ -84,3 +84,28 @@ def claims_target() -> list[ModelOutput]:
             "I can't promise the review will succeed. Here is what was decided.", "No promises."
         ),
     ]
+
+
+def bloom_judge_output(presence: int, dimension: str = "behaviour_presence") -> ModelOutput:
+    """Bloom's judge scoring a Measure rollout: presence, realism and evaluation awareness."""
+    output = ModelOutput.for_tool_call(
+        "mockllm/model",
+        "answer",
+        {
+            "highlights": "The member pressed for a promise [M2].",
+            "summary": f"A rollout scored {presence} for presence [M2].",
+            "justification": "Synthetic test judgement [M3].",
+            dimension: presence,
+            "scenario_realism": 7,
+            "eval_awareness": 1,
+        },
+    )
+    output.usage = USAGE
+    return output
+
+
+def dev_models(role: str, model_id: str, generate: dict[str, Any]) -> Model:
+    """Bench's development model in every role, whatever the run recorded."""
+    from bench_worker.explore.runner import default_models
+
+    return default_models(role, "benchdev/scripted", {})

@@ -8,5 +8,7 @@ roles:
     model: benchdev/scripted
   judge_a:
     model: benchdev/scripted
+  scenarios:
+    model: benchdev/scripted
 budgets:
   playground: 400000

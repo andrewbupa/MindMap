@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-import asyncio
 import uuid
 from collections.abc import AsyncIterator
-from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.sse import EventSourceResponse, ServerSentEvent
@@ -14,6 +12,7 @@ from sqlalchemy import select
 
 from bench_api.deps import AppSettings, AuthorUser, Db, ReaderUser
 from bench_api.models_dep import Roles
+from bench_api.run_control import cancel_run, status_events
 from bench_api.schemas import (
     DimensionOut,
     ExploreLaunch,
@@ -30,14 +29,11 @@ from bench_api.schemas import (
 )
 from bench_core import audit, explore, queue
 from bench_core.agents.load import AgentNotFound, load_agent_version
-from bench_core.db import get_sessionmaker
 from bench_core.models import (
     Message,
-    Role,
     Run,
     RunKind,
     RunSample,
-    RunStatus,
     Scenario,
     Score,
     Transcript,
@@ -49,9 +45,6 @@ from bench_core.storage import get_storage
 from bench_core.transcripts import key_from_uri
 
 router = APIRouter(prefix="/explore", tags=["explore"])
-
-STREAM_SECONDS = 85
-POLL_SECONDS = 2.0
 
 
 @router.get("/seeds")
@@ -219,39 +212,13 @@ async def stream_explore_run(
 ) -> AsyncIterator[ServerSentEvent]:
     """Sample counts as they change. Clients reconnect after the stream ends, or poll."""
     await _explore_run(db, run_id)
-    last: dict[str, object] | None = None
-    for _tick in range(int(STREAM_SECONDS / POLL_SECONDS)):
-        async with get_sessionmaker()() as fresh:
-            run = await fresh.get(Run, run_id)
-            if run is None:
-                return
-            state: dict[str, object] = {
-                "status": run.status,
-                "tokens_used": run.tokens_used,
-                "counts": await explore.sample_counts(fresh, run_id),
-            }
-        if state != last:
-            last = state
-            yield ServerSentEvent(data=state, event="status", retry=3000)
-        if state["status"] not in explore.OPEN:
-            return
-        await asyncio.sleep(POLL_SECONDS)
+    async for event in status_events(run_id):
+        yield event
 
 
 @router.post("/runs/{run_id}/cancel")
 async def cancel_explore_run(run_id: uuid.UUID, user: AuthorUser, db: Db) -> RunOut:
-    run = await _explore_run(db, run_id)
-    if run.launched_by != user.id and not user.has_role(Role.admin):
-        raise HTTPException(
-            status.HTTP_403_FORBIDDEN, "Only the person who launched this can cancel it."
-        )
-    if run.status not in explore.OPEN:
-        raise HTTPException(status.HTTP_409_CONFLICT, "This run has already finished.")
-    run.status = RunStatus.cancelled.value
-    run.finished_at = datetime.now(UTC)
-    await audit.record(db, "run.cancel", actor_id=user.id, target_type="run", target_id=run.id)
-    await db.commit()
-    return RunOut.model_validate(run)
+    return await cancel_run(await _explore_run(db, run_id), user, db)
 
 
 @router.get("/transcripts/{transcript_id}")

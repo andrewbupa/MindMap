@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bench_core.agents.adapter import AgentVersion
@@ -60,7 +61,7 @@ async def current_personas(db: AsyncSession, agent: Agent) -> list[Persona]:
         await db.execute(
             select(Persona)
             .where(Persona.agent_id == agent.id)
-            .distinct(Persona.key)
+            .ext(distinct_on(Persona.key))
             .order_by(Persona.key, Persona.created_at.desc())
         )
     ).scalars()

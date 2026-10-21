@@ -26,6 +26,7 @@ from bench_core.models.runs import (
     RunKind,
     RunSample,
     RunStatus,
+    ScenarioSet,
     Score,
     Transcript,
 )
@@ -60,6 +61,7 @@ __all__ = [
     "RunSample",
     "RunStatus",
     "Scenario",
+    "ScenarioSet",
     "Score",
     "SystemCheck",
     "TaxonomyVersion",

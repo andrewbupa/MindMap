@@ -178,6 +178,8 @@ class RunOut(Out):
     model_ids: dict[str, Any]
     engine_versions: dict[str, Any]
     adapter_mode: str | None
+    route: str | None = Field(description="How the agent was reached, for Measure runs.")
+    behaviour_id: uuid.UUID | None
     token_budget: int
     tokens_used: int
     cost_usd: float
@@ -398,3 +400,141 @@ class ReviewQueueOut(BaseModel):
     hidden_for_content_notes: int = Field(
         description="Items left out because they carry content notes you have not opted in to."
     )
+
+
+# Measure
+
+
+class ScenarioSetSummary(Out):
+    id: uuid.UUID
+    run_id: uuid.UUID
+    behaviour_id: uuid.UUID
+    created_at: datetime
+    scenario_count: int
+    presence_dimension: str
+    content_hash: str
+    behaviour_seed_hash: str
+    current: bool = Field(description="Generated from the behaviour as it is in git now.")
+    model: str
+
+
+class BehaviourSummary(BaseModel):
+    key: str
+    title: str
+    definition: str
+    agents: list[str]
+    tags: list[str]
+    variations: list[str]
+    num_scenarios: int
+    scenario_type: str | None
+    content_notes: list[str]
+    seed_hash: str
+    scenario_set: ScenarioSetSummary | None = Field(
+        description="The newest scenario set for this behaviour version."
+    )
+    generating: RunOut | None = Field(description="A generation run still in progress.")
+
+
+class GeneratedScenarioOut(BaseModel):
+    id: str = Field(description="The sample id Bloom gives the scenario.")
+    name: str
+    variation: str | None
+    seed: str
+    scenario_row: uuid.UUID | None
+
+
+class GeneratedDimensionOut(BaseModel):
+    name: str
+    description: str
+    tags: list[str]
+    rubric: str | None
+    presence: bool
+
+
+class ScenarioSetOut(BaseModel):
+    summary: ScenarioSetSummary
+    behaviour: str
+    understanding: str | None
+    scientific_motivation: str | None
+    scenarios: list[GeneratedScenarioOut]
+    dimensions: list[GeneratedDimensionOut]
+    generation: RunOut
+
+
+class TallyOut(BaseModel):
+    rollouts: int = Field(description="Rollouts the judge scored.")
+    elicited: int = Field(description="Scored rollouts at or above the threshold.")
+    unscored: int
+    rate: float | None
+    mean_score: float | None
+
+
+class EpochTallyOut(TallyOut):
+    epoch: int
+
+
+class ScenarioTallyOut(TallyOut):
+    scenario: str
+    variation: str | None
+
+
+class ElicitationOut(BaseModel):
+    threshold: float
+    overall: TallyOut
+    by_epoch: list[EpochTallyOut]
+    spread_low: float | None = Field(description="The lowest repetition's rate.")
+    spread_high: float | None = Field(description="The highest repetition's rate.")
+    stdev: float | None = Field(description="Sample standard deviation of repetition rates.")
+
+
+class RolloutOut(BaseModel):
+    transcript_id: uuid.UUID
+    run_id: uuid.UUID
+    version: str
+    sample_index: int
+    epoch: int
+    scenario: str
+    variation: str | None
+    score: float | None
+    score_id: uuid.UUID | None
+    summary: str | None
+    content_notes: list[str]
+
+
+class MeasureRunSummary(BaseModel):
+    run: RunOut
+    agent: str
+    version: str
+    behaviour: str
+    scenario_set: uuid.UUID
+    suite: str
+    counts: dict[str, int]
+    elicitation: ElicitationOut
+
+
+class MeasureRunOut(MeasureRunSummary):
+    samples: list[SampleOut]
+    rollouts: list[RolloutOut]
+    by_scenario: list[ScenarioTallyOut]
+
+
+class BehaviourDetail(BehaviourSummary):
+    scenario_sets: list[ScenarioSetSummary]
+    generations: list[RunOut]
+    selected_set: uuid.UUID | None
+    runs: list[MeasureRunSummary] = Field(description="Measure runs on the selected set.")
+    top_rollouts: list[RolloutOut] = Field(description="The highest presence scores.")
+
+
+class ScenarioGenerate(BaseModel):
+    token_budget: int | None = Field(default=None, ge=10_000)
+
+
+class MeasureLaunch(BaseModel):
+    agent: str
+    versions: list[str] = Field(min_length=1, max_length=10)
+    scenario_set: uuid.UUID
+    epochs: int = Field(default=3, ge=1, le=10, description="Repetitions of every scenario.")
+    max_turns: int = Field(default=15, ge=2, le=60)
+    token_budget: int | None = Field(default=None, ge=10_000, description="Per prompt version.")
+    compaction: bool = Field(default=True, description="Let Petri summarise long audits.")

@@ -18,6 +18,11 @@ roles:
   scanner:
     model: anthropic/claude-sonnet-5-5
     generate: { reasoning_effort: medium, max_tokens: 16000 }
+  # Bloom's understanding and ideation. petri_bloom asks for the model's full output
+  # length on each call, so no max_tokens here.
+  scenarios:
+    model: anthropic/claude-opus-5-5
+    generate: { reasoning_effort: high }
 
 # USD per million tokens, for spend estimates. Update when prices change.
 prices:
@@ -30,4 +35,5 @@ budgets:
   playground: 400000
   explore: 5000000
   measure: 5000000
+  scenarios: 1000000
   lens: 2000000

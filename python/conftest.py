@@ -72,6 +72,7 @@ TABLES_TO_CLEAR = (
     "message",
     "transcript",
     "run_sample",
+    "scenario_set",
     "run",
     "expected_profile",
     "label",

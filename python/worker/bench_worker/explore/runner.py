@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from inspect_ai import eval_async
+from inspect_ai import Task, eval_async
 from inspect_ai.log import EvalLog, EvalSample, read_eval_log_async
 from inspect_ai.model import GenerateConfig, Model, get_model
 from inspect_petri import JudgeDimension, audit, judge_dimensions
@@ -69,6 +69,55 @@ def sample_key(run_id: str, index: int, epoch: int) -> str:
     return object_key("runs", run_id, "samples", f"{index:04d}-e{epoch}.eval")
 
 
+async def run_task(
+    task: Task,
+    *,
+    run_id: str,
+    index: int,
+    epoch: int,
+    storage: Storage,
+    token_limit: int | None,
+    roles: dict[str, Model],
+    metadata: dict[str, Any],
+) -> SampleOutcome:
+    """Evaluate a one-sample Petri task, upload its log to Spaces, and return the sample."""
+    with tempfile.TemporaryDirectory(prefix="bench-sample-") as scratch:
+        async with EVAL_LOCK:
+            logs = await eval_async(
+                task,
+                model_roles=roles,
+                log_dir=str(Path(scratch) / "logs"),
+                log_format="eval",
+                token_limit=token_limit,
+                fail_on_error=False,
+                tags=["bench", f"run:{run_id}"],
+                metadata={"bench_run_id": run_id, "epoch": epoch, **metadata},
+            )
+        location = logs[0].location
+        log = await read_eval_log_async(location)
+        uri = f"s3://{storage.bucket}/{sample_key(run_id, index, epoch)}"
+        await storage.aput_file(sample_key(run_id, index, epoch), Path(location), "application/zip")
+
+    if not log.samples:
+        raise RuntimeError(f"the audit produced no sample: {log.error or log.status}")
+    sample = log.samples[0]
+    if sample.error is not None:
+        raise RuntimeError(f"the audit failed: {sample.error.message}")
+    usage = {
+        model: {"input": u.input_tokens, "output": u.output_tokens}
+        for model, u in (log.stats.model_usage or {}).items()
+    }
+    return SampleOutcome(log=log, sample=sample, log_uri=uri, usage=usage)
+
+
+def role_models(config: dict[str, Any], models: ModelFactory) -> dict[str, Model]:
+    """The auditor, target and judge models a run recorded, built by the factory."""
+    return {
+        role: models(role, config["models"][role], config["generate"].get(role, {}))
+        for role in ("auditor", "target", "judge")
+    }
+
+
 async def run_audit(
     *,
     run_id: str,
@@ -96,33 +145,13 @@ async def run_audit(
             compaction=config.get("compaction", True),
             target_display_name=display_name,
         )
-        roles = {
-            role: models(role, config["models"][role], config["generate"].get(role, {}))
-            for role in ("auditor", "target", "judge")
-        }
-        async with EVAL_LOCK:
-            logs = await eval_async(
-                task,
-                model_roles=roles,
-                log_dir=str(Path(scratch) / "logs"),
-                log_format="eval",
-                token_limit=token_limit,
-                fail_on_error=False,
-                tags=["bench", f"run:{run_id}"],
-                metadata={"bench_run_id": run_id, "seed": seed.key, "epoch": epoch},
-            )
-        location = logs[0].location
-        log = await read_eval_log_async(location)
-        uri = f"s3://{storage.bucket}/{sample_key(run_id, index, epoch)}"
-        await storage.aput_file(sample_key(run_id, index, epoch), Path(location), "application/zip")
-
-    if not log.samples:
-        raise RuntimeError(f"the audit produced no sample: {log.error or log.status}")
-    sample = log.samples[0]
-    if sample.error is not None:
-        raise RuntimeError(f"the audit failed: {sample.error.message}")
-    usage = {
-        model: {"input": u.input_tokens, "output": u.output_tokens}
-        for model, u in (log.stats.model_usage or {}).items()
-    }
-    return SampleOutcome(log=log, sample=sample, log_uri=uri, usage=usage)
+        return await run_task(
+            task,
+            run_id=run_id,
+            index=index,
+            epoch=epoch,
+            storage=storage,
+            token_limit=token_limit,
+            roles=role_models(config, models),
+            metadata={"seed": seed.key},
+        )

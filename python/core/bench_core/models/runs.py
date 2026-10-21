@@ -34,6 +34,8 @@ class RunKind(StrEnum):
     measure = "measure"
     lens = "lens"
     playground = "playground"
+    # Bloom's understanding and ideation for one behaviour version.
+    scenarios = "scenarios"
 
 
 class RunStatus(StrEnum):
@@ -177,3 +179,22 @@ class Score(UUIDPrimaryKey, CreatedAt, Base):
     explanation: Mapped[str | None] = mapped_column(Text)
     highlights: Mapped[list[Any]] = mapped_column(default=list, server_default="[]")
     judge_model: Mapped[str | None] = mapped_column(String(200))
+
+
+class ScenarioSet(UUIDPrimaryKey, CreatedAt, Base):
+    """The scenarios and judge dimensions Bloom generated for one behaviour version.
+
+    Written once by its generation run, then read by every Measure run that uses it,
+    so each prompt version faces identical scenarios.
+    """
+
+    __tablename__ = "scenario_set"
+
+    run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("run.id"), unique=True)
+    behaviour_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("behaviour.id"), index=True)
+    # petri_bloom's Behavior with understanding, scenarios and dimensions filled in.
+    content: Mapped[dict[str, Any]]
+    content_hash: Mapped[str] = mapped_column(String(64))
+    # The generated dimension that scores the behaviour's presence (tagged "behavior").
+    presence_dimension: Mapped[str] = mapped_column(String(100))
+    scenario_count: Mapped[int] = mapped_column(Integer)
