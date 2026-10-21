@@ -8,7 +8,7 @@ dependencies = [
   "fastapi>=0.156",
   "uvicorn[standard]>=0.54",
   "authlib>=1.9",
-  "httpx>=0.28",
+  "httpx2>=2.16",
   "itsdangerous>=2.2",
 ]
 

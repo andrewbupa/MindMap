@@ -27,6 +27,7 @@ dev = [
   "boto3-stubs[s3]>=1.43",
   "types-pyyaml>=6.0",
   "asgi-lifespan>=2.1",
+  "httpx>=0.28",
 ]
 
 [tool.ruff]
@@ -59,7 +60,7 @@ module = ["bench_core.*"]
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["authlib.*", "moto.*"]
+module = ["authlib.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
