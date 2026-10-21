@@ -359,3 +359,42 @@ class DimensionOut(BaseModel):
     palette: str = Field(description="good-low: higher is worse; good-high: higher is better.")
     custom: bool
     tags: list[str]
+
+
+class ReviewIn(BaseModel):
+    score_id: uuid.UUID | None = None
+    annotation_id: uuid.UUID | None = None
+    verdict: str = Field(pattern="^(agree|disagree|unsure)$")
+    corrected_value: float | None = Field(default=None, ge=1, le=10)
+    corrected_intensity: int | None = Field(default=None, ge=0, le=3)
+    notes: str = Field(default="", max_length=5000)
+
+
+class ReviewOut(Out):
+    id: uuid.UUID
+    reviewer_id: uuid.UUID
+    score_id: uuid.UUID | None
+    annotation_id: uuid.UUID | None
+    verdict: str
+    corrected_value: float | None
+    corrected_intensity: int | None
+    notes: str
+    created_at: datetime
+
+
+class ScoreReviewItem(BaseModel):
+    score: ScoreOut
+    transcript_id: uuid.UUID
+    run_id: uuid.UUID
+    run_title: str
+    scenario_key: str | None
+    content_notes: list[str]
+    reviews: int
+    reviewed_by_me: bool
+
+
+class ReviewQueueOut(BaseModel):
+    items: list[ScoreReviewItem]
+    hidden_for_content_notes: int = Field(
+        description="Items left out because they carry content notes you have not opted in to."
+    )

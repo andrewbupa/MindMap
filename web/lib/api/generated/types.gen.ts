@@ -813,6 +813,94 @@ export type ReadinessOut = {
 };
 
 /**
+ * ReviewIn
+ */
+export type ReviewIn = {
+    /**
+     * Annotation Id
+     */
+    annotation_id?: string | null;
+    /**
+     * Corrected Intensity
+     */
+    corrected_intensity?: number | null;
+    /**
+     * Corrected Value
+     */
+    corrected_value?: number | null;
+    /**
+     * Notes
+     */
+    notes?: string;
+    /**
+     * Score Id
+     */
+    score_id?: string | null;
+    /**
+     * Verdict
+     */
+    verdict: string;
+};
+
+/**
+ * ReviewOut
+ */
+export type ReviewOut = {
+    /**
+     * Annotation Id
+     */
+    annotation_id: string | null;
+    /**
+     * Corrected Intensity
+     */
+    corrected_intensity: number | null;
+    /**
+     * Corrected Value
+     */
+    corrected_value: number | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Notes
+     */
+    notes: string;
+    /**
+     * Reviewer Id
+     */
+    reviewer_id: string;
+    /**
+     * Score Id
+     */
+    score_id: string | null;
+    /**
+     * Verdict
+     */
+    verdict: string;
+};
+
+/**
+ * ReviewQueueOut
+ */
+export type ReviewQueueOut = {
+    /**
+     * Hidden For Content Notes
+     *
+     * Items left out because they carry content notes you have not opted in to.
+     */
+    hidden_for_content_notes: number;
+    /**
+     * Items
+     */
+    items: Array<ScoreReviewItem>;
+};
+
+/**
  * Role
  */
 export type Role = 'author' | 'reviewer' | 'compliance' | 'admin';
@@ -991,6 +1079,41 @@ export type ScoreOut = {
      * Value
      */
     value: number;
+};
+
+/**
+ * ScoreReviewItem
+ */
+export type ScoreReviewItem = {
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Reviewed By Me
+     */
+    reviewed_by_me: boolean;
+    /**
+     * Reviews
+     */
+    reviews: number;
+    /**
+     * Run Id
+     */
+    run_id: string;
+    /**
+     * Run Title
+     */
+    run_title: string;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    score: ScoreOut;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
 };
 
 /**
@@ -1979,6 +2102,97 @@ export type SayResponses = {
 };
 
 export type SayResponse = SayResponses[keyof SayResponses];
+
+export type CreateReviewData = {
+    body: ReviewIn;
+    path?: never;
+    query?: never;
+    url: '/api/review';
+};
+
+export type CreateReviewErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateReviewError = CreateReviewErrors[keyof CreateReviewErrors];
+
+export type CreateReviewResponses = {
+    /**
+     * Successful Response
+     */
+    201: ReviewOut;
+};
+
+export type CreateReviewResponse = CreateReviewResponses[keyof CreateReviewResponses];
+
+export type ScoreQueueData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/review/queue';
+};
+
+export type ScoreQueueErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ScoreQueueError = ScoreQueueErrors[keyof ScoreQueueErrors];
+
+export type ScoreQueueResponses = {
+    /**
+     * Successful Response
+     */
+    200: ReviewQueueOut;
+};
+
+export type ScoreQueueResponse = ScoreQueueResponses[keyof ScoreQueueResponses];
+
+export type ListReviewsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Score Id
+         */
+        score_id?: string | null;
+        /**
+         * Annotation Id
+         */
+        annotation_id?: string | null;
+    };
+    url: '/api/review/reviews';
+};
+
+export type ListReviewsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListReviewsError = ListReviewsErrors[keyof ListReviewsErrors];
+
+export type ListReviewsResponses = {
+    /**
+     * Response List Reviews
+     *
+     * Successful Response
+     */
+    200: Array<ReviewOut>;
+};
+
+export type ListReviewsResponse = ListReviewsResponses[keyof ListReviewsResponses];
 
 export type ReadRunData = {
     body?: never;
