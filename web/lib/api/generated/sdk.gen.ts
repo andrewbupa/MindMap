@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CancelRunData, CancelRunErrors, CancelRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchData, LaunchErrors, LaunchResponses, ListAgentsData, ListAgentsResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListRunsData, ListRunsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadMeData, ReadMeResponses, ReadRun2Data, ReadRun2Errors, ReadRun2Responses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, SayData, SayErrors, SayResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamRunData, StreamRunErrors, StreamRunResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
+import type { CancelRunData, CancelRunErrors, CancelRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchData, LaunchErrors, LaunchResponses, ListAgentsData, ListAgentsResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListRunsData, ListRunsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadMeData, ReadMeResponses, ReadRun2Data, ReadRun2Errors, ReadRun2Responses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, SayData, SayErrors, SayResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamRunData, StreamRunErrors, StreamRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -49,6 +49,13 @@ export const listEvents = <ThrowOnError extends boolean = false>(options?: Optio
 export const logout = <ThrowOnError extends boolean = false>(options?: Options<LogoutData, ThrowOnError>): RequestResult<LogoutResponses, unknown, ThrowOnError> => (options?.client ?? client).post<LogoutResponses, unknown, ThrowOnError>({ url: '/api/auth/logout', ...options });
 
 /**
+ * List Dimensions
+ *
+ * Our dimensions first, then Petri's built-in ones.
+ */
+export const listDimensions = <ThrowOnError extends boolean = false>(options?: Options<ListDimensionsData, ThrowOnError>): RequestResult<ListDimensionsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListDimensionsResponses, unknown, ThrowOnError>({ url: '/api/explore/dimensions', ...options });
+
+/**
  * List Runs
  */
 export const listRuns = <ThrowOnError extends boolean = false>(options?: Options<ListRunsData, ThrowOnError>): RequestResult<ListRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListRunsResponses, unknown, ThrowOnError>({ url: '/api/explore/runs', ...options });
@@ -91,6 +98,13 @@ export const listSeeds = <ThrowOnError extends boolean = false>(options?: Option
  * Read Transcript
  */
 export const readTranscript = <ThrowOnError extends boolean = false>(options: Options<ReadTranscriptData, ThrowOnError>): RequestResult<ReadTranscriptResponses, ReadTranscriptErrors, ThrowOnError> => (options.client ?? client).get<ReadTranscriptResponses, ReadTranscriptErrors, ThrowOnError>({ url: '/api/explore/transcripts/{transcript_id}', ...options });
+
+/**
+ * Transcript Log
+ *
+ * A short-lived link to the sample's Inspect log, for opening in Inspect View.
+ */
+export const transcriptLog = <ThrowOnError extends boolean = false>(options: Options<TranscriptLogData, ThrowOnError>): RequestResult<TranscriptLogResponses, TranscriptLogErrors, ThrowOnError> => (options.client ?? client).get<TranscriptLogResponses, TranscriptLogErrors, ThrowOnError>({ url: '/api/explore/transcripts/{transcript_id}/log', ...options });
 
 /**
  * Health

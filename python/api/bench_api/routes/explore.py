@@ -9,18 +9,22 @@ from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.sse import EventSourceResponse, ServerSentEvent
+from inspect_petri import judge_dimensions
 from sqlalchemy import select
 
 from bench_api.deps import AppSettings, AuthorUser, Db, ReaderUser
 from bench_api.models_dep import Roles
 from bench_api.schemas import (
+    DimensionOut,
     ExploreLaunch,
     ExploreRunOut,
+    JudgeReference,
     MessageOut,
     RunOut,
     SampleOut,
     ScoreOut,
     SeedOut,
+    SignedUrlOut,
     TranscriptOut,
     TranscriptSummary,
 )
@@ -40,7 +44,9 @@ from bench_core.models import (
     User,
 )
 from bench_core.provenance import ProvenanceError, current_git_commit
-from bench_core.seeds import SeedError, dimension_names, load_seeds, select_seeds
+from bench_core.seeds import SeedError, dimension_names, dimensions_dir, load_seeds, select_seeds
+from bench_core.storage import get_storage
+from bench_core.transcripts import key_from_uri
 
 router = APIRouter(prefix="/explore", tags=["explore"])
 
@@ -66,6 +72,24 @@ async def list_seeds(
         )
         for seed in seeds
         if agent is None or not seed.agents or agent in seed.agents
+    ]
+
+
+@router.get("/dimensions")
+async def list_dimensions(_: ReaderUser, settings: AppSettings) -> list[DimensionOut]:
+    """Our dimensions first, then Petri's built-in ones."""
+    ours = judge_dimensions(dimensions_dir(settings.repo_root))
+    custom = {dimension.name for dimension in ours}
+    return [
+        DimensionOut(
+            name=dimension.name,
+            display_name=dimension.display_name or dimension.name.replace("_", " ").capitalize(),
+            description=dimension.description,
+            palette=dimension.palette,
+            custom=dimension.name in custom,
+            tags=list(dimension.tags),
+        )
+        for dimension in [*ours, *judge_dimensions()]
     ]
 
 
@@ -256,8 +280,39 @@ async def read_transcript(transcript_id: uuid.UUID, user: ReaderUser, db: Db) ->
         seed_text=scenario.seed_text if scenario else None,
         content_notes=scenario.content_notes if scenario else [],
         summary=transcript.summary,
+        highlights=transcript.meta.get("highlights"),
+        references=[
+            JudgeReference.model_validate(reference)
+            for reference in transcript.meta.get("judge_references", [])
+        ],
+        judge_refused=bool(transcript.meta.get("judge_refused")),
         messages=[MessageOut.model_validate(message) for message in messages],
         scores=[ScoreOut.model_validate(score) for score in scores],
+    )
+
+
+@router.get("/transcripts/{transcript_id}/log")
+async def transcript_log(transcript_id: uuid.UUID, user: ReaderUser, db: Db) -> SignedUrlOut:
+    """A short-lived link to the sample's Inspect log, for opening in Inspect View."""
+    transcript = await db.get(Transcript, transcript_id)
+    if transcript is None or not transcript.log_uri:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No log for this transcript.")
+    scenario = await db.get(Scenario, transcript.scenario_id) if transcript.scenario_id else None
+    _check_content_notes(user, scenario)
+    storage = get_storage()
+    key = key_from_uri(transcript.log_uri)
+    await audit.record(
+        db,
+        "storage.signed_url",
+        actor_id=user.id,
+        target_type="transcript",
+        target_id=transcript.id,
+        detail={"key": key},
+    )
+    await db.commit()
+    return SignedUrlOut(
+        url=storage.signed_url(key, filename=f"{transcript.id}.eval"),
+        expires_in=storage.signed_url_seconds,
     )
 
 

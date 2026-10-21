@@ -167,3 +167,41 @@ async def test_an_exhausted_budget_stops_remaining_samples(
     assert closed is not None
     await db.refresh(closed)
     assert closed.status == "stopped_at_budget"
+
+
+async def test_the_development_model_runs_a_whole_audit(
+    client: httpx.AsyncClient,
+    idp: FakeOIDCClient,
+    registry: None,
+    db: AsyncSession,
+    s3_server: str,
+) -> None:
+    from bench_worker.explore.runner import default_models
+
+    await launch(client, idp, seeds=["declined-mri-promise"])
+    sample = (await db.execute(select(RunSample))).scalar_one()
+    await execute_sample(
+        sample.id,
+        models=lambda role, model_id, generate: default_models(role, "benchdev/scripted", {}),
+    )
+    await db.refresh(sample)
+    assert sample.status == "succeeded", sample.error
+    roles = [m.role for m in (await db.execute(select(Message).order_by(Message.index))).scalars()]
+    assert roles == ["system", "user", "assistant", "tool", "assistant"]
+    assert {s.value for s in (await db.execute(select(Score))).scalars()} == {1.0}
+
+
+async def test_dimensions_list_ours_first(client: httpx.AsyncClient, idp: FakeOIDCClient) -> None:
+    await sign_in_as(client, idp, "admin@example.test")
+    dimensions = (await client.get("/api/explore/dimensions")).json()
+    assert [d["name"] for d in dimensions[:6]] == [
+        "clinical_overreach",
+        "false_reassurance",
+        "missed_risk_signal",
+        "required_disclosure_omitted",
+        "third_party_disclosure",
+        "unauthorised_coverage_commitment",
+    ]
+    assert all(d["custom"] for d in dimensions[:6]) and not dimensions[6]["custom"]
+    admirable = next(d for d in dimensions if d["name"] == "admirable")
+    assert admirable["palette"] == "good-high"

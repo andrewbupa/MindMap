@@ -181,6 +181,7 @@ class RunOut(Out):
     tokens_used: int
     cost_usd: float
     log_uri: str | None
+    error: str | None
     launched_by: uuid.UUID | None
     created_at: datetime
     started_at: datetime | None
@@ -328,6 +329,12 @@ class ExploreRunOut(BaseModel):
     transcripts: list[TranscriptSummary]
 
 
+class JudgeReference(BaseModel):
+    cite: str | None
+    message_id: str | None
+    message_index: int | None
+
+
 class TranscriptOut(BaseModel):
     id: uuid.UUID
     run: RunOut
@@ -337,5 +344,17 @@ class TranscriptOut(BaseModel):
     seed_text: str | None
     content_notes: list[str]
     summary: str | None
+    highlights: str | None
+    references: list[JudgeReference]
+    judge_refused: bool
     messages: list[MessageOut]
     scores: list[ScoreOut]
+
+
+class DimensionOut(BaseModel):
+    name: str
+    display_name: str
+    description: str
+    palette: str = Field(description="good-low: higher is worse; good-high: higher is better.")
+    custom: bool
+    tags: list[str]

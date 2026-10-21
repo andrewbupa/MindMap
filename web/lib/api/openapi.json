@@ -494,6 +494,48 @@
         "title": "DiffRowOut",
         "type": "object"
       },
+      "DimensionOut": {
+        "properties": {
+          "custom": {
+            "title": "Custom",
+            "type": "boolean"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "palette": {
+            "description": "good-low: higher is worse; good-high: higher is better.",
+            "title": "Palette",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "display_name",
+          "description",
+          "palette",
+          "custom",
+          "tags"
+        ],
+        "title": "DimensionOut",
+        "type": "object"
+      },
       "ExploreLaunch": {
         "properties": {
           "agent": {
@@ -670,6 +712,50 @@
           "commit"
         ],
         "title": "HealthOut",
+        "type": "object"
+      },
+      "JudgeReference": {
+        "properties": {
+          "cite": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cite"
+          },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message Id"
+          },
+          "message_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message Index"
+          }
+        },
+        "required": [
+          "cite",
+          "message_id",
+          "message_index"
+        ],
+        "title": "JudgeReference",
         "type": "object"
       },
       "MeOut": {
@@ -1298,6 +1384,17 @@
             "title": "Created At",
             "type": "string"
           },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
           "finished_at": {
             "anyOf": [
               {
@@ -1430,6 +1527,7 @@
           "tokens_used",
           "cost_usd",
           "log_uri",
+          "error",
           "launched_by",
           "created_at",
           "started_at",
@@ -1831,16 +1929,38 @@
             "title": "Epoch",
             "type": "integer"
           },
+          "highlights": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Highlights"
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
             "type": "string"
+          },
+          "judge_refused": {
+            "title": "Judge Refused",
+            "type": "boolean"
           },
           "messages": {
             "items": {
               "$ref": "#/components/schemas/MessageOut"
             },
             "title": "Messages",
+            "type": "array"
+          },
+          "references": {
+            "items": {
+              "$ref": "#/components/schemas/JudgeReference"
+            },
+            "title": "References",
             "type": "array"
           },
           "run": {
@@ -1900,6 +2020,9 @@
           "seed_text",
           "content_notes",
           "summary",
+          "highlights",
+          "references",
+          "judge_refused",
           "messages",
           "scores"
         ],
@@ -2405,6 +2528,32 @@
         ]
       }
     },
+    "/api/explore/dimensions": {
+      "get": {
+        "description": "Our dimensions first, then Petri's built-in ones.",
+        "operationId": "list_dimensions",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DimensionOut"
+                  },
+                  "title": "Response List Dimensions",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Dimensions",
+        "tags": [
+          "explore"
+        ]
+      }
+    },
     "/api/explore/runs": {
       "get": {
         "operationId": "list_runs",
@@ -2705,6 +2854,50 @@
           }
         },
         "summary": "Read Transcript",
+        "tags": [
+          "explore"
+        ]
+      }
+    },
+    "/api/explore/transcripts/{transcript_id}/log": {
+      "get": {
+        "description": "A short-lived link to the sample's Inspect log, for opening in Inspect View.",
+        "operationId": "transcript_log",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transcript_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transcript Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedUrlOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Transcript Log",
         "tags": [
           "explore"
         ]

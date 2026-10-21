@@ -273,6 +273,38 @@ export type DiffRowOut = {
 };
 
 /**
+ * DimensionOut
+ */
+export type DimensionOut = {
+    /**
+     * Custom
+     */
+    custom: boolean;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Display Name
+     */
+    display_name: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Palette
+     *
+     * good-low: higher is worse; good-high: higher is better.
+     */
+    palette: string;
+    /**
+     * Tags
+     */
+    tags: Array<string>;
+};
+
+/**
  * ExploreLaunch
  */
 export type ExploreLaunch = {
@@ -379,6 +411,24 @@ export type HealthOut = {
      * Status
      */
     status: string;
+};
+
+/**
+ * JudgeReference
+ */
+export type JudgeReference = {
+    /**
+     * Cite
+     */
+    cite: string | null;
+    /**
+     * Message Id
+     */
+    message_id: string | null;
+    /**
+     * Message Index
+     */
+    message_index: number | null;
 };
 
 /**
@@ -794,6 +844,10 @@ export type RunOut = {
      */
     created_at: string;
     /**
+     * Error
+     */
+    error: string | null;
+    /**
      * Finished At
      */
     finished_at: string | null;
@@ -1104,13 +1158,25 @@ export type TranscriptOut = {
      */
     epoch: number;
     /**
+     * Highlights
+     */
+    highlights: string | null;
+    /**
      * Id
      */
     id: string;
     /**
+     * Judge Refused
+     */
+    judge_refused: boolean;
+    /**
      * Messages
      */
     messages: Array<MessageOut>;
+    /**
+     * References
+     */
+    references: Array<JudgeReference>;
     run: RunOut;
     /**
      * Sample Index
@@ -1431,6 +1497,24 @@ export type LogoutResponses = {
 
 export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
 
+export type ListDimensionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/explore/dimensions';
+};
+
+export type ListDimensionsResponses = {
+    /**
+     * Response List Dimensions
+     *
+     * Successful Response
+     */
+    200: Array<DimensionOut>;
+};
+
+export type ListDimensionsResponse = ListDimensionsResponses[keyof ListDimensionsResponses];
+
 export type ListRunsData = {
     body?: never;
     path?: never;
@@ -1623,6 +1707,36 @@ export type ReadTranscriptResponses = {
 };
 
 export type ReadTranscriptResponse = ReadTranscriptResponses[keyof ReadTranscriptResponses];
+
+export type TranscriptLogData = {
+    body?: never;
+    path: {
+        /**
+         * Transcript Id
+         */
+        transcript_id: string;
+    };
+    query?: never;
+    url: '/api/explore/transcripts/{transcript_id}/log';
+};
+
+export type TranscriptLogErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type TranscriptLogError = TranscriptLogErrors[keyof TranscriptLogErrors];
+
+export type TranscriptLogResponses = {
+    /**
+     * Successful Response
+     */
+    200: SignedUrlOut;
+};
+
+export type TranscriptLogResponse = TranscriptLogResponses[keyof TranscriptLogResponses];
 
 export type HealthData = {
     body?: never;
