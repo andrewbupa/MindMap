@@ -12,8 +12,7 @@ from bench_core.transcripts import (
     log_key,
     store_log,
 )
-
-from .agent_helpers import answer
+from testsupport.agents import answer
 
 
 async def test_messages_round_trip_through_postgres_and_spaces(

@@ -4,7 +4,7 @@ import httpx
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .conftest import FakeOIDCClient, sign_in_as
+from testsupport.oidc import FakeOIDCClient, sign_in_as
 
 
 async def test_admin_launches_a_check_that_queues_a_job(

@@ -69,3 +69,4 @@ asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
 testpaths = ["core/tests", "api/tests", "worker/tests"]
 addopts = "--import-mode=importlib"
+pythonpath = ["."]

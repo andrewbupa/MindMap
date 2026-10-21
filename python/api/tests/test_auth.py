@@ -11,8 +11,7 @@ from bench_api.auth import identity_from_claims, resolve_roles, safe_next
 from bench_api.sessions import COOKIE_NAME
 from bench_core.config import Settings
 from bench_core.models import AuditEvent, User, UserSession
-
-from .conftest import FakeOIDCClient, sign_in_as
+from testsupport.oidc import FakeOIDCClient, sign_in_as
 
 
 @pytest.mark.parametrize(

@@ -11,8 +11,7 @@ from bench_core.agents.adapter import (
     split_assistant,
 )
 from bench_core.agents.fixtures import FixtureExecutor
-
-from .agent_helpers import agent_version, answer, scripted, tool_call
+from testsupport.agents import agent_version, answer, scripted, tool_call
 
 
 def test_fixtures_look_up_match_omit_and_respond() -> None:
@@ -39,7 +38,7 @@ def test_deployed_mode_keeps_our_prompt_and_delimits_context() -> None:
     assert system is not None
     assert system.text.startswith(agent_version().prompt_text)
     assert CONTEXT_OPEN in system.text and "TEST-100231" in system.text
-    assert [tool.name for tool in adapter.tools()][0] == "verify_identity"
+    assert next(tool.name for tool in adapter.tools()) == "verify_identity"
 
 
 def test_open_mode_passes_the_caller_prompt_through() -> None:

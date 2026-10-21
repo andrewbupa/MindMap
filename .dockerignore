@@ -12,3 +12,4 @@ design
 docs
 python/conftest.py
 python/*/tests
+python/testsupport

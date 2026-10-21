@@ -8,6 +8,7 @@ back out as a log.
 
 from __future__ import annotations
 
+import dataclasses
 import tempfile
 import uuid
 from datetime import UTC, datetime
@@ -63,7 +64,7 @@ def message_row(transcript_id: uuid.UUID, index: int, message: ChatMessage) -> M
     if isinstance(message, ChatMessageAssistant):
         content, thinking = split_assistant(message)
         if message.tool_calls:
-            tool_calls = [call.model_dump(mode="json") for call in message.tool_calls]
+            tool_calls = [dataclasses.asdict(call) for call in message.tool_calls]
     return Message(
         transcript_id=transcript_id,
         index=index,
