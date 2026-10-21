@@ -2103,6 +2103,68 @@ export type SayResponses = {
 
 export type SayResponse = SayResponses[keyof SayResponses];
 
+export type RunProvenanceData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/reports/runs/{run_id}/provenance';
+};
+
+export type RunProvenanceErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RunProvenanceError = RunProvenanceErrors[keyof RunProvenanceErrors];
+
+export type RunProvenanceResponses = {
+    /**
+     * Response Run Provenance
+     *
+     * Successful Response
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type RunProvenanceResponse = RunProvenanceResponses[keyof RunProvenanceResponses];
+
+export type ExportScoresData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/reports/runs/{run_id}/scores.csv';
+};
+
+export type ExportScoresErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ExportScoresError = ExportScoresErrors[keyof ExportScoresErrors];
+
+export type ExportScoresResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type CreateReviewData = {
     body: ReviewIn;
     path?: never;

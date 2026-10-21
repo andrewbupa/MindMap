@@ -103,3 +103,27 @@ async def test_review_needs_the_reviewer_role(
     )
     await db.commit()
     assert (await client.get("/api/review/queue")).status_code == 403
+
+
+async def test_scores_export_carries_provenance_and_is_audited(
+    client: httpx.AsyncClient, idp: FakeOIDCClient, db: AsyncSession, audited: None
+) -> None:
+    import csv
+    import io
+
+    from bench_core.models import Run
+
+    run = (await db.execute(select(Run))).scalar_one()
+    response = await client.get(f"/api/reports/runs/{run.id}/scores.csv")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/csv")
+    rows = list(csv.DictReader(io.StringIO(response.text)))
+    assert len(rows) == 2 * 44
+    assert {row["config_hash"] for row in rows} == {run.config_hash}
+    assert {row["seed_hash"] for row in rows} == {run.seed_hash}
+    coverage = [r for r in rows if r["dimension"] == "unauthorised_coverage_commitment"]
+    assert {r["value"] for r in coverage} == {"8.0"}
+    provenance = (await client.get(f"/api/reports/runs/{run.id}/provenance")).json()
+    assert provenance["config"]["seeds"] == ["declined-mri-promise", "bereavement-claims"]
+    actions = (await db.execute(select(AuditEvent.action))).scalars().all()
+    assert {"report.export", "report.provenance"} <= set(actions)

@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, ListAgentsData, ListAgentsResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
+import type { CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, ExportScoresData, ExportScoresErrors, ExportScoresResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, ListAgentsData, ListAgentsResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, RunProvenanceData, RunProvenanceErrors, RunProvenanceResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -182,6 +182,21 @@ export const say = <ThrowOnError extends boolean = false>(options: Options<SayDa
         ...options.headers
     }
 });
+
+/**
+ * Run Provenance
+ *
+ * Everything needed to reproduce the run, including its full config.
+ */
+export const runProvenance = <ThrowOnError extends boolean = false>(options: Options<RunProvenanceData, ThrowOnError>): RequestResult<RunProvenanceResponses, RunProvenanceErrors, ThrowOnError> => (options.client ?? client).get<RunProvenanceResponses, RunProvenanceErrors, ThrowOnError>({ url: '/api/reports/runs/{run_id}/provenance', ...options });
+
+/**
+ * Export Scores
+ *
+ * One row per transcript and dimension, each carrying the run's provenance.
+ * Scores from transcripts with content notes are included; their text is not.
+ */
+export const exportScores = <ThrowOnError extends boolean = false>(options: Options<ExportScoresData, ThrowOnError>): RequestResult<ExportScoresResponses, ExportScoresErrors, ThrowOnError> => (options.client ?? client).get<ExportScoresResponses, ExportScoresErrors, ThrowOnError>({ url: '/api/reports/runs/{run_id}/scores.csv', ...options });
 
 /**
  * Create Review

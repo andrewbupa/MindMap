@@ -3497,6 +3497,89 @@
         ]
       }
     },
+    "/api/reports/runs/{run_id}/provenance": {
+      "get": {
+        "description": "Everything needed to reproduce the run, including its full config.",
+        "operationId": "run_provenance",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Run Provenance",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Run Provenance",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/reports/runs/{run_id}/scores.csv": {
+      "get": {
+        "description": "One row per transcript and dimension, each carrying the run's provenance.\nScores from transcripts with content notes are included; their text is not.",
+        "operationId": "export_scores",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Scores",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
     "/api/review": {
       "post": {
         "operationId": "create_review",
