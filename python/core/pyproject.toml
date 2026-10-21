@@ -15,6 +15,7 @@ dependencies = [
   "inspect-ai==0.3.282",
   "inspect-petri==3.1.1",
   "inspect-scout==0.6.0",
+  "petri-bloom==0.2.6",
 ]
 
 [build-system]
