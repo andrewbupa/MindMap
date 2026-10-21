@@ -26,3 +26,10 @@ export function formatMedian(value: number): string {
 }
 
 export const LENS_QUIET = "Expressed disposition, read from text. Lens does not see inside the model.";
+
+/** What each kind of open-model signal is called on screen. */
+export const SIGNAL_KINDS: Record<string, string> = {
+  probe: "Probe",
+  persona_vector: "Persona vector",
+  nla: "Autoencoder explanation",
+};

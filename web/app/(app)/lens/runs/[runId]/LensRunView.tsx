@@ -4,12 +4,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { CompanionCard } from "@/components/lens/CompanionCard";
 import { LENS_QUIET, familyColour, formatMedian, labelName } from "@/components/lens/family";
 import styles from "@/components/lens/lens.module.css";
 import { Provenance } from "@/components/runs/Provenance";
 import runStyles from "@/components/runs/runs.module.css";
 import { Badge, Card, Notice, PageHeader, sentenceCase } from "@/components/ui";
-import { readLensRun, type LensRunOut, type LensRunSummary } from "@/lib/api";
+import {
+  readLensRun,
+  type CompanionReaderOut,
+  type CompanionRunSummary,
+  type LensRunOut,
+  type LensRunSummary,
+} from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 import { useLiveStatus } from "@/lib/useLiveStatus";
 
@@ -38,10 +45,12 @@ export function LensRunView({
   run,
   label,
   others,
+  companion,
 }: {
   run: LensRunOut;
   label: string | null;
   others: LensRunSummary[];
+  companion: { runs: CompanionRunSummary[]; readers: CompanionReaderOut[]; canLaunch: boolean };
 }) {
   const router = useRouter();
   const initial: Live = { status: run.run.status, tokens_used: run.run.tokens_used, counts: run.counts };
@@ -247,6 +256,13 @@ export function LensRunView({
           </p>
         </Card>
       ) : null}
+      <CompanionCard
+        sourceRunId={run.source.id}
+        lensRunId={run.run.id}
+        runs={companion.runs}
+        readers={companion.readers}
+        canLaunch={companion.canLaunch}
+      />
       <Card title="Run">
         <Provenance run={run.run} />
       </Card>

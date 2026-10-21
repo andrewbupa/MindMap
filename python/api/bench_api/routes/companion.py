@@ -240,7 +240,11 @@ async def _agreements(
             medians[reply.message_id] = {k: c.median for k, c in reply.labels.items()}
             transcript_id, position = index[uuid.UUID(reply.message_id)]
             where[reply.message_id] = ReplyRefOut(
-                message_id=uuid.UUID(reply.message_id), transcript_id=transcript_id, index=position
+                message_id=uuid.UUID(reply.message_id),
+                transcript_id=transcript_id,
+                index=position,
+                scenario_key=transcript.scenario.key if transcript.scenario else None,
+                epoch=transcript.transcript.epoch,
             )
     peaks: dict[str, dict[str, float]] = {}
     if where:

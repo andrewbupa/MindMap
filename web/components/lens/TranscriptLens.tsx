@@ -6,7 +6,9 @@ import { useState } from "react";
 import { MessageView } from "@/components/runs/Messages";
 import runStyles from "@/components/runs/runs.module.css";
 import { Badge, Card, Notice, PageHeader, sentenceCase } from "@/components/ui";
-import type { AnnotationOut, LensTranscriptOut, MessageOut } from "@/lib/api";
+import type { AnnotationOut, CompanionTranscriptOut, LensTranscriptOut, MessageOut } from "@/lib/api";
+
+import { CompanionPane } from "./CompanionPane";
 
 import { LENS_QUIET, familyColour, formatMedian, intensityName, labelName } from "./family";
 import { Highlighted, type Mark } from "./Highlighted";
@@ -43,7 +45,13 @@ function marksFor(
  * strip under it with the expected profile behind, the panel's findings in a side
  * pane, thinking summaries in their own pane, and the turn timeline below.
  */
-export function TranscriptLens({ data }: { data: LensTranscriptOut }) {
+export function TranscriptLens({
+  data,
+  companion = null,
+}: {
+  data: LensTranscriptOut;
+  companion?: CompanionTranscriptOut | null;
+}) {
   const [selected, setSelected] = useState<Selection>(null);
   const labels = new Map(data.labels.map((l) => [l.key, l]));
   const replyIds = new Set(data.replies.map((r) => r.message_id));
@@ -188,6 +196,17 @@ export function TranscriptLens({ data }: { data: LensTranscriptOut }) {
               </div>
             ))}
           </Card>
+          {companion ? (
+            <CompanionPane
+              data={companion}
+              runHref={`/lens/companion/${companion.run.id}?lens_run=${data.run.id}`}
+              replies={data.replies.map((reply, index) => ({
+                id: reply.message_id,
+                number: index + 1,
+                text: data.messages.find((m) => m.id === reply.message_id)?.content ?? "",
+              }))}
+            />
+          ) : null}
           <Card title="Panel">
             <ul>
               {data.judges.map((judge) => (

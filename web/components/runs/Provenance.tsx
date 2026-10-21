@@ -21,6 +21,7 @@ const SEED_NOTES: Record<string, string> = {
   measure: "Over the behaviour and its scenario set. Cite rates with it.",
   scenarios: "Over the behaviour's definition and examples",
   lens: "The seed hash of the run Lens read",
+  companion: "The seed hash of the run the open model read",
 };
 
 const ROUTES: Record<string, string> = {

@@ -2406,6 +2406,10 @@ export type ReplyLensOut = {
  */
 export type ReplyRefOut = {
     /**
+     * Epoch
+     */
+    epoch: number;
+    /**
      * Index
      */
     index: number;
@@ -2413,6 +2417,10 @@ export type ReplyRefOut = {
      * Message Id
      */
     message_id: string;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
     /**
      * Transcript Id
      */

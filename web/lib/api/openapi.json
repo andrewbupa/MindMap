@@ -3977,6 +3977,10 @@
       },
       "ReplyRefOut": {
         "properties": {
+          "epoch": {
+            "title": "Epoch",
+            "type": "integer"
+          },
           "index": {
             "title": "Index",
             "type": "integer"
@@ -3985,6 +3989,17 @@
             "format": "uuid",
             "title": "Message Id",
             "type": "string"
+          },
+          "scenario_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Key"
           },
           "transcript_id": {
             "format": "uuid",
@@ -3995,7 +4010,9 @@
         "required": [
           "message_id",
           "transcript_id",
-          "index"
+          "index",
+          "scenario_key",
+          "epoch"
         ],
         "title": "ReplyRefOut",
         "type": "object"

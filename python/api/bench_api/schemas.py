@@ -890,6 +890,8 @@ class ReplyRefOut(BaseModel):
     message_id: uuid.UUID
     transcript_id: uuid.UUID
     index: int
+    scenario_key: str | None
+    epoch: int
 
 
 class SignalAgreementOut(BaseModel):
