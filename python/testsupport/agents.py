@@ -53,3 +53,17 @@ def tool_call(name: str, **arguments: Any) -> ModelOutput:
 
 def scripted(*outputs: ModelOutput) -> Model:
     return get_model("mockllm/model", custom_outputs=list(outputs), memoize=False)
+
+
+class RecordingModel:
+    """A stand-in model that replays outputs and records what it was sent."""
+
+    def __init__(self, *outputs: ModelOutput) -> None:
+        self.outputs = list(outputs)
+        self.calls: list[dict[str, Any]] = []
+
+    async def generate(self, input: Any, tools: Any = None, config: Any = None) -> ModelOutput:
+        self.calls.append({"input": list(input), "tools": list(tools or []), "config": config})
+        if not self.outputs:
+            raise AssertionError("the test model ran out of scripted outputs")
+        return self.outputs.pop(0)

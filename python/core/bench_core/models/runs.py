@@ -136,7 +136,8 @@ class Transcript(UUIDPrimaryKey, CreatedAt, Base):
     sample_index: Mapped[int] = mapped_column(Integer)
     epoch: Mapped[int] = mapped_column(Integer, default=1, server_default="1")
     inspect_sample_id: Mapped[str | None] = mapped_column(String(200))
-    log_uri: Mapped[str] = mapped_column(String(1000))
+    # Set once the transcript's .eval log is written; empty while a run is live.
+    log_uri: Mapped[str | None] = mapped_column(String(1000))
     summary: Mapped[str | None] = mapped_column(Text)
     meta: Mapped[dict[str, Any]] = mapped_column(default=dict, server_default="{}")
 

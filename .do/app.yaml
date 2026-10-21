@@ -125,6 +125,10 @@ services:
       - key: BENCH_SESSION_SECRET
         type: SECRET
         scope: RUN_TIME
+      # Provider keys, read by Inspect. Add one per provider in config/models.yaml.
+      - key: ANTHROPIC_API_KEY
+        type: SECRET
+        scope: RUN_TIME
 
 workers:
   - name: worker

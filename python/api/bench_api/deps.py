@@ -52,3 +52,6 @@ def require_role(*roles: Role) -> Callable[..., Coroutine[Any, Any, User]]:
 
 AdminUser = Annotated[User, Depends(require_role(Role.admin))]
 OversightUser = Annotated[User, Depends(require_role(Role.compliance))]
+AuthorUser = Annotated[User, Depends(require_role(Role.author))]
+# Anyone holding a role: authors, reviewers, compliance and admins can all read.
+ReaderUser = Annotated[User, Depends(require_role(Role.author, Role.reviewer, Role.compliance))]

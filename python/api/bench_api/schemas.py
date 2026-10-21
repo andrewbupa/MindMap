@@ -86,3 +86,178 @@ class ReadinessOut(BaseModel):
     status: str
     database: bool
     queue: bool
+
+
+class PromptVersionOut(Out):
+    id: uuid.UUID
+    version: str
+    sha256: str
+    git_commit: str
+    source_path: str
+    author: str
+    notes: str
+    created_at: datetime
+
+
+class PromptVersionText(PromptVersionOut):
+    text: str
+
+
+class ToolOut(BaseModel):
+    name: str
+    description: str
+    parameters: dict[str, Any]
+    fixture: dict[str, Any]
+
+
+class ToolProfileOut(Out):
+    id: uuid.UUID
+    name: str
+    sha256: str
+    tools: list[ToolOut]
+    fixture_files: list[str]
+    created_at: datetime
+
+
+class PersonaOut(Out):
+    id: uuid.UUID
+    key: str
+    name: str
+    tone: str
+    risk_flags: list[str]
+    profile: dict[str, Any]
+    sha256: str
+
+
+class AgentSummary(Out):
+    key: str
+    name: str
+    owner: str
+    domains: list[str]
+    description: str
+    versions: list[str]
+    latest_version: str
+    persona_count: int
+
+
+class AgentDetail(AgentSummary):
+    prompt_versions: list[PromptVersionOut]
+    tool_profile: ToolProfileOut
+    personas: list[PersonaOut]
+
+
+class DiffRowOut(BaseModel):
+    kind: str
+    left: str | None
+    right: str | None
+    left_number: int | None
+    right_number: int | None
+
+
+class PromptDiffOut(BaseModel):
+    agent: str
+    base: PromptVersionOut
+    head: PromptVersionOut
+    rows: list[DiffRowOut]
+    added: int
+    removed: int
+    changed: int
+
+
+class RunOut(Out):
+    id: uuid.UUID
+    kind: str
+    status: str
+    title: str
+    config: dict[str, Any]
+    config_hash: str
+    git_commit: str
+    prompt_sha: str | None
+    seed_hash: str | None
+    taxonomy_version: str | None
+    model_ids: dict[str, Any]
+    adapter_mode: str | None
+    token_budget: int
+    tokens_used: int
+    cost_usd: float
+    log_uri: str | None
+    launched_by: uuid.UUID | None
+    created_at: datetime
+    started_at: datetime | None
+    finished_at: datetime | None
+
+
+class MessageOut(Out):
+    id: uuid.UUID
+    index: int
+    role: str
+    content: str
+    thinking_summary: str | None
+    tool_calls: list[dict[str, Any]] | None
+    tool_call_id: str | None
+    model: str | None
+
+
+class PlaygroundStart(BaseModel):
+    agent: str
+    version: str
+    persona: str | None = None
+    context: str | None = Field(
+        default=None,
+        max_length=8000,
+        description="What the agent's connected systems would show, in deployed mode.",
+    )
+    mode: str = Field(default="deployed", pattern="^(deployed|open)$")
+    system_prompt: str | None = Field(
+        default=None, max_length=20000, description="Open mode only: the system prompt to use."
+    )
+
+
+class PlaygroundOut(BaseModel):
+    run: RunOut
+    agent: str
+    version: str
+    persona: PersonaOut | None
+    messages: list[MessageOut]
+
+
+class PlaygroundSay(BaseModel):
+    content: str = Field(min_length=1, max_length=20000)
+
+
+class PlaygroundTurnOut(BaseModel):
+    run: RunOut
+    messages: list[MessageOut]
+    stopped_at_budget: bool
+
+
+class ModelRoleOut(BaseModel):
+    role: str
+    model: str
+    family: str
+    generate: dict[str, Any]
+
+
+class ModelRolesOut(BaseModel):
+    roles: list[ModelRoleOut]
+    budgets: dict[str, int]
+    prices: dict[str, dict[str, float]]
+
+
+class ApiTokenOut(Out):
+    id: uuid.UUID
+    name: str
+    prefix: str
+    created_by: uuid.UUID
+    created_at: datetime
+    last_used_at: datetime | None
+    revoked_at: datetime | None
+
+
+class ApiTokenCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=200)
+
+
+class ApiTokenCreated(BaseModel):
+    token: str = Field(description="Shown once. Store it as a secret.")
+    details: ApiTokenOut

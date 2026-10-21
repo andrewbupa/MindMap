@@ -5,6 +5,148 @@ export type ClientOptions = {
 };
 
 /**
+ * AgentDetail
+ */
+export type AgentDetail = {
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Domains
+     */
+    domains: Array<string>;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Latest Version
+     */
+    latest_version: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Owner
+     */
+    owner: string;
+    /**
+     * Persona Count
+     */
+    persona_count: number;
+    /**
+     * Personas
+     */
+    personas: Array<PersonaOut>;
+    /**
+     * Prompt Versions
+     */
+    prompt_versions: Array<PromptVersionOut>;
+    tool_profile: ToolProfileOut;
+    /**
+     * Versions
+     */
+    versions: Array<string>;
+};
+
+/**
+ * AgentSummary
+ */
+export type AgentSummary = {
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Domains
+     */
+    domains: Array<string>;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Latest Version
+     */
+    latest_version: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Owner
+     */
+    owner: string;
+    /**
+     * Persona Count
+     */
+    persona_count: number;
+    /**
+     * Versions
+     */
+    versions: Array<string>;
+};
+
+/**
+ * ApiTokenCreate
+ */
+export type ApiTokenCreate = {
+    /**
+     * Name
+     */
+    name: string;
+};
+
+/**
+ * ApiTokenCreated
+ */
+export type ApiTokenCreated = {
+    details: ApiTokenOut;
+    /**
+     * Token
+     *
+     * Shown once. Store it as a secret.
+     */
+    token: string;
+};
+
+/**
+ * ApiTokenOut
+ */
+export type ApiTokenOut = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Created By
+     */
+    created_by: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Last Used At
+     */
+    last_used_at: string | null;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Prefix
+     */
+    prefix: string;
+    /**
+     * Revoked At
+     */
+    revoked_at: string | null;
+};
+
+/**
  * AuditEventOut
  */
 export type AuditEventOut = {
@@ -38,6 +180,96 @@ export type AuditEventOut = {
      * Target Type
      */
     target_type: string | null;
+};
+
+/**
+ * ChatCompletionIn
+ */
+export type ChatCompletionIn = {
+    /**
+     * Bench Mode
+     */
+    bench_mode?: 'deployed' | 'open';
+    /**
+     * Bench Tool Results
+     */
+    bench_tool_results?: 'fixtures' | 'simulated';
+    /**
+     * Messages
+     */
+    messages: Array<ChatMessageIn>;
+    /**
+     * Model
+     */
+    model?: string | null;
+    /**
+     * Stream
+     */
+    stream?: boolean;
+    /**
+     * Tools
+     */
+    tools?: Array<{
+        [key: string]: unknown;
+    }> | null;
+    [key: string]: unknown;
+};
+
+/**
+ * ChatMessageIn
+ */
+export type ChatMessageIn = {
+    /**
+     * Content
+     */
+    content?: string | Array<{
+        [key: string]: unknown;
+    }> | null;
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Role
+     */
+    role: 'system' | 'developer' | 'user' | 'assistant' | 'tool';
+    /**
+     * Tool Call Id
+     */
+    tool_call_id?: string | null;
+    /**
+     * Tool Calls
+     */
+    tool_calls?: Array<{
+        [key: string]: unknown;
+    }> | null;
+    [key: string]: unknown;
+};
+
+/**
+ * DiffRowOut
+ */
+export type DiffRowOut = {
+    /**
+     * Kind
+     */
+    kind: string;
+    /**
+     * Left
+     */
+    left: string | null;
+    /**
+     * Left Number
+     */
+    left_number: number | null;
+    /**
+     * Right
+     */
+    right: string | null;
+    /**
+     * Right Number
+     */
+    right_number: number | null;
 };
 
 /**
@@ -105,6 +337,94 @@ export type MeUpdate = {
 };
 
 /**
+ * MessageOut
+ */
+export type MessageOut = {
+    /**
+     * Content
+     */
+    content: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Model
+     */
+    model: string | null;
+    /**
+     * Role
+     */
+    role: string;
+    /**
+     * Thinking Summary
+     */
+    thinking_summary: string | null;
+    /**
+     * Tool Call Id
+     */
+    tool_call_id: string | null;
+    /**
+     * Tool Calls
+     */
+    tool_calls: Array<{
+        [key: string]: unknown;
+    }> | null;
+};
+
+/**
+ * ModelRoleOut
+ */
+export type ModelRoleOut = {
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Generate
+     */
+    generate: {
+        [key: string]: unknown;
+    };
+    /**
+     * Model
+     */
+    model: string;
+    /**
+     * Role
+     */
+    role: string;
+};
+
+/**
+ * ModelRolesOut
+ */
+export type ModelRolesOut = {
+    /**
+     * Budgets
+     */
+    budgets: {
+        [key: string]: number;
+    };
+    /**
+     * Prices
+     */
+    prices: {
+        [key: string]: {
+            [key: string]: number;
+        };
+    };
+    /**
+     * Roles
+     */
+    roles: Array<ModelRoleOut>;
+};
+
+/**
  * Page[AuditEventOut]
  */
 export type PageAuditEventOut = {
@@ -118,6 +438,229 @@ export type PageAuditEventOut = {
      * Pass as `cursor` to fetch the next page.
      */
     next_cursor?: string | null;
+};
+
+/**
+ * PersonaOut
+ */
+export type PersonaOut = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Profile
+     */
+    profile: {
+        [key: string]: unknown;
+    };
+    /**
+     * Risk Flags
+     */
+    risk_flags: Array<string>;
+    /**
+     * Sha256
+     */
+    sha256: string;
+    /**
+     * Tone
+     */
+    tone: string;
+};
+
+/**
+ * PlaygroundOut
+ */
+export type PlaygroundOut = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    persona: PersonaOut | null;
+    run: RunOut;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * PlaygroundSay
+ */
+export type PlaygroundSay = {
+    /**
+     * Content
+     */
+    content: string;
+};
+
+/**
+ * PlaygroundStart
+ */
+export type PlaygroundStart = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Context
+     *
+     * What the agent's connected systems would show, in deployed mode.
+     */
+    context?: string | null;
+    /**
+     * Mode
+     */
+    mode?: string;
+    /**
+     * Persona
+     */
+    persona?: string | null;
+    /**
+     * System Prompt
+     *
+     * Open mode only: the system prompt to use.
+     */
+    system_prompt?: string | null;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * PlaygroundTurnOut
+ */
+export type PlaygroundTurnOut = {
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    run: RunOut;
+    /**
+     * Stopped At Budget
+     */
+    stopped_at_budget: boolean;
+};
+
+/**
+ * PromptDiffOut
+ */
+export type PromptDiffOut = {
+    /**
+     * Added
+     */
+    added: number;
+    /**
+     * Agent
+     */
+    agent: string;
+    base: PromptVersionOut;
+    /**
+     * Changed
+     */
+    changed: number;
+    head: PromptVersionOut;
+    /**
+     * Removed
+     */
+    removed: number;
+    /**
+     * Rows
+     */
+    rows: Array<DiffRowOut>;
+};
+
+/**
+ * PromptVersionOut
+ */
+export type PromptVersionOut = {
+    /**
+     * Author
+     */
+    author: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Git Commit
+     */
+    git_commit: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Notes
+     */
+    notes: string;
+    /**
+     * Sha256
+     */
+    sha256: string;
+    /**
+     * Source Path
+     */
+    source_path: string;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * PromptVersionText
+ */
+export type PromptVersionText = {
+    /**
+     * Author
+     */
+    author: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Git Commit
+     */
+    git_commit: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Notes
+     */
+    notes: string;
+    /**
+     * Sha256
+     */
+    sha256: string;
+    /**
+     * Source Path
+     */
+    source_path: string;
+    /**
+     * Text
+     */
+    text: string;
+    /**
+     * Version
+     */
+    version: string;
 };
 
 /**
@@ -142,6 +685,96 @@ export type ReadinessOut = {
  * Role
  */
 export type Role = 'author' | 'reviewer' | 'compliance' | 'admin';
+
+/**
+ * RunOut
+ */
+export type RunOut = {
+    /**
+     * Adapter Mode
+     */
+    adapter_mode: string | null;
+    /**
+     * Config
+     */
+    config: {
+        [key: string]: unknown;
+    };
+    /**
+     * Config Hash
+     */
+    config_hash: string;
+    /**
+     * Cost Usd
+     */
+    cost_usd: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Finished At
+     */
+    finished_at: string | null;
+    /**
+     * Git Commit
+     */
+    git_commit: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Kind
+     */
+    kind: string;
+    /**
+     * Launched By
+     */
+    launched_by: string | null;
+    /**
+     * Log Uri
+     */
+    log_uri: string | null;
+    /**
+     * Model Ids
+     */
+    model_ids: {
+        [key: string]: unknown;
+    };
+    /**
+     * Prompt Sha
+     */
+    prompt_sha: string | null;
+    /**
+     * Seed Hash
+     */
+    seed_hash: string | null;
+    /**
+     * Started At
+     */
+    started_at: string | null;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Taxonomy Version
+     */
+    taxonomy_version: string | null;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Token Budget
+     */
+    token_budget: number;
+    /**
+     * Tokens Used
+     */
+    tokens_used: number;
+};
 
 /**
  * SignOutOut
@@ -205,6 +838,62 @@ export type SystemCheckOut = {
      * Status
      */
     status: string;
+};
+
+/**
+ * ToolOut
+ */
+export type ToolOut = {
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Fixture
+     */
+    fixture: {
+        [key: string]: unknown;
+    };
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Parameters
+     */
+    parameters: {
+        [key: string]: unknown;
+    };
+};
+
+/**
+ * ToolProfileOut
+ */
+export type ToolProfileOut = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Fixture Files
+     */
+    fixture_files: Array<string>;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Sha256
+     */
+    sha256: string;
+    /**
+     * Tools
+     */
+    tools: Array<ToolOut>;
 };
 
 /**
@@ -286,6 +975,127 @@ export type ValidationError = {
      */
     type: string;
 };
+
+export type ListAgentsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/agents';
+};
+
+export type ListAgentsResponses = {
+    /**
+     * Response List Agents
+     *
+     * Successful Response
+     */
+    200: Array<AgentSummary>;
+};
+
+export type ListAgentsResponse = ListAgentsResponses[keyof ListAgentsResponses];
+
+export type ReadAgentData = {
+    body?: never;
+    path: {
+        /**
+         * Key
+         */
+        key: string;
+    };
+    query?: never;
+    url: '/api/agents/{key}';
+};
+
+export type ReadAgentErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadAgentError = ReadAgentErrors[keyof ReadAgentErrors];
+
+export type ReadAgentResponses = {
+    /**
+     * Successful Response
+     */
+    200: AgentDetail;
+};
+
+export type ReadAgentResponse = ReadAgentResponses[keyof ReadAgentResponses];
+
+export type DiffVersionsData = {
+    body?: never;
+    path: {
+        /**
+         * Key
+         */
+        key: string;
+    };
+    query: {
+        /**
+         * Base
+         */
+        base: string;
+        /**
+         * Head
+         */
+        head: string;
+    };
+    url: '/api/agents/{key}/diff';
+};
+
+export type DiffVersionsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DiffVersionsError = DiffVersionsErrors[keyof DiffVersionsErrors];
+
+export type DiffVersionsResponses = {
+    /**
+     * Successful Response
+     */
+    200: PromptDiffOut;
+};
+
+export type DiffVersionsResponse = DiffVersionsResponses[keyof DiffVersionsResponses];
+
+export type ReadVersionData = {
+    body?: never;
+    path: {
+        /**
+         * Key
+         */
+        key: string;
+        /**
+         * Version
+         */
+        version: string;
+    };
+    query?: never;
+    url: '/api/agents/{key}/versions/{version}';
+};
+
+export type ReadVersionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadVersionError = ReadVersionErrors[keyof ReadVersionErrors];
+
+export type ReadVersionResponses = {
+    /**
+     * Successful Response
+     */
+    200: PromptVersionText;
+};
+
+export type ReadVersionResponse = ReadVersionResponses[keyof ReadVersionResponses];
 
 export type ListEventsData = {
     body?: never;
@@ -420,6 +1230,229 @@ export type UpdateMeResponses = {
 
 export type UpdateMeResponse = UpdateMeResponses[keyof UpdateMeResponses];
 
+export type ModelRolesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/models';
+};
+
+export type ModelRolesResponses = {
+    /**
+     * Successful Response
+     */
+    200: ModelRolesOut;
+};
+
+export type ModelRolesResponse = ModelRolesResponses[keyof ModelRolesResponses];
+
+export type ListConversationsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Mine
+         */
+        mine?: boolean;
+    };
+    url: '/api/playground';
+};
+
+export type ListConversationsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListConversationsError = ListConversationsErrors[keyof ListConversationsErrors];
+
+export type ListConversationsResponses = {
+    /**
+     * Response List Conversations
+     *
+     * Successful Response
+     */
+    200: Array<RunOut>;
+};
+
+export type ListConversationsResponse = ListConversationsResponses[keyof ListConversationsResponses];
+
+export type StartConversationData = {
+    body: PlaygroundStart;
+    path?: never;
+    query?: never;
+    url: '/api/playground';
+};
+
+export type StartConversationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StartConversationError = StartConversationErrors[keyof StartConversationErrors];
+
+export type StartConversationResponses = {
+    /**
+     * Successful Response
+     */
+    201: PlaygroundOut;
+};
+
+export type StartConversationResponse = StartConversationResponses[keyof StartConversationResponses];
+
+export type ReadConversationData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/playground/{run_id}';
+};
+
+export type ReadConversationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadConversationError = ReadConversationErrors[keyof ReadConversationErrors];
+
+export type ReadConversationResponses = {
+    /**
+     * Successful Response
+     */
+    200: PlaygroundOut;
+};
+
+export type ReadConversationResponse = ReadConversationResponses[keyof ReadConversationResponses];
+
+export type FinishConversationData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/playground/{run_id}/finish';
+};
+
+export type FinishConversationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type FinishConversationError = FinishConversationErrors[keyof FinishConversationErrors];
+
+export type FinishConversationResponses = {
+    /**
+     * Successful Response
+     */
+    200: PlaygroundOut;
+};
+
+export type FinishConversationResponse = FinishConversationResponses[keyof FinishConversationResponses];
+
+export type SayData = {
+    body: PlaygroundSay;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/playground/{run_id}/messages';
+};
+
+export type SayErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SayError = SayErrors[keyof SayErrors];
+
+export type SayResponses = {
+    /**
+     * Successful Response
+     */
+    200: PlaygroundTurnOut;
+};
+
+export type SayResponse = SayResponses[keyof SayResponses];
+
+export type ReadRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/runs/{run_id}';
+};
+
+export type ReadRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadRunError = ReadRunErrors[keyof ReadRunErrors];
+
+export type ReadRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunOut;
+};
+
+export type ReadRunResponse = ReadRunResponses[keyof ReadRunResponses];
+
+export type RunLogData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/runs/{run_id}/log';
+};
+
+export type RunLogErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RunLogError = RunLogErrors[keyof RunLogErrors];
+
+export type RunLogResponses = {
+    /**
+     * Successful Response
+     */
+    200: SignedUrlOut;
+};
+
+export type RunLogResponse = RunLogResponses[keyof RunLogResponses];
+
 export type ListChecksData = {
     body?: never;
     path?: never;
@@ -542,6 +1575,79 @@ export type CheckObjectResponses = {
 
 export type CheckObjectResponse = CheckObjectResponses[keyof CheckObjectResponses];
 
+export type ListTokensData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/tokens';
+};
+
+export type ListTokensResponses = {
+    /**
+     * Response List Tokens
+     *
+     * Successful Response
+     */
+    200: Array<ApiTokenOut>;
+};
+
+export type ListTokensResponse = ListTokensResponses[keyof ListTokensResponses];
+
+export type CreateTokenData = {
+    body: ApiTokenCreate;
+    path?: never;
+    query?: never;
+    url: '/api/tokens';
+};
+
+export type CreateTokenErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateTokenError = CreateTokenErrors[keyof CreateTokenErrors];
+
+export type CreateTokenResponses = {
+    /**
+     * Successful Response
+     */
+    201: ApiTokenCreated;
+};
+
+export type CreateTokenResponse = CreateTokenResponses[keyof CreateTokenResponses];
+
+export type RevokeTokenData = {
+    body?: never;
+    path: {
+        /**
+         * Token Id
+         */
+        token_id: string;
+    };
+    query?: never;
+    url: '/api/tokens/{token_id}';
+};
+
+export type RevokeTokenErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RevokeTokenError = RevokeTokenErrors[keyof RevokeTokenErrors];
+
+export type RevokeTokenResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiTokenOut;
+};
+
+export type RevokeTokenResponse = RevokeTokenResponses[keyof RevokeTokenResponses];
+
 export type ListUsersData = {
     body?: never;
     path?: never;
@@ -589,3 +1695,47 @@ export type UpdateUserResponses = {
 };
 
 export type UpdateUserResponse = UpdateUserResponses[keyof UpdateUserResponses];
+
+export type ChatCompletionsData = {
+    body: ChatCompletionIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
+    path: {
+        /**
+         * Agent
+         */
+        agent: string;
+        /**
+         * Version
+         */
+        version: string;
+    };
+    query?: never;
+    url: '/api/v1/agents/{agent}/{version}/chat/completions';
+};
+
+export type ChatCompletionsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ChatCompletionsError = ChatCompletionsErrors[keyof ChatCompletionsErrors];
+
+export type ChatCompletionsResponses = {
+    /**
+     * Response Chat Completions
+     *
+     * Successful Response
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type ChatCompletionsResponse = ChatCompletionsResponses[keyof ChatCompletionsResponses];

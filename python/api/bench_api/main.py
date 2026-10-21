@@ -12,7 +12,19 @@ from fastapi.routing import APIRoute
 from starlette.middleware.sessions import SessionMiddleware
 
 from bench_api import auth
-from bench_api.routes import audit_log, health, me, system, users
+from bench_api.routes import (
+    agents,
+    audit_log,
+    health,
+    me,
+    models,
+    openai_compat,
+    playground,
+    runs,
+    system,
+    tokens,
+    users,
+)
 from bench_core import queue
 from bench_core.config import get_settings
 
@@ -84,6 +96,12 @@ def create_app() -> FastAPI:
         users.router,
         audit_log.router,
         system.router,
+        agents.router,
+        playground.router,
+        runs.router,
+        models.router,
+        tokens.router,
+        openai_compat.router,
     ):
         app.include_router(router, prefix="/api")
     return app

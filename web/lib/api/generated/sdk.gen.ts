@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CheckObjectData, CheckObjectErrors, CheckObjectResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, ListChecksData, ListChecksResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadMeData, ReadMeResponses, ReadyData, ReadyResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
+import type { ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, ListAgentsData, ListAgentsResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, SayData, SayErrors, SayResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -17,6 +17,26 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      */
     meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
+
+/**
+ * List Agents
+ */
+export const listAgents = <ThrowOnError extends boolean = false>(options?: Options<ListAgentsData, ThrowOnError>): RequestResult<ListAgentsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListAgentsResponses, unknown, ThrowOnError>({ url: '/api/agents', ...options });
+
+/**
+ * Read Agent
+ */
+export const readAgent = <ThrowOnError extends boolean = false>(options: Options<ReadAgentData, ThrowOnError>): RequestResult<ReadAgentResponses, ReadAgentErrors, ThrowOnError> => (options.client ?? client).get<ReadAgentResponses, ReadAgentErrors, ThrowOnError>({ url: '/api/agents/{key}', ...options });
+
+/**
+ * Diff Versions
+ */
+export const diffVersions = <ThrowOnError extends boolean = false>(options: Options<DiffVersionsData, ThrowOnError>): RequestResult<DiffVersionsResponses, DiffVersionsErrors, ThrowOnError> => (options.client ?? client).get<DiffVersionsResponses, DiffVersionsErrors, ThrowOnError>({ url: '/api/agents/{key}/diff', ...options });
+
+/**
+ * Read Version
+ */
+export const readVersion = <ThrowOnError extends boolean = false>(options: Options<ReadVersionData, ThrowOnError>): RequestResult<ReadVersionResponses, ReadVersionErrors, ThrowOnError> => (options.client ?? client).get<ReadVersionResponses, ReadVersionErrors, ThrowOnError>({ url: '/api/agents/{key}/versions/{version}', ...options });
 
 /**
  * List Events
@@ -60,6 +80,64 @@ export const updateMe = <ThrowOnError extends boolean = false>(options: Options<
 });
 
 /**
+ * Model Roles
+ *
+ * The exact model behind each role, from config/models.yaml.
+ */
+export const modelRoles = <ThrowOnError extends boolean = false>(options?: Options<ModelRolesData, ThrowOnError>): RequestResult<ModelRolesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ModelRolesResponses, unknown, ThrowOnError>({ url: '/api/models', ...options });
+
+/**
+ * List Conversations
+ */
+export const listConversations = <ThrowOnError extends boolean = false>(options?: Options<ListConversationsData, ThrowOnError>): RequestResult<ListConversationsResponses, ListConversationsErrors, ThrowOnError> => (options?.client ?? client).get<ListConversationsResponses, ListConversationsErrors, ThrowOnError>({ url: '/api/playground', ...options });
+
+/**
+ * Start Conversation
+ */
+export const startConversation = <ThrowOnError extends boolean = false>(options: Options<StartConversationData, ThrowOnError>): RequestResult<StartConversationResponses, StartConversationErrors, ThrowOnError> => (options.client ?? client).post<StartConversationResponses, StartConversationErrors, ThrowOnError>({
+    url: '/api/playground',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Conversation
+ */
+export const readConversation = <ThrowOnError extends boolean = false>(options: Options<ReadConversationData, ThrowOnError>): RequestResult<ReadConversationResponses, ReadConversationErrors, ThrowOnError> => (options.client ?? client).get<ReadConversationResponses, ReadConversationErrors, ThrowOnError>({ url: '/api/playground/{run_id}', ...options });
+
+/**
+ * Finish Conversation
+ */
+export const finishConversation = <ThrowOnError extends boolean = false>(options: Options<FinishConversationData, ThrowOnError>): RequestResult<FinishConversationResponses, FinishConversationErrors, ThrowOnError> => (options.client ?? client).post<FinishConversationResponses, FinishConversationErrors, ThrowOnError>({ url: '/api/playground/{run_id}/finish', ...options });
+
+/**
+ * Say
+ */
+export const say = <ThrowOnError extends boolean = false>(options: Options<SayData, ThrowOnError>): RequestResult<SayResponses, SayErrors, ThrowOnError> => (options.client ?? client).post<SayResponses, SayErrors, ThrowOnError>({
+    url: '/api/playground/{run_id}/messages',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Run
+ */
+export const readRun = <ThrowOnError extends boolean = false>(options: Options<ReadRunData, ThrowOnError>): RequestResult<ReadRunResponses, ReadRunErrors, ThrowOnError> => (options.client ?? client).get<ReadRunResponses, ReadRunErrors, ThrowOnError>({ url: '/api/runs/{run_id}', ...options });
+
+/**
+ * Run Log
+ *
+ * A short-lived link to the run's Inspect log.
+ */
+export const runLog = <ThrowOnError extends boolean = false>(options: Options<RunLogData, ThrowOnError>): RequestResult<RunLogResponses, RunLogErrors, ThrowOnError> => (options.client ?? client).get<RunLogResponses, RunLogErrors, ThrowOnError>({ url: '/api/runs/{run_id}/log', ...options });
+
+/**
  * List Checks
  */
 export const listChecks = <ThrowOnError extends boolean = false>(options?: Options<ListChecksData, ThrowOnError>): RequestResult<ListChecksResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListChecksResponses, unknown, ThrowOnError>({ url: '/api/system/checks', ...options });
@@ -89,6 +167,28 @@ export const streamCheck = <ThrowOnError extends boolean = false>(options: Optio
 export const checkObject = <ThrowOnError extends boolean = false>(options: Options<CheckObjectData, ThrowOnError>): RequestResult<CheckObjectResponses, CheckObjectErrors, ThrowOnError> => (options.client ?? client).get<CheckObjectResponses, CheckObjectErrors, ThrowOnError>({ url: '/api/system/checks/{check_id}/object', ...options });
 
 /**
+ * List Tokens
+ */
+export const listTokens = <ThrowOnError extends boolean = false>(options?: Options<ListTokensData, ThrowOnError>): RequestResult<ListTokensResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListTokensResponses, unknown, ThrowOnError>({ url: '/api/tokens', ...options });
+
+/**
+ * Create Token
+ */
+export const createToken = <ThrowOnError extends boolean = false>(options: Options<CreateTokenData, ThrowOnError>): RequestResult<CreateTokenResponses, CreateTokenErrors, ThrowOnError> => (options.client ?? client).post<CreateTokenResponses, CreateTokenErrors, ThrowOnError>({
+    url: '/api/tokens',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Revoke Token
+ */
+export const revokeToken = <ThrowOnError extends boolean = false>(options: Options<RevokeTokenData, ThrowOnError>): RequestResult<RevokeTokenResponses, RevokeTokenErrors, ThrowOnError> => (options.client ?? client).delete<RevokeTokenResponses, RevokeTokenErrors, ThrowOnError>({ url: '/api/tokens/{token_id}', ...options });
+
+/**
  * List Users
  */
 export const listUsers = <ThrowOnError extends boolean = false>(options?: Options<ListUsersData, ThrowOnError>): RequestResult<ListUsersResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListUsersResponses, unknown, ThrowOnError>({ url: '/api/users', ...options });
@@ -98,6 +198,18 @@ export const listUsers = <ThrowOnError extends boolean = false>(options?: Option
  */
 export const updateUser = <ThrowOnError extends boolean = false>(options: Options<UpdateUserData, ThrowOnError>): RequestResult<UpdateUserResponses, UpdateUserErrors, ThrowOnError> => (options.client ?? client).patch<UpdateUserResponses, UpdateUserErrors, ThrowOnError>({
     url: '/api/users/{user_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Chat Completions
+ */
+export const chatCompletions = <ThrowOnError extends boolean = false>(options: Options<ChatCompletionsData, ThrowOnError>): RequestResult<ChatCompletionsResponses, ChatCompletionsErrors, ThrowOnError> => (options.client ?? client).post<ChatCompletionsResponses, ChatCompletionsErrors, ThrowOnError>({
+    url: '/api/v1/agents/{agent}/{version}/chat/completions',
     ...options,
     headers: {
         'Content-Type': 'application/json',
