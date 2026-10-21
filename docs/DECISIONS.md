@@ -4,6 +4,114 @@ Every design choice, and every place the brief and a library's current
 documentation disagree. Current documentation wins; the entry says so. Newest
 milestone first within each section.
 
+## Milestone 7: runner
+
+### Where the brief and current documentation differ
+
+**Dish tests coding-agent command lines, not agents like ours.** The brief expects
+Dish to run our agents in their production scaffold once the runner exists.
+petri-dish 0.3.4, read from its installed source, supports three scaffolds through
+inspect-swe: Claude Code, Codex CLI and Gemini CLI. Any other scaffold must be an
+Agent Client Protocol (ACP) agent that Bench would write, running a process inside
+the sandbox. Dish also rewrites every tool call except the todo and plan tools to
+an `auditor_execute` call that the auditor answers. So Dish gives a scaffold's real
+prompt and tool definitions, but simulated tool results. Our Petri target already
+does that for our chat agents without Docker. Dish also installs its ACP adapter,
+and so Claude Code, from npm at the latest version on each run, with no way to pin
+it through `interactive_claude_code`. That breaks our rule that every run pins and
+records its versions. Bench therefore does not install petri-dish yet. The runner
+and its `sandbox` queue are ready for it once the open questions below are settled.
+
+**Full thinking comes through Inspect.** Inspect 0.3.282's Anthropic provider reads
+`anthropic-beta` from a request's `extra_headers`. When the betas include
+`dev-full-thinking-2025-05-14` it stops asking for summarised thinking. Bench sets
+that header from the role's configuration and never calls the API around Inspect.
+
+### Design choices
+
+**Work App Platform cannot host has queues of its own.** The App Platform worker
+listens on `default` and `runs` only. The Droplet runner listens on `sandbox` and
+`companion`. A test reads both run commands and checks that every Bench task's
+queue is taken by one of them.
+
+**Full thinking is opt-in per role and kept apart.** A role in `config/models.yaml`
+may set `thinking: full`, on Anthropic roles only. Runs record the choice, and the
+generate settings they record carry the beta header. The indexer stores full
+thinking in `message.thinking_full` and leaves the summary empty; it never stores
+one as the other. Transcript pages show that a reply has full thinking, but only
+admins and compliance can read it, through its own endpoint. Each reading is
+audited, and content notes apply. Lens and the companion leave full thinking out.
+
+**The companion is a contract, not a library.** A reader in `config/companion.yaml`
+names an open-weight model, its signals (probe, persona vector or natural language
+autoencoder explanation) and the Lens label each tracks. The runner runs the
+reader's command, which reads one JSON request on stdin and writes one response
+on stdout (`bench.companion/1`). The GPU code and its versions live in the
+reader's image, pinned by digest. Each run records the reader's configuration and
+its hash. A sample refuses a reader whose configuration has changed since launch,
+and a runner that reports a different version from the reader's.
+
+**Signals are checked in code, as quotes are.** Each signal must name a reply in
+the request and a signal the reader declares, with the declared kind. Its token
+offsets must fall inside the reply's text, in order and without overlap, and
+its values must be finite; explanations must be present. Anything else is dropped
+and counted by reason on the sample. The raw response is kept in Spaces. Stored
+signals belong to their run and are read-only once it finishes, like every other
+child of a run.
+
+**What the companion reads.** The whole conversation, for context, with signals
+asked for on the agent's replies only. Thinking summaries are left out, since a
+separate model wrote them. The tokens the open model read count against the
+reader's token budget; the run has no cost, because the GPU is ours.
+
+**Where text and internals agree.** A companion run is set beside a Lens run on the
+same source: the newest finished one, or the one chosen. Lens counts a label in a
+reply when the panel's median intensity is 1 or more. A signal counts when any
+token reaches its `present_at`. For each signal and its label, every reply both
+runs read falls in one of four cells: both, Lens only, signal only, neither. Bench
+shows the counts, the share where they agree, and, of the replies either flags,
+the share both flag. Each count and share opens its replies, which open the
+response view with the signals pane. Transcripts with content notes stay out for
+readers who have not opted in.
+
+**The signals pane says what it is.** It names the open model and says its signals
+are that model's reading of the text, not the agent's internals. It shades a reply
+by one signal at a time, in one hue, so it never competes with Lens's family
+tints.
+
+**A development reader stands in for the GPU.** `config/companion.dev.yaml` has a
+lexicon reader that marks words from a list, so the whole path runs locally and in
+tests. Production refuses lexicon readers, as it refuses development models.
+
+**The runner is a Droplet with the Docker socket.** Its image is Bench's Python
+image plus the Docker CLI, copied from the `docker:29.9.2-cli` image. It runs one
+job at a time: a reader fills the GPU, and Inspect runs one eval per process.
+Readers run as sibling containers with the GPU, the weights mounted read-only and
+no network. Holding the socket amounts to root on the host, so the Droplet runs
+nothing else. It deploys by commit with `infra/runner/deploy.sh`, at the same
+commit as App Platform.
+
+**A sample whose inputs changed fails at once.** If the work finds that its inputs
+changed (a reader's version, a prompt), the sample fails on that attempt instead
+of retrying, since a retry would find the same.
+
+### Open questions
+
+1. **Which open model, and which signals?** Anthropic's natural language
+   autoencoder release covers several open models. Which one should Bench read
+   with, which probes or persona vectors should map to which labels, and who
+   trains the probes, on what synthetic data? Until then `config/companion.yaml`
+   has no readers.
+2. **Do we want Dish at all?** It would only add something if our agents run in a
+   scaffold of their own in production. If they do, which one, and can it be
+   wrapped in ACP? And would we accept an unpinned adapter whose version is
+   recorded on each run, or vendor a pinned one?
+3. **Who may read full thinking?** Admins and compliance can, today. Should it be
+   compliance alone, and what retention do we owe Anthropic's terms for it?
+4. **Keep the GPU Droplet running?** A GPU Droplet costs money while idle. It could
+   be started for a batch of companion runs and destroyed after, since it holds
+   nothing that matters.
+
 ## Milestone 6: review and reports
 
 ### Where the brief and current documentation differ

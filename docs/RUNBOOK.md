@@ -1,7 +1,7 @@
 # Runbook
 
 How to run Bench locally, set it up on DigitalOcean, deploy it, and look after it.
-Updated at the end of each milestone. Last updated: milestone 6.
+Updated at the end of each milestone. Last updated: milestone 7.
 
 ## Local development
 
@@ -29,6 +29,10 @@ Locally, agents answer through Bench's development model (`benchdev/scripted`),
 which needs no provider key. To use real models, set `BENCH_MODELS_FILE` to
 `/app/config/models.yaml` and `ANTHROPIC_API_KEY` in `.env.compose` (compose) or
 `.env` (without Docker).
+
+The local worker takes every queue, the companion's included, and reads with the
+development lexicon reader (`BENCH_COMPANION_FILE=config/companion.dev.yaml`), so
+open-model signals work without a GPU. Its values mean nothing about any model.
 
 `make dev-down` stops everything and keeps data. Signed URLs open on
 `http://localhost:8333`, where compose publishes SeaweedFS.
@@ -100,6 +104,9 @@ Do these in order. Everything lives in the Sydney region.
    copy the `EV[...]` values it shows into `.do/app.yaml`, so later `doctl apps
    update` calls keep them. Never commit a plaintext secret.
 6. **First deploy.** Merge to `main`. Then follow "After every deploy" below.
+7. **Runner, when it is needed.** Companion readers (and Dish, later) run on a GPU
+   Droplet that takes the `companion` and `sandbox` queues. Follow
+   `infra/runner/README.md`. Until a runner exists, jobs on those queues wait.
 
 ## Deploying
 
@@ -111,6 +118,10 @@ do not. Confirm this on the first deploy that carries a migration.
 
 Spec changes are not picked up from git: apply them with `doctl apps update
 <app-id> --spec .do/app.yaml` after merging.
+
+The runner does not deploy itself. After App Platform deploys, run
+`sudo /srv/bench/infra/runner/deploy.sh <commit>` on the runner Droplet with the
+same commit, so both sides run the same code.
 
 ### After every deploy
 
@@ -230,6 +241,36 @@ UPDATE "user" SET oidc_issuer = '<issuer>', oidc_subject = '<subject>'
 WHERE email = '<email>';
 ```
 
+**Reading a run with an open model.** On a Lens run page, "Signals from an open
+model" lists companion runs on the same source; authors start one by choosing a
+reader. The jobs go to the `companion` queue and wait for the runner. The run page
+sets each signal beside the Lens label it tracks, and every count opens its
+replies. The response view shows a signals pane for the newest companion run that
+read the conversation, or the one in its `companion` link.
+
+**Companion jobs stay queued.** Only the runner takes the `companion` queue. Check
+it is up (`docker compose -f /srv/bench/infra/runner/compose.yaml ps` on the
+Droplet) and its logs; see `infra/runner/README.md`.
+
+**A companion sample failed.** The error is on the run page. "Changed after launch"
+means `config/companion.yaml` changed since the run began: launch a new run.
+"Reports version" means the reader's image reports a different version from the
+reader's `version`: fix the image or the configuration, then launch again. Signals
+that fail the checks are dropped and counted on the run page; the raw response is
+in Spaces beside the run (`runs/<run>/samples/<n>-companion.json`).
+
+**Adding a companion reader.** Add it to `config/companion.yaml`, with its image
+pinned by digest and its `version` set to what the image reports. Pull the image
+and put the weights under `/srv/models` on the runner, then deploy both sides.
+Locally, `BENCH_COMPANION_FILE=config/companion.dev.yaml` gives the lexicon
+reader, which needs no GPU.
+
+**Turning on full thinking.** Only once Anthropic has granted the account access:
+set `thinking: full` on the `target` role in `config/models.yaml` and merge. Runs
+launched after that record the setting and send the beta header. Admins and
+compliance read full thinking from a transcript page, under "Full thinking
+(restricted)"; each reading is in the audit log as `transcript.full_thinking`.
+
 **The audit log** is append-only in Postgres. Compliance and admins read it in
 Settings, audit log.
 
@@ -245,7 +286,39 @@ approves an import.
 | Anthropic | Target, auditor, judge A, scanner, Bloom scenarios (`config/models.yaml`) | To confirm for our account | To confirm. Claude Fable 5.1 is not available under zero data retention | |
 | OpenAI | Judge B on the Lens panel (`openai/gpt-6.1-sol`) | To confirm for our account | To confirm | |
 
+Companion readers run open-weight models on our own runner, with no network, so
+transcripts they read do not leave our infrastructure.
+
 ## Milestone status
+
+### Milestone 7: runner
+
+Built: separate queues for work App Platform cannot host, with a test that every
+task's queue has a worker; full thinking as an opt-in on Anthropic roles, stored
+apart from summaries and readable only by admins and compliance, with each reading
+audited; the open-model companion: reader configuration, the `bench.companion/1`
+contract, a command runner and a development lexicon reader, signal checks in
+code, companion runs on the `companion` queue with read-only signals, a comparison
+with Lens labels on the run page and in the PDF report, and a signals pane in the
+response view; and the Droplet runner (image, compose file, cloud-init, deploy
+script). Dish was assessed and left out for now; see docs/DECISIONS.md.
+
+Verified: in the tests, a lexicon run over an Explore run beside its Lens run, with
+replies in the right cells, exact token offsets, the PDF section, and signals
+read-only once the run finished; a reader changed after launch and a runner on
+another version both failing on the first attempt with nothing stored; the
+command runner speaking the contract, and failing clearly on a crash, bad output
+or a timeout; every kind of bad signal dropped with its reason; full thinking
+stored apart from the summary, readable by an admin, refused to a reviewer and
+audited. In a browser, in light and dark: a companion run started from a Lens run
+page and read by the local worker, its comparison table, a count opened to its
+replies, and the signals pane in the response view. The full-thinking card was
+checked by the tests only: the development models cannot return full thinking.
+The runner's image and Droplet setup are written but not yet built on a Droplet.
+
+Waiting on: a GPU Droplet and the first production reader; answers to the open
+questions in docs/DECISIONS.md, above all which open model and signals to use and
+whether Dish is worth adding; Anthropic's decision on full thinking.
 
 ### Milestone 6: review and reports
 
