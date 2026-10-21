@@ -273,6 +273,87 @@ export type DiffRowOut = {
 };
 
 /**
+ * ExploreLaunch
+ */
+export type ExploreLaunch = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Compaction
+     *
+     * Let Petri summarise long audits.
+     */
+    compaction?: boolean;
+    /**
+     * Epochs
+     */
+    epochs?: number;
+    /**
+     * Max Turns
+     */
+    max_turns?: number;
+    /**
+     * Seeds
+     *
+     * Seed keys; empty means use tags.
+     */
+    seeds?: Array<string> | null;
+    /**
+     * Tags
+     *
+     * Use every suitable seed with a tag.
+     */
+    tags?: Array<string> | null;
+    /**
+     * Token Budget
+     */
+    token_budget?: number | null;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * ExploreRunOut
+ */
+export type ExploreRunOut = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    /**
+     * Dimensions
+     */
+    dimensions: Array<string>;
+    run: RunOut;
+    /**
+     * Samples
+     */
+    samples: Array<SampleOut>;
+    /**
+     * Seeds
+     */
+    seeds: Array<string>;
+    /**
+     * Transcripts
+     */
+    transcripts: Array<TranscriptSummary>;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -777,6 +858,120 @@ export type RunOut = {
 };
 
 /**
+ * SampleOut
+ */
+export type SampleOut = {
+    /**
+     * Attempts
+     */
+    attempts: number;
+    /**
+     * Epoch
+     */
+    epoch: number;
+    /**
+     * Error
+     */
+    error: string | null;
+    /**
+     * Heartbeat At
+     */
+    heartbeat_at: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Sample Index
+     */
+    sample_index: number;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Tokens Used
+     */
+    tokens_used: number;
+};
+
+/**
+ * ScoreOut
+ */
+export type ScoreOut = {
+    /**
+     * Dimension
+     */
+    dimension: string;
+    /**
+     * Explanation
+     */
+    explanation: string | null;
+    /**
+     * Highlights
+     */
+    highlights: Array<unknown>;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Judge Model
+     */
+    judge_model: string | null;
+    /**
+     * Scale Max
+     */
+    scale_max: number;
+    /**
+     * Source
+     */
+    source: string;
+    /**
+     * Value
+     */
+    value: number;
+};
+
+/**
+ * SeedOut
+ */
+export type SeedOut = {
+    /**
+     * Agents
+     */
+    agents: Array<string>;
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Scenario Type
+     */
+    scenario_type: string | null;
+    /**
+     * Sha256
+     */
+    sha256: string;
+    /**
+     * Tags
+     */
+    tags: Array<string>;
+    /**
+     * Text
+     */
+    text: string;
+    /**
+     * Title
+     */
+    title: string;
+};
+
+/**
  * SignOutOut
  */
 export type SignOutOut = {
@@ -894,6 +1089,85 @@ export type ToolProfileOut = {
      * Tools
      */
     tools: Array<ToolOut>;
+};
+
+/**
+ * TranscriptOut
+ */
+export type TranscriptOut = {
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Epoch
+     */
+    epoch: number;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    run: RunOut;
+    /**
+     * Sample Index
+     */
+    sample_index: number;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Scores
+     */
+    scores: Array<ScoreOut>;
+    /**
+     * Seed Text
+     */
+    seed_text: string | null;
+    /**
+     * Summary
+     */
+    summary: string | null;
+};
+
+/**
+ * TranscriptSummary
+ */
+export type TranscriptSummary = {
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Epoch
+     */
+    epoch: number;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Sample Index
+     */
+    sample_index: number;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Scores
+     */
+    scores: {
+        [key: string]: number;
+    };
+    /**
+     * Summary
+     */
+    summary: string | null;
 };
 
 /**
@@ -1157,6 +1431,199 @@ export type LogoutResponses = {
 
 export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
 
+export type ListRunsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/explore/runs';
+};
+
+export type ListRunsResponses = {
+    /**
+     * Response List Runs
+     *
+     * Successful Response
+     */
+    200: Array<RunOut>;
+};
+
+export type ListRunsResponse = ListRunsResponses[keyof ListRunsResponses];
+
+export type LaunchData = {
+    body: ExploreLaunch;
+    path?: never;
+    query?: never;
+    url: '/api/explore/runs';
+};
+
+export type LaunchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LaunchError = LaunchErrors[keyof LaunchErrors];
+
+export type LaunchResponses = {
+    /**
+     * Successful Response
+     */
+    201: RunOut;
+};
+
+export type LaunchResponse = LaunchResponses[keyof LaunchResponses];
+
+export type ReadRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/explore/runs/{run_id}';
+};
+
+export type ReadRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadRunError = ReadRunErrors[keyof ReadRunErrors];
+
+export type ReadRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: ExploreRunOut;
+};
+
+export type ReadRunResponse = ReadRunResponses[keyof ReadRunResponses];
+
+export type CancelRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/explore/runs/{run_id}/cancel';
+};
+
+export type CancelRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CancelRunError = CancelRunErrors[keyof CancelRunErrors];
+
+export type CancelRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunOut;
+};
+
+export type CancelRunResponse = CancelRunResponses[keyof CancelRunResponses];
+
+export type StreamRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/explore/runs/{run_id}/events';
+};
+
+export type StreamRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StreamRunError = StreamRunErrors[keyof StreamRunErrors];
+
+export type StreamRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ListSeedsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Agent
+         */
+        agent?: string | null;
+    };
+    url: '/api/explore/seeds';
+};
+
+export type ListSeedsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListSeedsError = ListSeedsErrors[keyof ListSeedsErrors];
+
+export type ListSeedsResponses = {
+    /**
+     * Response List Seeds
+     *
+     * Successful Response
+     */
+    200: Array<SeedOut>;
+};
+
+export type ListSeedsResponse = ListSeedsResponses[keyof ListSeedsResponses];
+
+export type ReadTranscriptData = {
+    body?: never;
+    path: {
+        /**
+         * Transcript Id
+         */
+        transcript_id: string;
+    };
+    query?: never;
+    url: '/api/explore/transcripts/{transcript_id}';
+};
+
+export type ReadTranscriptErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadTranscriptError = ReadTranscriptErrors[keyof ReadTranscriptErrors];
+
+export type ReadTranscriptResponses = {
+    /**
+     * Successful Response
+     */
+    200: TranscriptOut;
+};
+
+export type ReadTranscriptResponse = ReadTranscriptResponses[keyof ReadTranscriptResponses];
+
 export type HealthData = {
     body?: never;
     path?: never;
@@ -1393,7 +1860,7 @@ export type SayResponses = {
 
 export type SayResponse = SayResponses[keyof SayResponses];
 
-export type ReadRunData = {
+export type ReadRun2Data = {
     body?: never;
     path: {
         /**
@@ -1405,23 +1872,23 @@ export type ReadRunData = {
     url: '/api/runs/{run_id}';
 };
 
-export type ReadRunErrors = {
+export type ReadRun2Errors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ReadRunError = ReadRunErrors[keyof ReadRunErrors];
+export type ReadRun2Error = ReadRun2Errors[keyof ReadRun2Errors];
 
-export type ReadRunResponses = {
+export type ReadRun2Responses = {
     /**
      * Successful Response
      */
     200: RunOut;
 };
 
-export type ReadRunResponse = ReadRunResponses[keyof ReadRunResponses];
+export type ReadRun2Response = ReadRun2Responses[keyof ReadRun2Responses];
 
 export type RunLogData = {
     body?: never;

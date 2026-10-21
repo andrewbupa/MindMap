@@ -88,7 +88,10 @@ async def launch(
             seeds=seeds,
             roles=roles,
             options=explore.ExploreOptions(
-                max_turns=body.max_turns, epochs=body.epochs, token_budget=body.token_budget
+                max_turns=body.max_turns,
+                epochs=body.epochs,
+                token_budget=body.token_budget,
+                compaction=body.compaction,
             ),
             git_commit=current_git_commit(settings.repo_root, settings.git_commit),
             launched_by=user.id,

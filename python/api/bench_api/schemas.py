@@ -282,6 +282,7 @@ class ExploreLaunch(BaseModel):
     max_turns: int = Field(default=30, ge=2, le=60)
     epochs: int = Field(default=1, ge=1, le=10)
     token_budget: int | None = Field(default=None, ge=10_000)
+    compaction: bool = Field(default=True, description="Let Petri summarise long audits.")
 
 
 class SampleOut(Out):

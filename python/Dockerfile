@@ -11,6 +11,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_PYTHON_DOWNLOADS=never \
     UV_PROJECT_ENVIRONMENT=/app/python/.venv \
     BENCH_REPO_ROOT=/app \
+    HOME=/tmp/bench \
+    TIKTOKEN_CACHE_DIR=/tmp/bench/tiktoken \
+    INSPECT_DISPLAY=none \
     PATH=/app/python/.venv/bin:$PATH
 
 RUN groupadd --system bench && useradd --system --gid bench --home-dir /app bench

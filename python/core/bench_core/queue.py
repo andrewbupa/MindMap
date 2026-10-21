@@ -22,6 +22,8 @@ RUNS_QUEUE = "runs"
 # so running jobs get 100 s to finish. Anything killed mid-flight is left "doing"
 # with a stale heartbeat and is re-queued by the retry_stalled_jobs task.
 WORKER_DEFAULTS: WorkerOptions = {
+    # Audits spend most of their time waiting on model providers.
+    "concurrency": 4,
     "shutdown_graceful_timeout": 100,
     "update_heartbeat_interval": 10,
     "stalled_worker_timeout": 30,

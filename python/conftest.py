@@ -1,4 +1,5 @@
-"""Shared test fixtures: a migrated test database and an in-process S3 server."""
+"""Shared test fixtures: a migrated test database, an in-process S3 server, the API client
+and a stand-in identity provider."""
 
 from __future__ import annotations
 
@@ -13,10 +14,16 @@ os.environ.setdefault("BENCH_SPACES_BUCKET", "bench-test")
 os.environ.setdefault("BENCH_GIT_COMMIT", "0" * 40)
 os.environ.setdefault("BENCH_BOOTSTRAP_ADMINS", "admin@example.test")
 
+import httpx
 from alembic import command
 from alembic.config import Config
+from asgi_lifespan import LifespanManager
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from bench_api import auth
+from bench_api.main import app
+from testsupport.oidc import FakeOAuth, FakeOIDCClient
 
 HERE = os.path.dirname(__file__)
 
@@ -94,3 +101,21 @@ async def db(migrated_database: None) -> AsyncIterator[AsyncSession]:
         await session.commit()
         yield session
         await session.rollback()
+
+
+# The API test client and a stand-in identity provider, shared by API and worker tests.
+@pytest.fixture
+def idp(monkeypatch: pytest.MonkeyPatch) -> FakeOIDCClient:
+    client = FakeOIDCClient()
+    monkeypatch.setattr(auth, "get_oauth", lambda: FakeOAuth(client))
+    return client
+
+
+@pytest.fixture
+async def client(db: AsyncSession) -> AsyncIterator[httpx.AsyncClient]:
+    async with LifespanManager(app):
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://bench.test", headers={"x-bench-request": "1"}
+        ) as http:
+            yield http

@@ -40,6 +40,8 @@ class ExploreOptions:
     epochs: int = 1
     token_budget: int | None = None
     tool_results: ToolResults = ToolResults.fixtures
+    # Petri summarises long audits for the auditor. It counts tokens with tiktoken.
+    compaction: bool = True
 
 
 def engine_versions() -> dict[str, str]:
@@ -61,6 +63,7 @@ def run_config(
         "dimensions": {"custom": "seeds/petri/dimensions", "builtin": "petri defaults"},
         "max_turns": options.max_turns,
         "epochs": options.epochs,
+        "compaction": options.compaction,
         "models": {name: roles.role(role).model for name, role in ROLES.items()},
         "generate": {name: roles.role(role).generate for name, role in ROLES.items()},
     }
