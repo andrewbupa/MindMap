@@ -1,7 +1,7 @@
 # Runbook
 
 How to run Bench locally, set it up on DigitalOcean, deploy it, and look after it.
-Updated at the end of each milestone. Last updated: milestone 4.
+Updated at the end of each milestone. Last updated: milestone 5.
 
 ## Local development
 
@@ -187,6 +187,23 @@ with the new ones. Never commit a `scenarios/` folder there; Bench refuses it.
 something in what the model wrote; generate again, and if it repeats, tighten the
 behaviour's `instructions.ideation`.
 
+**Reading a run with Lens.** Lens, then "Read a run": choose a finished Explore,
+Measure or playground run. Each conversation is one job in which both judges read
+every label family. The run page shows each label's share of replies with its
+interval, each conversation's fit, and each judge's kept and dropped findings;
+every count opens the quotes behind it. A finished Explore or Measure run links
+straight to Lens.
+
+**A judge drops many findings.** The run page lists each judge's dropped findings
+by reason. Many "quote not found" drops mean the judge paraphrases; "no valid
+answer" means it did not use the answer tool. Both count against the judge and
+are worth raising when choosing models.
+
+**Running the scanners on other logs.** The Lens scanners are ordinary Inspect
+Scout scanners: `scout scan bench_worker/lens/scanners.py -T <log folder> --model
+<model>` runs them over any folder of Inspect logs, writing Scout's own results
+locally. Bench does not import those results.
+
 **The audit log** is append-only in Postgres. Compliance and admins read it in
 Settings, audit log.
 
@@ -203,6 +220,30 @@ approves an import.
 | OpenAI | Judge B on the Lens panel (`openai/gpt-6.1-sol`) | To confirm for our account | To confirm | |
 
 ## Milestone status
+
+### Milestone 5: lens
+
+Built: five Inspect Scout scanners, one per label family, asking for findings as
+structured output; a judge panel from two model families (`judge_a` Claude Opus
+5.5, `judge_b` OpenAI's gpt-6.1-sol) with a second development family locally;
+Lens runs over finished runs, one job per conversation; every quote checked in
+code, with offsets, and failures dropped and counted per judge; per-reply medians,
+disputes and fit against expected profiles; label shares with Wilson intervals;
+the response view with family tints, profile strips, the findings pane, thinking
+summaries in their own pane and the turn timeline; the run page, the compare view
+and the label reference.
+
+Verified: in the tests, a panel reading with scripted judges (four findings kept
+with exact offsets, including one on a thinking summary; a paraphrase, a citation
+of the member's message and an unanswered family dropped and counted; a disputed
+label; medians, fit and intrusions as expected; findings read-only once the run
+closed), Scout's own `scan_async` over a folder of Inspect logs, and a comparison
+of two prompt versions. In a browser with the development judges: two Lens runs
+over 18-conversation Measure runs, the response view, the run page and the
+compare view.
+
+Waiting on: an OpenAI key and confirmation of judge B's model ID, price and
+retention terms; answers to the open questions in docs/DECISIONS.md.
 
 ### Milestone 4: measure
 

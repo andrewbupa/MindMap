@@ -104,9 +104,17 @@ def is_reply(message: Message) -> bool:
     return message.role == "assistant" and bool(message.content.strip())
 
 
-async def load_run_lens(db: AsyncSession, run: Run, only: list[uuid.UUID] | None = None) -> RunLens:
+async def load_run_lens(
+    db: AsyncSession,
+    run: Run,
+    only: list[uuid.UUID] | None = None,
+    order: list[str] | None = None,
+) -> RunLens:
+    """``order`` lists label keys in taxonomy order; labels follow it, then by key."""
     judges = list(run.config["panel"].values())
     taxonomy_id, labels = await taxonomy_labels(db, run.config["taxonomy_version"])
+    rank = {key: i for i, key in enumerate(order or [])}
+    labels.sort(key=lambda label: (rank.get(label.key, len(rank)), label.key))
     keys = {label.id: label.key for label in labels}
     profiles = await expected_profiles(db, taxonomy_id, keys)
     ids = [uuid.UUID(t) for t in run.config["transcripts"]]

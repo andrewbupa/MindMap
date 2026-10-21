@@ -48,12 +48,14 @@
   --color-chart-1: #2a78d6;
   --color-chart-grid: #e2ded6;
 
-  /* Lens label families. Saturation carries intensity, so keep hues distinct. */
-  --family-care: #b4537a;
-  --family-collaboration: #3a7d6b;
-  --family-judgement: #3f5fa8;
-  --family-curiosity: #a8731f;
-  --family-risk: #a63d32;
+  /* Lens label families, in a fixed order that passes the palette checks on each
+     surface. Saturation carries intensity. Three light hues sit below 3:1 against
+     the surface, so every tint carries a visible label. */
+  --family-care: #2a78d6;
+  --family-collaboration: #eb6834;
+  --family-judgement: #1baf7a;
+  --family-curiosity: #eda100;
+  --family-risk: #e87ba4;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -75,5 +77,10 @@
     --color-danger-bg: #3d1f1c;
     --color-chart-1: #3987e5;
     --color-chart-grid: #3a3934;
+    --family-care: #3987e5;
+    --family-collaboration: #d95926;
+    --family-judgement: #199e70;
+    --family-curiosity: #c98500;
+    --family-risk: #d55181;
   }
 }

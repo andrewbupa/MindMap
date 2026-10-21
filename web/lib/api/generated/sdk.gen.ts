@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, CancelMeasureRunData, CancelMeasureRunErrors, CancelMeasureRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, ExportScoresData, ExportScoresErrors, ExportScoresResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, GenerateScenarioSetData, GenerateScenarioSetErrors, GenerateScenarioSetResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, LaunchMeasureData, LaunchMeasureErrors, LaunchMeasureResponses, ListAgentsData, ListAgentsResponses, ListBehavioursData, ListBehavioursResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListMeasureRunsData, ListMeasureRunsErrors, ListMeasureRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadBehaviourData, ReadBehaviourErrors, ReadBehaviourResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadMeasureRunData, ReadMeasureRunErrors, ReadMeasureRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadScenarioSetData, ReadScenarioSetErrors, ReadScenarioSetResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, RunProvenanceData, RunProvenanceErrors, RunProvenanceResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, StreamMeasureRunData, StreamMeasureRunErrors, StreamMeasureRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
+import type { CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, CancelLensRunData, CancelLensRunErrors, CancelLensRunResponses, CancelMeasureRunData, CancelMeasureRunErrors, CancelMeasureRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CompareLensRunsData, CompareLensRunsErrors, CompareLensRunsResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, ExportScoresData, ExportScoresErrors, ExportScoresResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, GenerateScenarioSetData, GenerateScenarioSetErrors, GenerateScenarioSetResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, LaunchLensData, LaunchLensErrors, LaunchLensResponses, LaunchMeasureData, LaunchMeasureErrors, LaunchMeasureResponses, ListAgentsData, ListAgentsResponses, ListBehavioursData, ListBehavioursResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListLensRunsData, ListLensRunsResponses, ListLensSourcesData, ListLensSourcesResponses, ListMeasureRunsData, ListMeasureRunsErrors, ListMeasureRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadBehaviourData, ReadBehaviourErrors, ReadBehaviourResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadLensRunData, ReadLensRunErrors, ReadLensRunResponses, ReadLensTranscriptData, ReadLensTranscriptErrors, ReadLensTranscriptResponses, ReadMeasureRunData, ReadMeasureRunErrors, ReadMeasureRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadScenarioSetData, ReadScenarioSetErrors, ReadScenarioSetResponses, ReadTaxonomyData, ReadTaxonomyResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, RunProvenanceData, RunProvenanceErrors, RunProvenanceResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, StreamLensRunData, StreamLensRunErrors, StreamLensRunResponses, StreamMeasureRunData, StreamMeasureRunErrors, StreamMeasureRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -119,6 +119,64 @@ export const health = <ThrowOnError extends boolean = false>(options?: Options<H
  * Readiness: the database answers and the queue schema is in place.
  */
 export const ready = <ThrowOnError extends boolean = false>(options?: Options<ReadyData, ThrowOnError>): RequestResult<ReadyResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ReadyResponses, unknown, ThrowOnError>({ url: '/api/health/ready', ...options });
+
+/**
+ * Compare Lens Runs
+ *
+ * Prompt A beside prompt B, on the scenarios both runs read.
+ */
+export const compareLensRuns = <ThrowOnError extends boolean = false>(options: Options<CompareLensRunsData, ThrowOnError>): RequestResult<CompareLensRunsResponses, CompareLensRunsErrors, ThrowOnError> => (options.client ?? client).get<CompareLensRunsResponses, CompareLensRunsErrors, ThrowOnError>({ url: '/api/lens/compare', ...options });
+
+/**
+ * List Lens Runs
+ */
+export const listLensRuns = <ThrowOnError extends boolean = false>(options?: Options<ListLensRunsData, ThrowOnError>): RequestResult<ListLensRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListLensRunsResponses, unknown, ThrowOnError>({ url: '/api/lens/runs', ...options });
+
+/**
+ * Launch Lens
+ */
+export const launchLens = <ThrowOnError extends boolean = false>(options: Options<LaunchLensData, ThrowOnError>): RequestResult<LaunchLensResponses, LaunchLensErrors, ThrowOnError> => (options.client ?? client).post<LaunchLensResponses, LaunchLensErrors, ThrowOnError>({
+    url: '/api/lens/runs',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Lens Run
+ */
+export const readLensRun = <ThrowOnError extends boolean = false>(options: Options<ReadLensRunData, ThrowOnError>): RequestResult<ReadLensRunResponses, ReadLensRunErrors, ThrowOnError> => (options.client ?? client).get<ReadLensRunResponses, ReadLensRunErrors, ThrowOnError>({ url: '/api/lens/runs/{run_id}', ...options });
+
+/**
+ * Cancel Lens Run
+ */
+export const cancelLensRun = <ThrowOnError extends boolean = false>(options: Options<CancelLensRunData, ThrowOnError>): RequestResult<CancelLensRunResponses, CancelLensRunErrors, ThrowOnError> => (options.client ?? client).post<CancelLensRunResponses, CancelLensRunErrors, ThrowOnError>({ url: '/api/lens/runs/{run_id}/cancel', ...options });
+
+/**
+ * Stream Lens Run
+ */
+export const streamLensRun = <ThrowOnError extends boolean = false>(options: Options<StreamLensRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamLensRunResponses>> => (options.client ?? client).sse.get<StreamLensRunResponses, StreamLensRunErrors, ThrowOnError>({ url: '/api/lens/runs/{run_id}/events', ...options });
+
+/**
+ * Read Lens Transcript
+ */
+export const readLensTranscript = <ThrowOnError extends boolean = false>(options: Options<ReadLensTranscriptData, ThrowOnError>): RequestResult<ReadLensTranscriptResponses, ReadLensTranscriptErrors, ThrowOnError> => (options.client ?? client).get<ReadLensTranscriptResponses, ReadLensTranscriptErrors, ThrowOnError>({ url: '/api/lens/runs/{run_id}/transcripts/{transcript_id}', ...options });
+
+/**
+ * List Lens Sources
+ *
+ * Finished runs whose transcripts Lens can read.
+ */
+export const listLensSources = <ThrowOnError extends boolean = false>(options?: Options<ListLensSourcesData, ThrowOnError>): RequestResult<ListLensSourcesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListLensSourcesResponses, unknown, ThrowOnError>({ url: '/api/lens/sources', ...options });
+
+/**
+ * Read Taxonomy
+ *
+ * The taxonomy in git, with each label's trust status as stored.
+ */
+export const readTaxonomy = <ThrowOnError extends boolean = false>(options?: Options<ReadTaxonomyData, ThrowOnError>): RequestResult<ReadTaxonomyResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ReadTaxonomyResponses, unknown, ThrowOnError>({ url: '/api/lens/taxonomy', ...options });
 
 /**
  * Read Me

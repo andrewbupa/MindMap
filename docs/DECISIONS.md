@@ -4,6 +4,114 @@ Every design choice, and every place the brief and a library's current
 documentation disagree. Current documentation wins; the entry says so. Newest
 milestone first within each section.
 
+## Milestone 5: lens
+
+### Where the brief and current documentation differ
+
+**Scanners call the model through `generate_answer`, not `llm_scanner`.** Inspect
+Scout 0.6.0's `llm_scanner` counts tokens on every call; for OpenAI-family and
+mock models that downloads tiktoken's encoding file, which the network here
+blocks. Each Lens scanner therefore
+numbers the messages with Scout's `message_numbering` and asks for structured
+output with `generate_answer` and `AnswerStructured`, which is the same machinery
+`llm_scanner` uses underneath, without the token count. They are still ordinary
+`@scanner` functions, one per family, and `scan_async` runs them over a folder of
+Inspect logs in the tests.
+
+**The worker calls the scanners' judging directly.** Scout's `scan` writes its
+results, a buffer and an index cache to local disk, and starts several processes.
+Bench's Lens jobs call the scanners' shared judging function in memory, one job
+per transcript, and keep what they need in Postgres and Spaces: the checked
+findings and dropped findings as rows, and every judge's raw answer as JSON beside
+the run. Running `scout scan` over exported logs still works for anyone who wants
+Scout's own outputs.
+
+**The finding schema follows Scout's conventions.** Scout requires a description
+on every field, turns a field called `label` into the result's label and one
+called `explanation` into its explanation, and wraps a list of findings in a
+`results` object. The finding's `label` is limited to the family's keys, and its
+`part` says whether the quote is from the reply or from a thinking summary.
+
+**The second judge family is OpenAI.** `judge_b` is `openai/gpt-6.1-sol`, the
+newest OpenAI model in Inspect 0.3.282's model database (released 29 September
+2026). OpenAI's documentation host is blocked here, so the ID is unconfirmed
+against OpenAI's own model list; check it with the models endpoint before the
+first production run. `config/models.yaml` has no price for it yet, so cost
+estimates count it as zero until one is added.
+
+### Design choices
+
+**A panel lives in `config/models.yaml`.** `panels.lens` names the judge roles; a
+Lens run records each role's exact model. Bench refuses a panel of fewer than two
+or more than three judges, or of a single family, so with Claude as the target no
+family judges its own outputs alone. Locally, `benchpeer/scripted` is a second
+development family that scores some labels two points higher than `benchdev` and
+paraphrases its first quote, so disputes and dropped quotes appear in local runs.
+
+**A Lens run reads one finished run.** It records the source run, the taxonomy
+version and its hash, the panel and the transcripts read, and carries the
+source's prompt SHA and seed hash. Each transcript is one job in which every judge
+reads every family, in parallel. The job reads the label definitions as the run's
+taxonomy version stored them, not as git has them now.
+
+**The judge reads what Bench checks.** The conversation is rebuilt from the stored
+messages with Bench's message ids: each reply's visible words, and its thinking
+summary in `<thinking_summary>` tags. System messages are left out, as Scout does
+by default. Every citation therefore resolves to a stored message, and every quote
+is checked against exactly the text the judge saw.
+
+**What is dropped, and why.** A finding is dropped, and counted against its judge,
+when it cites a message that is not one of the agent's replies, names a label from
+outside the family, gives an intensity outside 0 to 3, has an empty quote, or
+quotes text that is not an exact substring of the reply or summary it names. A
+judge that gives no usable answer for a family after Scout's retries is recorded
+the same way. Intensity 0 means absent and is not stored.
+
+**Per reply, the panel's median.** For each reply and label, each judge's highest
+intensity counts, and a judge that found nothing counts 0. The median is the
+reply's intensity; a spread of two points or more marks it disputed. Fit uses
+these medians against the expected profile of the scenario's type; a reply whose
+scenario has no type has no fit. Text the agent sent with a tool call counts as a
+reply; replies that are only a tool call do not.
+
+**Thinking summaries stay apart.** Findings on a thinking summary are stored with
+the channel `thinking_summary`, shown in their own pane labelled as summaries
+written by a separate model, and never counted towards intensity, prevalence or
+fit.
+
+**Prevalence and intervals.** Across a run, a label's share is the proportion of
+replies whose median is 1 or more, with a 95% Wilson interval, which behaves at 0
+and 1 and with few replies. The compare view puts two runs side by side on the
+scenarios both read, with both intervals and the difference in points.
+
+**Every tint and number links to a sentence.** Each finding has an anchor at its
+first character. Strip cells, timeline cells and finding lists link to it; the
+counts on a run page open the findings behind them.
+
+**Family colours.** The five families take the first five slots of the validated
+reference palette, in fixed order, which pass the colour-blind and normal-vision
+checks on both surfaces. Three light-mode hues fall below 3:1 against the
+surface, so every tint carries a visible label (strip cells and timeline rows are
+named, highlights name their labels on hover and focus). The placeholder hues from
+milestone 1 failed three checks and were replaced.
+
+**Transcripts with content notes.** The response view applies the same opt-in rule
+as Explore, and run summaries and comparisons leave such transcripts out for
+readers who have not opted in.
+
+### Open questions
+
+1. **Confirm judge B.** Check `openai/gpt-6.1-sol` against OpenAI's models endpoint
+   with our key, record its price, and confirm OpenAI's retention terms in the
+   RUNBOOK table. A Google model (`google/gemini-3.1-pro` in Inspect's database)
+   would do as well if OpenAI's terms do not suit.
+2. **A third judge?** The panel allows three. With two, the median is the mean of
+   two judges, so one judge finding a label faintly gives 0.5, which counts as
+   absent. A third judge would break ties.
+3. **Ten repetitions.** The brief asks for ten samples per scenario and prompt
+   version by default. Explore defaults to one and Measure to three; Lens reads
+   whatever its source ran. Should Lens launch its own ten-repetition runs?
+
 ## Milestone 4: measure
 
 ### Where the brief and current documentation differ

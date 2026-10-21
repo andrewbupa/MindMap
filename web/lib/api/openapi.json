@@ -129,6 +129,71 @@
         "title": "AgentSummary",
         "type": "object"
       },
+      "AnnotationOut": {
+        "properties": {
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "end": {
+            "title": "End",
+            "type": "integer"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "intensity": {
+            "title": "Intensity",
+            "type": "integer"
+          },
+          "judge": {
+            "title": "Judge",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "quote": {
+            "title": "Quote",
+            "type": "string"
+          },
+          "rationale": {
+            "title": "Rationale",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "message_id",
+          "label",
+          "family",
+          "judge",
+          "intensity",
+          "quote",
+          "start",
+          "end",
+          "channel",
+          "rationale"
+        ],
+        "title": "AnnotationOut",
+        "type": "object"
+      },
       "ApiTokenCreate": {
         "properties": {
           "name": {
@@ -682,6 +747,42 @@
         "title": "ChatMessageIn",
         "type": "object"
       },
+      "ConsensusOut": {
+        "properties": {
+          "by_judge": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "By Judge",
+            "type": "object"
+          },
+          "disputed": {
+            "title": "Disputed",
+            "type": "boolean"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "median": {
+            "title": "Median",
+            "type": "number"
+          }
+        },
+        "required": [
+          "label",
+          "family",
+          "median",
+          "by_judge",
+          "disputed"
+        ],
+        "title": "ConsensusOut",
+        "type": "object"
+      },
       "DiffRowOut": {
         "properties": {
           "kind": {
@@ -783,6 +884,29 @@
           "tags"
         ],
         "title": "DimensionOut",
+        "type": "object"
+      },
+      "DroppedCountOut": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "judge": {
+            "title": "Judge",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "judge",
+          "reason",
+          "count"
+        ],
+        "title": "DroppedCountOut",
         "type": "object"
       },
       "ElicitationOut": {
@@ -901,6 +1025,39 @@
           "epoch"
         ],
         "title": "EpochTallyOut",
+        "type": "object"
+      },
+      "ExpectationOut": {
+        "properties": {
+          "expect": {
+            "title": "Expect",
+            "type": "string"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "max": {
+            "title": "Max",
+            "type": "integer"
+          },
+          "min": {
+            "title": "Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "label",
+          "family",
+          "expect",
+          "min",
+          "max"
+        ],
+        "title": "ExpectationOut",
         "type": "object"
       },
       "ExploreLaunch": {
@@ -1045,6 +1202,58 @@
         "title": "ExploreRunOut",
         "type": "object"
       },
+      "FitOut": {
+        "properties": {
+          "intrusions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Intrusions",
+            "type": "array"
+          },
+          "matches": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Matches",
+            "type": "array"
+          },
+          "misses": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Misses",
+            "type": "array"
+          },
+          "out_of_band": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Out Of Band",
+            "type": "array"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          }
+        },
+        "required": [
+          "score",
+          "matches",
+          "misses",
+          "intrusions",
+          "out_of_band"
+        ],
+        "title": "FitOut",
+        "type": "object"
+      },
       "GeneratedDimensionOut": {
         "properties": {
           "description": {
@@ -1173,6 +1382,47 @@
         "title": "HealthOut",
         "type": "object"
       },
+      "IntervalOut": {
+        "properties": {
+          "high": {
+            "title": "High",
+            "type": "number"
+          },
+          "low": {
+            "title": "Low",
+            "type": "number"
+          }
+        },
+        "required": [
+          "low",
+          "high"
+        ],
+        "title": "IntervalOut",
+        "type": "object"
+      },
+      "JudgeCountOut": {
+        "properties": {
+          "dropped": {
+            "title": "Dropped",
+            "type": "integer"
+          },
+          "judge": {
+            "title": "Judge",
+            "type": "string"
+          },
+          "kept": {
+            "title": "Kept",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "judge",
+          "kept",
+          "dropped"
+        ],
+        "title": "JudgeCountOut",
+        "type": "object"
+      },
       "JudgeReference": {
         "properties": {
           "cite": {
@@ -1215,6 +1465,657 @@
           "message_index"
         ],
         "title": "JudgeReference",
+        "type": "object"
+      },
+      "LabelComparisonOut": {
+        "properties": {
+          "a": {
+            "$ref": "#/components/schemas/LabelPrevalenceOut"
+          },
+          "b": {
+            "$ref": "#/components/schemas/LabelPrevalenceOut"
+          },
+          "difference": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Share in B minus share in A.",
+            "title": "Difference"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "family",
+          "a",
+          "b",
+          "difference"
+        ],
+        "title": "LabelComparisonOut",
+        "type": "object"
+      },
+      "LabelPrevalenceOut": {
+        "properties": {
+          "disputed": {
+            "description": "Replies where judges differ by two points or more.",
+            "title": "Disputed",
+            "type": "integer"
+          },
+          "expressed": {
+            "description": "Replies where the panel's median intensity is 1 or more.",
+            "title": "Expressed",
+            "type": "integer"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "interval": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IntervalOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "95% Wilson interval for the share."
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "mean_intensity": {
+            "title": "Mean Intensity",
+            "type": "number"
+          },
+          "replies": {
+            "title": "Replies",
+            "type": "integer"
+          },
+          "share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Share"
+          },
+          "trust_status": {
+            "title": "Trust Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "family",
+          "trust_status",
+          "replies",
+          "expressed",
+          "share",
+          "interval",
+          "mean_intensity",
+          "disputed"
+        ],
+        "title": "LabelPrevalenceOut",
+        "type": "object"
+      },
+      "LensCompareOut": {
+        "properties": {
+          "a": {
+            "$ref": "#/components/schemas/LensRunSummary"
+          },
+          "b": {
+            "$ref": "#/components/schemas/LensRunSummary"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/LabelComparisonOut"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "scenarios": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioComparisonOut"
+            },
+            "title": "Scenarios",
+            "type": "array"
+          },
+          "shared_scenarios": {
+            "title": "Shared Scenarios",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "a",
+          "b",
+          "shared_scenarios",
+          "labels",
+          "scenarios"
+        ],
+        "title": "LensCompareOut",
+        "type": "object"
+      },
+      "LensEvidenceOut": {
+        "properties": {
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "intensity": {
+            "title": "Intensity",
+            "type": "integer"
+          },
+          "judge": {
+            "title": "Judge",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "quote": {
+            "title": "Quote",
+            "type": "string"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "transcript_id",
+          "message_id",
+          "label",
+          "judge",
+          "intensity",
+          "quote",
+          "channel"
+        ],
+        "title": "LensEvidenceOut",
+        "type": "object"
+      },
+      "LensFamilyOut": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "source"
+        ],
+        "title": "LensFamilyOut",
+        "type": "object"
+      },
+      "LensLabelOut": {
+        "properties": {
+          "counter_examples": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Counter Examples",
+            "type": "array"
+          },
+          "definition": {
+            "title": "Definition",
+            "type": "string"
+          },
+          "examples": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Examples",
+            "type": "array"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "trust_status": {
+            "title": "Trust Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "family",
+          "definition",
+          "examples",
+          "counter_examples",
+          "trust_status"
+        ],
+        "title": "LensLabelOut",
+        "type": "object"
+      },
+      "LensLaunch": {
+        "properties": {
+          "source_run": {
+            "format": "uuid",
+            "title": "Source Run",
+            "type": "string"
+          },
+          "token_budget": {
+            "anyOf": [
+              {
+                "minimum": 10000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token Budget"
+          },
+          "transcripts": {
+            "anyOf": [
+              {
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Read only these transcripts; all of them when empty.",
+            "title": "Transcripts"
+          }
+        },
+        "required": [
+          "source_run"
+        ],
+        "title": "LensLaunch",
+        "type": "object"
+      },
+      "LensRunOut": {
+        "properties": {
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "dropped": {
+            "items": {
+              "$ref": "#/components/schemas/DroppedCountOut"
+            },
+            "title": "Dropped",
+            "type": "array"
+          },
+          "evidence": {
+            "description": "The findings behind one label, when a label is asked for.",
+            "items": {
+              "$ref": "#/components/schemas/LensEvidenceOut"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "judge_counts": {
+            "items": {
+              "$ref": "#/components/schemas/JudgeCountOut"
+            },
+            "title": "Judge Counts",
+            "type": "array"
+          },
+          "judges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Judges",
+            "type": "array"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/LabelPrevalenceOut"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "mean_fit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Fit"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/SampleOut"
+            },
+            "title": "Samples",
+            "type": "array"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "transcripts": {
+            "items": {
+              "$ref": "#/components/schemas/LensTranscriptSummary"
+            },
+            "title": "Transcripts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "counts",
+          "mean_fit",
+          "judges",
+          "samples",
+          "labels",
+          "transcripts",
+          "judge_counts",
+          "dropped",
+          "evidence"
+        ],
+        "title": "LensRunOut",
+        "type": "object"
+      },
+      "LensRunSummary": {
+        "properties": {
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "mean_fit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Fit"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "counts",
+          "mean_fit"
+        ],
+        "title": "LensRunSummary",
+        "type": "object"
+      },
+      "LensSourceOut": {
+        "properties": {
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "transcripts": {
+            "title": "Transcripts",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "run",
+          "transcripts"
+        ],
+        "title": "LensSourceOut",
+        "type": "object"
+      },
+      "LensTranscriptOut": {
+        "properties": {
+          "annotations": {
+            "items": {
+              "$ref": "#/components/schemas/AnnotationOut"
+            },
+            "title": "Annotations",
+            "type": "array"
+          },
+          "content_notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Content Notes",
+            "type": "array"
+          },
+          "dropped": {
+            "items": {
+              "$ref": "#/components/schemas/DroppedCountOut"
+            },
+            "title": "Dropped",
+            "type": "array"
+          },
+          "expected": {
+            "items": {
+              "$ref": "#/components/schemas/ExpectationOut"
+            },
+            "title": "Expected",
+            "type": "array"
+          },
+          "judges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Judges",
+            "type": "array"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/LensLabelOut"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/MessageOut"
+            },
+            "title": "Messages",
+            "type": "array"
+          },
+          "replies": {
+            "items": {
+              "$ref": "#/components/schemas/ReplyLensOut"
+            },
+            "title": "Replies",
+            "type": "array"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "scenario_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Key"
+          },
+          "scenario_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Type"
+          },
+          "seed_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seed Text"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "transcript_id",
+          "scenario_key",
+          "scenario_type",
+          "seed_text",
+          "content_notes",
+          "judges",
+          "messages",
+          "replies",
+          "annotations",
+          "expected",
+          "labels",
+          "dropped"
+        ],
+        "title": "LensTranscriptOut",
+        "type": "object"
+      },
+      "LensTranscriptSummary": {
+        "properties": {
+          "content_notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Content Notes",
+            "type": "array"
+          },
+          "disputed": {
+            "title": "Disputed",
+            "type": "integer"
+          },
+          "epoch": {
+            "title": "Epoch",
+            "type": "integer"
+          },
+          "fit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fit"
+          },
+          "replies": {
+            "title": "Replies",
+            "type": "integer"
+          },
+          "sample_index": {
+            "title": "Sample Index",
+            "type": "integer"
+          },
+          "scenario_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Key"
+          },
+          "scenario_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Type"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "transcript_id",
+          "sample_index",
+          "epoch",
+          "scenario_key",
+          "scenario_type",
+          "content_notes",
+          "replies",
+          "fit",
+          "disputed"
+        ],
+        "title": "LensTranscriptSummary",
         "type": "object"
       },
       "MeOut": {
@@ -1989,6 +2890,44 @@
         "title": "ReadinessOut",
         "type": "object"
       },
+      "ReplyLensOut": {
+        "properties": {
+          "fit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FitOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/ConsensusOut"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message_id",
+          "index",
+          "labels",
+          "fit"
+        ],
+        "title": "ReplyLensOut",
+        "type": "object"
+      },
       "ReviewIn": {
         "properties": {
           "annotation_id": {
@@ -2553,6 +3492,61 @@
         "title": "SampleOut",
         "type": "object"
       },
+      "ScenarioComparisonOut": {
+        "properties": {
+          "a_fit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "A Fit"
+          },
+          "a_transcripts": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "A Transcripts",
+            "type": "array"
+          },
+          "b_fit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "B Fit"
+          },
+          "b_transcripts": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "B Transcripts",
+            "type": "array"
+          },
+          "scenario_key": {
+            "title": "Scenario Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_key",
+          "a_fit",
+          "b_fit",
+          "a_transcripts",
+          "b_transcripts"
+        ],
+        "title": "ScenarioComparisonOut",
+        "type": "object"
+      },
       "ScenarioGenerate": {
         "properties": {
           "token_budget": {
@@ -3107,6 +4101,35 @@
           "mean_score"
         ],
         "title": "TallyOut",
+        "type": "object"
+      },
+      "TaxonomyOut": {
+        "properties": {
+          "families": {
+            "items": {
+              "$ref": "#/components/schemas/LensFamilyOut"
+            },
+            "title": "Families",
+            "type": "array"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/LensLabelOut"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version",
+          "families",
+          "labels"
+        ],
+        "title": "TaxonomyOut",
         "type": "object"
       },
       "ToolOut": {
@@ -4213,6 +5236,385 @@
         "summary": "Ready",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/api/lens/compare": {
+      "get": {
+        "description": "Prompt A beside prompt B, on the scenarios both runs read.",
+        "operationId": "compare_lens_runs",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "a",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "A",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "b",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "B",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LensCompareOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Compare Lens Runs",
+        "tags": [
+          "lens"
+        ]
+      }
+    },
+    "/api/lens/runs": {
+      "get": {
+        "operationId": "list_lens_runs",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LensRunSummary"
+                  },
+                  "title": "Response List Lens Runs",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Lens Runs",
+        "tags": [
+          "lens"
+        ]
+      },
+      "post": {
+        "operationId": "launch_lens",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LensLaunch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Launch Lens",
+        "tags": [
+          "lens"
+        ]
+      }
+    },
+    "/api/lens/runs/{run_id}": {
+      "get": {
+        "operationId": "read_lens_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "label",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Label"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LensRunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Lens Run",
+        "tags": [
+          "lens"
+        ]
+      }
+    },
+    "/api/lens/runs/{run_id}/cancel": {
+      "post": {
+        "operationId": "cancel_lens_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Lens Run",
+        "tags": [
+          "lens"
+        ]
+      }
+    },
+    "/api/lens/runs/{run_id}/events": {
+      "get": {
+        "operationId": "stream_lens_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "itemSchema": {
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    },
+                    "event": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "retry": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stream Lens Run",
+        "tags": [
+          "lens"
+        ]
+      }
+    },
+    "/api/lens/runs/{run_id}/transcripts/{transcript_id}": {
+      "get": {
+        "operationId": "read_lens_transcript",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "transcript_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transcript Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LensTranscriptOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Lens Transcript",
+        "tags": [
+          "lens"
+        ]
+      }
+    },
+    "/api/lens/sources": {
+      "get": {
+        "description": "Finished runs whose transcripts Lens can read.",
+        "operationId": "list_lens_sources",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LensSourceOut"
+                  },
+                  "title": "Response List Lens Sources",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Lens Sources",
+        "tags": [
+          "lens"
+        ]
+      }
+    },
+    "/api/lens/taxonomy": {
+      "get": {
+        "description": "The taxonomy in git, with each label's trust status as stored.",
+        "operationId": "read_taxonomy",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Read Taxonomy",
+        "tags": [
+          "lens"
         ]
       }
     },

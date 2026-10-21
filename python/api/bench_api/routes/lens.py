@@ -215,6 +215,11 @@ async def list_lens_runs(_: ReaderUser, db: Db) -> list[LensRunSummary]:
     return [await _summary(db, run, await load_run_lens(db, run)) for run in runs]
 
 
+def _order(settings: AppSettings) -> list[str]:
+    """Label keys in the taxonomy's order, family by family."""
+    return [label.key for label in load_lens(settings.repo_root).taxonomy.labels]
+
+
 def _visible(user: User, lens: RunLens) -> RunLens:
     """Leave out transcripts with content notes the reader has not opted in to."""
     if user.sensitive_opt_in:
@@ -227,10 +232,10 @@ def _visible(user: User, lens: RunLens) -> RunLens:
 
 @router.get("/runs/{run_id}")
 async def read_lens_run(
-    run_id: uuid.UUID, user: ReaderUser, db: Db, label: str | None = None
+    run_id: uuid.UUID, user: ReaderUser, db: Db, settings: AppSettings, label: str | None = None
 ) -> LensRunOut:
     run = await _lens_run(db, run_id)
-    lens = _visible(user, await load_run_lens(db, run))
+    lens = _visible(user, await load_run_lens(db, run, order=_order(settings)))
     summary = await _summary(db, run, lens)
     samples = (
         await db.execute(
@@ -287,7 +292,7 @@ async def read_lens_transcript(
     run_id: uuid.UUID, transcript_id: uuid.UUID, user: ReaderUser, db: Db, settings: AppSettings
 ) -> LensTranscriptOut:
     run = await _lens_run(db, run_id)
-    lens = await load_run_lens(db, run, only=[transcript_id])
+    lens = await load_run_lens(db, run, only=[transcript_id], order=_order(settings))
     if not lens.transcripts:
         raise HTTPException(
             status.HTTP_404_NOT_FOUND, "This Lens run did not read that transcript."
@@ -377,15 +382,18 @@ async def read_lens_transcript(
 
 
 @router.get("/compare")
-async def compare_lens_runs(a: uuid.UUID, b: uuid.UUID, user: ReaderUser, db: Db) -> LensCompareOut:
+async def compare_lens_runs(
+    a: uuid.UUID, b: uuid.UUID, user: ReaderUser, db: Db, settings: AppSettings
+) -> LensCompareOut:
     """Prompt A beside prompt B, on the scenarios both runs read."""
     run_a, run_b = await _lens_run(db, a), await _lens_run(db, b)
     if run_a.taxonomy_version != run_b.taxonomy_version:
         raise HTTPException(
             status.HTTP_400_BAD_REQUEST, "These runs used different taxonomy versions."
         )
-    lens_a = _visible(user, await load_run_lens(db, run_a))
-    lens_b = _visible(user, await load_run_lens(db, run_b))
+    order = _order(settings)
+    lens_a = _visible(user, await load_run_lens(db, run_a, order=order))
+    lens_b = _visible(user, await load_run_lens(db, run_b, order=order))
 
     def keyed(lens: RunLens) -> dict[str, list[TranscriptLens]]:
         grouped: dict[str, list[TranscriptLens]] = {}

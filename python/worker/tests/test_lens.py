@@ -175,6 +175,11 @@ async def test_the_panel_reads_a_transcript_and_quotes_are_checked(
     ]
 
     page = (await client.get(f"/api/lens/runs/{run['id']}")).json()
+    assert [item["label"] for item in page["labels"][:3]] == [
+        "emotional_reaction",
+        "interpretation",
+        "exploration",
+    ]
     labels = {item["label"]: item for item in page["labels"]}
     assert labels["calibrated_uncertainty"]["expressed"] == 1
     # Two replies: mockllm's tool call carries placeholder text, then the answer.

@@ -77,6 +77,11 @@ export function MeasureRunView({ run }: { run: MeasureRunOut }) {
           <span className={runStyles.quiet}>{total} rollouts in all.</span>
         </div>
         {run.run.error ? <Notice tone="danger">{run.run.error}</Notice> : null}
+        {OPEN.has(live?.status ?? run.run.status) ? null : (
+          <p>
+            <Link href={`/lens?source=${run.run.id}`}>Read these conversations with Lens</Link>
+          </p>
+        )}
       </Card>
       <Card title="Elicitation rate">
         <div className={styles.stats}>

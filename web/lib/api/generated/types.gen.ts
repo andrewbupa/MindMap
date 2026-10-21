@@ -90,6 +90,56 @@ export type AgentSummary = {
 };
 
 /**
+ * AnnotationOut
+ */
+export type AnnotationOut = {
+    /**
+     * Channel
+     */
+    channel: string;
+    /**
+     * End
+     */
+    end: number;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Intensity
+     */
+    intensity: number;
+    /**
+     * Judge
+     */
+    judge: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Quote
+     */
+    quote: string;
+    /**
+     * Rationale
+     */
+    rationale: string;
+    /**
+     * Start
+     */
+    start: number;
+};
+
+/**
  * ApiTokenCreate
  */
 export type ApiTokenCreate = {
@@ -379,6 +429,34 @@ export type ChatMessageIn = {
 };
 
 /**
+ * ConsensusOut
+ */
+export type ConsensusOut = {
+    /**
+     * By Judge
+     */
+    by_judge: {
+        [key: string]: number;
+    };
+    /**
+     * Disputed
+     */
+    disputed: boolean;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Median
+     */
+    median: number;
+};
+
+/**
  * DiffRowOut
  */
 export type DiffRowOut = {
@@ -434,6 +512,24 @@ export type DimensionOut = {
      * Tags
      */
     tags: Array<string>;
+};
+
+/**
+ * DroppedCountOut
+ */
+export type DroppedCountOut = {
+    /**
+     * Count
+     */
+    count: number;
+    /**
+     * Judge
+     */
+    judge: string;
+    /**
+     * Reason
+     */
+    reason: string;
 };
 
 /**
@@ -501,6 +597,32 @@ export type EpochTallyOut = {
      * Unscored
      */
     unscored: number;
+};
+
+/**
+ * ExpectationOut
+ */
+export type ExpectationOut = {
+    /**
+     * Expect
+     */
+    expect: string;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Max
+     */
+    max: number;
+    /**
+     * Min
+     */
+    min: number;
 };
 
 /**
@@ -582,6 +704,32 @@ export type ExploreRunOut = {
      * Version
      */
     version: string;
+};
+
+/**
+ * FitOut
+ */
+export type FitOut = {
+    /**
+     * Intrusions
+     */
+    intrusions: Array<string>;
+    /**
+     * Matches
+     */
+    matches: Array<string>;
+    /**
+     * Misses
+     */
+    misses: Array<string>;
+    /**
+     * Out Of Band
+     */
+    out_of_band: Array<string>;
+    /**
+     * Score
+     */
+    score: number | null;
 };
 
 /**
@@ -667,6 +815,38 @@ export type HealthOut = {
 };
 
 /**
+ * IntervalOut
+ */
+export type IntervalOut = {
+    /**
+     * High
+     */
+    high: number;
+    /**
+     * Low
+     */
+    low: number;
+};
+
+/**
+ * JudgeCountOut
+ */
+export type JudgeCountOut = {
+    /**
+     * Dropped
+     */
+    dropped: number;
+    /**
+     * Judge
+     */
+    judge: string;
+    /**
+     * Kept
+     */
+    kept: number;
+};
+
+/**
  * JudgeReference
  */
 export type JudgeReference = {
@@ -682,6 +862,375 @@ export type JudgeReference = {
      * Message Index
      */
     message_index: number | null;
+};
+
+/**
+ * LabelComparisonOut
+ */
+export type LabelComparisonOut = {
+    a: LabelPrevalenceOut;
+    b: LabelPrevalenceOut;
+    /**
+     * Difference
+     *
+     * Share in B minus share in A.
+     */
+    difference: number | null;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Label
+     */
+    label: string;
+};
+
+/**
+ * LabelPrevalenceOut
+ */
+export type LabelPrevalenceOut = {
+    /**
+     * Disputed
+     *
+     * Replies where judges differ by two points or more.
+     */
+    disputed: number;
+    /**
+     * Expressed
+     *
+     * Replies where the panel's median intensity is 1 or more.
+     */
+    expressed: number;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * 95% Wilson interval for the share.
+     */
+    interval: IntervalOut | null;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Mean Intensity
+     */
+    mean_intensity: number;
+    /**
+     * Replies
+     */
+    replies: number;
+    /**
+     * Share
+     */
+    share: number | null;
+    /**
+     * Trust Status
+     */
+    trust_status: string;
+};
+
+/**
+ * LensCompareOut
+ */
+export type LensCompareOut = {
+    a: LensRunSummary;
+    b: LensRunSummary;
+    /**
+     * Labels
+     */
+    labels: Array<LabelComparisonOut>;
+    /**
+     * Scenarios
+     */
+    scenarios: Array<ScenarioComparisonOut>;
+    /**
+     * Shared Scenarios
+     */
+    shared_scenarios: number;
+};
+
+/**
+ * LensEvidenceOut
+ */
+export type LensEvidenceOut = {
+    /**
+     * Channel
+     */
+    channel: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Intensity
+     */
+    intensity: number;
+    /**
+     * Judge
+     */
+    judge: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Quote
+     */
+    quote: string;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
+ * LensFamilyOut
+ */
+export type LensFamilyOut = {
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Source
+     */
+    source: string;
+};
+
+/**
+ * LensLabelOut
+ */
+export type LensLabelOut = {
+    /**
+     * Counter Examples
+     */
+    counter_examples: Array<string>;
+    /**
+     * Definition
+     */
+    definition: string;
+    /**
+     * Examples
+     */
+    examples: Array<string>;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Trust Status
+     */
+    trust_status: string;
+};
+
+/**
+ * LensLaunch
+ */
+export type LensLaunch = {
+    /**
+     * Source Run
+     */
+    source_run: string;
+    /**
+     * Token Budget
+     */
+    token_budget?: number | null;
+    /**
+     * Transcripts
+     *
+     * Read only these transcripts; all of them when empty.
+     */
+    transcripts?: Array<string> | null;
+};
+
+/**
+ * LensRunOut
+ */
+export type LensRunOut = {
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    /**
+     * Dropped
+     */
+    dropped: Array<DroppedCountOut>;
+    /**
+     * Evidence
+     *
+     * The findings behind one label, when a label is asked for.
+     */
+    evidence: Array<LensEvidenceOut>;
+    /**
+     * Judge Counts
+     */
+    judge_counts: Array<JudgeCountOut>;
+    /**
+     * Judges
+     */
+    judges: Array<string>;
+    /**
+     * Labels
+     */
+    labels: Array<LabelPrevalenceOut>;
+    /**
+     * Mean Fit
+     */
+    mean_fit: number | null;
+    run: RunOut;
+    /**
+     * Samples
+     */
+    samples: Array<SampleOut>;
+    source: RunOut;
+    /**
+     * Transcripts
+     */
+    transcripts: Array<LensTranscriptSummary>;
+};
+
+/**
+ * LensRunSummary
+ */
+export type LensRunSummary = {
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    /**
+     * Mean Fit
+     */
+    mean_fit: number | null;
+    run: RunOut;
+    source: RunOut;
+};
+
+/**
+ * LensSourceOut
+ */
+export type LensSourceOut = {
+    run: RunOut;
+    /**
+     * Transcripts
+     */
+    transcripts: number;
+};
+
+/**
+ * LensTranscriptOut
+ */
+export type LensTranscriptOut = {
+    /**
+     * Annotations
+     */
+    annotations: Array<AnnotationOut>;
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Dropped
+     */
+    dropped: Array<DroppedCountOut>;
+    /**
+     * Expected
+     */
+    expected: Array<ExpectationOut>;
+    /**
+     * Judges
+     */
+    judges: Array<string>;
+    /**
+     * Labels
+     */
+    labels: Array<LensLabelOut>;
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    /**
+     * Replies
+     */
+    replies: Array<ReplyLensOut>;
+    run: RunOut;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Scenario Type
+     */
+    scenario_type: string | null;
+    /**
+     * Seed Text
+     */
+    seed_text: string | null;
+    source: RunOut;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
+ * LensTranscriptSummary
+ */
+export type LensTranscriptSummary = {
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Disputed
+     */
+    disputed: number;
+    /**
+     * Epoch
+     */
+    epoch: number;
+    /**
+     * Fit
+     */
+    fit: number | null;
+    /**
+     * Replies
+     */
+    replies: number;
+    /**
+     * Sample Index
+     */
+    sample_index: number;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Scenario Type
+     */
+    scenario_type: string | null;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
 };
 
 /**
@@ -1186,6 +1735,25 @@ export type ReadinessOut = {
 };
 
 /**
+ * ReplyLensOut
+ */
+export type ReplyLensOut = {
+    fit: FitOut | null;
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Labels
+     */
+    labels: Array<ConsensusOut>;
+    /**
+     * Message Id
+     */
+    message_id: string;
+};
+
+/**
  * ReviewIn
  */
 export type ReviewIn = {
@@ -1474,6 +2042,32 @@ export type SampleOut = {
      * Tokens Used
      */
     tokens_used: number;
+};
+
+/**
+ * ScenarioComparisonOut
+ */
+export type ScenarioComparisonOut = {
+    /**
+     * A Fit
+     */
+    a_fit: number | null;
+    /**
+     * A Transcripts
+     */
+    a_transcripts: Array<string>;
+    /**
+     * B Fit
+     */
+    b_fit: number | null;
+    /**
+     * B Transcripts
+     */
+    b_transcripts: Array<string>;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string;
 };
 
 /**
@@ -1803,6 +2397,24 @@ export type TallyOut = {
      * Unscored
      */
     unscored: number;
+};
+
+/**
+ * TaxonomyOut
+ */
+export type TaxonomyOut = {
+    /**
+     * Families
+     */
+    families: Array<LensFamilyOut>;
+    /**
+     * Labels
+     */
+    labels: Array<LensLabelOut>;
+    /**
+     * Version
+     */
+    version: string;
 };
 
 /**
@@ -2485,6 +3097,244 @@ export type ReadyResponses = {
 };
 
 export type ReadyResponse = ReadyResponses[keyof ReadyResponses];
+
+export type CompareLensRunsData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * A
+         */
+        a: string;
+        /**
+         * B
+         */
+        b: string;
+    };
+    url: '/api/lens/compare';
+};
+
+export type CompareLensRunsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CompareLensRunsError = CompareLensRunsErrors[keyof CompareLensRunsErrors];
+
+export type CompareLensRunsResponses = {
+    /**
+     * Successful Response
+     */
+    200: LensCompareOut;
+};
+
+export type CompareLensRunsResponse = CompareLensRunsResponses[keyof CompareLensRunsResponses];
+
+export type ListLensRunsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/lens/runs';
+};
+
+export type ListLensRunsResponses = {
+    /**
+     * Response List Lens Runs
+     *
+     * Successful Response
+     */
+    200: Array<LensRunSummary>;
+};
+
+export type ListLensRunsResponse = ListLensRunsResponses[keyof ListLensRunsResponses];
+
+export type LaunchLensData = {
+    body: LensLaunch;
+    path?: never;
+    query?: never;
+    url: '/api/lens/runs';
+};
+
+export type LaunchLensErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LaunchLensError = LaunchLensErrors[keyof LaunchLensErrors];
+
+export type LaunchLensResponses = {
+    /**
+     * Successful Response
+     */
+    201: RunOut;
+};
+
+export type LaunchLensResponse = LaunchLensResponses[keyof LaunchLensResponses];
+
+export type ReadLensRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: {
+        /**
+         * Label
+         */
+        label?: string | null;
+    };
+    url: '/api/lens/runs/{run_id}';
+};
+
+export type ReadLensRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadLensRunError = ReadLensRunErrors[keyof ReadLensRunErrors];
+
+export type ReadLensRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: LensRunOut;
+};
+
+export type ReadLensRunResponse = ReadLensRunResponses[keyof ReadLensRunResponses];
+
+export type CancelLensRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/lens/runs/{run_id}/cancel';
+};
+
+export type CancelLensRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CancelLensRunError = CancelLensRunErrors[keyof CancelLensRunErrors];
+
+export type CancelLensRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunOut;
+};
+
+export type CancelLensRunResponse = CancelLensRunResponses[keyof CancelLensRunResponses];
+
+export type StreamLensRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/lens/runs/{run_id}/events';
+};
+
+export type StreamLensRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StreamLensRunError = StreamLensRunErrors[keyof StreamLensRunErrors];
+
+export type StreamLensRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ReadLensTranscriptData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+        /**
+         * Transcript Id
+         */
+        transcript_id: string;
+    };
+    query?: never;
+    url: '/api/lens/runs/{run_id}/transcripts/{transcript_id}';
+};
+
+export type ReadLensTranscriptErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadLensTranscriptError = ReadLensTranscriptErrors[keyof ReadLensTranscriptErrors];
+
+export type ReadLensTranscriptResponses = {
+    /**
+     * Successful Response
+     */
+    200: LensTranscriptOut;
+};
+
+export type ReadLensTranscriptResponse = ReadLensTranscriptResponses[keyof ReadLensTranscriptResponses];
+
+export type ListLensSourcesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/lens/sources';
+};
+
+export type ListLensSourcesResponses = {
+    /**
+     * Response List Lens Sources
+     *
+     * Successful Response
+     */
+    200: Array<LensSourceOut>;
+};
+
+export type ListLensSourcesResponse = ListLensSourcesResponses[keyof ListLensSourcesResponses];
+
+export type ReadTaxonomyData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/lens/taxonomy';
+};
+
+export type ReadTaxonomyResponses = {
+    /**
+     * Successful Response
+     */
+    200: TaxonomyOut;
+};
+
+export type ReadTaxonomyResponse = ReadTaxonomyResponses[keyof ReadTaxonomyResponses];
 
 export type ReadMeData = {
     body?: never;
