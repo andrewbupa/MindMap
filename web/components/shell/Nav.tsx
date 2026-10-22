@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import styles from "./shell.module.css";
-
 const AREAS = [
   { href: "/", label: "Home" },
   { href: "/agents", label: "Agents" },
@@ -16,23 +14,23 @@ const AREAS = [
   { href: "/settings", label: "Settings" },
 ] as const;
 
+/** The areas, as a groove with a raised lozenge on the current one. */
 export function Nav() {
   const pathname = usePathname();
   return (
-    <nav className={styles.nav} aria-label="Areas">
-      {AREAS.map(({ href, label }) => {
-        const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
-        return (
-          <Link
-            key={href}
-            href={href}
-            className={`${styles.link} ${active ? styles.active : ""}`.trim()}
-            aria-current={active ? "page" : undefined}
-          >
-            {label}
-          </Link>
-        );
-      })}
+    <nav aria-label="Main">
+      <ul className="ag-nav">
+        {AREAS.map(({ href, label }) => {
+          const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          return (
+            <li key={href}>
+              <Link href={href} aria-current={active ? "page" : undefined}>
+                {label}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     </nav>
   );
 }

@@ -17,7 +17,7 @@ export default async function ComparePage({
   if (!a || !b) {
     return (
       <>
-        <PageHeader title="Compare" quiet={ETHOS_QUIET} />
+        <PageHeader title="Compare" note={ETHOS_QUIET} />
         <Notice>
           Choose two Ethos runs to compare from a run&apos;s page in <Link href="/ethos">Ethos</Link>.
         </Notice>
@@ -29,7 +29,7 @@ export default async function ComparePage({
     const detail = (error as { detail?: unknown } | undefined)?.detail;
     return (
       <>
-        <PageHeader title="Compare" quiet={ETHOS_QUIET} />
+        <PageHeader title="Compare" note={ETHOS_QUIET} />
         <Notice>{typeof detail === "string" ? detail : "These runs could not be compared."}</Notice>
       </>
     );

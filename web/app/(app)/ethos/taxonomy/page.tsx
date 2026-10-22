@@ -10,7 +10,7 @@ export default async function TaxonomyPage() {
   const { data } = await readTaxonomy({ client: await serverClient(), throwOnError: true });
   return (
     <>
-      <PageHeader title="Ethos labels" quiet={ETHOS_QUIET}>
+      <PageHeader title="Ethos labels" note={ETHOS_QUIET}>
         <p>
           Taxonomy {data.version}, from seeds/ethos/taxonomy.yaml. Every finding records the
           version it used. A label&apos;s trust follows expert agreement on the gold set.

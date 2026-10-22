@@ -32,12 +32,22 @@ class Role(StrEnum):
 ROLE_VALUES = ", ".join(f"'{role.value}'" for role in Role)
 
 
+class Theme(StrEnum):
+    system = "system"
+    dark = "dark"
+    light = "light"
+
+
+THEME_VALUES = ", ".join(f"'{theme.value}'" for theme in Theme)
+
+
 class User(UUIDPrimaryKey, CreatedAt, Base):
     __tablename__ = "user"
     __table_args__ = (
         UniqueConstraint("oidc_issuer", "oidc_subject"),
         CheckConstraint(f"roles <@ ARRAY[{ROLE_VALUES}]::varchar[]", name="known_roles"),
         CheckConstraint("email = lower(email)", name="email_lowercase"),
+        CheckConstraint(f"theme IN ({THEME_VALUES})", name="known_theme"),
     )
 
     email: Mapped[str] = mapped_column(String(320), unique=True)
@@ -48,6 +58,8 @@ class User(UUIDPrimaryKey, CreatedAt, Base):
     is_active: Mapped[bool] = mapped_column(default=True, server_default="true")
     # Reviewer care: queues touching self-harm, abuse or bereavement are opt-in.
     sensitive_opt_in: Mapped[bool] = mapped_column(default=False, server_default="false")
+    # Dark, light, or whatever the person's device prefers.
+    theme: Mapped[str] = mapped_column(String(10), default="system", server_default="system")
     last_seen_at: Mapped[datetime | None]
 
     def has_role(self, *wanted: Role) -> bool:

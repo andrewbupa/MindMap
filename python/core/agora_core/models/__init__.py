@@ -8,7 +8,7 @@ from agora_core.models.ethos import (
     TaxonomyVersion,
     TrustStatus,
 )
-from agora_core.models.identity import ApiToken, AuditEvent, Role, User, UserSession
+from agora_core.models.identity import ApiToken, AuditEvent, Role, Theme, User, UserSession
 from agora_core.models.registry import (
     Agent,
     Behaviour,
@@ -64,6 +64,7 @@ __all__ = [
     "Score",
     "SystemCheck",
     "TaxonomyVersion",
+    "Theme",
     "ToolProfile",
     "Transcript",
     "TrustStatus",

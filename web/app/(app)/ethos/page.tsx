@@ -25,7 +25,7 @@ export default async function EthosPage({
   ]);
   return (
     <>
-      <PageHeader title="Ethos" quiet={ETHOS_QUIET}>
+      <PageHeader title="Ethos" note={ETHOS_QUIET}>
         <p>
           A panel of judges from two model families reads each of the agent&apos;s replies and
           marks the dispositions it expressed, how strongly, and whether they suited the moment.

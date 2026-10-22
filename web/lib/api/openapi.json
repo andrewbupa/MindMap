@@ -2782,6 +2782,9 @@
           "sensitive_opt_in": {
             "title": "Sensitive Opt In",
             "type": "boolean"
+          },
+          "theme": {
+            "$ref": "#/components/schemas/Theme"
           }
         },
         "required": [
@@ -2789,21 +2792,37 @@
           "email",
           "name",
           "roles",
-          "sensitive_opt_in"
+          "sensitive_opt_in",
+          "theme"
         ],
         "title": "MeOut",
         "type": "object"
       },
       "MeUpdate": {
+        "description": "Change only what is given.",
         "properties": {
           "sensitive_opt_in": {
-            "title": "Sensitive Opt In",
-            "type": "boolean"
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sensitive Opt In"
+          },
+          "theme": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Theme"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
-        "required": [
-          "sensitive_opt_in"
-        ],
         "title": "MeUpdate",
         "type": "object"
       },
@@ -4926,6 +4945,15 @@
         ],
         "title": "TaxonomyOut",
         "type": "object"
+      },
+      "Theme": {
+        "enum": [
+          "system",
+          "dark",
+          "light"
+        ],
+        "title": "Theme",
+        "type": "string"
       },
       "TokenValueOut": {
         "properties": {

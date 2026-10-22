@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { THEME_SCRIPT } from "@/components/shell/theme";
+
 import "@/styles/tokens.css";
+import "@/styles/agora.css";
+import "@/styles/app.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,8 +15,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  // Dark is the design's first theme; the script swaps in the person's choice before paint.
   return (
-    <html lang="en-AU">
+    <html lang="en-AU" data-theme="dark" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body>{children}</body>
     </html>
   );

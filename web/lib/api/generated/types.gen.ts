@@ -1667,16 +1667,20 @@ export type MeOut = {
      * Sensitive Opt In
      */
     sensitive_opt_in: boolean;
+    theme: Theme;
 };
 
 /**
  * MeUpdate
+ *
+ * Change only what is given.
  */
 export type MeUpdate = {
     /**
      * Sensitive Opt In
      */
-    sensitive_opt_in: boolean;
+    sensitive_opt_in?: boolean | null;
+    theme?: Theme | null;
 };
 
 /**
@@ -2920,6 +2924,11 @@ export type TaxonomyOut = {
      */
     version: string;
 };
+
+/**
+ * Theme
+ */
+export type Theme = 'system' | 'dark' | 'light';
 
 /**
  * TokenValueOut

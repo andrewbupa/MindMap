@@ -72,7 +72,7 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
 
   return (
     <>
-      <PageHeader title={data.run.title} quiet={QUIET}>
+      <PageHeader title={data.run.title} note={QUIET}>
         <p>
           {data.reader.model} read {transcripts} conversations from{" "}
           {ethos ? <Link href={`/ethos/runs/${ethos.id}`}>{data.source.title}</Link> : data.source.title} with

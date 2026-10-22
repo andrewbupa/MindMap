@@ -1,86 +1,116 @@
 /*
- * Design tokens. Placeholder values until the first Claude Design handoff lands
- * in design/; components read only these variables, so the handoff can replace
- * this file without touching component code.
+ * Agora design tokens for the web app.
+ * Generated from design/system/tokens.json (23 October 2026). Copy over web/styles/tokens.css;
+ * regenerate from tokens.json rather than editing values here.
+ * Themes switch on data-theme on <html> ("dark" or "light"); set it before first paint from the
+ * person's saved choice, falling back to prefers-color-scheme (see the handoff note).
+ * Fonts are expected at web/public/fonts/.
  */
+:root, [data-theme="dark"] {
+  --color-bg: #14181d;
+  --color-surface: #1a1f25;
+  --color-surface-muted: #222830;
+  --color-text: #e6e9ed;
+  --color-text-muted: #a2acb7;
+  --color-border: #2c333c;
+  --color-border-strong: #6b7684;
+  --color-focus: #9cc3ea;
+  --color-accent: #b8cbe0;
+  --color-accent-text: #132030;
+  --color-ok: #8fcba8;
+  --color-ok-bg: #1b2b23;
+  --color-warn: #e3bd6e;
+  --color-warn-bg: #2c2517;
+  --color-danger: #f09d91;
+  --color-danger-bg: #331f1e;
+  --family-care: #d9a0c8;
+  --family-collaboration: #6cc6a7;
+  --family-judgement: #8db6e3;
+  --family-curiosity: #e8c25f;
+  --family-risk: #ef8f66;
+  --color-expected: #c8d6e640;
+  --color-signal: #c9d3de;
+  --color-chart-1: #9dbad8;
+  --color-chart-grid: #2a3139;
+  --color-channel: #0f1216;
+  --color-rim: #d8e2ee40;
+  --color-shade: #00000080;
+  --color-halo: #000000;
+  --color-sheen: #d3dce7;
+  --color-bezel-hi: #5a6574;
+  --color-bezel-lo: #090b0e;
+  --shadow-1: inset 0 1px 0 #d8e2ee1f, 0 18px 48px -12px #000000b3;
+  --shadow-raise: inset 0 1px 0 #ffffff1c, inset 0 -1px 0 #0000004d, 0 1px 1px #00000080, 0 6px 14px -8px #000000b3;
+  --shadow-inset: inset 0 1px 0 #000000a6, inset 0 3px 6px -2px #000000a6, inset 0 -1px 0 #d8e2ee14;
+}
+[data-theme="light"] {
+  --color-bg: #e6e9ed;
+  --color-surface: #f3f5f7;
+  --color-surface-muted: #dde2e7;
+  --color-text: #1a1f26;
+  --color-text-muted: #525c67;
+  --color-border: #cbd2d9;
+  --color-border-strong: #6f7a87;
+  --color-focus: #2b6aae;
+  --color-accent: #2e4a66;
+  --color-accent-text: #f2f6fa;
+  --color-ok: #2b6849;
+  --color-ok-bg: #d9ebe0;
+  --color-warn: #7a5712;
+  --color-warn-bg: #f2e6c8;
+  --color-danger: #9e3328;
+  --color-danger-bg: #f5dcd7;
+  --family-care: #a3508a;
+  --family-collaboration: #1c7c63;
+  --family-judgement: #2e669b;
+  --family-curiosity: #9a7208;
+  --family-risk: #b44d21;
+  --color-expected: #2a3c5026;
+  --color-signal: #3f4b59;
+  --color-chart-1: #34577b;
+  --color-chart-grid: #d3d9df;
+  --color-channel: #d3d9e0;
+  --color-rim: #ffffffd9;
+  --color-shade: #2a3a4c33;
+  --color-halo: #34445a;
+  --color-sheen: #ffffff;
+  --color-bezel-hi: #ffffff;
+  --color-bezel-lo: #a7b0bb;
+  --shadow-1: inset 0 1px 0 #ffffffcc, 0 18px 40px -14px #1c2a3a4d;
+  --shadow-raise: inset 0 1px 0 #ffffff, inset 0 -1px 0 #2a3a4c0f, 0 1px 1px #2a3a4c1f, 0 6px 14px -8px #2a3a4c47;
+  --shadow-inset: inset 0 1px 0 #2a3a4c1f, inset 0 3px 6px -2px #2a3a4c2e, inset 0 -1px 0 #ffffffe6;
+}
 :root {
-  color-scheme: light dark;
-
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.25rem;
-  --text-xl: 1.625rem;
-  --leading: 1.5;
-
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-
-  --radius-sm: 4px;
-  --radius-md: 8px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+  --intensity-1: 18%;
+  --intensity-2: 30%;
+  --intensity-3: 42%;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 28px;
+  --leading: 1.55;
   --content-width: 72rem;
-
-  --color-bg: #fbfaf8;
-  --color-surface: #ffffff;
-  --color-surface-muted: #f3f1ed;
-  --color-border: #e2ded6;
-  --color-text: #1d1c1a;
-  --color-text-muted: #5f5b54;
-  --color-accent: #2f5d8a;
-  --color-accent-text: #ffffff;
-  --color-focus: #2f5d8a;
-  --color-ok: #2e6b3f;
-  --color-ok-bg: #e5f1e8;
-  --color-warn: #8a5a12;
-  --color-warn-bg: #f8ecd8;
-  --color-danger: #9b2c2c;
-  --color-danger-bg: #f7e3e1;
-
-  /* Charts. One series uses chart-1; it passes the palette checks on each surface. */
-  --color-chart-1: #2a78d6;
-  --color-chart-grid: #e2ded6;
-
-  /* Ethos label families, in a fixed order that passes the palette checks on each
-     surface. Saturation carries intensity. Three light hues sit below 3:1 against
-     the surface, so every tint carries a visible label. */
-  --family-care: #2a78d6;
-  --family-collaboration: #eb6834;
-  --family-judgement: #1baf7a;
-  --family-curiosity: #eda100;
-  --family-risk: #e87ba4;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #151513;
-    --color-surface: #1d1d1a;
-    --color-surface-muted: #262622;
-    --color-border: #3a3934;
-    --color-text: #eeebe5;
-    --color-text-muted: #a9a49b;
-    --color-accent: #8db4dc;
-    --color-accent-text: #10202f;
-    --color-focus: #8db4dc;
-    --color-ok: #8fcb9c;
-    --color-ok-bg: #1f3325;
-    --color-warn: #e3b36a;
-    --color-warn-bg: #3a2c15;
-    --color-danger: #f0958c;
-    --color-danger-bg: #3d1f1c;
-    --color-chart-1: #3987e5;
-    --color-chart-grid: #3a3934;
-    --family-care: #3987e5;
-    --family-collaboration: #d95926;
-    --family-judgement: #199e70;
-    --family-curiosity: #c98500;
-    --family-risk: #d55181;
-  }
-}
+.page-title { font-family: var(--font-sans); font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.012em; }
+.section-title { font-family: var(--font-sans); font-size: 18px; line-height: 26px; font-weight: 600; letter-spacing: -0.004em; }
+.body { font-family: var(--font-sans); font-size: 15px; line-height: 23px; font-weight: 400; }
+.label { font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 560; }
+.small { font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 400; }
+.caption { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500; }
+.data { font-family: var(--font-mono); font-size: 13px; line-height: 20px; font-weight: 400; }
+@font-face { font-family: "Instrument Sans"; src: url("/fonts/InstrumentSans.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Instrument Sans"; src: url("/fonts/InstrumentSans-Italic.woff2") format("woff2"); font-weight: 400 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "Spline Sans Mono"; src: url("/fonts/SplineSansMono.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; }

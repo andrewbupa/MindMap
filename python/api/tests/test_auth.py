@@ -160,3 +160,17 @@ async def test_an_email_held_by_another_identity_is_refused(
         .all()
     )
     assert [e.detail["reason"] for e in events] == ["email_held_by_another_identity"]
+
+
+async def test_the_theme_is_saved_on_the_account(
+    client: httpx.AsyncClient, idp: FakeOIDCClient
+) -> None:
+    await sign_in_as(client, idp, "theme@example.test")
+    assert (await client.get("/api/me")).json()["theme"] == "system"
+    saved = await client.patch("/api/me", json={"theme": "light"})
+    assert saved.status_code == 200 and saved.json()["theme"] == "light"
+    # Changing one preference leaves the others alone.
+    await client.patch("/api/me", json={"sensitive_opt_in": True})
+    me = (await client.get("/api/me")).json()
+    assert me["theme"] == "light" and me["sensitive_opt_in"] is True
+    assert (await client.patch("/api/me", json={"theme": "sepia"})).status_code == 422

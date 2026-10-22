@@ -57,7 +57,7 @@ export function CompareView({ data }: { data: EthosCompareOut }) {
     [run.run.config.agent, run.run.config.version].filter(Boolean).join(" ") || run.run.title;
   return (
     <>
-      <PageHeader title={`Compare: ${versionOf(data.a)} and ${versionOf(data.b)}`} quiet={ETHOS_QUIET}>
+      <PageHeader title={`Compare: ${versionOf(data.a)} and ${versionOf(data.b)}`} note={ETHOS_QUIET}>
         <p>
           A is <Link href={`/ethos/runs/${data.a.run.id}`}>{data.a.run.title}</Link>; B is{" "}
           <Link href={`/ethos/runs/${data.b.run.id}`}>{data.b.run.title}</Link>. Only the{" "}

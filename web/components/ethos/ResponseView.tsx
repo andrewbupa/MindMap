@@ -76,7 +76,7 @@ export function ResponseView({
 
   return (
     <>
-      <PageHeader title={sentenceCase(scenario.replaceAll("_", " ").replaceAll("-", " "))} quiet={ETHOS_QUIET}>
+      <PageHeader title={sentenceCase(scenario.replaceAll("_", " ").replaceAll("-", " "))} note={ETHOS_QUIET}>
         <p>
           Read by <Link href={`/ethos/runs/${data.run.id}`}>{data.run.title}</Link>, from{" "}
           {data.source.title}. Scenario type:{" "}

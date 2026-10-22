@@ -1,0 +1,108 @@
+/* What the app needs beyond the design system's components: layout, the skip link, and
+   tab links. Uses the same tokens; nothing here introduces a colour or a size of its own. */
+
+.ag-skip {
+  position: absolute;
+  left: var(--space-4);
+  top: -100px;
+  z-index: 10;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-1);
+}
+
+.ag-skip:focus {
+  top: var(--space-3);
+}
+
+.ag-bar {
+  flex-wrap: wrap;
+  row-gap: var(--space-3);
+}
+
+.ag-user .ag-btn {
+  height: 32px;
+}
+
+.ag-main > * + * {
+  margin-top: var(--space-5);
+}
+
+.ag-main > .ag-ph + * {
+  margin-top: 0;
+}
+
+.ag-ph-intro > p:last-child {
+  margin-bottom: 0;
+}
+
+/* Tabs that are pages. */
+.ag-tab-links li {
+  display: contents;
+}
+
+.ag-tab[aria-current="page"] {
+  color: var(--color-text);
+  font-weight: 620;
+  background:
+    linear-gradient(180deg, var(--ag-raise-top), var(--ag-raise-bottom)) padding-box,
+    var(--ag-bezel) border-box;
+  box-shadow: var(--shadow-raise);
+}
+
+/* A card's content: rows of related things with consistent spacing. */
+.ag-card > :last-child {
+  margin-bottom: 0;
+}
+
+.ag-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ag-form {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 44rem;
+}
+
+.ag-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-4);
+}
+
+/* Two columns: content and a sticky side pane; one column when narrow. */
+.ag-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 26rem);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.ag-split > aside {
+  position: sticky;
+  top: var(--space-4);
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (max-width: 1100px) {
+  .ag-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ag-split > aside {
+    position: static;
+  }
+}
+
+.ag-quiet {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}

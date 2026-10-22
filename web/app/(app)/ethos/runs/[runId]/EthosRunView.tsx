@@ -78,7 +78,7 @@ export function EthosRunView({
   const families = [...new Set(run.labels.map((l) => l.family))];
   return (
     <>
-      <PageHeader title={run.run.title} quiet={ETHOS_QUIET}>
+      <PageHeader title={run.run.title} note={ETHOS_QUIET}>
         <p>
           The panel ({run.judges.join(" and ")}) read {run.transcripts.length} conversations from{" "}
           {run.source.title}, with taxonomy {run.run.taxonomy_version}.

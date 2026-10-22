@@ -16,7 +16,7 @@ async def read_me(user: CurrentUser) -> MeOut:
 
 @router.patch("")
 async def update_me(body: MeUpdate, user: CurrentUser, db: Db) -> MeOut:
-    if body.sensitive_opt_in != user.sensitive_opt_in:
+    if body.sensitive_opt_in is not None and body.sensitive_opt_in != user.sensitive_opt_in:
         user.sensitive_opt_in = body.sensitive_opt_in
         await audit.record(
             db,
@@ -26,5 +26,7 @@ async def update_me(body: MeUpdate, user: CurrentUser, db: Db) -> MeOut:
             target_id=user.id,
             detail={"opt_in": body.sensitive_opt_in},
         )
-        await db.commit()
+    if body.theme is not None:
+        user.theme = body.theme.value
+    await db.commit()
     return MeOut.model_validate(user)

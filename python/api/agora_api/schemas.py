@@ -8,7 +8,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from agora_core.models import Role
+from agora_core.models import Role, Theme
 
 
 class Out(BaseModel):
@@ -21,10 +21,14 @@ class MeOut(Out):
     name: str
     roles: list[Role]
     sensitive_opt_in: bool
+    theme: Theme
 
 
 class MeUpdate(BaseModel):
-    sensitive_opt_in: bool
+    """Change only what is given."""
+
+    sensitive_opt_in: bool | None = None
+    theme: Theme | None = None
 
 
 class UserOut(Out):
