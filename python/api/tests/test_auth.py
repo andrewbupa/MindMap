@@ -18,11 +18,11 @@ from testsupport.oidc import FakeOIDCClient, sign_in_as
     ("value", "expected"),
     [
         (None, "/"),
-        ("/lens?run=1", "/lens?run=1"),
+        ("/ethos?run=1", "/ethos?run=1"),
         ("https://evil.example", "/"),
         ("//evil.example", "/"),
         ("/\\evil.example", "/"),
-        ("lens", "/"),
+        ("ethos", "/"),
     ],
 )
 def test_safe_next_allows_only_same_site_paths(value: str | None, expected: str) -> None:
@@ -58,7 +58,7 @@ async def test_sign_in_creates_user_session_and_audit(
 ) -> None:
     response = await sign_in_as(client, idp, "admin@example.test")
     assert response.status_code == 303
-    assert response.headers["location"] == "/explore"
+    assert response.headers["location"] == "/inquiry"
     cookie = response.cookies.get(COOKIE_NAME)
     assert cookie and len(cookie) > 30
     set_cookie = response.headers["set-cookie"].lower()

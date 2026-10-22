@@ -5,13 +5,13 @@ name: agora-runner
 services:
   runner:
     image: agora-runner:${AGORA_GIT_COMMIT:?set by deploy.sh}
-    # One job at a time: a companion reader fills the GPU, and Inspect runs one
+    # One job at a time: a witness reader fills the GPU, and Inspect runs one
     # eval per process. Add Droplets, not concurrency, to go faster.
-    command: procrastinate --app=agora_worker.app.app worker --queues sandbox,companion --concurrency 1
+    command: procrastinate --app=agora_worker.app.app worker --queues sandbox,witness --concurrency 1
     env_file: /etc/agora/runner.env
     environment:
       AGORA_GIT_COMMIT: ${AGORA_GIT_COMMIT}
-      AGORA_COMPANION_FILE: /app/config/companion.yaml
+      AGORA_WITNESS_FILE: /app/config/witness.yaml
     volumes:
       # Jobs start sibling containers on the host's daemon. Access to this socket is
       # root on the host, which is why the runner is a Droplet of its own.

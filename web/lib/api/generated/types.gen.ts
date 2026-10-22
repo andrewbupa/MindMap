@@ -301,9 +301,9 @@ export type BehaviourDetail = {
     /**
      * Runs
      *
-     * Measure runs on the selected set.
+     * Tally runs on the selected set.
      */
-    runs: Array<MeasureRunSummary>;
+    runs: Array<TallyRunSummary>;
     /**
      * The newest scenario set for this behaviour version.
      */
@@ -460,238 +460,6 @@ export type ChatMessageIn = {
         [key: string]: unknown;
     }> | null;
     [key: string]: unknown;
-};
-
-/**
- * CompanionLaunch
- */
-export type CompanionLaunch = {
-    /**
-     * Reader
-     */
-    reader: string;
-    /**
-     * Source Run
-     */
-    source_run: string;
-    /**
-     * Transcripts
-     *
-     * Read only these transcripts; all of them when empty.
-     */
-    transcripts?: Array<string> | null;
-};
-
-/**
- * CompanionReaderOut
- */
-export type CompanionReaderOut = {
-    /**
-     * Key
-     */
-    key: string;
-    /**
-     * Model
-     */
-    model: string;
-    /**
-     * Runner
-     */
-    runner: string;
-    /**
-     * Signals
-     */
-    signals: Array<CompanionSignalSpecOut>;
-    /**
-     * Version
-     */
-    version: string;
-};
-
-/**
- * CompanionRunOut
- */
-export type CompanionRunOut = {
-    /**
-     * Agreements
-     */
-    agreements: Array<SignalAgreementOut>;
-    /**
-     * Counts
-     */
-    counts: {
-        [key: string]: number;
-    };
-    /**
-     * Dropped
-     */
-    dropped: {
-        [key: string]: number;
-    };
-    /**
-     * The Lens run the signals are compared with.
-     */
-    lens_run: RunOut | null;
-    /**
-     * Lens Runs
-     *
-     * Finished Lens runs on the same source run.
-     */
-    lens_runs: Array<RunOut>;
-    reader: CompanionReaderOut;
-    run: RunOut;
-    /**
-     * Samples
-     */
-    samples: Array<CompanionSampleOut>;
-    source: RunOut;
-};
-
-/**
- * CompanionRunSummary
- */
-export type CompanionRunSummary = {
-    /**
-     * Counts
-     */
-    counts: {
-        [key: string]: number;
-    };
-    reader: CompanionReaderOut;
-    run: RunOut;
-    source: RunOut;
-};
-
-/**
- * CompanionSampleOut
- */
-export type CompanionSampleOut = {
-    /**
-     * Attempts
-     */
-    attempts: number;
-    /**
-     * Detail
-     */
-    detail: {
-        [key: string]: unknown;
-    };
-    /**
-     * Epoch
-     */
-    epoch: number;
-    /**
-     * Error
-     */
-    error: string | null;
-    /**
-     * Heartbeat At
-     */
-    heartbeat_at: string | null;
-    /**
-     * Id
-     */
-    id: string;
-    /**
-     * Sample Index
-     */
-    sample_index: number;
-    /**
-     * Status
-     */
-    status: string;
-    /**
-     * Tokens Used
-     */
-    tokens_used: number;
-};
-
-/**
- * CompanionSignalOut
- */
-export type CompanionSignalOut = {
-    /**
-     * Char End
-     */
-    char_end: number;
-    /**
-     * Char Start
-     */
-    char_start: number;
-    /**
-     * Explanation
-     */
-    explanation: string | null;
-    /**
-     * Id
-     */
-    id: string;
-    /**
-     * Kind
-     */
-    kind: string;
-    /**
-     * Label
-     */
-    label: string | null;
-    /**
-     * Message Id
-     */
-    message_id: string;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Peak
-     */
-    peak: number;
-    /**
-     * Present At
-     */
-    present_at: number | null;
-    /**
-     * Tokens
-     */
-    tokens: Array<TokenValueOut>;
-};
-
-/**
- * CompanionSignalSpecOut
- */
-export type CompanionSignalSpecOut = {
-    /**
-     * Description
-     */
-    description: string;
-    /**
-     * Kind
-     */
-    kind: string;
-    /**
-     * Label
-     */
-    label: string | null;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Present At
-     */
-    present_at: number | null;
-};
-
-/**
- * CompanionTranscriptOut
- */
-export type CompanionTranscriptOut = {
-    reader: CompanionReaderOut;
-    run: RunOut;
-    /**
-     * Signals
-     */
-    signals: Array<CompanionSignalOut>;
 };
 
 /**
@@ -866,6 +634,381 @@ export type EpochTallyOut = {
 };
 
 /**
+ * EthosCompareOut
+ */
+export type EthosCompareOut = {
+    a: EthosRunSummary;
+    b: EthosRunSummary;
+    /**
+     * Labels
+     */
+    labels: Array<LabelComparisonOut>;
+    /**
+     * Scenarios
+     */
+    scenarios: Array<ScenarioComparisonOut>;
+    /**
+     * Shared Scenarios
+     */
+    shared_scenarios: number;
+};
+
+/**
+ * EthosDisputeOut
+ */
+export type EthosDisputeOut = {
+    /**
+     * Annotations
+     */
+    annotations: Array<AnnotationOut>;
+    /**
+     * By Judge
+     */
+    by_judge: {
+        [key: string]: number;
+    };
+    /**
+     * Ethos Run Id
+     */
+    ethos_run_id: string;
+    /**
+     * Ethos Run Title
+     */
+    ethos_run_title: string;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Median
+     */
+    median: number;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Reply Text
+     */
+    reply_text: string;
+    /**
+     * Reviewed By Me
+     */
+    reviewed_by_me: boolean;
+    /**
+     * Reviews
+     */
+    reviews: number;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
+ * EthosEvidenceOut
+ */
+export type EthosEvidenceOut = {
+    /**
+     * Channel
+     */
+    channel: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Intensity
+     */
+    intensity: number;
+    /**
+     * Judge
+     */
+    judge: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Quote
+     */
+    quote: string;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
+ * EthosFamilyOut
+ */
+export type EthosFamilyOut = {
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Source
+     */
+    source: string;
+};
+
+/**
+ * EthosLabelOut
+ */
+export type EthosLabelOut = {
+    /**
+     * Counter Examples
+     */
+    counter_examples: Array<string>;
+    /**
+     * Definition
+     */
+    definition: string;
+    /**
+     * Examples
+     */
+    examples: Array<string>;
+    /**
+     * Family
+     */
+    family: string;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Trust Status
+     */
+    trust_status: string;
+};
+
+/**
+ * EthosLaunch
+ */
+export type EthosLaunch = {
+    /**
+     * Source Run
+     */
+    source_run: string;
+    /**
+     * Token Budget
+     */
+    token_budget?: number | null;
+    /**
+     * Transcripts
+     *
+     * Read only these transcripts; all of them when empty.
+     */
+    transcripts?: Array<string> | null;
+};
+
+/**
+ * EthosQueueOut
+ */
+export type EthosQueueOut = {
+    /**
+     * Hidden For Content Notes
+     */
+    hidden_for_content_notes: number;
+    /**
+     * Items
+     */
+    items: Array<EthosDisputeOut>;
+};
+
+/**
+ * EthosRunOut
+ */
+export type EthosRunOut = {
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    /**
+     * Dropped
+     */
+    dropped: Array<DroppedCountOut>;
+    /**
+     * Evidence
+     *
+     * The findings behind one label, when a label is asked for.
+     */
+    evidence: Array<EthosEvidenceOut>;
+    /**
+     * Judge Counts
+     */
+    judge_counts: Array<JudgeCountOut>;
+    /**
+     * Judges
+     */
+    judges: Array<string>;
+    /**
+     * Labels
+     */
+    labels: Array<LabelPrevalenceOut>;
+    /**
+     * Mean Fit
+     */
+    mean_fit: number | null;
+    run: RunOut;
+    /**
+     * Samples
+     */
+    samples: Array<SampleOut>;
+    source: RunOut;
+    /**
+     * Transcripts
+     */
+    transcripts: Array<EthosTranscriptSummary>;
+};
+
+/**
+ * EthosRunSummary
+ */
+export type EthosRunSummary = {
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    /**
+     * Mean Fit
+     */
+    mean_fit: number | null;
+    run: RunOut;
+    source: RunOut;
+};
+
+/**
+ * EthosSourceOut
+ */
+export type EthosSourceOut = {
+    run: RunOut;
+    /**
+     * Transcripts
+     */
+    transcripts: number;
+};
+
+/**
+ * EthosTranscriptOut
+ */
+export type EthosTranscriptOut = {
+    /**
+     * Annotations
+     */
+    annotations: Array<AnnotationOut>;
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Dropped
+     */
+    dropped: Array<DroppedCountOut>;
+    /**
+     * Expected
+     */
+    expected: Array<ExpectationOut>;
+    /**
+     * Judges
+     */
+    judges: Array<string>;
+    /**
+     * Labels
+     */
+    labels: Array<EthosLabelOut>;
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    /**
+     * Replies
+     */
+    replies: Array<ReplyEthosOut>;
+    run: RunOut;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Scenario Type
+     */
+    scenario_type: string | null;
+    /**
+     * Seed Text
+     */
+    seed_text: string | null;
+    source: RunOut;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
+ * EthosTranscriptSummary
+ */
+export type EthosTranscriptSummary = {
+    /**
+     * Content Notes
+     */
+    content_notes: Array<string>;
+    /**
+     * Disputed
+     */
+    disputed: number;
+    /**
+     * Epoch
+     */
+    epoch: number;
+    /**
+     * Fit
+     */
+    fit: number | null;
+    /**
+     * Replies
+     */
+    replies: number;
+    /**
+     * Sample Index
+     */
+    sample_index: number;
+    /**
+     * Scenario Key
+     */
+    scenario_key: string | null;
+    /**
+     * Scenario Type
+     */
+    scenario_type: string | null;
+    /**
+     * Transcript Id
+     */
+    transcript_id: string;
+};
+
+/**
  * ExpectationOut
  */
 export type ExpectationOut = {
@@ -889,87 +1032,6 @@ export type ExpectationOut = {
      * Min
      */
     min: number;
-};
-
-/**
- * ExploreLaunch
- */
-export type ExploreLaunch = {
-    /**
-     * Agent
-     */
-    agent: string;
-    /**
-     * Compaction
-     *
-     * Let Petri summarise long audits.
-     */
-    compaction?: boolean;
-    /**
-     * Epochs
-     */
-    epochs?: number;
-    /**
-     * Max Turns
-     */
-    max_turns?: number;
-    /**
-     * Seeds
-     *
-     * Seed keys; empty means use tags.
-     */
-    seeds?: Array<string> | null;
-    /**
-     * Tags
-     *
-     * Use every suitable seed with a tag.
-     */
-    tags?: Array<string> | null;
-    /**
-     * Token Budget
-     */
-    token_budget?: number | null;
-    /**
-     * Version
-     */
-    version: string;
-};
-
-/**
- * ExploreRunOut
- */
-export type ExploreRunOut = {
-    /**
-     * Agent
-     */
-    agent: string;
-    /**
-     * Counts
-     */
-    counts: {
-        [key: string]: number;
-    };
-    /**
-     * Dimensions
-     */
-    dimensions: Array<string>;
-    run: RunOut;
-    /**
-     * Samples
-     */
-    samples: Array<SampleOut>;
-    /**
-     * Seeds
-     */
-    seeds: Array<string>;
-    /**
-     * Transcripts
-     */
-    transcripts: Array<TranscriptSummary>;
-    /**
-     * Version
-     */
-    version: string;
 };
 
 /**
@@ -1093,7 +1155,7 @@ export type GoldItemDetail = {
     /**
      * Labels
      */
-    labels: Array<LensLabelOut>;
+    labels: Array<EthosLabelOut>;
     /**
      * Messages
      */
@@ -1383,6 +1445,87 @@ export type HealthOut = {
 };
 
 /**
+ * InquiryLaunch
+ */
+export type InquiryLaunch = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Compaction
+     *
+     * Let Petri summarise long audits.
+     */
+    compaction?: boolean;
+    /**
+     * Epochs
+     */
+    epochs?: number;
+    /**
+     * Max Turns
+     */
+    max_turns?: number;
+    /**
+     * Seeds
+     *
+     * Seed keys; empty means use tags.
+     */
+    seeds?: Array<string> | null;
+    /**
+     * Tags
+     *
+     * Use every suitable seed with a tag.
+     */
+    tags?: Array<string> | null;
+    /**
+     * Token Budget
+     */
+    token_budget?: number | null;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * InquiryRunOut
+ */
+export type InquiryRunOut = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    /**
+     * Dimensions
+     */
+    dimensions: Array<string>;
+    run: RunOut;
+    /**
+     * Samples
+     */
+    samples: Array<SampleOut>;
+    /**
+     * Seeds
+     */
+    seeds: Array<string>;
+    /**
+     * Transcripts
+     */
+    transcripts: Array<TranscriptSummary>;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
  * IntervalOut
  */
 export type IntervalOut = {
@@ -1501,381 +1644,6 @@ export type LabelPrevalenceOut = {
 };
 
 /**
- * LensCompareOut
- */
-export type LensCompareOut = {
-    a: LensRunSummary;
-    b: LensRunSummary;
-    /**
-     * Labels
-     */
-    labels: Array<LabelComparisonOut>;
-    /**
-     * Scenarios
-     */
-    scenarios: Array<ScenarioComparisonOut>;
-    /**
-     * Shared Scenarios
-     */
-    shared_scenarios: number;
-};
-
-/**
- * LensDisputeOut
- */
-export type LensDisputeOut = {
-    /**
-     * Annotations
-     */
-    annotations: Array<AnnotationOut>;
-    /**
-     * By Judge
-     */
-    by_judge: {
-        [key: string]: number;
-    };
-    /**
-     * Family
-     */
-    family: string;
-    /**
-     * Label
-     */
-    label: string;
-    /**
-     * Lens Run Id
-     */
-    lens_run_id: string;
-    /**
-     * Lens Run Title
-     */
-    lens_run_title: string;
-    /**
-     * Median
-     */
-    median: number;
-    /**
-     * Message Id
-     */
-    message_id: string;
-    /**
-     * Reply Text
-     */
-    reply_text: string;
-    /**
-     * Reviewed By Me
-     */
-    reviewed_by_me: boolean;
-    /**
-     * Reviews
-     */
-    reviews: number;
-    /**
-     * Scenario Key
-     */
-    scenario_key: string | null;
-    /**
-     * Transcript Id
-     */
-    transcript_id: string;
-};
-
-/**
- * LensEvidenceOut
- */
-export type LensEvidenceOut = {
-    /**
-     * Channel
-     */
-    channel: string;
-    /**
-     * Id
-     */
-    id: string;
-    /**
-     * Intensity
-     */
-    intensity: number;
-    /**
-     * Judge
-     */
-    judge: string;
-    /**
-     * Label
-     */
-    label: string;
-    /**
-     * Message Id
-     */
-    message_id: string;
-    /**
-     * Quote
-     */
-    quote: string;
-    /**
-     * Transcript Id
-     */
-    transcript_id: string;
-};
-
-/**
- * LensFamilyOut
- */
-export type LensFamilyOut = {
-    /**
-     * Key
-     */
-    key: string;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Source
-     */
-    source: string;
-};
-
-/**
- * LensLabelOut
- */
-export type LensLabelOut = {
-    /**
-     * Counter Examples
-     */
-    counter_examples: Array<string>;
-    /**
-     * Definition
-     */
-    definition: string;
-    /**
-     * Examples
-     */
-    examples: Array<string>;
-    /**
-     * Family
-     */
-    family: string;
-    /**
-     * Key
-     */
-    key: string;
-    /**
-     * Trust Status
-     */
-    trust_status: string;
-};
-
-/**
- * LensLaunch
- */
-export type LensLaunch = {
-    /**
-     * Source Run
-     */
-    source_run: string;
-    /**
-     * Token Budget
-     */
-    token_budget?: number | null;
-    /**
-     * Transcripts
-     *
-     * Read only these transcripts; all of them when empty.
-     */
-    transcripts?: Array<string> | null;
-};
-
-/**
- * LensQueueOut
- */
-export type LensQueueOut = {
-    /**
-     * Hidden For Content Notes
-     */
-    hidden_for_content_notes: number;
-    /**
-     * Items
-     */
-    items: Array<LensDisputeOut>;
-};
-
-/**
- * LensRunOut
- */
-export type LensRunOut = {
-    /**
-     * Counts
-     */
-    counts: {
-        [key: string]: number;
-    };
-    /**
-     * Dropped
-     */
-    dropped: Array<DroppedCountOut>;
-    /**
-     * Evidence
-     *
-     * The findings behind one label, when a label is asked for.
-     */
-    evidence: Array<LensEvidenceOut>;
-    /**
-     * Judge Counts
-     */
-    judge_counts: Array<JudgeCountOut>;
-    /**
-     * Judges
-     */
-    judges: Array<string>;
-    /**
-     * Labels
-     */
-    labels: Array<LabelPrevalenceOut>;
-    /**
-     * Mean Fit
-     */
-    mean_fit: number | null;
-    run: RunOut;
-    /**
-     * Samples
-     */
-    samples: Array<SampleOut>;
-    source: RunOut;
-    /**
-     * Transcripts
-     */
-    transcripts: Array<LensTranscriptSummary>;
-};
-
-/**
- * LensRunSummary
- */
-export type LensRunSummary = {
-    /**
-     * Counts
-     */
-    counts: {
-        [key: string]: number;
-    };
-    /**
-     * Mean Fit
-     */
-    mean_fit: number | null;
-    run: RunOut;
-    source: RunOut;
-};
-
-/**
- * LensSourceOut
- */
-export type LensSourceOut = {
-    run: RunOut;
-    /**
-     * Transcripts
-     */
-    transcripts: number;
-};
-
-/**
- * LensTranscriptOut
- */
-export type LensTranscriptOut = {
-    /**
-     * Annotations
-     */
-    annotations: Array<AnnotationOut>;
-    /**
-     * Content Notes
-     */
-    content_notes: Array<string>;
-    /**
-     * Dropped
-     */
-    dropped: Array<DroppedCountOut>;
-    /**
-     * Expected
-     */
-    expected: Array<ExpectationOut>;
-    /**
-     * Judges
-     */
-    judges: Array<string>;
-    /**
-     * Labels
-     */
-    labels: Array<LensLabelOut>;
-    /**
-     * Messages
-     */
-    messages: Array<MessageOut>;
-    /**
-     * Replies
-     */
-    replies: Array<ReplyLensOut>;
-    run: RunOut;
-    /**
-     * Scenario Key
-     */
-    scenario_key: string | null;
-    /**
-     * Scenario Type
-     */
-    scenario_type: string | null;
-    /**
-     * Seed Text
-     */
-    seed_text: string | null;
-    source: RunOut;
-    /**
-     * Transcript Id
-     */
-    transcript_id: string;
-};
-
-/**
- * LensTranscriptSummary
- */
-export type LensTranscriptSummary = {
-    /**
-     * Content Notes
-     */
-    content_notes: Array<string>;
-    /**
-     * Disputed
-     */
-    disputed: number;
-    /**
-     * Epoch
-     */
-    epoch: number;
-    /**
-     * Fit
-     */
-    fit: number | null;
-    /**
-     * Replies
-     */
-    replies: number;
-    /**
-     * Sample Index
-     */
-    sample_index: number;
-    /**
-     * Scenario Key
-     */
-    scenario_key: string | null;
-    /**
-     * Scenario Type
-     */
-    scenario_type: string | null;
-    /**
-     * Transcript Id
-     */
-    transcript_id: string;
-};
-
-/**
  * MeOut
  */
 export type MeOut = {
@@ -1909,126 +1677,6 @@ export type MeUpdate = {
      * Sensitive Opt In
      */
     sensitive_opt_in: boolean;
-};
-
-/**
- * MeasureLaunch
- */
-export type MeasureLaunch = {
-    /**
-     * Agent
-     */
-    agent: string;
-    /**
-     * Compaction
-     *
-     * Let Petri summarise long audits.
-     */
-    compaction?: boolean;
-    /**
-     * Epochs
-     *
-     * Repetitions of every scenario.
-     */
-    epochs?: number;
-    /**
-     * Max Turns
-     */
-    max_turns?: number;
-    /**
-     * Scenario Set
-     */
-    scenario_set: string;
-    /**
-     * Token Budget
-     *
-     * Per prompt version.
-     */
-    token_budget?: number | null;
-    /**
-     * Versions
-     */
-    versions: Array<string>;
-};
-
-/**
- * MeasureRunOut
- */
-export type MeasureRunOut = {
-    /**
-     * Agent
-     */
-    agent: string;
-    /**
-     * Behaviour
-     */
-    behaviour: string;
-    /**
-     * By Scenario
-     */
-    by_scenario: Array<ScenarioTallyOut>;
-    /**
-     * Counts
-     */
-    counts: {
-        [key: string]: number;
-    };
-    elicitation: ElicitationOut;
-    /**
-     * Rollouts
-     */
-    rollouts: Array<RolloutOut>;
-    run: RunOut;
-    /**
-     * Samples
-     */
-    samples: Array<SampleOut>;
-    /**
-     * Scenario Set
-     */
-    scenario_set: string;
-    /**
-     * Suite
-     */
-    suite: string;
-    /**
-     * Version
-     */
-    version: string;
-};
-
-/**
- * MeasureRunSummary
- */
-export type MeasureRunSummary = {
-    /**
-     * Agent
-     */
-    agent: string;
-    /**
-     * Behaviour
-     */
-    behaviour: string;
-    /**
-     * Counts
-     */
-    counts: {
-        [key: string]: number;
-    };
-    elicitation: ElicitationOut;
-    run: RunOut;
-    /**
-     * Scenario Set
-     */
-    scenario_set: string;
-    /**
-     * Suite
-     */
-    suite: string;
-    /**
-     * Version
-     */
-    version: string;
 };
 
 /**
@@ -2178,85 +1826,6 @@ export type PersonaOut = {
 };
 
 /**
- * PlaygroundOut
- */
-export type PlaygroundOut = {
-    /**
-     * Agent
-     */
-    agent: string;
-    /**
-     * Messages
-     */
-    messages: Array<MessageOut>;
-    persona: PersonaOut | null;
-    run: RunOut;
-    /**
-     * Version
-     */
-    version: string;
-};
-
-/**
- * PlaygroundSay
- */
-export type PlaygroundSay = {
-    /**
-     * Content
-     */
-    content: string;
-};
-
-/**
- * PlaygroundStart
- */
-export type PlaygroundStart = {
-    /**
-     * Agent
-     */
-    agent: string;
-    /**
-     * Context
-     *
-     * What the agent's connected systems would show, in deployed mode.
-     */
-    context?: string | null;
-    /**
-     * Mode
-     */
-    mode?: string;
-    /**
-     * Persona
-     */
-    persona?: string | null;
-    /**
-     * System Prompt
-     *
-     * Open mode only: the system prompt to use.
-     */
-    system_prompt?: string | null;
-    /**
-     * Version
-     */
-    version: string;
-};
-
-/**
- * PlaygroundTurnOut
- */
-export type PlaygroundTurnOut = {
-    /**
-     * Messages
-     */
-    messages: Array<MessageOut>;
-    run: RunOut;
-    /**
-     * Stopped At Budget
-     */
-    stopped_at_budget: boolean;
-};
-
-/**
  * PromptDiffOut
  */
 export type PromptDiffOut = {
@@ -2383,9 +1952,88 @@ export type ReadinessOut = {
 };
 
 /**
- * ReplyLensOut
+ * RehearsalOut
  */
-export type ReplyLensOut = {
+export type RehearsalOut = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    persona: PersonaOut | null;
+    run: RunOut;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * RehearsalSay
+ */
+export type RehearsalSay = {
+    /**
+     * Content
+     */
+    content: string;
+};
+
+/**
+ * RehearsalStart
+ */
+export type RehearsalStart = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Context
+     *
+     * What the agent's connected systems would show, in deployed mode.
+     */
+    context?: string | null;
+    /**
+     * Mode
+     */
+    mode?: string;
+    /**
+     * Persona
+     */
+    persona?: string | null;
+    /**
+     * System Prompt
+     *
+     * Open mode only: the system prompt to use.
+     */
+    system_prompt?: string | null;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * RehearsalTurnOut
+ */
+export type RehearsalTurnOut = {
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    run: RunOut;
+    /**
+     * Stopped At Budget
+     */
+    stopped_at_budget: boolean;
+};
+
+/**
+ * ReplyEthosOut
+ */
+export type ReplyEthosOut = {
     fit: FitOut | null;
     /**
      * Index
@@ -2647,7 +2295,7 @@ export type RunOut = {
     /**
      * Route
      *
-     * How the agent was reached, for Measure runs.
+     * How the agent was reached, for Tally runs.
      */
     route: string | null;
     /**
@@ -3004,9 +2652,9 @@ export type SignalAgreementOut = {
      */
     both: Array<ReplyRefOut>;
     /**
-     * Companion Only
+     * Ethos Only
      */
-    companion_only: Array<ReplyRefOut>;
+    ethos_only: Array<ReplyRefOut>;
     /**
      * Family
      */
@@ -3019,10 +2667,6 @@ export type SignalAgreementOut = {
      * Label
      */
     label: string;
-    /**
-     * Lens Only
-     */
-    lens_only: Array<ReplyRefOut>;
     /**
      * Neither
      */
@@ -3049,6 +2693,10 @@ export type SignalAgreementOut = {
      * Trust Status
      */
     trust_status: string | null;
+    /**
+     * Witness Only
+     */
+    witness_only: Array<ReplyRefOut>;
 };
 
 /**
@@ -3106,6 +2754,46 @@ export type SystemCheckOut = {
 };
 
 /**
+ * TallyLaunch
+ */
+export type TallyLaunch = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Compaction
+     *
+     * Let Petri summarise long audits.
+     */
+    compaction?: boolean;
+    /**
+     * Epochs
+     *
+     * Repetitions of every scenario.
+     */
+    epochs?: number;
+    /**
+     * Max Turns
+     */
+    max_turns?: number;
+    /**
+     * Scenario Set
+     */
+    scenario_set: string;
+    /**
+     * Token Budget
+     *
+     * Per prompt version.
+     */
+    token_budget?: number | null;
+    /**
+     * Versions
+     */
+    versions: Array<string>;
+};
+
+/**
  * TallyOut
  */
 export type TallyOut = {
@@ -3136,17 +2824,97 @@ export type TallyOut = {
 };
 
 /**
+ * TallyRunOut
+ */
+export type TallyRunOut = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Behaviour
+     */
+    behaviour: string;
+    /**
+     * By Scenario
+     */
+    by_scenario: Array<ScenarioTallyOut>;
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    elicitation: ElicitationOut;
+    /**
+     * Rollouts
+     */
+    rollouts: Array<RolloutOut>;
+    run: RunOut;
+    /**
+     * Samples
+     */
+    samples: Array<SampleOut>;
+    /**
+     * Scenario Set
+     */
+    scenario_set: string;
+    /**
+     * Suite
+     */
+    suite: string;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * TallyRunSummary
+ */
+export type TallyRunSummary = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Behaviour
+     */
+    behaviour: string;
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    elicitation: ElicitationOut;
+    run: RunOut;
+    /**
+     * Scenario Set
+     */
+    scenario_set: string;
+    /**
+     * Suite
+     */
+    suite: string;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
  * TaxonomyOut
  */
 export type TaxonomyOut = {
     /**
      * Families
      */
-    families: Array<LensFamilyOut>;
+    families: Array<EthosFamilyOut>;
     /**
      * Labels
      */
-    labels: Array<LensLabelOut>;
+    labels: Array<EthosLabelOut>;
     /**
      * Version
      */
@@ -3398,6 +3166,238 @@ export type ValidationError = {
     type: string;
 };
 
+/**
+ * WitnessLaunch
+ */
+export type WitnessLaunch = {
+    /**
+     * Reader
+     */
+    reader: string;
+    /**
+     * Source Run
+     */
+    source_run: string;
+    /**
+     * Transcripts
+     *
+     * Read only these transcripts; all of them when empty.
+     */
+    transcripts?: Array<string> | null;
+};
+
+/**
+ * WitnessReaderOut
+ */
+export type WitnessReaderOut = {
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Model
+     */
+    model: string;
+    /**
+     * Runner
+     */
+    runner: string;
+    /**
+     * Signals
+     */
+    signals: Array<WitnessSignalSpecOut>;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
+ * WitnessRunOut
+ */
+export type WitnessRunOut = {
+    /**
+     * Agreements
+     */
+    agreements: Array<SignalAgreementOut>;
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    /**
+     * Dropped
+     */
+    dropped: {
+        [key: string]: number;
+    };
+    /**
+     * The Ethos run the signals are compared with.
+     */
+    ethos_run: RunOut | null;
+    /**
+     * Ethos Runs
+     *
+     * Finished Ethos runs on the same source run.
+     */
+    ethos_runs: Array<RunOut>;
+    reader: WitnessReaderOut;
+    run: RunOut;
+    /**
+     * Samples
+     */
+    samples: Array<WitnessSampleOut>;
+    source: RunOut;
+};
+
+/**
+ * WitnessRunSummary
+ */
+export type WitnessRunSummary = {
+    /**
+     * Counts
+     */
+    counts: {
+        [key: string]: number;
+    };
+    reader: WitnessReaderOut;
+    run: RunOut;
+    source: RunOut;
+};
+
+/**
+ * WitnessSampleOut
+ */
+export type WitnessSampleOut = {
+    /**
+     * Attempts
+     */
+    attempts: number;
+    /**
+     * Detail
+     */
+    detail: {
+        [key: string]: unknown;
+    };
+    /**
+     * Epoch
+     */
+    epoch: number;
+    /**
+     * Error
+     */
+    error: string | null;
+    /**
+     * Heartbeat At
+     */
+    heartbeat_at: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Sample Index
+     */
+    sample_index: number;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Tokens Used
+     */
+    tokens_used: number;
+};
+
+/**
+ * WitnessSignalOut
+ */
+export type WitnessSignalOut = {
+    /**
+     * Char End
+     */
+    char_end: number;
+    /**
+     * Char Start
+     */
+    char_start: number;
+    /**
+     * Explanation
+     */
+    explanation: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Kind
+     */
+    kind: string;
+    /**
+     * Label
+     */
+    label: string | null;
+    /**
+     * Message Id
+     */
+    message_id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Peak
+     */
+    peak: number;
+    /**
+     * Present At
+     */
+    present_at: number | null;
+    /**
+     * Tokens
+     */
+    tokens: Array<TokenValueOut>;
+};
+
+/**
+ * WitnessSignalSpecOut
+ */
+export type WitnessSignalSpecOut = {
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Kind
+     */
+    kind: string;
+    /**
+     * Label
+     */
+    label: string | null;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Present At
+     */
+    present_at: number | null;
+};
+
+/**
+ * WitnessTranscriptOut
+ */
+export type WitnessTranscriptOut = {
+    reader: WitnessReaderOut;
+    run: RunOut;
+    /**
+     * Signals
+     */
+    signals: Array<WitnessSignalOut>;
+};
+
 export type ListAgentsData = {
     body?: never;
     path?: never;
@@ -3579,82 +3579,84 @@ export type LogoutResponses = {
 
 export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
 
-export type ListReadersData = {
+export type CompareEthosRunsData = {
     body?: never;
     path?: never;
-    query?: never;
-    url: '/api/companion/readers';
-};
-
-export type ListReadersResponses = {
-    /**
-     * Response List Readers
-     *
-     * Successful Response
-     */
-    200: Array<CompanionReaderOut>;
-};
-
-export type ListReadersResponse = ListReadersResponses[keyof ListReadersResponses];
-
-export type ListCompanionRunsData = {
-    body?: never;
-    path?: never;
-    query?: {
+    query: {
         /**
-         * Source Run
+         * A
          */
-        source_run?: string | null;
+        a: string;
+        /**
+         * B
+         */
+        b: string;
     };
-    url: '/api/companion/runs';
+    url: '/api/ethos/compare';
 };
 
-export type ListCompanionRunsErrors = {
+export type CompareEthosRunsErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ListCompanionRunsError = ListCompanionRunsErrors[keyof ListCompanionRunsErrors];
+export type CompareEthosRunsError = CompareEthosRunsErrors[keyof CompareEthosRunsErrors];
 
-export type ListCompanionRunsResponses = {
+export type CompareEthosRunsResponses = {
     /**
-     * Response List Companion Runs
+     * Successful Response
+     */
+    200: EthosCompareOut;
+};
+
+export type CompareEthosRunsResponse = CompareEthosRunsResponses[keyof CompareEthosRunsResponses];
+
+export type ListEthosRunsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/ethos/runs';
+};
+
+export type ListEthosRunsResponses = {
+    /**
+     * Response List Ethos Runs
      *
      * Successful Response
      */
-    200: Array<CompanionRunSummary>;
+    200: Array<EthosRunSummary>;
 };
 
-export type ListCompanionRunsResponse = ListCompanionRunsResponses[keyof ListCompanionRunsResponses];
+export type ListEthosRunsResponse = ListEthosRunsResponses[keyof ListEthosRunsResponses];
 
-export type LaunchCompanionData = {
-    body: CompanionLaunch;
+export type LaunchEthosData = {
+    body: EthosLaunch;
     path?: never;
     query?: never;
-    url: '/api/companion/runs';
+    url: '/api/ethos/runs';
 };
 
-export type LaunchCompanionErrors = {
+export type LaunchEthosErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type LaunchCompanionError = LaunchCompanionErrors[keyof LaunchCompanionErrors];
+export type LaunchEthosError = LaunchEthosErrors[keyof LaunchEthosErrors];
 
-export type LaunchCompanionResponses = {
+export type LaunchEthosResponses = {
     /**
      * Successful Response
      */
     201: RunOut;
 };
 
-export type LaunchCompanionResponse = LaunchCompanionResponses[keyof LaunchCompanionResponses];
+export type LaunchEthosResponse = LaunchEthosResponses[keyof LaunchEthosResponses];
 
-export type ReadCompanionRunData = {
+export type ReadEthosRunData = {
     body?: never;
     path: {
         /**
@@ -3664,32 +3666,32 @@ export type ReadCompanionRunData = {
     };
     query?: {
         /**
-         * Lens Run
+         * Label
          */
-        lens_run?: string | null;
+        label?: string | null;
     };
-    url: '/api/companion/runs/{run_id}';
+    url: '/api/ethos/runs/{run_id}';
 };
 
-export type ReadCompanionRunErrors = {
+export type ReadEthosRunErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ReadCompanionRunError = ReadCompanionRunErrors[keyof ReadCompanionRunErrors];
+export type ReadEthosRunError = ReadEthosRunErrors[keyof ReadEthosRunErrors];
 
-export type ReadCompanionRunResponses = {
+export type ReadEthosRunResponses = {
     /**
      * Successful Response
      */
-    200: CompanionRunOut;
+    200: EthosRunOut;
 };
 
-export type ReadCompanionRunResponse = ReadCompanionRunResponses[keyof ReadCompanionRunResponses];
+export type ReadEthosRunResponse = ReadEthosRunResponses[keyof ReadEthosRunResponses];
 
-export type CancelCompanionRunData = {
+export type CancelEthosRunData = {
     body?: never;
     path: {
         /**
@@ -3698,28 +3700,28 @@ export type CancelCompanionRunData = {
         run_id: string;
     };
     query?: never;
-    url: '/api/companion/runs/{run_id}/cancel';
+    url: '/api/ethos/runs/{run_id}/cancel';
 };
 
-export type CancelCompanionRunErrors = {
+export type CancelEthosRunErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type CancelCompanionRunError = CancelCompanionRunErrors[keyof CancelCompanionRunErrors];
+export type CancelEthosRunError = CancelEthosRunErrors[keyof CancelEthosRunErrors];
 
-export type CancelCompanionRunResponses = {
+export type CancelEthosRunResponses = {
     /**
      * Successful Response
      */
     200: RunOut;
 };
 
-export type CancelCompanionRunResponse = CancelCompanionRunResponses[keyof CancelCompanionRunResponses];
+export type CancelEthosRunResponse = CancelEthosRunResponses[keyof CancelEthosRunResponses];
 
-export type StreamCompanionRunData = {
+export type StreamEthosRunData = {
     body?: never;
     path: {
         /**
@@ -3728,26 +3730,26 @@ export type StreamCompanionRunData = {
         run_id: string;
     };
     query?: never;
-    url: '/api/companion/runs/{run_id}/events';
+    url: '/api/ethos/runs/{run_id}/events';
 };
 
-export type StreamCompanionRunErrors = {
+export type StreamEthosRunErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type StreamCompanionRunError = StreamCompanionRunErrors[keyof StreamCompanionRunErrors];
+export type StreamEthosRunError = StreamEthosRunErrors[keyof StreamEthosRunErrors];
 
-export type StreamCompanionRunResponses = {
+export type StreamEthosRunResponses = {
     /**
      * Successful Response
      */
     200: unknown;
 };
 
-export type ReadCompanionTranscriptData = {
+export type ReadEthosTranscriptData = {
     body?: never;
     path: {
         /**
@@ -3760,299 +3762,60 @@ export type ReadCompanionTranscriptData = {
         transcript_id: string;
     };
     query?: never;
-    url: '/api/companion/runs/{run_id}/transcripts/{transcript_id}';
+    url: '/api/ethos/runs/{run_id}/transcripts/{transcript_id}';
 };
 
-export type ReadCompanionTranscriptErrors = {
+export type ReadEthosTranscriptErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ReadCompanionTranscriptError = ReadCompanionTranscriptErrors[keyof ReadCompanionTranscriptErrors];
+export type ReadEthosTranscriptError = ReadEthosTranscriptErrors[keyof ReadEthosTranscriptErrors];
 
-export type ReadCompanionTranscriptResponses = {
+export type ReadEthosTranscriptResponses = {
     /**
      * Successful Response
      */
-    200: CompanionTranscriptOut;
+    200: EthosTranscriptOut;
 };
 
-export type ReadCompanionTranscriptResponse = ReadCompanionTranscriptResponses[keyof ReadCompanionTranscriptResponses];
+export type ReadEthosTranscriptResponse = ReadEthosTranscriptResponses[keyof ReadEthosTranscriptResponses];
 
-export type ListDimensionsData = {
+export type ListEthosSourcesData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/explore/dimensions';
+    url: '/api/ethos/sources';
 };
 
-export type ListDimensionsResponses = {
+export type ListEthosSourcesResponses = {
     /**
-     * Response List Dimensions
+     * Response List Ethos Sources
      *
      * Successful Response
      */
-    200: Array<DimensionOut>;
+    200: Array<EthosSourceOut>;
 };
 
-export type ListDimensionsResponse = ListDimensionsResponses[keyof ListDimensionsResponses];
+export type ListEthosSourcesResponse = ListEthosSourcesResponses[keyof ListEthosSourcesResponses];
 
-export type ListExploreRunsData = {
+export type ReadTaxonomyData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/explore/runs';
+    url: '/api/ethos/taxonomy';
 };
 
-export type ListExploreRunsResponses = {
-    /**
-     * Response List Explore Runs
-     *
-     * Successful Response
-     */
-    200: Array<RunOut>;
-};
-
-export type ListExploreRunsResponse = ListExploreRunsResponses[keyof ListExploreRunsResponses];
-
-export type LaunchExploreData = {
-    body: ExploreLaunch;
-    path?: never;
-    query?: never;
-    url: '/api/explore/runs';
-};
-
-export type LaunchExploreErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type LaunchExploreError = LaunchExploreErrors[keyof LaunchExploreErrors];
-
-export type LaunchExploreResponses = {
+export type ReadTaxonomyResponses = {
     /**
      * Successful Response
      */
-    201: RunOut;
+    200: TaxonomyOut;
 };
 
-export type LaunchExploreResponse = LaunchExploreResponses[keyof LaunchExploreResponses];
-
-export type ReadExploreRunData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/api/explore/runs/{run_id}';
-};
-
-export type ReadExploreRunErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadExploreRunError = ReadExploreRunErrors[keyof ReadExploreRunErrors];
-
-export type ReadExploreRunResponses = {
-    /**
-     * Successful Response
-     */
-    200: ExploreRunOut;
-};
-
-export type ReadExploreRunResponse = ReadExploreRunResponses[keyof ReadExploreRunResponses];
-
-export type CancelExploreRunData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/api/explore/runs/{run_id}/cancel';
-};
-
-export type CancelExploreRunErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type CancelExploreRunError = CancelExploreRunErrors[keyof CancelExploreRunErrors];
-
-export type CancelExploreRunResponses = {
-    /**
-     * Successful Response
-     */
-    200: RunOut;
-};
-
-export type CancelExploreRunResponse = CancelExploreRunResponses[keyof CancelExploreRunResponses];
-
-export type StreamExploreRunData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/api/explore/runs/{run_id}/events';
-};
-
-export type StreamExploreRunErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type StreamExploreRunError = StreamExploreRunErrors[keyof StreamExploreRunErrors];
-
-export type StreamExploreRunResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
-export type ListSeedsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Agent
-         */
-        agent?: string | null;
-    };
-    url: '/api/explore/seeds';
-};
-
-export type ListSeedsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ListSeedsError = ListSeedsErrors[keyof ListSeedsErrors];
-
-export type ListSeedsResponses = {
-    /**
-     * Response List Seeds
-     *
-     * Successful Response
-     */
-    200: Array<SeedOut>;
-};
-
-export type ListSeedsResponse = ListSeedsResponses[keyof ListSeedsResponses];
-
-export type ReadTranscriptData = {
-    body?: never;
-    path: {
-        /**
-         * Transcript Id
-         */
-        transcript_id: string;
-    };
-    query?: never;
-    url: '/api/explore/transcripts/{transcript_id}';
-};
-
-export type ReadTranscriptErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadTranscriptError = ReadTranscriptErrors[keyof ReadTranscriptErrors];
-
-export type ReadTranscriptResponses = {
-    /**
-     * Successful Response
-     */
-    200: TranscriptOut;
-};
-
-export type ReadTranscriptResponse = ReadTranscriptResponses[keyof ReadTranscriptResponses];
-
-export type TranscriptLogData = {
-    body?: never;
-    path: {
-        /**
-         * Transcript Id
-         */
-        transcript_id: string;
-    };
-    query?: never;
-    url: '/api/explore/transcripts/{transcript_id}/log';
-};
-
-export type TranscriptLogErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type TranscriptLogError = TranscriptLogErrors[keyof TranscriptLogErrors];
-
-export type TranscriptLogResponses = {
-    /**
-     * Successful Response
-     */
-    200: SignedUrlOut;
-};
-
-export type TranscriptLogResponse = TranscriptLogResponses[keyof TranscriptLogResponses];
-
-export type ReadFullThinkingData = {
-    body?: never;
-    path: {
-        /**
-         * Transcript Id
-         */
-        transcript_id: string;
-    };
-    query?: never;
-    url: '/api/explore/transcripts/{transcript_id}/thinking';
-};
-
-export type ReadFullThinkingErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadFullThinkingError = ReadFullThinkingErrors[keyof ReadFullThinkingErrors];
-
-export type ReadFullThinkingResponses = {
-    /**
-     * Response Read Full Thinking
-     *
-     * Successful Response
-     */
-    200: Array<FullThinkingOut>;
-};
-
-export type ReadFullThinkingResponse = ReadFullThinkingResponses[keyof ReadFullThinkingResponses];
+export type ReadTaxonomyResponse = ReadTaxonomyResponses[keyof ReadTaxonomyResponses];
 
 export type HealthData = {
     body?: never;
@@ -4086,119 +3849,68 @@ export type ReadyResponses = {
 
 export type ReadyResponse = ReadyResponses[keyof ReadyResponses];
 
-export type CompareLensRunsData = {
-    body?: never;
-    path?: never;
-    query: {
-        /**
-         * A
-         */
-        a: string;
-        /**
-         * B
-         */
-        b: string;
-    };
-    url: '/api/lens/compare';
-};
-
-export type CompareLensRunsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type CompareLensRunsError = CompareLensRunsErrors[keyof CompareLensRunsErrors];
-
-export type CompareLensRunsResponses = {
-    /**
-     * Successful Response
-     */
-    200: LensCompareOut;
-};
-
-export type CompareLensRunsResponse = CompareLensRunsResponses[keyof CompareLensRunsResponses];
-
-export type ListLensRunsData = {
+export type ListDimensionsData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/lens/runs';
+    url: '/api/inquiry/dimensions';
 };
 
-export type ListLensRunsResponses = {
+export type ListDimensionsResponses = {
     /**
-     * Response List Lens Runs
+     * Response List Dimensions
      *
      * Successful Response
      */
-    200: Array<LensRunSummary>;
+    200: Array<DimensionOut>;
 };
 
-export type ListLensRunsResponse = ListLensRunsResponses[keyof ListLensRunsResponses];
+export type ListDimensionsResponse = ListDimensionsResponses[keyof ListDimensionsResponses];
 
-export type LaunchLensData = {
-    body: LensLaunch;
+export type ListInquiryRunsData = {
+    body?: never;
     path?: never;
     query?: never;
-    url: '/api/lens/runs';
+    url: '/api/inquiry/runs';
 };
 
-export type LaunchLensErrors = {
+export type ListInquiryRunsResponses = {
+    /**
+     * Response List Inquiry Runs
+     *
+     * Successful Response
+     */
+    200: Array<RunOut>;
+};
+
+export type ListInquiryRunsResponse = ListInquiryRunsResponses[keyof ListInquiryRunsResponses];
+
+export type LaunchInquiryData = {
+    body: InquiryLaunch;
+    path?: never;
+    query?: never;
+    url: '/api/inquiry/runs';
+};
+
+export type LaunchInquiryErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type LaunchLensError = LaunchLensErrors[keyof LaunchLensErrors];
+export type LaunchInquiryError = LaunchInquiryErrors[keyof LaunchInquiryErrors];
 
-export type LaunchLensResponses = {
+export type LaunchInquiryResponses = {
     /**
      * Successful Response
      */
     201: RunOut;
 };
 
-export type LaunchLensResponse = LaunchLensResponses[keyof LaunchLensResponses];
+export type LaunchInquiryResponse = LaunchInquiryResponses[keyof LaunchInquiryResponses];
 
-export type ReadLensRunData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: {
-        /**
-         * Label
-         */
-        label?: string | null;
-    };
-    url: '/api/lens/runs/{run_id}';
-};
-
-export type ReadLensRunErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadLensRunError = ReadLensRunErrors[keyof ReadLensRunErrors];
-
-export type ReadLensRunResponses = {
-    /**
-     * Successful Response
-     */
-    200: LensRunOut;
-};
-
-export type ReadLensRunResponse = ReadLensRunResponses[keyof ReadLensRunResponses];
-
-export type CancelLensRunData = {
+export type ReadInquiryRunData = {
     body?: never;
     path: {
         /**
@@ -4207,28 +3919,58 @@ export type CancelLensRunData = {
         run_id: string;
     };
     query?: never;
-    url: '/api/lens/runs/{run_id}/cancel';
+    url: '/api/inquiry/runs/{run_id}';
 };
 
-export type CancelLensRunErrors = {
+export type ReadInquiryRunErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type CancelLensRunError = CancelLensRunErrors[keyof CancelLensRunErrors];
+export type ReadInquiryRunError = ReadInquiryRunErrors[keyof ReadInquiryRunErrors];
 
-export type CancelLensRunResponses = {
+export type ReadInquiryRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: InquiryRunOut;
+};
+
+export type ReadInquiryRunResponse = ReadInquiryRunResponses[keyof ReadInquiryRunResponses];
+
+export type CancelInquiryRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/inquiry/runs/{run_id}/cancel';
+};
+
+export type CancelInquiryRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CancelInquiryRunError = CancelInquiryRunErrors[keyof CancelInquiryRunErrors];
+
+export type CancelInquiryRunResponses = {
     /**
      * Successful Response
      */
     200: RunOut;
 };
 
-export type CancelLensRunResponse = CancelLensRunResponses[keyof CancelLensRunResponses];
+export type CancelInquiryRunResponse = CancelInquiryRunResponses[keyof CancelInquiryRunResponses];
 
-export type StreamLensRunData = {
+export type StreamInquiryRunData = {
     body?: never;
     path: {
         /**
@@ -4237,92 +3979,474 @@ export type StreamLensRunData = {
         run_id: string;
     };
     query?: never;
-    url: '/api/lens/runs/{run_id}/events';
+    url: '/api/inquiry/runs/{run_id}/events';
 };
 
-export type StreamLensRunErrors = {
+export type StreamInquiryRunErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type StreamLensRunError = StreamLensRunErrors[keyof StreamLensRunErrors];
+export type StreamInquiryRunError = StreamInquiryRunErrors[keyof StreamInquiryRunErrors];
 
-export type StreamLensRunResponses = {
+export type StreamInquiryRunResponses = {
     /**
      * Successful Response
      */
     200: unknown;
 };
 
-export type ReadLensTranscriptData = {
+export type ListSeedsData = {
     body?: never;
-    path: {
+    path?: never;
+    query?: {
         /**
-         * Run Id
+         * Agent
          */
-        run_id: string;
-        /**
-         * Transcript Id
-         */
-        transcript_id: string;
+        agent?: string | null;
     };
-    query?: never;
-    url: '/api/lens/runs/{run_id}/transcripts/{transcript_id}';
+    url: '/api/inquiry/seeds';
 };
 
-export type ReadLensTranscriptErrors = {
+export type ListSeedsErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ReadLensTranscriptError = ReadLensTranscriptErrors[keyof ReadLensTranscriptErrors];
+export type ListSeedsError = ListSeedsErrors[keyof ListSeedsErrors];
 
-export type ReadLensTranscriptResponses = {
+export type ListSeedsResponses = {
     /**
-     * Successful Response
-     */
-    200: LensTranscriptOut;
-};
-
-export type ReadLensTranscriptResponse = ReadLensTranscriptResponses[keyof ReadLensTranscriptResponses];
-
-export type ListLensSourcesData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/lens/sources';
-};
-
-export type ListLensSourcesResponses = {
-    /**
-     * Response List Lens Sources
+     * Response List Seeds
      *
      * Successful Response
      */
-    200: Array<LensSourceOut>;
+    200: Array<SeedOut>;
 };
 
-export type ListLensSourcesResponse = ListLensSourcesResponses[keyof ListLensSourcesResponses];
+export type ListSeedsResponse = ListSeedsResponses[keyof ListSeedsResponses];
 
-export type ReadTaxonomyData = {
+export type ReadTranscriptData = {
     body?: never;
-    path?: never;
+    path: {
+        /**
+         * Transcript Id
+         */
+        transcript_id: string;
+    };
     query?: never;
-    url: '/api/lens/taxonomy';
+    url: '/api/inquiry/transcripts/{transcript_id}';
 };
 
-export type ReadTaxonomyResponses = {
+export type ReadTranscriptErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadTranscriptError = ReadTranscriptErrors[keyof ReadTranscriptErrors];
+
+export type ReadTranscriptResponses = {
     /**
      * Successful Response
      */
-    200: TaxonomyOut;
+    200: TranscriptOut;
 };
 
-export type ReadTaxonomyResponse = ReadTaxonomyResponses[keyof ReadTaxonomyResponses];
+export type ReadTranscriptResponse = ReadTranscriptResponses[keyof ReadTranscriptResponses];
+
+export type TranscriptLogData = {
+    body?: never;
+    path: {
+        /**
+         * Transcript Id
+         */
+        transcript_id: string;
+    };
+    query?: never;
+    url: '/api/inquiry/transcripts/{transcript_id}/log';
+};
+
+export type TranscriptLogErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type TranscriptLogError = TranscriptLogErrors[keyof TranscriptLogErrors];
+
+export type TranscriptLogResponses = {
+    /**
+     * Successful Response
+     */
+    200: SignedUrlOut;
+};
+
+export type TranscriptLogResponse = TranscriptLogResponses[keyof TranscriptLogResponses];
+
+export type ReadFullThinkingData = {
+    body?: never;
+    path: {
+        /**
+         * Transcript Id
+         */
+        transcript_id: string;
+    };
+    query?: never;
+    url: '/api/inquiry/transcripts/{transcript_id}/thinking';
+};
+
+export type ReadFullThinkingErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadFullThinkingError = ReadFullThinkingErrors[keyof ReadFullThinkingErrors];
+
+export type ReadFullThinkingResponses = {
+    /**
+     * Response Read Full Thinking
+     *
+     * Successful Response
+     */
+    200: Array<FullThinkingOut>;
+};
+
+export type ReadFullThinkingResponse = ReadFullThinkingResponses[keyof ReadFullThinkingResponses];
+
+export type CreateReviewData = {
+    body: ReviewIn;
+    path?: never;
+    query?: never;
+    url: '/api/jury';
+};
+
+export type CreateReviewErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateReviewError = CreateReviewErrors[keyof CreateReviewErrors];
+
+export type CreateReviewResponses = {
+    /**
+     * Successful Response
+     */
+    201: ReviewOut;
+};
+
+export type CreateReviewResponse = CreateReviewResponses[keyof CreateReviewResponses];
+
+export type EthosQueueData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/jury/ethos-queue';
+};
+
+export type EthosQueueErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type EthosQueueError = EthosQueueErrors[keyof EthosQueueErrors];
+
+export type EthosQueueResponses = {
+    /**
+     * Successful Response
+     */
+    200: EthosQueueOut;
+};
+
+export type EthosQueueResponse = EthosQueueResponses[keyof EthosQueueResponses];
+
+export type ListGoldSetsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/jury/gold-sets';
+};
+
+export type ListGoldSetsResponses = {
+    /**
+     * Response List Gold Sets
+     *
+     * Successful Response
+     */
+    200: Array<GoldSetSummary>;
+};
+
+export type ListGoldSetsResponse = ListGoldSetsResponses[keyof ListGoldSetsResponses];
+
+export type CreateGoldSetData = {
+    body: GoldSetCreate;
+    path?: never;
+    query?: never;
+    url: '/api/jury/gold-sets';
+};
+
+export type CreateGoldSetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateGoldSetError = CreateGoldSetErrors[keyof CreateGoldSetErrors];
+
+export type CreateGoldSetResponses = {
+    /**
+     * Successful Response
+     */
+    201: GoldSetSummary;
+};
+
+export type CreateGoldSetResponse = CreateGoldSetResponses[keyof CreateGoldSetResponses];
+
+export type ReadGoldSetData = {
+    body?: never;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+    };
+    query?: never;
+    url: '/api/jury/gold-sets/{set_id}';
+};
+
+export type ReadGoldSetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadGoldSetError = ReadGoldSetErrors[keyof ReadGoldSetErrors];
+
+export type ReadGoldSetResponses = {
+    /**
+     * Successful Response
+     */
+    200: GoldSetOut;
+};
+
+export type ReadGoldSetResponse = ReadGoldSetResponses[keyof ReadGoldSetResponses];
+
+export type ComputeGoldAgreementData = {
+    body?: never;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+    };
+    query?: never;
+    url: '/api/jury/gold-sets/{set_id}/agreement';
+};
+
+export type ComputeGoldAgreementErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ComputeGoldAgreementError = ComputeGoldAgreementErrors[keyof ComputeGoldAgreementErrors];
+
+export type ComputeGoldAgreementResponses = {
+    /**
+     * Response Compute Gold Agreement
+     *
+     * Successful Response
+     */
+    200: Array<AgreementOut>;
+};
+
+export type ComputeGoldAgreementResponse = ComputeGoldAgreementResponses[keyof ComputeGoldAgreementResponses];
+
+export type AddGoldItemsData = {
+    body: GoldItemsAdd;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+    };
+    query?: never;
+    url: '/api/jury/gold-sets/{set_id}/items';
+};
+
+export type AddGoldItemsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AddGoldItemsError = AddGoldItemsErrors[keyof AddGoldItemsErrors];
+
+export type AddGoldItemsResponses = {
+    /**
+     * Successful Response
+     */
+    201: GoldSetSummary;
+};
+
+export type AddGoldItemsResponse = AddGoldItemsResponses[keyof AddGoldItemsResponses];
+
+export type ReadGoldItemData = {
+    body?: never;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+        /**
+         * Item Id
+         */
+        item_id: string;
+    };
+    query?: never;
+    url: '/api/jury/gold-sets/{set_id}/items/{item_id}';
+};
+
+export type ReadGoldItemErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadGoldItemError = ReadGoldItemErrors[keyof ReadGoldItemErrors];
+
+export type ReadGoldItemResponses = {
+    /**
+     * Successful Response
+     */
+    200: GoldItemDetail;
+};
+
+export type ReadGoldItemResponse = ReadGoldItemResponses[keyof ReadGoldItemResponses];
+
+export type SaveGoldRatingsData = {
+    body: GoldRatingsIn;
+    path: {
+        /**
+         * Set Id
+         */
+        set_id: string;
+        /**
+         * Item Id
+         */
+        item_id: string;
+    };
+    query?: never;
+    url: '/api/jury/gold-sets/{set_id}/items/{item_id}/ratings';
+};
+
+export type SaveGoldRatingsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SaveGoldRatingsError = SaveGoldRatingsErrors[keyof SaveGoldRatingsErrors];
+
+export type SaveGoldRatingsResponses = {
+    /**
+     * Response Save Gold Ratings
+     *
+     * Successful Response
+     */
+    200: Array<GoldRatingOut>;
+};
+
+export type SaveGoldRatingsResponse = SaveGoldRatingsResponses[keyof SaveGoldRatingsResponses];
+
+export type ScoreQueueData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/jury/queue';
+};
+
+export type ScoreQueueErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ScoreQueueError = ScoreQueueErrors[keyof ScoreQueueErrors];
+
+export type ScoreQueueResponses = {
+    /**
+     * Successful Response
+     */
+    200: ReviewQueueOut;
+};
+
+export type ScoreQueueResponse = ScoreQueueResponses[keyof ScoreQueueResponses];
+
+export type ListReviewsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Score Id
+         */
+        score_id?: string | null;
+        /**
+         * Annotation Id
+         */
+        annotation_id?: string | null;
+    };
+    url: '/api/jury/reviews';
+};
+
+export type ListReviewsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListReviewsError = ListReviewsErrors[keyof ListReviewsErrors];
+
+export type ListReviewsResponses = {
+    /**
+     * Response List Reviews
+     *
+     * Successful Response
+     */
+    200: Array<ReviewOut>;
+};
+
+export type ListReviewsResponse = ListReviewsResponses[keyof ListReviewsResponses];
 
 export type ReadMeData = {
     body?: never;
@@ -4365,266 +4489,6 @@ export type UpdateMeResponses = {
 
 export type UpdateMeResponse = UpdateMeResponses[keyof UpdateMeResponses];
 
-export type ListBehavioursData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/measure/behaviours';
-};
-
-export type ListBehavioursResponses = {
-    /**
-     * Response List Behaviours
-     *
-     * Successful Response
-     */
-    200: Array<BehaviourSummary>;
-};
-
-export type ListBehavioursResponse = ListBehavioursResponses[keyof ListBehavioursResponses];
-
-export type ReadBehaviourData = {
-    body?: never;
-    path: {
-        /**
-         * Key
-         */
-        key: string;
-    };
-    query?: {
-        /**
-         * Scenario Set
-         */
-        scenario_set?: string | null;
-    };
-    url: '/api/measure/behaviours/{key}';
-};
-
-export type ReadBehaviourErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadBehaviourError = ReadBehaviourErrors[keyof ReadBehaviourErrors];
-
-export type ReadBehaviourResponses = {
-    /**
-     * Successful Response
-     */
-    200: BehaviourDetail;
-};
-
-export type ReadBehaviourResponse = ReadBehaviourResponses[keyof ReadBehaviourResponses];
-
-export type GenerateScenarioSetData = {
-    body: ScenarioGenerate;
-    path: {
-        /**
-         * Key
-         */
-        key: string;
-    };
-    query?: never;
-    url: '/api/measure/behaviours/{key}/scenario-sets';
-};
-
-export type GenerateScenarioSetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GenerateScenarioSetError = GenerateScenarioSetErrors[keyof GenerateScenarioSetErrors];
-
-export type GenerateScenarioSetResponses = {
-    /**
-     * Successful Response
-     */
-    201: RunOut;
-};
-
-export type GenerateScenarioSetResponse = GenerateScenarioSetResponses[keyof GenerateScenarioSetResponses];
-
-export type ListMeasureRunsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Behaviour
-         */
-        behaviour?: string | null;
-    };
-    url: '/api/measure/runs';
-};
-
-export type ListMeasureRunsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ListMeasureRunsError = ListMeasureRunsErrors[keyof ListMeasureRunsErrors];
-
-export type ListMeasureRunsResponses = {
-    /**
-     * Response List Measure Runs
-     *
-     * Successful Response
-     */
-    200: Array<MeasureRunSummary>;
-};
-
-export type ListMeasureRunsResponse = ListMeasureRunsResponses[keyof ListMeasureRunsResponses];
-
-export type LaunchMeasureData = {
-    body: MeasureLaunch;
-    path?: never;
-    query?: never;
-    url: '/api/measure/runs';
-};
-
-export type LaunchMeasureErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type LaunchMeasureError = LaunchMeasureErrors[keyof LaunchMeasureErrors];
-
-export type LaunchMeasureResponses = {
-    /**
-     * Response Launch Measure
-     *
-     * Successful Response
-     */
-    201: Array<RunOut>;
-};
-
-export type LaunchMeasureResponse = LaunchMeasureResponses[keyof LaunchMeasureResponses];
-
-export type ReadMeasureRunData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/api/measure/runs/{run_id}';
-};
-
-export type ReadMeasureRunErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadMeasureRunError = ReadMeasureRunErrors[keyof ReadMeasureRunErrors];
-
-export type ReadMeasureRunResponses = {
-    /**
-     * Successful Response
-     */
-    200: MeasureRunOut;
-};
-
-export type ReadMeasureRunResponse = ReadMeasureRunResponses[keyof ReadMeasureRunResponses];
-
-export type CancelMeasureRunData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/api/measure/runs/{run_id}/cancel';
-};
-
-export type CancelMeasureRunErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type CancelMeasureRunError = CancelMeasureRunErrors[keyof CancelMeasureRunErrors];
-
-export type CancelMeasureRunResponses = {
-    /**
-     * Successful Response
-     */
-    200: RunOut;
-};
-
-export type CancelMeasureRunResponse = CancelMeasureRunResponses[keyof CancelMeasureRunResponses];
-
-export type StreamMeasureRunData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/api/measure/runs/{run_id}/events';
-};
-
-export type StreamMeasureRunErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type StreamMeasureRunError = StreamMeasureRunErrors[keyof StreamMeasureRunErrors];
-
-export type StreamMeasureRunResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
-export type ReadScenarioSetData = {
-    body?: never;
-    path: {
-        /**
-         * Scenario Set Id
-         */
-        scenario_set_id: string;
-    };
-    query?: never;
-    url: '/api/measure/scenario-sets/{scenario_set_id}';
-};
-
-export type ReadScenarioSetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadScenarioSetError = ReadScenarioSetErrors[keyof ReadScenarioSetErrors];
-
-export type ReadScenarioSetResponses = {
-    /**
-     * Successful Response
-     */
-    200: ScenarioSetOut;
-};
-
-export type ReadScenarioSetResponse = ReadScenarioSetResponses[keyof ReadScenarioSetResponses];
-
 export type ModelRolesData = {
     body?: never;
     path?: never;
@@ -4641,158 +4505,11 @@ export type ModelRolesResponses = {
 
 export type ModelRolesResponse = ModelRolesResponses[keyof ModelRolesResponses];
 
-export type ListConversationsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Mine
-         */
-        mine?: boolean;
-    };
-    url: '/api/playground';
-};
-
-export type ListConversationsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ListConversationsError = ListConversationsErrors[keyof ListConversationsErrors];
-
-export type ListConversationsResponses = {
-    /**
-     * Response List Conversations
-     *
-     * Successful Response
-     */
-    200: Array<RunOut>;
-};
-
-export type ListConversationsResponse = ListConversationsResponses[keyof ListConversationsResponses];
-
-export type StartConversationData = {
-    body: PlaygroundStart;
-    path?: never;
-    query?: never;
-    url: '/api/playground';
-};
-
-export type StartConversationErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type StartConversationError = StartConversationErrors[keyof StartConversationErrors];
-
-export type StartConversationResponses = {
-    /**
-     * Successful Response
-     */
-    201: PlaygroundOut;
-};
-
-export type StartConversationResponse = StartConversationResponses[keyof StartConversationResponses];
-
-export type ReadConversationData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/api/playground/{run_id}';
-};
-
-export type ReadConversationErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadConversationError = ReadConversationErrors[keyof ReadConversationErrors];
-
-export type ReadConversationResponses = {
-    /**
-     * Successful Response
-     */
-    200: PlaygroundOut;
-};
-
-export type ReadConversationResponse = ReadConversationResponses[keyof ReadConversationResponses];
-
-export type FinishConversationData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/api/playground/{run_id}/finish';
-};
-
-export type FinishConversationErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type FinishConversationError = FinishConversationErrors[keyof FinishConversationErrors];
-
-export type FinishConversationResponses = {
-    /**
-     * Successful Response
-     */
-    200: PlaygroundOut;
-};
-
-export type FinishConversationResponse = FinishConversationResponses[keyof FinishConversationResponses];
-
-export type SayData = {
-    body: PlaygroundSay;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/api/playground/{run_id}/messages';
-};
-
-export type SayErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type SayError = SayErrors[keyof SayErrors];
-
-export type SayResponses = {
-    /**
-     * Successful Response
-     */
-    200: PlaygroundTurnOut;
-};
-
-export type SayResponse = SayResponses[keyof SayResponses];
-
 export type ListReportRunsData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/reports/runs';
+    url: '/api/record/runs';
 };
 
 export type ListReportRunsResponses = {
@@ -4815,7 +4532,7 @@ export type ExportFindingsData = {
         run_id: string;
     };
     query?: never;
-    url: '/api/reports/runs/{run_id}/findings.csv';
+    url: '/api/record/runs/{run_id}/findings.csv';
 };
 
 export type ExportFindingsErrors = {
@@ -4843,7 +4560,7 @@ export type RunProvenanceData = {
         run_id: string;
     };
     query?: never;
-    url: '/api/reports/runs/{run_id}/provenance';
+    url: '/api/record/runs/{run_id}/provenance';
 };
 
 export type RunProvenanceErrors = {
@@ -4877,7 +4594,7 @@ export type ExportReportData = {
         run_id: string;
     };
     query?: never;
-    url: '/api/reports/runs/{run_id}/report.pdf';
+    url: '/api/record/runs/{run_id}/report.pdf';
 };
 
 export type ExportReportErrors = {
@@ -4905,7 +4622,7 @@ export type ExportScoresData = {
         run_id: string;
     };
     query?: never;
-    url: '/api/reports/runs/{run_id}/scores.csv';
+    url: '/api/record/runs/{run_id}/scores.csv';
 };
 
 export type ExportScoresErrors = {
@@ -4924,331 +4641,152 @@ export type ExportScoresResponses = {
     200: unknown;
 };
 
-export type CreateReviewData = {
-    body: ReviewIn;
-    path?: never;
-    query?: never;
-    url: '/api/review';
-};
-
-export type CreateReviewErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type CreateReviewError = CreateReviewErrors[keyof CreateReviewErrors];
-
-export type CreateReviewResponses = {
-    /**
-     * Successful Response
-     */
-    201: ReviewOut;
-};
-
-export type CreateReviewResponse = CreateReviewResponses[keyof CreateReviewResponses];
-
-export type ListGoldSetsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/review/gold-sets';
-};
-
-export type ListGoldSetsResponses = {
-    /**
-     * Response List Gold Sets
-     *
-     * Successful Response
-     */
-    200: Array<GoldSetSummary>;
-};
-
-export type ListGoldSetsResponse = ListGoldSetsResponses[keyof ListGoldSetsResponses];
-
-export type CreateGoldSetData = {
-    body: GoldSetCreate;
-    path?: never;
-    query?: never;
-    url: '/api/review/gold-sets';
-};
-
-export type CreateGoldSetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type CreateGoldSetError = CreateGoldSetErrors[keyof CreateGoldSetErrors];
-
-export type CreateGoldSetResponses = {
-    /**
-     * Successful Response
-     */
-    201: GoldSetSummary;
-};
-
-export type CreateGoldSetResponse = CreateGoldSetResponses[keyof CreateGoldSetResponses];
-
-export type ReadGoldSetData = {
-    body?: never;
-    path: {
-        /**
-         * Set Id
-         */
-        set_id: string;
-    };
-    query?: never;
-    url: '/api/review/gold-sets/{set_id}';
-};
-
-export type ReadGoldSetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadGoldSetError = ReadGoldSetErrors[keyof ReadGoldSetErrors];
-
-export type ReadGoldSetResponses = {
-    /**
-     * Successful Response
-     */
-    200: GoldSetOut;
-};
-
-export type ReadGoldSetResponse = ReadGoldSetResponses[keyof ReadGoldSetResponses];
-
-export type ComputeGoldAgreementData = {
-    body?: never;
-    path: {
-        /**
-         * Set Id
-         */
-        set_id: string;
-    };
-    query?: never;
-    url: '/api/review/gold-sets/{set_id}/agreement';
-};
-
-export type ComputeGoldAgreementErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ComputeGoldAgreementError = ComputeGoldAgreementErrors[keyof ComputeGoldAgreementErrors];
-
-export type ComputeGoldAgreementResponses = {
-    /**
-     * Response Compute Gold Agreement
-     *
-     * Successful Response
-     */
-    200: Array<AgreementOut>;
-};
-
-export type ComputeGoldAgreementResponse = ComputeGoldAgreementResponses[keyof ComputeGoldAgreementResponses];
-
-export type AddGoldItemsData = {
-    body: GoldItemsAdd;
-    path: {
-        /**
-         * Set Id
-         */
-        set_id: string;
-    };
-    query?: never;
-    url: '/api/review/gold-sets/{set_id}/items';
-};
-
-export type AddGoldItemsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type AddGoldItemsError = AddGoldItemsErrors[keyof AddGoldItemsErrors];
-
-export type AddGoldItemsResponses = {
-    /**
-     * Successful Response
-     */
-    201: GoldSetSummary;
-};
-
-export type AddGoldItemsResponse = AddGoldItemsResponses[keyof AddGoldItemsResponses];
-
-export type ReadGoldItemData = {
-    body?: never;
-    path: {
-        /**
-         * Set Id
-         */
-        set_id: string;
-        /**
-         * Item Id
-         */
-        item_id: string;
-    };
-    query?: never;
-    url: '/api/review/gold-sets/{set_id}/items/{item_id}';
-};
-
-export type ReadGoldItemErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadGoldItemError = ReadGoldItemErrors[keyof ReadGoldItemErrors];
-
-export type ReadGoldItemResponses = {
-    /**
-     * Successful Response
-     */
-    200: GoldItemDetail;
-};
-
-export type ReadGoldItemResponse = ReadGoldItemResponses[keyof ReadGoldItemResponses];
-
-export type SaveGoldRatingsData = {
-    body: GoldRatingsIn;
-    path: {
-        /**
-         * Set Id
-         */
-        set_id: string;
-        /**
-         * Item Id
-         */
-        item_id: string;
-    };
-    query?: never;
-    url: '/api/review/gold-sets/{set_id}/items/{item_id}/ratings';
-};
-
-export type SaveGoldRatingsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type SaveGoldRatingsError = SaveGoldRatingsErrors[keyof SaveGoldRatingsErrors];
-
-export type SaveGoldRatingsResponses = {
-    /**
-     * Response Save Gold Ratings
-     *
-     * Successful Response
-     */
-    200: Array<GoldRatingOut>;
-};
-
-export type SaveGoldRatingsResponse = SaveGoldRatingsResponses[keyof SaveGoldRatingsResponses];
-
-export type LensQueueData = {
+export type ListConversationsData = {
     body?: never;
     path?: never;
     query?: {
         /**
-         * Limit
+         * Mine
          */
-        limit?: number;
+        mine?: boolean;
     };
-    url: '/api/review/lens-queue';
+    url: '/api/rehearsal';
 };
 
-export type LensQueueErrors = {
+export type ListConversationsErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type LensQueueError = LensQueueErrors[keyof LensQueueErrors];
+export type ListConversationsError = ListConversationsErrors[keyof ListConversationsErrors];
 
-export type LensQueueResponses = {
+export type ListConversationsResponses = {
     /**
-     * Successful Response
-     */
-    200: LensQueueOut;
-};
-
-export type LensQueueResponse = LensQueueResponses[keyof LensQueueResponses];
-
-export type ScoreQueueData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Limit
-         */
-        limit?: number;
-    };
-    url: '/api/review/queue';
-};
-
-export type ScoreQueueErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ScoreQueueError = ScoreQueueErrors[keyof ScoreQueueErrors];
-
-export type ScoreQueueResponses = {
-    /**
-     * Successful Response
-     */
-    200: ReviewQueueOut;
-};
-
-export type ScoreQueueResponse = ScoreQueueResponses[keyof ScoreQueueResponses];
-
-export type ListReviewsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Score Id
-         */
-        score_id?: string | null;
-        /**
-         * Annotation Id
-         */
-        annotation_id?: string | null;
-    };
-    url: '/api/review/reviews';
-};
-
-export type ListReviewsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ListReviewsError = ListReviewsErrors[keyof ListReviewsErrors];
-
-export type ListReviewsResponses = {
-    /**
-     * Response List Reviews
+     * Response List Conversations
      *
      * Successful Response
      */
-    200: Array<ReviewOut>;
+    200: Array<RunOut>;
 };
 
-export type ListReviewsResponse = ListReviewsResponses[keyof ListReviewsResponses];
+export type ListConversationsResponse = ListConversationsResponses[keyof ListConversationsResponses];
+
+export type StartConversationData = {
+    body: RehearsalStart;
+    path?: never;
+    query?: never;
+    url: '/api/rehearsal';
+};
+
+export type StartConversationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StartConversationError = StartConversationErrors[keyof StartConversationErrors];
+
+export type StartConversationResponses = {
+    /**
+     * Successful Response
+     */
+    201: RehearsalOut;
+};
+
+export type StartConversationResponse = StartConversationResponses[keyof StartConversationResponses];
+
+export type ReadConversationData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/rehearsal/{run_id}';
+};
+
+export type ReadConversationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadConversationError = ReadConversationErrors[keyof ReadConversationErrors];
+
+export type ReadConversationResponses = {
+    /**
+     * Successful Response
+     */
+    200: RehearsalOut;
+};
+
+export type ReadConversationResponse = ReadConversationResponses[keyof ReadConversationResponses];
+
+export type FinishConversationData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/rehearsal/{run_id}/finish';
+};
+
+export type FinishConversationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type FinishConversationError = FinishConversationErrors[keyof FinishConversationErrors];
+
+export type FinishConversationResponses = {
+    /**
+     * Successful Response
+     */
+    200: RehearsalOut;
+};
+
+export type FinishConversationResponse = FinishConversationResponses[keyof FinishConversationResponses];
+
+export type SayData = {
+    body: RehearsalSay;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/rehearsal/{run_id}/messages';
+};
+
+export type SayErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SayError = SayErrors[keyof SayErrors];
+
+export type SayResponses = {
+    /**
+     * Successful Response
+     */
+    200: RehearsalTurnOut;
+};
+
+export type SayResponse = SayResponses[keyof SayResponses];
 
 export type ReadRunData = {
     body?: never;
@@ -5432,6 +4970,266 @@ export type CheckObjectResponses = {
 
 export type CheckObjectResponse = CheckObjectResponses[keyof CheckObjectResponses];
 
+export type ListBehavioursData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/tally/behaviours';
+};
+
+export type ListBehavioursResponses = {
+    /**
+     * Response List Behaviours
+     *
+     * Successful Response
+     */
+    200: Array<BehaviourSummary>;
+};
+
+export type ListBehavioursResponse = ListBehavioursResponses[keyof ListBehavioursResponses];
+
+export type ReadBehaviourData = {
+    body?: never;
+    path: {
+        /**
+         * Key
+         */
+        key: string;
+    };
+    query?: {
+        /**
+         * Scenario Set
+         */
+        scenario_set?: string | null;
+    };
+    url: '/api/tally/behaviours/{key}';
+};
+
+export type ReadBehaviourErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadBehaviourError = ReadBehaviourErrors[keyof ReadBehaviourErrors];
+
+export type ReadBehaviourResponses = {
+    /**
+     * Successful Response
+     */
+    200: BehaviourDetail;
+};
+
+export type ReadBehaviourResponse = ReadBehaviourResponses[keyof ReadBehaviourResponses];
+
+export type GenerateScenarioSetData = {
+    body: ScenarioGenerate;
+    path: {
+        /**
+         * Key
+         */
+        key: string;
+    };
+    query?: never;
+    url: '/api/tally/behaviours/{key}/scenario-sets';
+};
+
+export type GenerateScenarioSetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GenerateScenarioSetError = GenerateScenarioSetErrors[keyof GenerateScenarioSetErrors];
+
+export type GenerateScenarioSetResponses = {
+    /**
+     * Successful Response
+     */
+    201: RunOut;
+};
+
+export type GenerateScenarioSetResponse = GenerateScenarioSetResponses[keyof GenerateScenarioSetResponses];
+
+export type ListTallyRunsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Behaviour
+         */
+        behaviour?: string | null;
+    };
+    url: '/api/tally/runs';
+};
+
+export type ListTallyRunsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListTallyRunsError = ListTallyRunsErrors[keyof ListTallyRunsErrors];
+
+export type ListTallyRunsResponses = {
+    /**
+     * Response List Tally Runs
+     *
+     * Successful Response
+     */
+    200: Array<TallyRunSummary>;
+};
+
+export type ListTallyRunsResponse = ListTallyRunsResponses[keyof ListTallyRunsResponses];
+
+export type LaunchTallyData = {
+    body: TallyLaunch;
+    path?: never;
+    query?: never;
+    url: '/api/tally/runs';
+};
+
+export type LaunchTallyErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LaunchTallyError = LaunchTallyErrors[keyof LaunchTallyErrors];
+
+export type LaunchTallyResponses = {
+    /**
+     * Response Launch Tally
+     *
+     * Successful Response
+     */
+    201: Array<RunOut>;
+};
+
+export type LaunchTallyResponse = LaunchTallyResponses[keyof LaunchTallyResponses];
+
+export type ReadTallyRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/tally/runs/{run_id}';
+};
+
+export type ReadTallyRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadTallyRunError = ReadTallyRunErrors[keyof ReadTallyRunErrors];
+
+export type ReadTallyRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: TallyRunOut;
+};
+
+export type ReadTallyRunResponse = ReadTallyRunResponses[keyof ReadTallyRunResponses];
+
+export type CancelTallyRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/tally/runs/{run_id}/cancel';
+};
+
+export type CancelTallyRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CancelTallyRunError = CancelTallyRunErrors[keyof CancelTallyRunErrors];
+
+export type CancelTallyRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunOut;
+};
+
+export type CancelTallyRunResponse = CancelTallyRunResponses[keyof CancelTallyRunResponses];
+
+export type StreamTallyRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/tally/runs/{run_id}/events';
+};
+
+export type StreamTallyRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StreamTallyRunError = StreamTallyRunErrors[keyof StreamTallyRunErrors];
+
+export type StreamTallyRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ReadScenarioSetData = {
+    body?: never;
+    path: {
+        /**
+         * Scenario Set Id
+         */
+        scenario_set_id: string;
+    };
+    query?: never;
+    url: '/api/tally/scenario-sets/{scenario_set_id}';
+};
+
+export type ReadScenarioSetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadScenarioSetError = ReadScenarioSetErrors[keyof ReadScenarioSetErrors];
+
+export type ReadScenarioSetResponses = {
+    /**
+     * Successful Response
+     */
+    200: ScenarioSetOut;
+};
+
+export type ReadScenarioSetResponse = ReadScenarioSetResponses[keyof ReadScenarioSetResponses];
+
 export type ListTokensData = {
     body?: never;
     path?: never;
@@ -5596,3 +5394,205 @@ export type ChatCompletionsResponses = {
 };
 
 export type ChatCompletionsResponse = ChatCompletionsResponses[keyof ChatCompletionsResponses];
+
+export type ListReadersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/witness/readers';
+};
+
+export type ListReadersResponses = {
+    /**
+     * Response List Readers
+     *
+     * Successful Response
+     */
+    200: Array<WitnessReaderOut>;
+};
+
+export type ListReadersResponse = ListReadersResponses[keyof ListReadersResponses];
+
+export type ListWitnessRunsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Source Run
+         */
+        source_run?: string | null;
+    };
+    url: '/api/witness/runs';
+};
+
+export type ListWitnessRunsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListWitnessRunsError = ListWitnessRunsErrors[keyof ListWitnessRunsErrors];
+
+export type ListWitnessRunsResponses = {
+    /**
+     * Response List Witness Runs
+     *
+     * Successful Response
+     */
+    200: Array<WitnessRunSummary>;
+};
+
+export type ListWitnessRunsResponse = ListWitnessRunsResponses[keyof ListWitnessRunsResponses];
+
+export type LaunchWitnessData = {
+    body: WitnessLaunch;
+    path?: never;
+    query?: never;
+    url: '/api/witness/runs';
+};
+
+export type LaunchWitnessErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LaunchWitnessError = LaunchWitnessErrors[keyof LaunchWitnessErrors];
+
+export type LaunchWitnessResponses = {
+    /**
+     * Successful Response
+     */
+    201: RunOut;
+};
+
+export type LaunchWitnessResponse = LaunchWitnessResponses[keyof LaunchWitnessResponses];
+
+export type ReadWitnessRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: {
+        /**
+         * Ethos Run
+         */
+        ethos_run?: string | null;
+    };
+    url: '/api/witness/runs/{run_id}';
+};
+
+export type ReadWitnessRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadWitnessRunError = ReadWitnessRunErrors[keyof ReadWitnessRunErrors];
+
+export type ReadWitnessRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: WitnessRunOut;
+};
+
+export type ReadWitnessRunResponse = ReadWitnessRunResponses[keyof ReadWitnessRunResponses];
+
+export type CancelWitnessRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/witness/runs/{run_id}/cancel';
+};
+
+export type CancelWitnessRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CancelWitnessRunError = CancelWitnessRunErrors[keyof CancelWitnessRunErrors];
+
+export type CancelWitnessRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunOut;
+};
+
+export type CancelWitnessRunResponse = CancelWitnessRunResponses[keyof CancelWitnessRunResponses];
+
+export type StreamWitnessRunData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/witness/runs/{run_id}/events';
+};
+
+export type StreamWitnessRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type StreamWitnessRunError = StreamWitnessRunErrors[keyof StreamWitnessRunErrors];
+
+export type StreamWitnessRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ReadWitnessTranscriptData = {
+    body?: never;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+        /**
+         * Transcript Id
+         */
+        transcript_id: string;
+    };
+    query?: never;
+    url: '/api/witness/runs/{run_id}/transcripts/{transcript_id}';
+};
+
+export type ReadWitnessTranscriptErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadWitnessTranscriptError = ReadWitnessTranscriptErrors[keyof ReadWitnessTranscriptErrors];
+
+export type ReadWitnessTranscriptResponses = {
+    /**
+     * Successful Response
+     */
+    200: WitnessTranscriptOut;
+};
+
+export type ReadWitnessTranscriptResponse = ReadWitnessTranscriptResponses[keyof ReadWitnessTranscriptResponses];

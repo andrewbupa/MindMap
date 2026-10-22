@@ -8,11 +8,11 @@ import styles from "./shell.module.css";
 const AREAS = [
   { href: "/", label: "Home" },
   { href: "/agents", label: "Agents" },
-  { href: "/explore", label: "Explore" },
-  { href: "/measure", label: "Measure" },
-  { href: "/lens", label: "Lens" },
-  { href: "/review", label: "Review" },
-  { href: "/reports", label: "Reports" },
+  { href: "/inquiry", label: "Inquiry" },
+  { href: "/tally", label: "Tally" },
+  { href: "/ethos", label: "Ethos" },
+  { href: "/jury", label: "Jury" },
+  { href: "/record", label: "Record" },
   { href: "/settings", label: "Settings" },
 ] as const;
 

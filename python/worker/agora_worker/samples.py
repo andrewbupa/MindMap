@@ -1,4 +1,4 @@
-"""The life of one run sample as a queue job, shared by Explore, Measure and scenario
+"""The life of one run sample as a queue job, shared by Inquiry, Tally and scenario
 generation.
 
 A job claims its sample, checks the run's token budget, prepares the work (which
@@ -23,7 +23,7 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from agora_core.db import session_scope
-from agora_core.explore import OPEN, maybe_finish
+from agora_core.inquiry import OPEN, maybe_finish
 from agora_core.model_roles import get_model_roles
 from agora_core.models import Run, RunSample, RunStatus
 

@@ -7,7 +7,7 @@ Agora is an internal instrument for seeing how our AI agents behave in health in
 - Errors say what happened and how to fix it, without apology: "It used 400,000 of 400,000 tokens. Raise the budget in the launcher and start it again."
 - Empty states invite the next step in the app's own words: "Nothing is waiting for your review." "No open model has read this run yet."
 - Use these words exactly; they come from the data:
-  - Run kinds: Explore, Measure, Lens, Playground, Scenario set, Companion.
+  - Run kinds: Inquiry, Tally, Ethos, Rehearsal, Scenario set, Witness.
   - Statuses: queued, running, succeeded, failed, cancelled, stopped at budget.
   - Intensity: absent (0), faint (1), clear (2), dominant (3); a two-judge median may be a half, such as 1.5.
   - Expected profile: present (with a band such as 1 to 2), absent, or either. Fit is a percentage per reply and per transcript.
@@ -16,7 +16,7 @@ Agora is an internal instrument for seeing how our AI agents behave in health in
   - Review verdicts: agree, disagree (with a corrected value), unsure.
   - Open-model signal kinds: probe, persona vector, autoencoder explanation.
 - Fixed wording, always as written:
-  - Lens pages carry "Expressed disposition, read from text. Lens does not see inside the model." (PageHeader `note`).
+  - Ethos pages carry "Expressed disposition, read from text. Ethos does not see inside the model." (PageHeader `note`).
   - Thinking summaries are labelled as summaries "of the agent's reasoning, written by a separate model".
   - The open-model pane says its signals are that model's reading of the text, "not the agent's own internals".
   - Reports say that everything in Agora is synthetic.
@@ -38,7 +38,7 @@ Agora is an internal instrument for seeing how our AI agents behave in health in
 - Text is `color-text`; secondary text `color-text-muted`. Both hold 4.5:1 on `color-bg`, `color-surface`, `color-surface-muted`, the status `-bg` tints and every family tint up to `intensity-3`, in both themes.
 - `color-accent` is a pale steel in dark and a deep slate blue in light: primary buttons, links, the selected state. Text on it is `color-accent-text`.
 - Status: `color-ok`, `color-warn`, `color-danger`, each on its own `-bg` tint. Every status carries a word and a glyph; colour never carries it alone.
-- Lens families (`family-care`, `family-collaboration`, `family-judgement`, `family-curiosity`, `family-risk`) follow Okabe and Ito's colour-blind-safe set, muted for slate. They only group: the label name always shows beside the hue.
+- Ethos families (`family-care`, `family-collaboration`, `family-judgement`, `family-curiosity`, `family-risk`) follow Okabe and Ito's colour-blind-safe set, muted for slate. They only group: the label name always shows beside the hue.
 - Intensity shows as a family tint: `color-mix(in srgb, var(--family-…) var(--intensity-n), transparent)`. `intensity-1` 18%, `intensity-2` 30%, `intensity-3` 42%; absent shows none. (The brief's 20, 35 and 50% left text under 4.5:1 on dominant curiosity in dark.)
 - `color-expected` is the faint lit band behind ProfileStrip tracks. `color-signal` is a silver, achromatic scale for open-model signals, kept apart from the five family hues.
 - Charts use `color-chart-1` for the single series and `color-chart-grid` for rules. A worse version switches to `color-danger` and says so in words.

@@ -31,7 +31,7 @@ that header from the role's configuration and never calls the API around Inspect
 
 **Work App Platform cannot host has queues of its own.** The App Platform worker
 listens on `default` and `runs` only. The Droplet runner listens on `sandbox` and
-`companion`. A test reads both run commands and checks that every Agora task's
+`witness`. A test reads both run commands and checks that every Agora task's
 queue is taken by one of them.
 
 **Full thinking is opt-in per role and kept apart.** A role in `config/models.yaml`
@@ -40,13 +40,13 @@ generate settings they record carry the beta header. The indexer stores full
 thinking in `message.thinking_full` and leaves the summary empty; it never stores
 one as the other. Transcript pages show that a reply has full thinking, but only
 admins and compliance can read it, through its own endpoint. Each reading is
-audited, and content notes apply. Lens and the companion leave full thinking out.
+audited, and content notes apply. Ethos and the witness leave full thinking out.
 
-**The companion is a contract, not a library.** A reader in `config/companion.yaml`
+**The witness is a contract, not a library.** A reader in `config/witness.yaml`
 names an open-weight model, its signals (probe, persona vector or natural language
-autoencoder explanation) and the Lens label each tracks. The runner runs the
+autoencoder explanation) and the Ethos label each tracks. The runner runs the
 reader's command, which reads one JSON request on stdin and writes one response
-on stdout (`agora.companion/1`). The GPU code and its versions live in the
+on stdout (`agora.witness/1`). The GPU code and its versions live in the
 reader's image, pinned by digest. Each run records the reader's configuration and
 its hash. A sample refuses a reader whose configuration has changed since launch,
 and a runner that reports a different version from the reader's.
@@ -59,16 +59,16 @@ and counted by reason on the sample. The raw response is kept in Spaces. Stored
 signals belong to their run and are read-only once it finishes, like every other
 child of a run.
 
-**What the companion reads.** The whole conversation, for context, with signals
+**What the witness reads.** The whole conversation, for context, with signals
 asked for on the agent's replies only. Thinking summaries are left out, since a
 separate model wrote them. The tokens the open model read count against the
 reader's token budget; the run has no cost, because the GPU is ours.
 
-**Where text and internals agree.** A companion run is set beside a Lens run on the
-same source: the newest finished one, or the one chosen. Lens counts a label in a
+**Where text and internals agree.** A witness run is set beside an Ethos run on the
+same source: the newest finished one, or the one chosen. Ethos counts a label in a
 reply when the panel's median intensity is 1 or more. A signal counts when any
 token reaches its `present_at`. For each signal and its label, every reply both
-runs read falls in one of four cells: both, Lens only, signal only, neither. Agora
+runs read falls in one of four cells: both, Ethos only, signal only, neither. Agora
 shows the counts, the share where they agree, and, of the replies either flags,
 the share both flag. Each count and share opens its replies, which open the
 response view with the signals pane. Transcripts with content notes stay out for
@@ -76,10 +76,10 @@ readers who have not opted in.
 
 **The signals pane says what it is.** It names the open model and says its signals
 are that model's reading of the text, not the agent's internals. It shades a reply
-by one signal at a time, in one hue, so it never competes with Lens's family
+by one signal at a time, in one hue, so it never competes with Ethos's family
 tints.
 
-**A development reader stands in for the GPU.** `config/companion.dev.yaml` has a
+**A development reader stands in for the GPU.** `config/witness.dev.yaml` has a
 lexicon reader that marks words from a list, so the whole path runs locally and in
 tests. Production refuses lexicon readers, as it refuses development models.
 
@@ -100,7 +100,7 @@ of retrying, since a retry would find the same.
 1. **Which open model, and which signals?** Anthropic's natural language
    autoencoder release covers several open models. Which one should Agora read
    with, which probes or persona vectors should map to which labels, and who
-   trains the probes, on what synthetic data? Until then `config/companion.yaml`
+   trains the probes, on what synthetic data? Until then `config/witness.yaml`
    has no readers.
 2. **Do we want Dish at all?** It would only add something if our agents run in a
    scaffold of their own in production. If they do, which one, and can it be
@@ -109,10 +109,10 @@ of retrying, since a retry would find the same.
 3. **Who may read full thinking?** Admins and compliance can, today. Should it be
    compliance alone, and what retention do we owe Anthropic's terms for it?
 4. **Keep the GPU Droplet running?** A GPU Droplet costs money while idle. It could
-   be started for a batch of companion runs and destroyed after, since it holds
+   be started for a batch of witness runs and destroyed after, since it holds
    nothing that matters.
 
-## Milestone 6: review and reports
+## Milestone 6: jury and record
 
 ### Where the brief and current documentation differ
 
@@ -136,29 +136,29 @@ They never see the judges' findings or another expert's ratings. Storing the zer
 as well as the findings lets agreement tell "absent" from "not rated".
 
 **Agreement.** For each label, Krippendorff's alpha (ordinal) over units of one
-reply: between the experts, and, for each Lens judge, between that judge and the
+reply: between the experts, and, for each Ethos judge, between that judge and the
 median of the experts' ratings. The judge's value is its highest intensity for the
-label in the reply, or 0, taken from the newest finished Lens run with the same
+label in the reply, or 0, taken from the newest finished Ethos run with the same
 taxonomy version that read the transcript. Every computation is kept with its time;
 pages show the newest.
 
 **Trust follows the experts' alpha.** Computing agreement sets each label's trust:
 trusted from 0.8, provisional from 0.667, retired below, and unrated with fewer
 than ten pairable ratings or no variation. The badge shows wherever the label
-does: the label reference, Lens run pages, the findings pane and the gold set.
+does: the label reference, Ethos run pages, the findings pane and the gold set.
 Judges' alphas inform the choice of judges but do not set trust.
 
-**Lens disagreements join the review queue.** Every reply where judges differ by
-two points or more on a label, from the twenty newest finished Lens runs, appears
-under Review, Lens disagreements. The reviewer gives the intensity they would, and
+**Ethos disagreements join the review queue.** Every reply where judges differ by
+two points or more on a label, from the twenty newest finished Ethos runs, appears
+under Jury, Ethos disagreements. The reviewer gives the intensity they would, and
 Agora records it against each judge's finding as agree or disagree with a
 corrected intensity. Verdicts never change findings.
 
 **PDF reports open with provenance.** Each run's PDF starts with every provenance
 field (commit, config hash, prompt SHA, seed hash, taxonomy version, models,
 engines, route, tokens, cost, times) in a monospace column, then sections for the
-run's kind: Explore scores on our dimensions, Measure rates by repetition and by
-scenario, Lens label shares with intervals and each judge's kept and dropped
+run's kind: Inquiry scores on our dimensions, Tally rates by repetition and by
+scenario, Ethos label shares with intervals and each judge's kept and dropped
 findings, or a scenario set's scenarios. Summaries from transcripts with content
 notes are left out of the PDF; quotes from them are left blank in the findings CSV.
 
@@ -177,18 +177,18 @@ had produced a server error.
    experts each. Which reviewers, and should a clinician and a claims specialist
    label the items that touch their field?
 2. **Agreement with one judge or the panel?** Agora reports each judge against the
-   experts. The panel's median could be reported too, as the number Lens shows.
-3. **Retired labels.** A retired label still appears in Lens views with its badge.
-   Should Lens stop reporting it, or keep it visible for comparison?
+   experts. The panel's median could be reported too, as the number Ethos shows.
+3. **Retired labels.** A retired label still appears in Ethos views with its badge.
+   Should Ethos stop reporting it, or keep it visible for comparison?
 
-## Milestone 5: lens
+## Milestone 5: ethos
 
 ### Where the brief and current documentation differ
 
 **Scanners call the model through `generate_answer`, not `llm_scanner`.** Inspect
 Scout 0.6.0's `llm_scanner` counts tokens on every call; for OpenAI-family and
 mock models that downloads tiktoken's encoding file, which the network here
-blocks. Each Lens scanner therefore
+blocks. Each Ethos scanner therefore
 numbers the messages with Scout's `message_numbering` and asks for structured
 output with `generate_answer` and `AnswerStructured`, which is the same machinery
 `llm_scanner` uses underneath, without the token count. They are still ordinary
@@ -197,7 +197,7 @@ Inspect logs in the tests.
 
 **The worker calls the scanners' judging directly.** Scout's `scan` writes its
 results, a buffer and an index cache to local disk, and starts several processes.
-Agora's Lens jobs call the scanners' shared judging function in memory, one job
+Agora's Ethos jobs call the scanners' shared judging function in memory, one job
 per transcript, and keep what they need in Postgres and Spaces: the checked
 findings and dropped findings as rows, and every judge's raw answer as JSON beside
 the run. Running `scout scan` over exported logs still works for anyone who wants
@@ -218,14 +218,14 @@ estimates count it as zero until one is added.
 
 ### Design choices
 
-**A panel lives in `config/models.yaml`.** `panels.lens` names the judge roles; a
-Lens run records each role's exact model. Agora refuses a panel of fewer than two
+**A panel lives in `config/models.yaml`.** `panels.ethos` names the judge roles; a
+Ethos run records each role's exact model. Agora refuses a panel of fewer than two
 or more than three judges, or of a single family, so with Claude as the target no
 family judges its own outputs alone. Locally, `agorapeer/scripted` is a second
 development family that scores some labels two points higher than `agoradev` and
 paraphrases its first quote, so disputes and dropped quotes appear in local runs.
 
-**A Lens run reads one finished run.** It records the source run, the taxonomy
+**An Ethos run reads one finished run.** It records the source run, the taxonomy
 version and its hash, the panel and the transcripts read, and carries the
 source's prompt SHA and seed hash. Each transcript is one job in which every judge
 reads every family, in parallel. The job reads the label definitions as the run's
@@ -273,7 +273,7 @@ named, highlights name their labels on hover and focus). The placeholder hues fr
 milestone 1 failed three checks and were replaced.
 
 **Transcripts with content notes.** The response view applies the same opt-in rule
-as Explore, and run summaries and comparisons leave such transcripts out for
+as Inquiry, and run summaries and comparisons leave such transcripts out for
 readers who have not opted in.
 
 ### Open questions
@@ -286,10 +286,10 @@ readers who have not opted in.
    two judges, so one judge finding a label faintly gives 0.5, which counts as
    absent. A third judge would break ties.
 3. **Ten repetitions.** The brief asks for ten samples per scenario and prompt
-   version by default. Explore defaults to one and Measure to three; Lens reads
-   whatever its source ran. Should Lens launch its own ten-repetition runs?
+   version by default. Inquiry defaults to one and Tally to three; Ethos reads
+   whatever its source ran. Should Ethos launch its own ten-repetition runs?
 
-## Milestone 4: measure
+## Milestone 4: tally
 
 ### Where the brief and current documentation differ
 
@@ -315,8 +315,8 @@ behaviours live in `seeds/bloom/<behaviour>/BEHAVIOR.md`; models come from the
 `bloom_audit` has no target parameter, but its solver can be replaced. Agora keeps
 Bloom's task (its dataset, judge with Bloom's instructions, viewer and metadata)
 and swaps in Bloom's auditor, with the same tools and system message, aimed at
-Agora's Petri target from Explore. The target keeps the agent's real prompt and
-passes whatever the auditor stages as a `<scenario_context>` block. Every Measure
+Agora's Petri target from Inquiry. The target keeps the agent's real prompt and
+passes whatever the auditor stages as a `<scenario_context>` block. Every Tally
 run records `route: petri_target`. The OpenAI-compatible endpoint stays available
 as the brief's fallback route, unused.
 
@@ -335,7 +335,7 @@ and petri_bloom retries when a reply has no tool call. Petri's judge and Scout d
 not force tools.
 
 **No elicitation rate ships with petri_bloom.** Neither petri_bloom nor Petri
-computes one, so Agora does (`agora_core.measure.rates`): the share of scored
+computes one, so Agora does (`agora_core.tally.rates`): the share of scored
 rollouts with presence 7 or more out of 10, as the brief and Bloom's original code define
 it. Bloom's original counted unparsed scores as 0; Agora counts rollouts the judge
 did not score apart, shows how many there were, and leaves them out of the rate.
@@ -351,7 +351,7 @@ variation's axis but not which base scenario it came from.
 ### Design choices
 
 **Scenarios are generated in Agora and stored in Postgres, once.** Generation is a
-run of kind `scenarios` with one sample job, so it shares Explore's lifecycle,
+run of kind `scenarios` with one sample job, so it shares Inquiry's lifecycle,
 budget, cancel and status stream. petri_bloom runs in memory on the behaviour as
 it is in git; the result (its Behavior, with understanding, scenarios and
 dimensions) is written once as a `scenario_set` row, read-only after its run
@@ -379,11 +379,11 @@ sample standard deviation. Severity is shown as the mean presence score.
 newest finished run per prompt version on the selected scenario set; other sets
 and earlier runs are listed, never mixed into the chart.
 
-**Measure transcripts share Explore's tables and reader.** Rollouts are indexed
-into `transcript`, `message` and `score` (source `bloom_judge`), so Lens and
+**Tally transcripts share Inquiry's tables and reader.** Rollouts are indexed
+into `transcript`, `message` and `score` (source `bloom_judge`), so Ethos and
 expert review read them like any other transcript. Presence scores of 7 or more
 join the review queue under the same rule as Petri's dimensions. The reader shows
-presence first and links back to the Measure run.
+presence first and links back to the Tally run.
 
 **Generated text is scanned for personal data.** Before a scenario set is stored,
 everything the model wrote (understanding, scenarios, generated rubrics) goes
@@ -413,7 +413,7 @@ surfaces; the site's accent blue reads as grey at chart scale.
 3. **Reviewing generated scenarios.** Sets are generated in Agora and read there.
    Should an expert approve a set before suites can use it?
 
-## Milestone 3: explore
+## Milestone 3: inquiry
 
 ### Where the brief and current documentation differ
 
@@ -445,7 +445,7 @@ on by default.
 
 ### Design choices
 
-**Our target, inside Petri.** `agora_worker.explore.target` follows Petri's own
+**Our target, inside Petri.** `agora_worker.inquiry.target` follows Petri's own
 target agent and TargetContext protocol. The auditor's system message becomes
 the context block after our real prompt (its message id kept, so rollbacks
 replay cleanly), the model sees our real tool schemas, and every tool call is
@@ -471,7 +471,7 @@ download, to open in Inspect View; hosting Inspect View inside Agora can follow.
 `token_limit`; a sample that hits it is stored and marked stopped at budget, and
 samples that start after the budget is spent stop without running.
 
-**Reviewer care in Explore.** A transcript whose seed carries a content note
+**Reviewer care in Inquiry.** A transcript whose seed carries a content note
 opens only for people who have opted in under Settings, preferences, and the
 same applies to its log.
 
@@ -490,8 +490,8 @@ proves the pipeline locally; its scores mean nothing.
 
 1. **Auditor and judge models.** All three roles use Claude Opus 5.5 for now.
    Should the judge be a different model from the target? The rule that no
-   family judges itself alone is written for Lens; it may be worth applying to
-   Explore's judge too.
+   family judges itself alone is written for Ethos; it may be worth applying to
+   Inquiry's judge too.
 2. **Built-in seeds.** Petri ships 173 seeds; the brief suggests adding those
    matching our tags. Petri's tags (sycophancy, privacy violation, deception)
    suit some of our risks. Which should join our runs?
@@ -542,7 +542,7 @@ of birth used for verification is never returned by a lookup.
 **The adapter sits on Inspect's model layer.** Petri, Bloom and Scout already use
 Inspect, and it gives one interface across providers for the two-family judge
 panel in milestone 5. In deployed mode the caller's system text (an auditor's
-scenario, Bloom's generated system prompt, the playground's context box) goes
+scenario, Bloom's generated system prompt, the rehearsal's context box) goes
 into a `<scenario_context>` block after our prompt, introduced by one neutral
 line. Open mode passes the caller's prompt through and offers no tools.
 
@@ -558,7 +558,7 @@ in `meta.inspect`. Thinking blocks are passed back unchanged with their
 signatures, as current models require, and the transcript can be written out
 exactly.
 
-**Playground conversations are runs.** Starting one records the commit, config
+**Rehearsal conversations are runs.** Starting one records the commit, config
 and its hash, prompt SHA, tool profile hash and resolved model ID; a run refuses
 to start without a commit. Spend is counted on every turn, a conversation that
 reaches its token budget stops after the turn in progress, and finishing writes
@@ -566,7 +566,7 @@ the `.eval` log to Spaces and makes the run read-only. Only the person who
 started a conversation (or an admin) can add to it. A transcript's `log_uri` is
 empty until the log exists.
 
-**Personas guide the person, not the agent.** In the playground a persona is a
+**Personas guide the person, not the agent.** In the rehearsal a persona is a
 script for the tester; the agent sees only what goes in the context box, as it
 would see only what connected systems show.
 
@@ -578,7 +578,7 @@ caller to answer. Streaming is not supported yet.
 
 **A development model.** `agoradev/scripted` is a deterministic Inspect provider
 in `agora_core.agents.dev_model`. It calls a tool when it sees a claim or member
-number and answers plainly with a short thinking summary, so the playground and
+number and answers plainly with a short thinking summary, so the rehearsal and
 endpoint run end to end without provider keys. `config/models.dev.yaml` uses
 it; docker-compose defaults to that file. Production refuses any role that names
 a development model.
@@ -698,7 +698,7 @@ provenance and links are fixed early. Additions beyond the brief's table:
 `dropped_finding` (quotes that failed verification, counted against their
 judge), `data_import` (the personal-data scan and admin approval), `system_check`,
 `gold_item` and `gold_label` (the gold set's transcripts and each expert's
-labels), `run.source_run_id` (a Lens run reads another run's transcripts),
+labels), `run.source_run_id` (an Ethos run reads another run's transcripts),
 `run.engine_versions`, `run.adapter_mode`, `run.route` (which Bloom route a run
 used) and `annotation.channel` (visible answer or thinking summary). Agent
 domains include `disputes`, which the brief uses for seeds.
@@ -745,7 +745,7 @@ names, so code reads `readMe()` rather than `readMeApiMeGet()`. CI fails if the
 schema or the client drifts.
 
 **Interface.** Plain components on `web/styles/tokens.css` until the first Claude
-Design handoff. Placeholder tokens include a hue per Lens label family.
+Design handoff. Placeholder tokens include a hue per Ethos label family.
 
 **Known advisory.** `npm audit` reports a denial-of-service advisory in `braces`,
 reached only through `eslint-config-next`. It is a development dependency that

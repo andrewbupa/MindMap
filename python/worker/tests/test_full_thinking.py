@@ -12,7 +12,7 @@ from agora_core.config import REPO_ROOT
 from agora_core.model_roles import FULL_THINKING_BETA, get_model_roles, load_model_roles
 from agora_core.models import AuditEvent, Message, User
 from agora_core.registry import load_registry, sync_registry
-from testsupport.lens import explore_run
+from testsupport.ethos import inquiry_run
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 
 
@@ -36,7 +36,7 @@ async def test_full_thinking_is_stored_apart_and_read_only_by_oversight(
 ) -> None:
     await sync_registry(db, load_registry(REPO_ROOT), "abc123")
     await db.commit()
-    run = await explore_run(client, idp, db)
+    run = await inquiry_run(client, idp, db)
     assert run["config"]["thinking"] == {"target": "full"}
     assert run["config"]["generate"]["target"]["extra_headers"] == {
         "anthropic-beta": FULL_THINKING_BETA
@@ -46,12 +46,12 @@ async def test_full_thinking_is_stored_apart_and_read_only_by_oversight(
     ).scalar_one()
     assert reply.thinking_full == "No promises." and reply.thinking_summary is None
 
-    page = (await client.get(f"/api/explore/transcripts/{reply.transcript_id}")).json()
+    page = (await client.get(f"/api/inquiry/transcripts/{reply.transcript_id}")).json()
     shown = next(m for m in page["messages"] if m["id"] == str(reply.id))
     assert shown["has_full_thinking"] and shown["thinking_summary"] is None
     assert "thinking_full" not in shown
 
-    full = (await client.get(f"/api/explore/transcripts/{reply.transcript_id}/thinking")).json()
+    full = (await client.get(f"/api/inquiry/transcripts/{reply.transcript_id}/thinking")).json()
     assert [item["thinking_full"] for item in full] == ["No promises."]
     events = (
         (
@@ -69,5 +69,5 @@ async def test_full_thinking_is_stored_apart_and_read_only_by_oversight(
         update(User).where(User.email == "rev@example.test").values(roles=["reviewer"])
     )
     await db.commit()
-    refused = await client.get(f"/api/explore/transcripts/{reply.transcript_id}/thinking")
+    refused = await client.get(f"/api/inquiry/transcripts/{reply.transcript_id}/thinking")
     assert refused.status_code == 403

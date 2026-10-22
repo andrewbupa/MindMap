@@ -37,7 +37,7 @@ def model() -> Iterator[RecordingModel]:
 
 def with_budget(tokens: int) -> Iterator[None]:
     roles = load_model_roles(REPO_ROOT / "config" / "models.yaml")
-    small = ModelRoles(roles=roles.roles, prices=roles.prices, budgets={"playground": tokens})
+    small = ModelRoles(roles=roles.roles, prices=roles.prices, budgets={"rehearsal": tokens})
     app.dependency_overrides[get_model_roles] = lambda: small
     yield
     app.dependency_overrides.pop(get_model_roles, None)
@@ -82,7 +82,7 @@ async def test_people_without_a_role_cannot_read_agents(
     assert (await client.get("/api/agents")).status_code == 403
 
 
-async def test_playground_conversation_becomes_a_read_only_run(
+async def test_rehearsal_conversation_becomes_a_read_only_run(
     client: httpx.AsyncClient,
     idp: FakeOIDCClient,
     registry: None,
@@ -92,7 +92,7 @@ async def test_playground_conversation_becomes_a_read_only_run(
 ) -> None:
     await sign_in_as(client, idp, "admin@example.test")
     started = await client.post(
-        "/api/playground",
+        "/api/rehearsal",
         json={
             "agent": "claims-assistant",
             "version": "v2",
@@ -103,7 +103,7 @@ async def test_playground_conversation_becomes_a_read_only_run(
     assert started.status_code == 201, started.text
     body = started.json()
     run = body["run"]
-    assert run["status"] == "running" and run["kind"] == "playground"
+    assert run["status"] == "running" and run["kind"] == "rehearsal"
     assert run["git_commit"] == "0" * 40
     assert run["model_ids"] == {"target": "anthropic/claude-opus-5-5"}
     assert len(run["prompt_sha"]) == 64 and len(run["config_hash"]) == 64
@@ -116,7 +116,7 @@ async def test_playground_conversation_becomes_a_read_only_run(
         answer("Outpatient imaging is not included in your extras.", thinking="Check the claim."),
     ]
     said = await client.post(
-        f"/api/playground/{run['id']}/messages", json={"content": "Why was my MRI declined?"}
+        f"/api/rehearsal/{run['id']}/messages", json={"content": "Why was my MRI declined?"}
     )
     assert said.status_code == 200, said.text
     turn = said.json()
@@ -128,7 +128,7 @@ async def test_playground_conversation_becomes_a_read_only_run(
     assert sent[0].role == "system" and sent[-1].text == "Why was my MRI declined?"
     assert model.calls[0]["tools"][0].name == "verify_identity"
 
-    finished = await client.post(f"/api/playground/{run['id']}/finish")
+    finished = await client.post(f"/api/rehearsal/{run['id']}/finish")
     assert finished.status_code == 200
     assert finished.json()["run"]["status"] == "succeeded"
     log_uri = finished.json()["run"]["log_uri"]
@@ -140,14 +140,14 @@ async def test_playground_conversation_becomes_a_read_only_run(
     link = (await client.get(f"/api/runs/{run['id']}/log")).json()
     assert "X-Amz-Signature=" in link["url"]
 
-    again = await client.post(f"/api/playground/{run['id']}/messages", json={"content": "Hello?"})
+    again = await client.post(f"/api/rehearsal/{run['id']}/messages", json={"content": "Hello?"})
     assert again.status_code == 409
     with pytest.raises(DBAPIError, match="finished run"):
         await db.execute(update(Message).values(content="rewritten"))
     await db.rollback()
 
 
-async def test_playground_stops_cleanly_at_the_budget(
+async def test_rehearsal_stops_cleanly_at_the_budget(
     client: httpx.AsyncClient,
     idp: FakeOIDCClient,
     registry: None,
@@ -157,12 +157,12 @@ async def test_playground_stops_cleanly_at_the_budget(
 ) -> None:
     await sign_in_as(client, idp, "admin@example.test")
     run = (
-        await client.post("/api/playground", json={"agent": "health-companion", "version": "v1"})
+        await client.post("/api/rehearsal", json={"agent": "health-companion", "version": "v1"})
     ).json()["run"]
     assert run["token_budget"] == 1000
     model.outputs.append(answer("Here is some general information."))
     turn = (
-        await client.post(f"/api/playground/{run['id']}/messages", json={"content": "Hi"})
+        await client.post(f"/api/rehearsal/{run['id']}/messages", json={"content": "Hi"})
     ).json()
     assert turn["stopped_at_budget"] is True
     assert turn["run"]["status"] == "stopped_at_budget"
@@ -175,7 +175,7 @@ async def test_open_mode_uses_the_callers_system_prompt(
     await sign_in_as(client, idp, "admin@example.test")
     body = (
         await client.post(
-            "/api/playground",
+            "/api/rehearsal",
             json={
                 "agent": "claims-assistant",
                 "version": "v1",
@@ -197,7 +197,7 @@ async def test_only_the_starter_adds_to_a_conversation(
 ) -> None:
     await sign_in_as(client, idp, "admin@example.test")
     run = (
-        await client.post("/api/playground", json={"agent": "claims-assistant", "version": "v2"})
+        await client.post("/api/rehearsal", json={"agent": "claims-assistant", "version": "v2"})
     ).json()["run"]
     # A second author signs in on the same client.
     await sign_in_as(client, idp, "author@example.test")
@@ -205,7 +205,7 @@ async def test_only_the_starter_adds_to_a_conversation(
         update(User).where(User.email == "author@example.test").values(roles=["author"])
     )
     await db.commit()
-    response = await client.post(f"/api/playground/{run['id']}/messages", json={"content": "Hi"})
+    response = await client.post(f"/api/rehearsal/{run['id']}/messages", json={"content": "Hi"})
     assert response.status_code == 403
     assert response.json()["detail"].startswith("Only the person who started this")
 

@@ -1,7 +1,7 @@
 """Operational commands that run inside the Python image.
 
 python -m agora_worker.cli migrate          apply migrations, then sync the registry (pre-deploy)
-python -m agora_worker.cli sync-registry    load agents/, Bloom behaviours and the Lens taxonomy
+python -m agora_worker.cli sync-registry    load agents/, Bloom behaviours and the Ethos taxonomy
 python -m agora_worker.cli scan-synthetic   check agents/, seeds/ and config/ for personal data
 python -m agora_worker.cli ensure-bucket    create the storage bucket (local only)
 python -m agora_worker.cli seed-demo        all three, for local development
@@ -20,12 +20,12 @@ from botocore.exceptions import BotoCoreError, ClientError
 
 from agora_core.config import Environment, get_settings
 from agora_core.db import session_scope
-from agora_core.lens.taxonomy import load_lens, sync_lens
-from agora_core.measure.behaviours import sync_behaviours
+from agora_core.ethos.taxonomy import load_ethos, sync_ethos
 from agora_core.provenance import current_git_commit
 from agora_core.registry import load_registry, sync_registry
 from agora_core.storage import get_storage
 from agora_core.synthetic import scan_tree
+from agora_core.tally.behaviours import sync_behaviours
 
 log = logging.getLogger("agora_worker.cli")
 
@@ -60,10 +60,10 @@ async def sync() -> None:
     settings = get_settings()
     registry = load_registry(settings.repo_root)
     commit = current_git_commit(settings.repo_root, settings.git_commit)
-    lens = load_lens(settings.repo_root)
+    ethos = load_ethos(settings.repo_root)
     async with session_scope() as db:
         report = await sync_registry(db, registry, commit)
-        await sync_lens(db, lens, commit)
+        await sync_ethos(db, ethos, commit)
         behaviours = await sync_behaviours(db, settings.repo_root, commit)
     for label, items in (
         ("agents", report.agents_added),
@@ -76,7 +76,7 @@ async def sync() -> None:
             print(f"added {label}: {', '.join(items)}")
     if not report.changed and not behaviours:
         print("registry is up to date")
-    print(f"Lens taxonomy {lens.taxonomy.version} is loaded")
+    print(f"Ethos taxonomy {ethos.taxonomy.version} is loaded")
 
 
 def migrate() -> None:

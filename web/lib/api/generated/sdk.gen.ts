@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, ServerSentEventsResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddGoldItemsData, AddGoldItemsErrors, AddGoldItemsResponses, CancelCompanionRunData, CancelCompanionRunErrors, CancelCompanionRunResponses, CancelExploreRunData, CancelExploreRunErrors, CancelExploreRunResponses, CancelLensRunData, CancelLensRunErrors, CancelLensRunResponses, CancelMeasureRunData, CancelMeasureRunErrors, CancelMeasureRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CompareLensRunsData, CompareLensRunsErrors, CompareLensRunsResponses, ComputeGoldAgreementData, ComputeGoldAgreementErrors, ComputeGoldAgreementResponses, CreateGoldSetData, CreateGoldSetErrors, CreateGoldSetResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, ExportFindingsData, ExportFindingsErrors, ExportFindingsResponses, ExportReportData, ExportReportErrors, ExportReportResponses, ExportScoresData, ExportScoresErrors, ExportScoresResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, GenerateScenarioSetData, GenerateScenarioSetErrors, GenerateScenarioSetResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchCompanionData, LaunchCompanionErrors, LaunchCompanionResponses, LaunchExploreData, LaunchExploreErrors, LaunchExploreResponses, LaunchLensData, LaunchLensErrors, LaunchLensResponses, LaunchMeasureData, LaunchMeasureErrors, LaunchMeasureResponses, LensQueueData, LensQueueErrors, LensQueueResponses, ListAgentsData, ListAgentsResponses, ListBehavioursData, ListBehavioursResponses, ListChecksData, ListChecksResponses, ListCompanionRunsData, ListCompanionRunsErrors, ListCompanionRunsResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListExploreRunsData, ListExploreRunsResponses, ListGoldSetsData, ListGoldSetsResponses, ListLensRunsData, ListLensRunsResponses, ListLensSourcesData, ListLensSourcesResponses, ListMeasureRunsData, ListMeasureRunsErrors, ListMeasureRunsResponses, ListReadersData, ListReadersResponses, ListReportRunsData, ListReportRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadBehaviourData, ReadBehaviourErrors, ReadBehaviourResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadCompanionRunData, ReadCompanionRunErrors, ReadCompanionRunResponses, ReadCompanionTranscriptData, ReadCompanionTranscriptErrors, ReadCompanionTranscriptResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadExploreRunData, ReadExploreRunErrors, ReadExploreRunResponses, ReadFullThinkingData, ReadFullThinkingErrors, ReadFullThinkingResponses, ReadGoldItemData, ReadGoldItemErrors, ReadGoldItemResponses, ReadGoldSetData, ReadGoldSetErrors, ReadGoldSetResponses, ReadLensRunData, ReadLensRunErrors, ReadLensRunResponses, ReadLensTranscriptData, ReadLensTranscriptErrors, ReadLensTranscriptResponses, ReadMeasureRunData, ReadMeasureRunErrors, ReadMeasureRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadScenarioSetData, ReadScenarioSetErrors, ReadScenarioSetResponses, ReadTaxonomyData, ReadTaxonomyResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, RunProvenanceData, RunProvenanceErrors, RunProvenanceResponses, SaveGoldRatingsData, SaveGoldRatingsErrors, SaveGoldRatingsResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamCompanionRunData, StreamCompanionRunErrors, StreamCompanionRunResponses, StreamExploreRunData, StreamExploreRunErrors, StreamExploreRunResponses, StreamLensRunData, StreamLensRunErrors, StreamLensRunResponses, StreamMeasureRunData, StreamMeasureRunErrors, StreamMeasureRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
+import type { AddGoldItemsData, AddGoldItemsErrors, AddGoldItemsResponses, CancelEthosRunData, CancelEthosRunErrors, CancelEthosRunResponses, CancelInquiryRunData, CancelInquiryRunErrors, CancelInquiryRunResponses, CancelTallyRunData, CancelTallyRunErrors, CancelTallyRunResponses, CancelWitnessRunData, CancelWitnessRunErrors, CancelWitnessRunResponses, ChatCompletionsData, ChatCompletionsErrors, ChatCompletionsResponses, CheckObjectData, CheckObjectErrors, CheckObjectResponses, CompareEthosRunsData, CompareEthosRunsErrors, CompareEthosRunsResponses, ComputeGoldAgreementData, ComputeGoldAgreementErrors, ComputeGoldAgreementResponses, CreateGoldSetData, CreateGoldSetErrors, CreateGoldSetResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, CreateTokenData, CreateTokenErrors, CreateTokenResponses, DiffVersionsData, DiffVersionsErrors, DiffVersionsResponses, EthosQueueData, EthosQueueErrors, EthosQueueResponses, ExportFindingsData, ExportFindingsErrors, ExportFindingsResponses, ExportReportData, ExportReportErrors, ExportReportResponses, ExportScoresData, ExportScoresErrors, ExportScoresResponses, FinishConversationData, FinishConversationErrors, FinishConversationResponses, GenerateScenarioSetData, GenerateScenarioSetErrors, GenerateScenarioSetResponses, HealthData, HealthResponses, LaunchCheckData, LaunchCheckResponses, LaunchEthosData, LaunchEthosErrors, LaunchEthosResponses, LaunchInquiryData, LaunchInquiryErrors, LaunchInquiryResponses, LaunchTallyData, LaunchTallyErrors, LaunchTallyResponses, LaunchWitnessData, LaunchWitnessErrors, LaunchWitnessResponses, ListAgentsData, ListAgentsResponses, ListBehavioursData, ListBehavioursResponses, ListChecksData, ListChecksResponses, ListConversationsData, ListConversationsErrors, ListConversationsResponses, ListDimensionsData, ListDimensionsResponses, ListEthosRunsData, ListEthosRunsResponses, ListEthosSourcesData, ListEthosSourcesResponses, ListEventsData, ListEventsErrors, ListEventsResponses, ListGoldSetsData, ListGoldSetsResponses, ListInquiryRunsData, ListInquiryRunsResponses, ListReadersData, ListReadersResponses, ListReportRunsData, ListReportRunsResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListSeedsData, ListSeedsErrors, ListSeedsResponses, ListTallyRunsData, ListTallyRunsErrors, ListTallyRunsResponses, ListTokensData, ListTokensResponses, ListUsersData, ListUsersResponses, ListWitnessRunsData, ListWitnessRunsErrors, ListWitnessRunsResponses, LogoutData, LogoutResponses, ModelRolesData, ModelRolesResponses, ReadAgentData, ReadAgentErrors, ReadAgentResponses, ReadBehaviourData, ReadBehaviourErrors, ReadBehaviourResponses, ReadCheckData, ReadCheckErrors, ReadCheckResponses, ReadConversationData, ReadConversationErrors, ReadConversationResponses, ReadEthosRunData, ReadEthosRunErrors, ReadEthosRunResponses, ReadEthosTranscriptData, ReadEthosTranscriptErrors, ReadEthosTranscriptResponses, ReadFullThinkingData, ReadFullThinkingErrors, ReadFullThinkingResponses, ReadGoldItemData, ReadGoldItemErrors, ReadGoldItemResponses, ReadGoldSetData, ReadGoldSetErrors, ReadGoldSetResponses, ReadInquiryRunData, ReadInquiryRunErrors, ReadInquiryRunResponses, ReadMeData, ReadMeResponses, ReadRunData, ReadRunErrors, ReadRunResponses, ReadScenarioSetData, ReadScenarioSetErrors, ReadScenarioSetResponses, ReadTallyRunData, ReadTallyRunErrors, ReadTallyRunResponses, ReadTaxonomyData, ReadTaxonomyResponses, ReadTranscriptData, ReadTranscriptErrors, ReadTranscriptResponses, ReadVersionData, ReadVersionErrors, ReadVersionResponses, ReadWitnessRunData, ReadWitnessRunErrors, ReadWitnessRunResponses, ReadWitnessTranscriptData, ReadWitnessTranscriptErrors, ReadWitnessTranscriptResponses, ReadyData, ReadyResponses, RevokeTokenData, RevokeTokenErrors, RevokeTokenResponses, RunLogData, RunLogErrors, RunLogResponses, RunProvenanceData, RunProvenanceErrors, RunProvenanceResponses, SaveGoldRatingsData, SaveGoldRatingsErrors, SaveGoldRatingsResponses, SayData, SayErrors, SayResponses, ScoreQueueData, ScoreQueueErrors, ScoreQueueResponses, StartConversationData, StartConversationErrors, StartConversationResponses, StreamCheckData, StreamCheckErrors, StreamCheckResponses, StreamEthosRunData, StreamEthosRunErrors, StreamEthosRunResponses, StreamInquiryRunData, StreamInquiryRunErrors, StreamInquiryRunResponses, StreamTallyRunData, StreamTallyRunErrors, StreamTallyRunResponses, StreamWitnessRunData, StreamWitnessRunErrors, StreamWitnessRunResponses, TranscriptLogData, TranscriptLogErrors, TranscriptLogResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses, UpdateUserData, UpdateUserErrors, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -49,20 +49,22 @@ export const listEvents = <ThrowOnError extends boolean = false>(options?: Optio
 export const logout = <ThrowOnError extends boolean = false>(options?: Options<LogoutData, ThrowOnError>): RequestResult<LogoutResponses, unknown, ThrowOnError> => (options?.client ?? client).post<LogoutResponses, unknown, ThrowOnError>({ url: '/api/auth/logout', ...options });
 
 /**
- * List Readers
+ * Compare Ethos Runs
+ *
+ * Prompt A beside prompt B, on the scenarios both runs read.
  */
-export const listReaders = <ThrowOnError extends boolean = false>(options?: Options<ListReadersData, ThrowOnError>): RequestResult<ListReadersResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListReadersResponses, unknown, ThrowOnError>({ url: '/api/companion/readers', ...options });
+export const compareEthosRuns = <ThrowOnError extends boolean = false>(options: Options<CompareEthosRunsData, ThrowOnError>): RequestResult<CompareEthosRunsResponses, CompareEthosRunsErrors, ThrowOnError> => (options.client ?? client).get<CompareEthosRunsResponses, CompareEthosRunsErrors, ThrowOnError>({ url: '/api/ethos/compare', ...options });
 
 /**
- * List Companion Runs
+ * List Ethos Runs
  */
-export const listCompanionRuns = <ThrowOnError extends boolean = false>(options?: Options<ListCompanionRunsData, ThrowOnError>): RequestResult<ListCompanionRunsResponses, ListCompanionRunsErrors, ThrowOnError> => (options?.client ?? client).get<ListCompanionRunsResponses, ListCompanionRunsErrors, ThrowOnError>({ url: '/api/companion/runs', ...options });
+export const listEthosRuns = <ThrowOnError extends boolean = false>(options?: Options<ListEthosRunsData, ThrowOnError>): RequestResult<ListEthosRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListEthosRunsResponses, unknown, ThrowOnError>({ url: '/api/ethos/runs', ...options });
 
 /**
- * Launch Companion
+ * Launch Ethos
  */
-export const launchCompanion = <ThrowOnError extends boolean = false>(options: Options<LaunchCompanionData, ThrowOnError>): RequestResult<LaunchCompanionResponses, LaunchCompanionErrors, ThrowOnError> => (options.client ?? client).post<LaunchCompanionResponses, LaunchCompanionErrors, ThrowOnError>({
-    url: '/api/companion/runs',
+export const launchEthos = <ThrowOnError extends boolean = false>(options: Options<LaunchEthosData, ThrowOnError>): RequestResult<LaunchEthosResponses, LaunchEthosErrors, ThrowOnError> => (options.client ?? client).post<LaunchEthosResponses, LaunchEthosErrors, ThrowOnError>({
+    url: '/api/ethos/runs',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -71,93 +73,38 @@ export const launchCompanion = <ThrowOnError extends boolean = false>(options: O
 });
 
 /**
- * Read Companion Run
+ * Read Ethos Run
+ */
+export const readEthosRun = <ThrowOnError extends boolean = false>(options: Options<ReadEthosRunData, ThrowOnError>): RequestResult<ReadEthosRunResponses, ReadEthosRunErrors, ThrowOnError> => (options.client ?? client).get<ReadEthosRunResponses, ReadEthosRunErrors, ThrowOnError>({ url: '/api/ethos/runs/{run_id}', ...options });
+
+/**
+ * Cancel Ethos Run
+ */
+export const cancelEthosRun = <ThrowOnError extends boolean = false>(options: Options<CancelEthosRunData, ThrowOnError>): RequestResult<CancelEthosRunResponses, CancelEthosRunErrors, ThrowOnError> => (options.client ?? client).post<CancelEthosRunResponses, CancelEthosRunErrors, ThrowOnError>({ url: '/api/ethos/runs/{run_id}/cancel', ...options });
+
+/**
+ * Stream Ethos Run
+ */
+export const streamEthosRun = <ThrowOnError extends boolean = false>(options: Options<StreamEthosRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamEthosRunResponses>> => (options.client ?? client).sse.get<StreamEthosRunResponses, StreamEthosRunErrors, ThrowOnError>({ url: '/api/ethos/runs/{run_id}/events', ...options });
+
+/**
+ * Read Ethos Transcript
+ */
+export const readEthosTranscript = <ThrowOnError extends boolean = false>(options: Options<ReadEthosTranscriptData, ThrowOnError>): RequestResult<ReadEthosTranscriptResponses, ReadEthosTranscriptErrors, ThrowOnError> => (options.client ?? client).get<ReadEthosTranscriptResponses, ReadEthosTranscriptErrors, ThrowOnError>({ url: '/api/ethos/runs/{run_id}/transcripts/{transcript_id}', ...options });
+
+/**
+ * List Ethos Sources
  *
- * The run, and its signals beside a Lens run on the same source: the one asked
- * for, or the latest finished one.
+ * Finished runs whose transcripts Ethos can read.
  */
-export const readCompanionRun = <ThrowOnError extends boolean = false>(options: Options<ReadCompanionRunData, ThrowOnError>): RequestResult<ReadCompanionRunResponses, ReadCompanionRunErrors, ThrowOnError> => (options.client ?? client).get<ReadCompanionRunResponses, ReadCompanionRunErrors, ThrowOnError>({ url: '/api/companion/runs/{run_id}', ...options });
+export const listEthosSources = <ThrowOnError extends boolean = false>(options?: Options<ListEthosSourcesData, ThrowOnError>): RequestResult<ListEthosSourcesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListEthosSourcesResponses, unknown, ThrowOnError>({ url: '/api/ethos/sources', ...options });
 
 /**
- * Cancel Companion Run
- */
-export const cancelCompanionRun = <ThrowOnError extends boolean = false>(options: Options<CancelCompanionRunData, ThrowOnError>): RequestResult<CancelCompanionRunResponses, CancelCompanionRunErrors, ThrowOnError> => (options.client ?? client).post<CancelCompanionRunResponses, CancelCompanionRunErrors, ThrowOnError>({ url: '/api/companion/runs/{run_id}/cancel', ...options });
-
-/**
- * Stream Companion Run
- */
-export const streamCompanionRun = <ThrowOnError extends boolean = false>(options: Options<StreamCompanionRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamCompanionRunResponses>> => (options.client ?? client).sse.get<StreamCompanionRunResponses, StreamCompanionRunErrors, ThrowOnError>({ url: '/api/companion/runs/{run_id}/events', ...options });
-
-/**
- * Read Companion Transcript
- */
-export const readCompanionTranscript = <ThrowOnError extends boolean = false>(options: Options<ReadCompanionTranscriptData, ThrowOnError>): RequestResult<ReadCompanionTranscriptResponses, ReadCompanionTranscriptErrors, ThrowOnError> => (options.client ?? client).get<ReadCompanionTranscriptResponses, ReadCompanionTranscriptErrors, ThrowOnError>({ url: '/api/companion/runs/{run_id}/transcripts/{transcript_id}', ...options });
-
-/**
- * List Dimensions
+ * Read Taxonomy
  *
- * Our dimensions first, then Petri's built-in ones.
+ * The taxonomy in git, with each label's trust status as stored.
  */
-export const listDimensions = <ThrowOnError extends boolean = false>(options?: Options<ListDimensionsData, ThrowOnError>): RequestResult<ListDimensionsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListDimensionsResponses, unknown, ThrowOnError>({ url: '/api/explore/dimensions', ...options });
-
-/**
- * List Explore Runs
- */
-export const listExploreRuns = <ThrowOnError extends boolean = false>(options?: Options<ListExploreRunsData, ThrowOnError>): RequestResult<ListExploreRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListExploreRunsResponses, unknown, ThrowOnError>({ url: '/api/explore/runs', ...options });
-
-/**
- * Launch Explore
- */
-export const launchExplore = <ThrowOnError extends boolean = false>(options: Options<LaunchExploreData, ThrowOnError>): RequestResult<LaunchExploreResponses, LaunchExploreErrors, ThrowOnError> => (options.client ?? client).post<LaunchExploreResponses, LaunchExploreErrors, ThrowOnError>({
-    url: '/api/explore/runs',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Read Explore Run
- */
-export const readExploreRun = <ThrowOnError extends boolean = false>(options: Options<ReadExploreRunData, ThrowOnError>): RequestResult<ReadExploreRunResponses, ReadExploreRunErrors, ThrowOnError> => (options.client ?? client).get<ReadExploreRunResponses, ReadExploreRunErrors, ThrowOnError>({ url: '/api/explore/runs/{run_id}', ...options });
-
-/**
- * Cancel Explore Run
- */
-export const cancelExploreRun = <ThrowOnError extends boolean = false>(options: Options<CancelExploreRunData, ThrowOnError>): RequestResult<CancelExploreRunResponses, CancelExploreRunErrors, ThrowOnError> => (options.client ?? client).post<CancelExploreRunResponses, CancelExploreRunErrors, ThrowOnError>({ url: '/api/explore/runs/{run_id}/cancel', ...options });
-
-/**
- * Stream Explore Run
- *
- * Sample counts as they change. Clients reconnect after the stream ends, or poll.
- */
-export const streamExploreRun = <ThrowOnError extends boolean = false>(options: Options<StreamExploreRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamExploreRunResponses>> => (options.client ?? client).sse.get<StreamExploreRunResponses, StreamExploreRunErrors, ThrowOnError>({ url: '/api/explore/runs/{run_id}/events', ...options });
-
-/**
- * List Seeds
- */
-export const listSeeds = <ThrowOnError extends boolean = false>(options?: Options<ListSeedsData, ThrowOnError>): RequestResult<ListSeedsResponses, ListSeedsErrors, ThrowOnError> => (options?.client ?? client).get<ListSeedsResponses, ListSeedsErrors, ThrowOnError>({ url: '/api/explore/seeds', ...options });
-
-/**
- * Read Transcript
- */
-export const readTranscript = <ThrowOnError extends boolean = false>(options: Options<ReadTranscriptData, ThrowOnError>): RequestResult<ReadTranscriptResponses, ReadTranscriptErrors, ThrowOnError> => (options.client ?? client).get<ReadTranscriptResponses, ReadTranscriptErrors, ThrowOnError>({ url: '/api/explore/transcripts/{transcript_id}', ...options });
-
-/**
- * Transcript Log
- *
- * A short-lived link to the sample's Inspect log, for opening in Inspect View.
- */
-export const transcriptLog = <ThrowOnError extends boolean = false>(options: Options<TranscriptLogData, ThrowOnError>): RequestResult<TranscriptLogResponses, TranscriptLogErrors, ThrowOnError> => (options.client ?? client).get<TranscriptLogResponses, TranscriptLogErrors, ThrowOnError>({ url: '/api/explore/transcripts/{transcript_id}/log', ...options });
-
-/**
- * Read Full Thinking
- *
- * Full thinking, where Anthropic granted it: for admins and compliance only, and
- * every read is audited. Lens never reads it.
- */
-export const readFullThinking = <ThrowOnError extends boolean = false>(options: Options<ReadFullThinkingData, ThrowOnError>): RequestResult<ReadFullThinkingResponses, ReadFullThinkingErrors, ThrowOnError> => (options.client ?? client).get<ReadFullThinkingResponses, ReadFullThinkingErrors, ThrowOnError>({ url: '/api/explore/transcripts/{transcript_id}/thinking', ...options });
+export const readTaxonomy = <ThrowOnError extends boolean = false>(options?: Options<ReadTaxonomyData, ThrowOnError>): RequestResult<ReadTaxonomyResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ReadTaxonomyResponses, unknown, ThrowOnError>({ url: '/api/ethos/taxonomy', ...options });
 
 /**
  * Health
@@ -174,22 +121,22 @@ export const health = <ThrowOnError extends boolean = false>(options?: Options<H
 export const ready = <ThrowOnError extends boolean = false>(options?: Options<ReadyData, ThrowOnError>): RequestResult<ReadyResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ReadyResponses, unknown, ThrowOnError>({ url: '/api/health/ready', ...options });
 
 /**
- * Compare Lens Runs
+ * List Dimensions
  *
- * Prompt A beside prompt B, on the scenarios both runs read.
+ * Our dimensions first, then Petri's built-in ones.
  */
-export const compareLensRuns = <ThrowOnError extends boolean = false>(options: Options<CompareLensRunsData, ThrowOnError>): RequestResult<CompareLensRunsResponses, CompareLensRunsErrors, ThrowOnError> => (options.client ?? client).get<CompareLensRunsResponses, CompareLensRunsErrors, ThrowOnError>({ url: '/api/lens/compare', ...options });
+export const listDimensions = <ThrowOnError extends boolean = false>(options?: Options<ListDimensionsData, ThrowOnError>): RequestResult<ListDimensionsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListDimensionsResponses, unknown, ThrowOnError>({ url: '/api/inquiry/dimensions', ...options });
 
 /**
- * List Lens Runs
+ * List Inquiry Runs
  */
-export const listLensRuns = <ThrowOnError extends boolean = false>(options?: Options<ListLensRunsData, ThrowOnError>): RequestResult<ListLensRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListLensRunsResponses, unknown, ThrowOnError>({ url: '/api/lens/runs', ...options });
+export const listInquiryRuns = <ThrowOnError extends boolean = false>(options?: Options<ListInquiryRunsData, ThrowOnError>): RequestResult<ListInquiryRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListInquiryRunsResponses, unknown, ThrowOnError>({ url: '/api/inquiry/runs', ...options });
 
 /**
- * Launch Lens
+ * Launch Inquiry
  */
-export const launchLens = <ThrowOnError extends boolean = false>(options: Options<LaunchLensData, ThrowOnError>): RequestResult<LaunchLensResponses, LaunchLensErrors, ThrowOnError> => (options.client ?? client).post<LaunchLensResponses, LaunchLensErrors, ThrowOnError>({
-    url: '/api/lens/runs',
+export const launchInquiry = <ThrowOnError extends boolean = false>(options: Options<LaunchInquiryData, ThrowOnError>): RequestResult<LaunchInquiryResponses, LaunchInquiryErrors, ThrowOnError> => (options.client ?? client).post<LaunchInquiryResponses, LaunchInquiryErrors, ThrowOnError>({
+    url: '/api/inquiry/runs',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -198,38 +145,132 @@ export const launchLens = <ThrowOnError extends boolean = false>(options: Option
 });
 
 /**
- * Read Lens Run
+ * Read Inquiry Run
  */
-export const readLensRun = <ThrowOnError extends boolean = false>(options: Options<ReadLensRunData, ThrowOnError>): RequestResult<ReadLensRunResponses, ReadLensRunErrors, ThrowOnError> => (options.client ?? client).get<ReadLensRunResponses, ReadLensRunErrors, ThrowOnError>({ url: '/api/lens/runs/{run_id}', ...options });
+export const readInquiryRun = <ThrowOnError extends boolean = false>(options: Options<ReadInquiryRunData, ThrowOnError>): RequestResult<ReadInquiryRunResponses, ReadInquiryRunErrors, ThrowOnError> => (options.client ?? client).get<ReadInquiryRunResponses, ReadInquiryRunErrors, ThrowOnError>({ url: '/api/inquiry/runs/{run_id}', ...options });
 
 /**
- * Cancel Lens Run
+ * Cancel Inquiry Run
  */
-export const cancelLensRun = <ThrowOnError extends boolean = false>(options: Options<CancelLensRunData, ThrowOnError>): RequestResult<CancelLensRunResponses, CancelLensRunErrors, ThrowOnError> => (options.client ?? client).post<CancelLensRunResponses, CancelLensRunErrors, ThrowOnError>({ url: '/api/lens/runs/{run_id}/cancel', ...options });
+export const cancelInquiryRun = <ThrowOnError extends boolean = false>(options: Options<CancelInquiryRunData, ThrowOnError>): RequestResult<CancelInquiryRunResponses, CancelInquiryRunErrors, ThrowOnError> => (options.client ?? client).post<CancelInquiryRunResponses, CancelInquiryRunErrors, ThrowOnError>({ url: '/api/inquiry/runs/{run_id}/cancel', ...options });
 
 /**
- * Stream Lens Run
- */
-export const streamLensRun = <ThrowOnError extends boolean = false>(options: Options<StreamLensRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamLensRunResponses>> => (options.client ?? client).sse.get<StreamLensRunResponses, StreamLensRunErrors, ThrowOnError>({ url: '/api/lens/runs/{run_id}/events', ...options });
-
-/**
- * Read Lens Transcript
- */
-export const readLensTranscript = <ThrowOnError extends boolean = false>(options: Options<ReadLensTranscriptData, ThrowOnError>): RequestResult<ReadLensTranscriptResponses, ReadLensTranscriptErrors, ThrowOnError> => (options.client ?? client).get<ReadLensTranscriptResponses, ReadLensTranscriptErrors, ThrowOnError>({ url: '/api/lens/runs/{run_id}/transcripts/{transcript_id}', ...options });
-
-/**
- * List Lens Sources
+ * Stream Inquiry Run
  *
- * Finished runs whose transcripts Lens can read.
+ * Sample counts as they change. Clients reconnect after the stream ends, or poll.
  */
-export const listLensSources = <ThrowOnError extends boolean = false>(options?: Options<ListLensSourcesData, ThrowOnError>): RequestResult<ListLensSourcesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListLensSourcesResponses, unknown, ThrowOnError>({ url: '/api/lens/sources', ...options });
+export const streamInquiryRun = <ThrowOnError extends boolean = false>(options: Options<StreamInquiryRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamInquiryRunResponses>> => (options.client ?? client).sse.get<StreamInquiryRunResponses, StreamInquiryRunErrors, ThrowOnError>({ url: '/api/inquiry/runs/{run_id}/events', ...options });
 
 /**
- * Read Taxonomy
- *
- * The taxonomy in git, with each label's trust status as stored.
+ * List Seeds
  */
-export const readTaxonomy = <ThrowOnError extends boolean = false>(options?: Options<ReadTaxonomyData, ThrowOnError>): RequestResult<ReadTaxonomyResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ReadTaxonomyResponses, unknown, ThrowOnError>({ url: '/api/lens/taxonomy', ...options });
+export const listSeeds = <ThrowOnError extends boolean = false>(options?: Options<ListSeedsData, ThrowOnError>): RequestResult<ListSeedsResponses, ListSeedsErrors, ThrowOnError> => (options?.client ?? client).get<ListSeedsResponses, ListSeedsErrors, ThrowOnError>({ url: '/api/inquiry/seeds', ...options });
+
+/**
+ * Read Transcript
+ */
+export const readTranscript = <ThrowOnError extends boolean = false>(options: Options<ReadTranscriptData, ThrowOnError>): RequestResult<ReadTranscriptResponses, ReadTranscriptErrors, ThrowOnError> => (options.client ?? client).get<ReadTranscriptResponses, ReadTranscriptErrors, ThrowOnError>({ url: '/api/inquiry/transcripts/{transcript_id}', ...options });
+
+/**
+ * Transcript Log
+ *
+ * A short-lived link to the sample's Inspect log, for opening in Inspect View.
+ */
+export const transcriptLog = <ThrowOnError extends boolean = false>(options: Options<TranscriptLogData, ThrowOnError>): RequestResult<TranscriptLogResponses, TranscriptLogErrors, ThrowOnError> => (options.client ?? client).get<TranscriptLogResponses, TranscriptLogErrors, ThrowOnError>({ url: '/api/inquiry/transcripts/{transcript_id}/log', ...options });
+
+/**
+ * Read Full Thinking
+ *
+ * Full thinking, where Anthropic granted it: for admins and compliance only, and
+ * every read is audited. Ethos never reads it.
+ */
+export const readFullThinking = <ThrowOnError extends boolean = false>(options: Options<ReadFullThinkingData, ThrowOnError>): RequestResult<ReadFullThinkingResponses, ReadFullThinkingErrors, ThrowOnError> => (options.client ?? client).get<ReadFullThinkingResponses, ReadFullThinkingErrors, ThrowOnError>({ url: '/api/inquiry/transcripts/{transcript_id}/thinking', ...options });
+
+/**
+ * Create Review
+ */
+export const createReview = <ThrowOnError extends boolean = false>(options: Options<CreateReviewData, ThrowOnError>): RequestResult<CreateReviewResponses, CreateReviewErrors, ThrowOnError> => (options.client ?? client).post<CreateReviewResponses, CreateReviewErrors, ThrowOnError>({
+    url: '/api/jury',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Ethos Queue
+ *
+ * Replies where Ethos judges differ by two points or more on a label, newest runs
+ * first. A verdict is recorded on a judge's finding and never changes it.
+ */
+export const ethosQueue = <ThrowOnError extends boolean = false>(options?: Options<EthosQueueData, ThrowOnError>): RequestResult<EthosQueueResponses, EthosQueueErrors, ThrowOnError> => (options?.client ?? client).get<EthosQueueResponses, EthosQueueErrors, ThrowOnError>({ url: '/api/jury/ethos-queue', ...options });
+
+/**
+ * List Gold Sets
+ */
+export const listGoldSets = <ThrowOnError extends boolean = false>(options?: Options<ListGoldSetsData, ThrowOnError>): RequestResult<ListGoldSetsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListGoldSetsResponses, unknown, ThrowOnError>({ url: '/api/jury/gold-sets', ...options });
+
+/**
+ * Create Gold Set
+ */
+export const createGoldSet = <ThrowOnError extends boolean = false>(options: Options<CreateGoldSetData, ThrowOnError>): RequestResult<CreateGoldSetResponses, CreateGoldSetErrors, ThrowOnError> => (options.client ?? client).post<CreateGoldSetResponses, CreateGoldSetErrors, ThrowOnError>({
+    url: '/api/jury/gold-sets',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Gold Set
+ */
+export const readGoldSet = <ThrowOnError extends boolean = false>(options: Options<ReadGoldSetData, ThrowOnError>): RequestResult<ReadGoldSetResponses, ReadGoldSetErrors, ThrowOnError> => (options.client ?? client).get<ReadGoldSetResponses, ReadGoldSetErrors, ThrowOnError>({ url: '/api/jury/gold-sets/{set_id}', ...options });
+
+/**
+ * Compute Gold Agreement
+ */
+export const computeGoldAgreement = <ThrowOnError extends boolean = false>(options: Options<ComputeGoldAgreementData, ThrowOnError>): RequestResult<ComputeGoldAgreementResponses, ComputeGoldAgreementErrors, ThrowOnError> => (options.client ?? client).post<ComputeGoldAgreementResponses, ComputeGoldAgreementErrors, ThrowOnError>({ url: '/api/jury/gold-sets/{set_id}/agreement', ...options });
+
+/**
+ * Add Gold Items
+ */
+export const addGoldItems = <ThrowOnError extends boolean = false>(options: Options<AddGoldItemsData, ThrowOnError>): RequestResult<AddGoldItemsResponses, AddGoldItemsErrors, ThrowOnError> => (options.client ?? client).post<AddGoldItemsResponses, AddGoldItemsErrors, ThrowOnError>({
+    url: '/api/jury/gold-sets/{set_id}/items',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Gold Item
+ */
+export const readGoldItem = <ThrowOnError extends boolean = false>(options: Options<ReadGoldItemData, ThrowOnError>): RequestResult<ReadGoldItemResponses, ReadGoldItemErrors, ThrowOnError> => (options.client ?? client).get<ReadGoldItemResponses, ReadGoldItemErrors, ThrowOnError>({ url: '/api/jury/gold-sets/{set_id}/items/{item_id}', ...options });
+
+/**
+ * Save Gold Ratings
+ */
+export const saveGoldRatings = <ThrowOnError extends boolean = false>(options: Options<SaveGoldRatingsData, ThrowOnError>): RequestResult<SaveGoldRatingsResponses, SaveGoldRatingsErrors, ThrowOnError> => (options.client ?? client).put<SaveGoldRatingsResponses, SaveGoldRatingsErrors, ThrowOnError>({
+    url: '/api/jury/gold-sets/{set_id}/items/{item_id}/ratings',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Score Queue
+ */
+export const scoreQueue = <ThrowOnError extends boolean = false>(options?: Options<ScoreQueueData, ThrowOnError>): RequestResult<ScoreQueueResponses, ScoreQueueErrors, ThrowOnError> => (options?.client ?? client).get<ScoreQueueResponses, ScoreQueueErrors, ThrowOnError>({ url: '/api/jury/queue', ...options });
+
+/**
+ * List Reviews
+ */
+export const listReviews = <ThrowOnError extends boolean = false>(options?: Options<ListReviewsData, ThrowOnError>): RequestResult<ListReviewsResponses, ListReviewsErrors, ThrowOnError> => (options?.client ?? client).get<ListReviewsResponses, ListReviewsErrors, ThrowOnError>({ url: '/api/jury/reviews', ...options });
 
 /**
  * Read Me
@@ -249,71 +290,6 @@ export const updateMe = <ThrowOnError extends boolean = false>(options: Options<
 });
 
 /**
- * List Behaviours
- */
-export const listBehaviours = <ThrowOnError extends boolean = false>(options?: Options<ListBehavioursData, ThrowOnError>): RequestResult<ListBehavioursResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListBehavioursResponses, unknown, ThrowOnError>({ url: '/api/measure/behaviours', ...options });
-
-/**
- * Read Behaviour
- */
-export const readBehaviour = <ThrowOnError extends boolean = false>(options: Options<ReadBehaviourData, ThrowOnError>): RequestResult<ReadBehaviourResponses, ReadBehaviourErrors, ThrowOnError> => (options.client ?? client).get<ReadBehaviourResponses, ReadBehaviourErrors, ThrowOnError>({ url: '/api/measure/behaviours/{key}', ...options });
-
-/**
- * Generate Scenario Set
- *
- * Run Bloom's understanding and ideation for the behaviour as it is in git now.
- */
-export const generateScenarioSet = <ThrowOnError extends boolean = false>(options: Options<GenerateScenarioSetData, ThrowOnError>): RequestResult<GenerateScenarioSetResponses, GenerateScenarioSetErrors, ThrowOnError> => (options.client ?? client).post<GenerateScenarioSetResponses, GenerateScenarioSetErrors, ThrowOnError>({
-    url: '/api/measure/behaviours/{key}/scenario-sets',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * List Measure Runs
- */
-export const listMeasureRuns = <ThrowOnError extends boolean = false>(options?: Options<ListMeasureRunsData, ThrowOnError>): RequestResult<ListMeasureRunsResponses, ListMeasureRunsErrors, ThrowOnError> => (options?.client ?? client).get<ListMeasureRunsResponses, ListMeasureRunsErrors, ThrowOnError>({ url: '/api/measure/runs', ...options });
-
-/**
- * Launch Measure
- *
- * One run per prompt version, all against the same scenarios: a suite.
- */
-export const launchMeasure = <ThrowOnError extends boolean = false>(options: Options<LaunchMeasureData, ThrowOnError>): RequestResult<LaunchMeasureResponses, LaunchMeasureErrors, ThrowOnError> => (options.client ?? client).post<LaunchMeasureResponses, LaunchMeasureErrors, ThrowOnError>({
-    url: '/api/measure/runs',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Read Measure Run
- */
-export const readMeasureRun = <ThrowOnError extends boolean = false>(options: Options<ReadMeasureRunData, ThrowOnError>): RequestResult<ReadMeasureRunResponses, ReadMeasureRunErrors, ThrowOnError> => (options.client ?? client).get<ReadMeasureRunResponses, ReadMeasureRunErrors, ThrowOnError>({ url: '/api/measure/runs/{run_id}', ...options });
-
-/**
- * Cancel Measure Run
- */
-export const cancelMeasureRun = <ThrowOnError extends boolean = false>(options: Options<CancelMeasureRunData, ThrowOnError>): RequestResult<CancelMeasureRunResponses, CancelMeasureRunErrors, ThrowOnError> => (options.client ?? client).post<CancelMeasureRunResponses, CancelMeasureRunErrors, ThrowOnError>({ url: '/api/measure/runs/{run_id}/cancel', ...options });
-
-/**
- * Stream Measure Run
- *
- * Sample counts as they change, for suites and scenario generation alike.
- */
-export const streamMeasureRun = <ThrowOnError extends boolean = false>(options: Options<StreamMeasureRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamMeasureRunResponses>> => (options.client ?? client).sse.get<StreamMeasureRunResponses, StreamMeasureRunErrors, ThrowOnError>({ url: '/api/measure/runs/{run_id}/events', ...options });
-
-/**
- * Read Scenario Set
- */
-export const readScenarioSet = <ThrowOnError extends boolean = false>(options: Options<ReadScenarioSetData, ThrowOnError>): RequestResult<ReadScenarioSetResponses, ReadScenarioSetErrors, ThrowOnError> => (options.client ?? client).get<ReadScenarioSetResponses, ReadScenarioSetErrors, ThrowOnError>({ url: '/api/measure/scenario-sets/{scenario_set_id}', ...options });
-
-/**
  * Model Roles
  *
  * The exact model behind each role, from config/models.yaml.
@@ -321,15 +297,52 @@ export const readScenarioSet = <ThrowOnError extends boolean = false>(options: O
 export const modelRoles = <ThrowOnError extends boolean = false>(options?: Options<ModelRolesData, ThrowOnError>): RequestResult<ModelRolesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ModelRolesResponses, unknown, ThrowOnError>({ url: '/api/models', ...options });
 
 /**
+ * List Report Runs
+ *
+ * Recent runs of every kind, for export.
+ */
+export const listReportRuns = <ThrowOnError extends boolean = false>(options?: Options<ListReportRunsData, ThrowOnError>): RequestResult<ListReportRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListReportRunsResponses, unknown, ThrowOnError>({ url: '/api/record/runs', ...options });
+
+/**
+ * Export Findings
+ *
+ * One row per Ethos finding, with the run's provenance. Quotes from transcripts with
+ * content notes are left blank.
+ */
+export const exportFindings = <ThrowOnError extends boolean = false>(options: Options<ExportFindingsData, ThrowOnError>): RequestResult<ExportFindingsResponses, ExportFindingsErrors, ThrowOnError> => (options.client ?? client).get<ExportFindingsResponses, ExportFindingsErrors, ThrowOnError>({ url: '/api/record/runs/{run_id}/findings.csv', ...options });
+
+/**
+ * Run Provenance
+ *
+ * Everything needed to reproduce the run, including its full config.
+ */
+export const runProvenance = <ThrowOnError extends boolean = false>(options: Options<RunProvenanceData, ThrowOnError>): RequestResult<RunProvenanceResponses, RunProvenanceErrors, ThrowOnError> => (options.client ?? client).get<RunProvenanceResponses, RunProvenanceErrors, ThrowOnError>({ url: '/api/record/runs/{run_id}/provenance', ...options });
+
+/**
+ * Export Report
+ *
+ * A printable report of one run, opening with its full provenance.
+ */
+export const exportReport = <ThrowOnError extends boolean = false>(options: Options<ExportReportData, ThrowOnError>): RequestResult<ExportReportResponses, ExportReportErrors, ThrowOnError> => (options.client ?? client).get<ExportReportResponses, ExportReportErrors, ThrowOnError>({ url: '/api/record/runs/{run_id}/report.pdf', ...options });
+
+/**
+ * Export Scores
+ *
+ * One row per transcript and dimension, each carrying the run's provenance.
+ * Scores from transcripts with content notes are included; their text is not.
+ */
+export const exportScores = <ThrowOnError extends boolean = false>(options: Options<ExportScoresData, ThrowOnError>): RequestResult<ExportScoresResponses, ExportScoresErrors, ThrowOnError> => (options.client ?? client).get<ExportScoresResponses, ExportScoresErrors, ThrowOnError>({ url: '/api/record/runs/{run_id}/scores.csv', ...options });
+
+/**
  * List Conversations
  */
-export const listConversations = <ThrowOnError extends boolean = false>(options?: Options<ListConversationsData, ThrowOnError>): RequestResult<ListConversationsResponses, ListConversationsErrors, ThrowOnError> => (options?.client ?? client).get<ListConversationsResponses, ListConversationsErrors, ThrowOnError>({ url: '/api/playground', ...options });
+export const listConversations = <ThrowOnError extends boolean = false>(options?: Options<ListConversationsData, ThrowOnError>): RequestResult<ListConversationsResponses, ListConversationsErrors, ThrowOnError> => (options?.client ?? client).get<ListConversationsResponses, ListConversationsErrors, ThrowOnError>({ url: '/api/rehearsal', ...options });
 
 /**
  * Start Conversation
  */
 export const startConversation = <ThrowOnError extends boolean = false>(options: Options<StartConversationData, ThrowOnError>): RequestResult<StartConversationResponses, StartConversationErrors, ThrowOnError> => (options.client ?? client).post<StartConversationResponses, StartConversationErrors, ThrowOnError>({
-    url: '/api/playground',
+    url: '/api/rehearsal',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -340,147 +353,24 @@ export const startConversation = <ThrowOnError extends boolean = false>(options:
 /**
  * Read Conversation
  */
-export const readConversation = <ThrowOnError extends boolean = false>(options: Options<ReadConversationData, ThrowOnError>): RequestResult<ReadConversationResponses, ReadConversationErrors, ThrowOnError> => (options.client ?? client).get<ReadConversationResponses, ReadConversationErrors, ThrowOnError>({ url: '/api/playground/{run_id}', ...options });
+export const readConversation = <ThrowOnError extends boolean = false>(options: Options<ReadConversationData, ThrowOnError>): RequestResult<ReadConversationResponses, ReadConversationErrors, ThrowOnError> => (options.client ?? client).get<ReadConversationResponses, ReadConversationErrors, ThrowOnError>({ url: '/api/rehearsal/{run_id}', ...options });
 
 /**
  * Finish Conversation
  */
-export const finishConversation = <ThrowOnError extends boolean = false>(options: Options<FinishConversationData, ThrowOnError>): RequestResult<FinishConversationResponses, FinishConversationErrors, ThrowOnError> => (options.client ?? client).post<FinishConversationResponses, FinishConversationErrors, ThrowOnError>({ url: '/api/playground/{run_id}/finish', ...options });
+export const finishConversation = <ThrowOnError extends boolean = false>(options: Options<FinishConversationData, ThrowOnError>): RequestResult<FinishConversationResponses, FinishConversationErrors, ThrowOnError> => (options.client ?? client).post<FinishConversationResponses, FinishConversationErrors, ThrowOnError>({ url: '/api/rehearsal/{run_id}/finish', ...options });
 
 /**
  * Say
  */
 export const say = <ThrowOnError extends boolean = false>(options: Options<SayData, ThrowOnError>): RequestResult<SayResponses, SayErrors, ThrowOnError> => (options.client ?? client).post<SayResponses, SayErrors, ThrowOnError>({
-    url: '/api/playground/{run_id}/messages',
+    url: '/api/rehearsal/{run_id}/messages',
     ...options,
     headers: {
         'Content-Type': 'application/json',
         ...options.headers
     }
 });
-
-/**
- * List Report Runs
- *
- * Recent runs of every kind, for export.
- */
-export const listReportRuns = <ThrowOnError extends boolean = false>(options?: Options<ListReportRunsData, ThrowOnError>): RequestResult<ListReportRunsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListReportRunsResponses, unknown, ThrowOnError>({ url: '/api/reports/runs', ...options });
-
-/**
- * Export Findings
- *
- * One row per Lens finding, with the run's provenance. Quotes from transcripts with
- * content notes are left blank.
- */
-export const exportFindings = <ThrowOnError extends boolean = false>(options: Options<ExportFindingsData, ThrowOnError>): RequestResult<ExportFindingsResponses, ExportFindingsErrors, ThrowOnError> => (options.client ?? client).get<ExportFindingsResponses, ExportFindingsErrors, ThrowOnError>({ url: '/api/reports/runs/{run_id}/findings.csv', ...options });
-
-/**
- * Run Provenance
- *
- * Everything needed to reproduce the run, including its full config.
- */
-export const runProvenance = <ThrowOnError extends boolean = false>(options: Options<RunProvenanceData, ThrowOnError>): RequestResult<RunProvenanceResponses, RunProvenanceErrors, ThrowOnError> => (options.client ?? client).get<RunProvenanceResponses, RunProvenanceErrors, ThrowOnError>({ url: '/api/reports/runs/{run_id}/provenance', ...options });
-
-/**
- * Export Report
- *
- * A printable report of one run, opening with its full provenance.
- */
-export const exportReport = <ThrowOnError extends boolean = false>(options: Options<ExportReportData, ThrowOnError>): RequestResult<ExportReportResponses, ExportReportErrors, ThrowOnError> => (options.client ?? client).get<ExportReportResponses, ExportReportErrors, ThrowOnError>({ url: '/api/reports/runs/{run_id}/report.pdf', ...options });
-
-/**
- * Export Scores
- *
- * One row per transcript and dimension, each carrying the run's provenance.
- * Scores from transcripts with content notes are included; their text is not.
- */
-export const exportScores = <ThrowOnError extends boolean = false>(options: Options<ExportScoresData, ThrowOnError>): RequestResult<ExportScoresResponses, ExportScoresErrors, ThrowOnError> => (options.client ?? client).get<ExportScoresResponses, ExportScoresErrors, ThrowOnError>({ url: '/api/reports/runs/{run_id}/scores.csv', ...options });
-
-/**
- * Create Review
- */
-export const createReview = <ThrowOnError extends boolean = false>(options: Options<CreateReviewData, ThrowOnError>): RequestResult<CreateReviewResponses, CreateReviewErrors, ThrowOnError> => (options.client ?? client).post<CreateReviewResponses, CreateReviewErrors, ThrowOnError>({
-    url: '/api/review',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * List Gold Sets
- */
-export const listGoldSets = <ThrowOnError extends boolean = false>(options?: Options<ListGoldSetsData, ThrowOnError>): RequestResult<ListGoldSetsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListGoldSetsResponses, unknown, ThrowOnError>({ url: '/api/review/gold-sets', ...options });
-
-/**
- * Create Gold Set
- */
-export const createGoldSet = <ThrowOnError extends boolean = false>(options: Options<CreateGoldSetData, ThrowOnError>): RequestResult<CreateGoldSetResponses, CreateGoldSetErrors, ThrowOnError> => (options.client ?? client).post<CreateGoldSetResponses, CreateGoldSetErrors, ThrowOnError>({
-    url: '/api/review/gold-sets',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Read Gold Set
- */
-export const readGoldSet = <ThrowOnError extends boolean = false>(options: Options<ReadGoldSetData, ThrowOnError>): RequestResult<ReadGoldSetResponses, ReadGoldSetErrors, ThrowOnError> => (options.client ?? client).get<ReadGoldSetResponses, ReadGoldSetErrors, ThrowOnError>({ url: '/api/review/gold-sets/{set_id}', ...options });
-
-/**
- * Compute Gold Agreement
- */
-export const computeGoldAgreement = <ThrowOnError extends boolean = false>(options: Options<ComputeGoldAgreementData, ThrowOnError>): RequestResult<ComputeGoldAgreementResponses, ComputeGoldAgreementErrors, ThrowOnError> => (options.client ?? client).post<ComputeGoldAgreementResponses, ComputeGoldAgreementErrors, ThrowOnError>({ url: '/api/review/gold-sets/{set_id}/agreement', ...options });
-
-/**
- * Add Gold Items
- */
-export const addGoldItems = <ThrowOnError extends boolean = false>(options: Options<AddGoldItemsData, ThrowOnError>): RequestResult<AddGoldItemsResponses, AddGoldItemsErrors, ThrowOnError> => (options.client ?? client).post<AddGoldItemsResponses, AddGoldItemsErrors, ThrowOnError>({
-    url: '/api/review/gold-sets/{set_id}/items',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Read Gold Item
- */
-export const readGoldItem = <ThrowOnError extends boolean = false>(options: Options<ReadGoldItemData, ThrowOnError>): RequestResult<ReadGoldItemResponses, ReadGoldItemErrors, ThrowOnError> => (options.client ?? client).get<ReadGoldItemResponses, ReadGoldItemErrors, ThrowOnError>({ url: '/api/review/gold-sets/{set_id}/items/{item_id}', ...options });
-
-/**
- * Save Gold Ratings
- */
-export const saveGoldRatings = <ThrowOnError extends boolean = false>(options: Options<SaveGoldRatingsData, ThrowOnError>): RequestResult<SaveGoldRatingsResponses, SaveGoldRatingsErrors, ThrowOnError> => (options.client ?? client).put<SaveGoldRatingsResponses, SaveGoldRatingsErrors, ThrowOnError>({
-    url: '/api/review/gold-sets/{set_id}/items/{item_id}/ratings',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Lens Queue
- *
- * Replies where Lens judges differ by two points or more on a label, newest runs
- * first. A verdict is recorded on a judge's finding and never changes it.
- */
-export const lensQueue = <ThrowOnError extends boolean = false>(options?: Options<LensQueueData, ThrowOnError>): RequestResult<LensQueueResponses, LensQueueErrors, ThrowOnError> => (options?.client ?? client).get<LensQueueResponses, LensQueueErrors, ThrowOnError>({ url: '/api/review/lens-queue', ...options });
-
-/**
- * Score Queue
- */
-export const scoreQueue = <ThrowOnError extends boolean = false>(options?: Options<ScoreQueueData, ThrowOnError>): RequestResult<ScoreQueueResponses, ScoreQueueErrors, ThrowOnError> => (options?.client ?? client).get<ScoreQueueResponses, ScoreQueueErrors, ThrowOnError>({ url: '/api/review/queue', ...options });
-
-/**
- * List Reviews
- */
-export const listReviews = <ThrowOnError extends boolean = false>(options?: Options<ListReviewsData, ThrowOnError>): RequestResult<ListReviewsResponses, ListReviewsErrors, ThrowOnError> => (options?.client ?? client).get<ListReviewsResponses, ListReviewsErrors, ThrowOnError>({ url: '/api/review/reviews', ...options });
 
 /**
  * Read Run
@@ -522,6 +412,71 @@ export const streamCheck = <ThrowOnError extends boolean = false>(options: Optio
  * A short-lived link to the object the worker wrote: the evidence behind the check.
  */
 export const checkObject = <ThrowOnError extends boolean = false>(options: Options<CheckObjectData, ThrowOnError>): RequestResult<CheckObjectResponses, CheckObjectErrors, ThrowOnError> => (options.client ?? client).get<CheckObjectResponses, CheckObjectErrors, ThrowOnError>({ url: '/api/system/checks/{check_id}/object', ...options });
+
+/**
+ * List Behaviours
+ */
+export const listBehaviours = <ThrowOnError extends boolean = false>(options?: Options<ListBehavioursData, ThrowOnError>): RequestResult<ListBehavioursResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListBehavioursResponses, unknown, ThrowOnError>({ url: '/api/tally/behaviours', ...options });
+
+/**
+ * Read Behaviour
+ */
+export const readBehaviour = <ThrowOnError extends boolean = false>(options: Options<ReadBehaviourData, ThrowOnError>): RequestResult<ReadBehaviourResponses, ReadBehaviourErrors, ThrowOnError> => (options.client ?? client).get<ReadBehaviourResponses, ReadBehaviourErrors, ThrowOnError>({ url: '/api/tally/behaviours/{key}', ...options });
+
+/**
+ * Generate Scenario Set
+ *
+ * Run Bloom's understanding and ideation for the behaviour as it is in git now.
+ */
+export const generateScenarioSet = <ThrowOnError extends boolean = false>(options: Options<GenerateScenarioSetData, ThrowOnError>): RequestResult<GenerateScenarioSetResponses, GenerateScenarioSetErrors, ThrowOnError> => (options.client ?? client).post<GenerateScenarioSetResponses, GenerateScenarioSetErrors, ThrowOnError>({
+    url: '/api/tally/behaviours/{key}/scenario-sets',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Tally Runs
+ */
+export const listTallyRuns = <ThrowOnError extends boolean = false>(options?: Options<ListTallyRunsData, ThrowOnError>): RequestResult<ListTallyRunsResponses, ListTallyRunsErrors, ThrowOnError> => (options?.client ?? client).get<ListTallyRunsResponses, ListTallyRunsErrors, ThrowOnError>({ url: '/api/tally/runs', ...options });
+
+/**
+ * Launch Tally
+ *
+ * One run per prompt version, all against the same scenarios: a suite.
+ */
+export const launchTally = <ThrowOnError extends boolean = false>(options: Options<LaunchTallyData, ThrowOnError>): RequestResult<LaunchTallyResponses, LaunchTallyErrors, ThrowOnError> => (options.client ?? client).post<LaunchTallyResponses, LaunchTallyErrors, ThrowOnError>({
+    url: '/api/tally/runs',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Tally Run
+ */
+export const readTallyRun = <ThrowOnError extends boolean = false>(options: Options<ReadTallyRunData, ThrowOnError>): RequestResult<ReadTallyRunResponses, ReadTallyRunErrors, ThrowOnError> => (options.client ?? client).get<ReadTallyRunResponses, ReadTallyRunErrors, ThrowOnError>({ url: '/api/tally/runs/{run_id}', ...options });
+
+/**
+ * Cancel Tally Run
+ */
+export const cancelTallyRun = <ThrowOnError extends boolean = false>(options: Options<CancelTallyRunData, ThrowOnError>): RequestResult<CancelTallyRunResponses, CancelTallyRunErrors, ThrowOnError> => (options.client ?? client).post<CancelTallyRunResponses, CancelTallyRunErrors, ThrowOnError>({ url: '/api/tally/runs/{run_id}/cancel', ...options });
+
+/**
+ * Stream Tally Run
+ *
+ * Sample counts as they change, for suites and scenario generation alike.
+ */
+export const streamTallyRun = <ThrowOnError extends boolean = false>(options: Options<StreamTallyRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamTallyRunResponses>> => (options.client ?? client).sse.get<StreamTallyRunResponses, StreamTallyRunErrors, ThrowOnError>({ url: '/api/tally/runs/{run_id}/events', ...options });
+
+/**
+ * Read Scenario Set
+ */
+export const readScenarioSet = <ThrowOnError extends boolean = false>(options: Options<ReadScenarioSetData, ThrowOnError>): RequestResult<ReadScenarioSetResponses, ReadScenarioSetErrors, ThrowOnError> => (options.client ?? client).get<ReadScenarioSetResponses, ReadScenarioSetErrors, ThrowOnError>({ url: '/api/tally/scenario-sets/{scenario_set_id}', ...options });
 
 /**
  * List Tokens
@@ -573,3 +528,48 @@ export const chatCompletions = <ThrowOnError extends boolean = false>(options: O
         ...options.headers
     }
 });
+
+/**
+ * List Readers
+ */
+export const listReaders = <ThrowOnError extends boolean = false>(options?: Options<ListReadersData, ThrowOnError>): RequestResult<ListReadersResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListReadersResponses, unknown, ThrowOnError>({ url: '/api/witness/readers', ...options });
+
+/**
+ * List Witness Runs
+ */
+export const listWitnessRuns = <ThrowOnError extends boolean = false>(options?: Options<ListWitnessRunsData, ThrowOnError>): RequestResult<ListWitnessRunsResponses, ListWitnessRunsErrors, ThrowOnError> => (options?.client ?? client).get<ListWitnessRunsResponses, ListWitnessRunsErrors, ThrowOnError>({ url: '/api/witness/runs', ...options });
+
+/**
+ * Launch Witness
+ */
+export const launchWitness = <ThrowOnError extends boolean = false>(options: Options<LaunchWitnessData, ThrowOnError>): RequestResult<LaunchWitnessResponses, LaunchWitnessErrors, ThrowOnError> => (options.client ?? client).post<LaunchWitnessResponses, LaunchWitnessErrors, ThrowOnError>({
+    url: '/api/witness/runs',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Read Witness Run
+ *
+ * The run, and its signals beside an Ethos run on the same source: the one asked
+ * for, or the latest finished one.
+ */
+export const readWitnessRun = <ThrowOnError extends boolean = false>(options: Options<ReadWitnessRunData, ThrowOnError>): RequestResult<ReadWitnessRunResponses, ReadWitnessRunErrors, ThrowOnError> => (options.client ?? client).get<ReadWitnessRunResponses, ReadWitnessRunErrors, ThrowOnError>({ url: '/api/witness/runs/{run_id}', ...options });
+
+/**
+ * Cancel Witness Run
+ */
+export const cancelWitnessRun = <ThrowOnError extends boolean = false>(options: Options<CancelWitnessRunData, ThrowOnError>): RequestResult<CancelWitnessRunResponses, CancelWitnessRunErrors, ThrowOnError> => (options.client ?? client).post<CancelWitnessRunResponses, CancelWitnessRunErrors, ThrowOnError>({ url: '/api/witness/runs/{run_id}/cancel', ...options });
+
+/**
+ * Stream Witness Run
+ */
+export const streamWitnessRun = <ThrowOnError extends boolean = false>(options: Options<StreamWitnessRunData, ThrowOnError, unknown>): Promise<ServerSentEventsResult<StreamWitnessRunResponses>> => (options.client ?? client).sse.get<StreamWitnessRunResponses, StreamWitnessRunErrors, ThrowOnError>({ url: '/api/witness/runs/{run_id}/events', ...options });
+
+/**
+ * Read Witness Transcript
+ */
+export const readWitnessTranscript = <ThrowOnError extends boolean = false>(options: Options<ReadWitnessTranscriptData, ThrowOnError>): RequestResult<ReadWitnessTranscriptResponses, ReadWitnessTranscriptErrors, ThrowOnError> => (options.client ?? client).get<ReadWitnessTranscriptResponses, ReadWitnessTranscriptErrors, ThrowOnError>({ url: '/api/witness/runs/{run_id}/transcripts/{transcript_id}', ...options });

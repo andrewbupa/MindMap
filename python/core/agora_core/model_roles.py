@@ -89,7 +89,7 @@ class ModelRoles(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     roles: dict[str, RoleConfig]
-    # Named groups of judge roles, such as the Lens panel.
+    # Named groups of judge roles, such as the Ethos panel.
     panels: dict[str, list[str]] = Field(default_factory=dict)
     prices: dict[str, Price] = Field(default_factory=dict)
     budgets: dict[str, int] = Field(default_factory=dict)

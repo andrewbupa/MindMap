@@ -67,7 +67,7 @@ TABLES_TO_CLEAR = (
     "gold_set",
     "annotation",
     "dropped_finding",
-    "companion_signal",
+    "witness_signal",
     "score",
     "message",
     "transcript",

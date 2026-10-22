@@ -30,8 +30,8 @@ which needs no provider key. To use real models, set `AGORA_MODELS_FILE` to
 `/app/config/models.yaml` and `ANTHROPIC_API_KEY` in `.env.compose` (compose) or
 `.env` (without Docker).
 
-The local worker takes every queue, the companion's included, and reads with the
-development lexicon reader (`AGORA_COMPANION_FILE=config/companion.dev.yaml`), so
+The local worker takes every queue, the witness's included, and reads with the
+development lexicon reader (`AGORA_WITNESS_FILE=config/witness.dev.yaml`), so
 open-model signals work without a GPU. Its values mean nothing about any model.
 
 `make dev-down` stops everything and keeps data. Signed URLs open on
@@ -101,14 +101,14 @@ Do these in order. Everything lives in the Sydney region.
    | `AGORA_BOOTSTRAP_ADMINS` | Comma-separated emails of the first admins |
    | `AGORA_OIDC_ROLE_MAP` | Optional JSON, e.g. `{"agora-reviewers": "reviewer"}` |
    | `ANTHROPIC_API_KEY` | The Anthropic console; one key per environment |
-   | `OPENAI_API_KEY` | The OpenAI platform; for the Lens panel's second judge |
+   | `OPENAI_API_KEY` | The OpenAI platform; for the Ethos panel's second judge |
 
 5. **Keep secrets in the spec encrypted.** Run `doctl apps spec get <app-id>` and
    copy the `EV[...]` values it shows into `.do/app.yaml`, so later `doctl apps
    update` calls keep them. Never commit a plaintext secret.
 6. **First deploy.** Merge to `main`. Then follow "After every deploy" below.
-7. **Runner, when it is needed.** Companion readers (and Dish, later) run on a GPU
-   Droplet that takes the `companion` and `sandbox` queues. Follow
+7. **Runner, when it is needed.** Witness readers (and Dish, later) run on a GPU
+   Droplet that takes the `witness` and `sandbox` queues. Follow
    `infra/runner/README.md`. Until a runner exists, jobs on those queues wait.
 
 ## Deploying
@@ -166,7 +166,7 @@ Settings, API tokens, and hands it over as a secret. The tool calls
 `https://<app-domain>/api/v1/agents/<agent>/<version>/chat/completions` with
 `Authorization: Bearer <token>`. Revoke tokens that are no longer needed.
 
-**Running an audit.** Explore, Start an audit: pick an agent version and seeds.
+**Running an audit.** Inquiry, Start an audit: pick an agent version and seeds.
 Each seed at each repetition runs as its own job; the page updates as samples
 finish. Samples on one worker run one at a time, because Inspect allows one eval
 per process; raise the worker's `instance_count` in `.do/app.yaml` to run more
@@ -183,7 +183,7 @@ recorded; a sample whose seed changed under it fails rather than run the new tex
 **Opening a sample in Inspect View.** On a transcript page, download the Inspect
 log, then run `inspect view --log-dir <folder>` locally.
 
-**Measuring a behaviour.** Measure, then the behaviour, then "Generate scenarios".
+**Measuring a behaviour.** Tally, then the behaviour, then "Generate scenarios".
 Generation is one job: Bloom writes its understanding of the behaviour, then the
 scenarios and a variation of each. It is stored once and never changes. Then
 "Start a suite on this scenario set": choose the prompt versions and repetitions
@@ -201,35 +201,35 @@ with the new ones. Never commit a `scenarios/` folder there; Agora refuses it.
 something in what the model wrote; generate again, and if it repeats, tighten the
 behaviour's `instructions.ideation`.
 
-**Reading a run with Lens.** Lens, then "Read a run": choose a finished Explore,
-Measure or playground run. Each conversation is one job in which both judges read
+**Reading a run with Ethos.** Ethos, then "Read a run": choose a finished Inquiry,
+Tally or rehearsal run. Each conversation is one job in which both judges read
 every label family. The run page shows each label's share of replies with its
 interval, each conversation's fit, and each judge's kept and dropped findings;
-every count opens the quotes behind it. A finished Explore or Measure run links
-straight to Lens.
+every count opens the quotes behind it. A finished Inquiry or Tally run links
+straight to Ethos.
 
 **A judge drops many findings.** The run page lists each judge's dropped findings
 by reason. Many "quote not found" drops mean the judge paraphrases; "no valid
 answer" means it did not use the answer tool. Both count against the judge and
 are worth raising when choosing models.
 
-**Running the scanners on other logs.** The Lens scanners are ordinary Inspect
-Scout scanners: `scout scan agora_worker/lens/scanners.py -T <log folder> --model
+**Running the scanners on other logs.** The Ethos scanners are ordinary Inspect
+Scout scanners: `scout scan agora_worker/ethos/scanners.py -T <log folder> --model
 <model>` runs them over any folder of Inspect logs, writing Scout's own results
 locally. Agora does not import those results.
 
-**Building the gold set.** An admin creates a gold set under Review, Gold sets:
+**Building the gold set.** An admin creates a gold set under Jury, Gold sets:
 choose a finished run and how many transcripts (60 to start); the same seed draws
 the same items. Each expert opens the set and labels transcripts one after another;
 ratings stay private to each expert. Once two experts have labelled the items, an
 admin computes agreement, which updates every label's trust badge. Compute again
 after more labelling; earlier results are kept.
 
-**Lens disagreements.** Reviewers find them under Review, Lens disagreements. Each
+**Ethos disagreements.** Reviewers find them under Jury, Ethos disagreements. Each
 verdict is stored beside the judges' findings.
 
-**Exporting a run.** Reports lists every run. Finished runs export a PDF report
-that opens with the full provenance, scores (Explore, Measure) or findings (Lens)
+**Exporting a run.** Record lists every run. Finished runs export a PDF report
+that opens with the full provenance, scores (Inquiry, Tally) or findings (Ethos)
 as CSV, and the provenance as JSON. Every export is in the audit log.
 
 **Someone cannot sign in: "belongs to another sign-in identity".** Their email
@@ -244,28 +244,28 @@ UPDATE "user" SET oidc_issuer = '<issuer>', oidc_subject = '<subject>'
 WHERE email = '<email>';
 ```
 
-**Reading a run with an open model.** On a Lens run page, "Signals from an open
-model" lists companion runs on the same source; authors start one by choosing a
-reader. The jobs go to the `companion` queue and wait for the runner. The run page
-sets each signal beside the Lens label it tracks, and every count opens its
-replies. The response view shows a signals pane for the newest companion run that
-read the conversation, or the one in its `companion` link.
+**Reading a run with an open model.** On an Ethos run page, "Signals from an open
+model" lists witness runs on the same source; authors start one by choosing a
+reader. The jobs go to the `witness` queue and wait for the runner. The run page
+sets each signal beside the Ethos label it tracks, and every count opens its
+replies. The response view shows a signals pane for the newest witness run that
+read the conversation, or the one in its `witness` link.
 
-**Companion jobs stay queued.** Only the runner takes the `companion` queue. Check
+**Witness jobs stay queued.** Only the runner takes the `witness` queue. Check
 it is up (`docker compose -f /srv/agora/infra/runner/compose.yaml ps` on the
 Droplet) and its logs; see `infra/runner/README.md`.
 
-**A companion sample failed.** The error is on the run page. "Changed after launch"
-means `config/companion.yaml` changed since the run began: launch a new run.
+**A witness sample failed.** The error is on the run page. "Changed after launch"
+means `config/witness.yaml` changed since the run began: launch a new run.
 "Reports version" means the reader's image reports a different version from the
 reader's `version`: fix the image or the configuration, then launch again. Signals
 that fail the checks are dropped and counted on the run page; the raw response is
-in Spaces beside the run (`runs/<run>/samples/<n>-companion.json`).
+in Spaces beside the run (`runs/<run>/samples/<n>-witness.json`).
 
-**Adding a companion reader.** Add it to `config/companion.yaml`, with its image
+**Adding a witness reader.** Add it to `config/witness.yaml`, with its image
 pinned by digest and its `version` set to what the image reports. Pull the image
 and put the weights under `/srv/models` on the runner, then deploy both sides.
-Locally, `AGORA_COMPANION_FILE=config/companion.dev.yaml` gives the lexicon
+Locally, `AGORA_WITNESS_FILE=config/witness.dev.yaml` gives the lexicon
 reader, which needs no GPU.
 
 **Turning on full thinking.** Only once Anthropic has granted the account access:
@@ -287,9 +287,9 @@ approves an import.
 | Provider | Used for | Retention terms | Zero data retention | Confirmed by, date |
 | --- | --- | --- | --- | --- |
 | Anthropic | Target, auditor, judge A, scanner, Bloom scenarios (`config/models.yaml`) | To confirm for our account | To confirm. Claude Fable 5.1 is not available under zero data retention | |
-| OpenAI | Judge B on the Lens panel (`openai/gpt-6.1-sol`) | To confirm for our account | To confirm | |
+| OpenAI | Judge B on the Ethos panel (`openai/gpt-6.1-sol`) | To confirm for our account | To confirm | |
 
-Companion readers run open-weight models on our own runner, with no network, so
+Witness readers run open-weight models on our own runner, with no network, so
 transcripts they read do not leave our infrastructure.
 
 ## Milestone status
@@ -299,21 +299,21 @@ transcripts they read do not leave our infrastructure.
 Built: separate queues for work App Platform cannot host, with a test that every
 task's queue has a worker; full thinking as an opt-in on Anthropic roles, stored
 apart from summaries and readable only by admins and compliance, with each reading
-audited; the open-model companion: reader configuration, the `agora.companion/1`
+audited; the open-model witness: reader configuration, the `agora.witness/1`
 contract, a command runner and a development lexicon reader, signal checks in
-code, companion runs on the `companion` queue with read-only signals, a comparison
-with Lens labels on the run page and in the PDF report, and a signals pane in the
+code, witness runs on the `witness` queue with read-only signals, a comparison
+with Ethos labels on the run page and in the PDF report, and a signals pane in the
 response view; and the Droplet runner (image, compose file, cloud-init, deploy
 script). Dish was assessed and left out for now; see docs/DECISIONS.md.
 
-Verified: in the tests, a lexicon run over an Explore run beside its Lens run, with
+Verified: in the tests, a lexicon run over an Inquiry run beside its Ethos run, with
 replies in the right cells, exact token offsets, the PDF section, and signals
 read-only once the run finished; a reader changed after launch and a runner on
 another version both failing on the first attempt with nothing stored; the
 command runner speaking the contract, and failing clearly on a crash, bad output
 or a timeout; every kind of bad signal dropped with its reason; full thinking
 stored apart from the summary, readable by an admin, refused to a reviewer and
-audited. In a browser, in light and dark: a companion run started from a Lens run
+audited. In a browser, in light and dark: a witness run started from an Ethos run
 page and read by the local worker, its comparison table, a count opened to its
 replies, and the signals pane in the response view. The full-thinking card was
 checked by the tests only: the development models cannot return full thinking.
@@ -323,34 +323,34 @@ Waiting on: a GPU Droplet and the first production reader; answers to the open
 questions in docs/DECISIONS.md, above all which open model and signals to use and
 whether Dish is worth adding; Anthropic's decision on full thinking.
 
-### Milestone 6: review and reports
+### Milestone 6: jury and record
 
 Built: gold sets drawn from finished runs by a seeded sample; blind labelling of
 every label on every reply; Krippendorff's alpha per label between experts and
 between each judge and the experts' median, kept with its time; trust badges set
-from the experts' alpha; Lens disagreements in the review queue with verdicts on
+from the experts' alpha; Ethos disagreements in the review queue with verdicts on
 each finding; PDF reports for every run kind that open with full provenance; a
-Lens findings CSV; the Reports page for every run; and a clear refusal when an
+Ethos findings CSV; the Record page for every run; and a clear refusal when an
 email arrives from a different sign-in identity.
 
 Verified: in the tests, two experts labelling six transcripts blind, agreement of
 1.0 on a label they agreed on and trust set to trusted, a systematic disagreement
 retired, judges' alphas against the experts, refusals for non-reviewers and for
-ratings on the member's messages; a Lens disagreement reviewed and leaving the
+ratings on the member's messages; an Ethos disagreement reviewed and leaving the
 queue; PDF text carrying the run's config and seed hashes; the findings CSV
 carrying provenance on every row; and the sign-in refusal with its audit event. In
 a browser: a gold set created, labelled by two experts, agreement computed, the
-disagreement queue, the Reports page and a downloaded PDF.
+disagreement queue, the Record page and a downloaded PDF.
 
 Waiting on: expert reviewers to label the first 60-transcript gold set with real
 models' transcripts; answers to the open questions in docs/DECISIONS.md.
 
-### Milestone 5: lens
+### Milestone 5: ethos
 
 Built: five Inspect Scout scanners, one per label family, asking for findings as
 structured output; a judge panel from two model families (`judge_a` Claude Opus
 5.5, `judge_b` OpenAI's gpt-6.1-sol) with a second development family locally;
-Lens runs over finished runs, one job per conversation; every quote checked in
+Ethos runs over finished runs, one job per conversation; every quote checked in
 code, with offsets, and failures dropped and counted per judge; per-reply medians,
 disputes and fit against expected profiles; label shares with Wilson intervals;
 the response view with family tints, profile strips, the findings pane, thinking
@@ -362,14 +362,14 @@ with exact offsets, including one on a thinking summary; a paraphrase, a citatio
 of the member's message and an unanswered family dropped and counted; a disputed
 label; medians, fit and intrusions as expected; findings read-only once the run
 closed), Scout's own `scan_async` over a folder of Inspect logs, and a comparison
-of two prompt versions. In a browser with the development judges: two Lens runs
-over 18-conversation Measure runs, the response view, the run page and the
+of two prompt versions. In a browser with the development judges: two Ethos runs
+over 18-conversation Tally runs, the response view, the run page and the
 compare view.
 
 Waiting on: an OpenAI key and confirmation of judge B's model ID, price and
 retention terms; answers to the open questions in docs/DECISIONS.md.
 
-### Milestone 4: measure
+### Milestone 4: tally
 
 Built: five behaviours in `seeds/bloom/` in petri_bloom 0.2.6's format; scenario
 generation as a one-job run whose output is a write-once scenario set; suites of
@@ -391,7 +391,7 @@ worker, and the chart, tables, run page and transcript in light and dark.
 Waiting on: an Anthropic key in production, to generate real scenarios and run
 suites with real models; answers to the open questions in docs/DECISIONS.md.
 
-### Milestone 3: explore
+### Milestone 3: inquiry
 
 Built: 21 seeds and six judge rubrics in git; Petri 3.1.1 audits of an agent
 version, one sample per job, with our real prompt and tools inside Petri's
@@ -412,7 +412,7 @@ Waiting on: an Anthropic key in production, to run audits with real models.
 Built: two synthetic agents in git with prompt versions, tools, fixtures and
 personas; the registry sync; model roles; the personal-data scan; the adapter in
 deployed and open modes; Inspect transcripts in Spaces; the agents area with
-side-by-side prompt diffs; the playground; API tokens and the OpenAI-compatible
+side-by-side prompt diffs; the rehearsal; API tokens and the OpenAI-compatible
 endpoint.
 
 Verified locally in a browser with the development model: an author picks

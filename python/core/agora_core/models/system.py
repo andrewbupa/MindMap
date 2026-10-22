@@ -1,4 +1,4 @@
-"""Companion signals (filled by the Droplet runner), data imports and system checks."""
+"""Witness signals (filled by the Droplet runner), data imports and system checks."""
 
 from __future__ import annotations
 
@@ -12,15 +12,15 @@ from sqlalchemy.orm import Mapped, mapped_column
 from agora_core.models.base import Base, CreatedAt, UUIDPrimaryKey
 
 
-class CompanionSignal(UUIDPrimaryKey, CreatedAt, Base):
+class WitnessSignal(UUIDPrimaryKey, CreatedAt, Base):
     """Per-token signals from an open-weight model reading a transcript, for one
-    companion run. ``values[i]`` belongs to the token at ``offsets[i]``, a pair of
+    witness run. ``values[i]`` belongs to the token at ``offsets[i]``, a pair of
     character offsets into the message text; ``char_start`` and ``char_end`` span them."""
 
-    __tablename__ = "companion_signal"
+    __tablename__ = "witness_signal"
     __table_args__ = (
         CheckConstraint("kind IN ('probe', 'persona_vector', 'nla')", name="known_kind"),
-        Index("ix_companion_signal_run_message", "run_id", "message_id"),
+        Index("ix_witness_signal_run_message", "run_id", "message_id"),
     )
 
     run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("run.id"))

@@ -28,9 +28,9 @@ roles:
     model: anthropic/claude-opus-5-5
     generate: { reasoning_effort: high }
 
-# Judges that score together. Lens needs two or three, from at least two families.
+# Judges that score together. Ethos needs two or three, from at least two families.
 panels:
-  lens: [judge_a, judge_b]
+  ethos: [judge_a, judge_b]
 
 # USD per million tokens, for spend estimates. Update when prices change.
 prices:
@@ -40,8 +40,8 @@ prices:
 
 # Token budgets used when a run does not set its own.
 budgets:
-  playground: 400000
-  explore: 5000000
-  measure: 5000000
+  rehearsal: 400000
+  inquiry: 5000000
+  tally: 5000000
   scenarios: 1000000
-  lens: 2000000
+  ethos: 2000000

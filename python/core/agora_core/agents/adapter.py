@@ -1,7 +1,7 @@
 """The agent adapter.
 
-Every test reaches our agents through this class, so Petri, Bloom, Lens and the
-playground all see an agent the same way.
+Every test reaches our agents through this class, so Petri, Bloom, Ethos and the
+rehearsal all see an agent the same way.
 
 Deployed mode (the default) gives the model our real system prompt and tool
 schemas. Context about the situation (a member profile, a claim record) is placed

@@ -6,11 +6,11 @@ As a target it looks up any claim number or member number it sees with the agent
 tools, then answers plainly, with a short thinking summary. Offered Petri's auditor
 tools it runs a two-turn audit; offered Petri's judge tool it scores every dimension
 1. Offered one of Bloom's ``submit_*`` tools it returns two small synthetic scenarios,
-a variation per axis and one presence dimension. Offered a Lens scanner's answer tool
+a variation per axis and one presence dimension. Offered an Ethos scanner's answer tool
 it labels the first sentence of each reply. ``agorapeer/scripted`` is the same model
-under a second family name, so the Lens panel rules hold locally; it scores some
+under a second family name, so the Ethos panel rules hold locally; it scores some
 labels two points higher and paraphrases its first quote, which Agora then drops.
-That lets Explore, Measure and Lens go end to end locally. Its scenarios are
+That lets Inquiry, Tally and Ethos go end to end locally. Its scenarios are
 placeholders and its scores mean nothing.
 """
 
@@ -92,7 +92,7 @@ class ScriptedDevModel(ModelAPI):
             return self._audit(input, model)
         answer = next((t for t in tools if t.name == "answer"), None)
         if answer is not None and "results" in answer.parameters.properties:
-            return self._lens(answer, input, model)
+            return self._ethos(answer, input, model)
         if answer is not None:
             return self._judge(answer, input, model)
         if submit := next((t.name for t in tools if t.name in BLOOM_SUBMIT), None):
@@ -190,7 +190,7 @@ class ScriptedDevModel(ModelAPI):
                 arguments[name] = "Development model: no real judgement was made [M2]."
         return self._calls(input, model, ("answer", arguments))
 
-    def _lens(self, tool: ToolInfo, input: list[ChatMessage], model: str) -> ModelOutput:
+    def _ethos(self, tool: ToolInfo, input: list[ChatMessage], model: str) -> ModelOutput:
         item = tool.parameters.properties["results"].items
         label = (item.properties or {}).get("label") if item else None
         labels = [str(v) for v in (label.enum or [])] if label else []

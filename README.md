@@ -2,9 +2,9 @@
 
 Agora tests our AI agents three ways:
 
-- **Explore** (Petri 3) asks what could go wrong across many situations.
-- **Measure** (Bloom) asks how often one chosen behaviour occurs.
-- **Lens** asks which dispositions an agent expressed, how strongly, and whether
+- **Inquiry** (Petri 3) asks what could go wrong across many situations.
+- **Tally** (Bloom) asks how often one chosen behaviour occurs.
+- **Ethos** asks which dispositions an agent expressed, how strongly, and whether
   they suited the moment. It reads expressed disposition from text.
 
 Every run writes Inspect-format transcripts into one shared record.

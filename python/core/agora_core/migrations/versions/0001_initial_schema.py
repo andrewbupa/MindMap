@@ -461,7 +461,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.CheckConstraint(
-            "kind IN ('explore', 'measure', 'lens', 'playground')", name=op.f("ck_run_known_kind")
+            "kind IN ('inquiry', 'tally', 'ethos', 'rehearsal')", name=op.f("ck_run_known_kind")
         ),
         sa.CheckConstraint(
             "status IN ('queued', 'running', 'succeeded', 'failed', 'cancelled', 'stopped_at_budget')",
@@ -658,7 +658,7 @@ def upgrade() -> None:
         op.f("ix_annotation_message_id"), "annotation", ["message_id", "label_id"], unique=False
     )
     op.create_table(
-        "companion_signal",
+        "witness_signal",
         sa.Column("message_id", sa.UUID(), nullable=False),
         sa.Column("model", sa.String(length=200), nullable=False),
         sa.Column("kind", sa.String(length=20), nullable=False),
@@ -676,12 +676,12 @@ def upgrade() -> None:
         ),
         sa.CheckConstraint(
             "kind IN ('probe', 'persona_vector', 'nla')",
-            name=op.f("ck_companion_signal_known_kind"),
+            name=op.f("ck_witness_signal_known_kind"),
         ),
         sa.ForeignKeyConstraint(
-            ["message_id"], ["message.id"], name=op.f("fk_companion_signal_message_id_message")
+            ["message_id"], ["message.id"], name=op.f("fk_witness_signal_message_id_message")
         ),
-        sa.PrimaryKeyConstraint("id", name=op.f("pk_companion_signal")),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_witness_signal")),
     )
     op.create_table(
         "dropped_finding",
@@ -783,7 +783,7 @@ def downgrade() -> None:
     op.drop_table("review")
     op.drop_table("gold_label")
     op.drop_table("dropped_finding")
-    op.drop_table("companion_signal")
+    op.drop_table("witness_signal")
     op.drop_index(op.f("ix_annotation_message_id"), table_name="annotation")
     op.drop_table("annotation")
     op.drop_table("score")

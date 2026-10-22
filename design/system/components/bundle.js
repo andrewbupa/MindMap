@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Agora","components":[{"name":"Button"},{"name":"LinkButton"},{"name":"Field"},{"name":"Select"},{"name":"Checkbox"},{"name":"Radio"},{"name":"Tabs"},{"name":"Dialog"},{"name":"Toast"},{"name":"Notice"},{"name":"Card"},{"name":"PageHeader"},{"name":"Badge"},{"name":"Mono"},{"name":"AppShell"},{"name":"Nav"},{"name":"DataTable"},{"name":"ScoreCell"},{"name":"Heatmap"},{"name":"RateChart"},{"name":"RateTable"},{"name":"IntervalBar"},{"name":"StatusBadge"},{"name":"RunProgress"},{"name":"Provenance"},{"name":"MessageView"},{"name":"Cited"},{"name":"ContentNote"},{"name":"FullThinking"},{"name":"LabelChip"},{"name":"TrustBadge"},{"name":"Highlighted"},{"name":"ProfileStrip"},{"name":"FindingPane"},{"name":"TurnTimeline"},{"name":"CompareView"},{"name":"CompanionPane"},{"name":"DiffView"},{"name":"EmptyState"},{"name":"LoadingState"},{"name":"Relief"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Agora","components":[{"name":"Button"},{"name":"LinkButton"},{"name":"Field"},{"name":"Select"},{"name":"Checkbox"},{"name":"Radio"},{"name":"Tabs"},{"name":"Dialog"},{"name":"Toast"},{"name":"Notice"},{"name":"Card"},{"name":"PageHeader"},{"name":"Badge"},{"name":"Mono"},{"name":"AppShell"},{"name":"Nav"},{"name":"DataTable"},{"name":"ScoreCell"},{"name":"Heatmap"},{"name":"RateChart"},{"name":"RateTable"},{"name":"IntervalBar"},{"name":"StatusBadge"},{"name":"RunProgress"},{"name":"Provenance"},{"name":"MessageView"},{"name":"Cited"},{"name":"ContentNote"},{"name":"FullThinking"},{"name":"LabelChip"},{"name":"TrustBadge"},{"name":"Highlighted"},{"name":"ProfileStrip"},{"name":"FindingPane"},{"name":"TurnTimeline"},{"name":"CompareView"},{"name":"WitnessPane"},{"name":"DiffView"},{"name":"EmptyState"},{"name":"LoadingState"},{"name":"Relief"}]} */
 (function () {
   var React = window.React, h = React.createElement, F = React.Fragment;
   var useState = React.useState, useRef = React.useRef, useEffect = React.useEffect;
@@ -146,7 +146,7 @@
     var shown = p.truncate && text.length > p.truncate ? text.slice(0, p.truncate) + '\u2026' : text;
     return h('span', { className: cx('bn-mono', p.plain && 'bn-mono-plain'), title: shown !== text ? text : p.title }, shown);
   }
-  var NAV_ITEMS = [['Home', '/'], ['Agents', '/agents'], ['Explore', '/explore'], ['Measure', '/measure'], ['Lens', '/lens'], ['Review', '/review'], ['Reports', '/reports'], ['Settings', '/settings']]
+  var NAV_ITEMS = [['Home', '/'], ['Agents', '/agents'], ['Inquiry', '/inquiry'], ['Tally', '/tally'], ['Ethos', '/ethos'], ['Jury', '/jury'], ['Record', '/record'], ['Settings', '/settings']]
     .map(function (x) { return { label: x[0], href: x[1] }; });
   function Nav(p) {
     var items = p.items || NAV_ITEMS;
@@ -380,7 +380,7 @@
       h('div', { className: 'bn-fold-body' }, p.children));
   }
 
-  /* ---------- Lens ---------- */
+  /* ---------- Ethos ---------- */
   var TRUST = { trusted: 'Trusted', provisional: 'Provisional', retired: 'Retired', unrated: 'Unrated' };
   function trustGlyph(t) {
     var c = { width: 10, height: 10, viewBox: '0 0 10 10', 'aria-hidden': true };
@@ -494,7 +494,7 @@
           h('span', { role: 'cell', className: 'bn-num' }, (r.diff > 0 ? '+' : '') + r.diff + ' points ', h('span', { className: 'bn-muted' }, '(' + r.low + ' to ' + r.high + ')')));
       }));
   }
-  function CompanionPane(p) {
+  function WitnessPane(p) {
     var signals = p.signals || [];
     var st = useState(p.active || (signals[0] && signals[0].id)), cur = st[0];
     var sig = signals.find(function (s) { return s.id === cur; }) || {};
@@ -595,7 +595,7 @@
     StatusBadge: StatusBadge, RunProgress: RunProgress, Provenance: Provenance,
     MessageView: MessageView, Cited: Cited, ContentNote: ContentNote, FullThinking: FullThinking,
     LabelChip: LabelChip, TrustBadge: TrustBadge, Highlighted: Highlighted, ProfileStrip: ProfileStrip, FindingPane: FindingPane,
-    TurnTimeline: TurnTimeline, CompareView: CompareView, CompanionPane: CompanionPane,
+    TurnTimeline: TurnTimeline, CompareView: CompareView, WitnessPane: WitnessPane,
     DiffView: DiffView, EmptyState: EmptyState, LoadingState: LoadingState, Relief: Relief,
     FAMILIES: FAMILIES, intensityWord: intensityWord
   };

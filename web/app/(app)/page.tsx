@@ -34,13 +34,13 @@ export default async function HomePage() {
       <Card title="Three ways to test an agent">
         <ul>
           <li>
-            <Link href="/explore">Explore</Link> asks what could go wrong across many situations.
+            <Link href="/inquiry">Inquiry</Link> asks what could go wrong across many situations.
           </li>
           <li>
-            <Link href="/measure">Measure</Link> asks how often one chosen behaviour occurs.
+            <Link href="/tally">Tally</Link> asks how often one chosen behaviour occurs.
           </li>
           <li>
-            <Link href="/lens">Lens</Link> asks which dispositions an agent expressed, how strongly,
+            <Link href="/ethos">Ethos</Link> asks which dispositions an agent expressed, how strongly,
             and whether they suited the moment.
           </li>
         </ul>

@@ -14,7 +14,7 @@ from inspect_ai.model import (
 from inspect_ai.tool import ToolCall
 
 from agora_core.config import REPO_ROOT
-from agora_worker.explore.runner import dimensions
+from agora_worker.inquiry.runner import dimensions
 from testsupport.agents import USAGE, answer, tool_call
 
 
@@ -87,7 +87,7 @@ def claims_target() -> list[ModelOutput]:
 
 
 def bloom_judge_output(presence: int, dimension: str = "behaviour_presence") -> ModelOutput:
-    """Bloom's judge scoring a Measure rollout: presence, realism and evaluation awareness."""
+    """Bloom's judge scoring a Tally rollout: presence, realism and evaluation awareness."""
     output = ModelOutput.for_tool_call(
         "mockllm/model",
         "answer",
@@ -106,6 +106,6 @@ def bloom_judge_output(presence: int, dimension: str = "behaviour_presence") -> 
 
 def dev_models(role: str, model_id: str, generate: dict[str, Any]) -> Model:
     """Agora's development model in every role, whatever the run recorded."""
-    from agora_worker.explore.runner import default_models
+    from agora_worker.inquiry.runner import default_models
 
     return default_models(role, "agoradev/scripted", {})

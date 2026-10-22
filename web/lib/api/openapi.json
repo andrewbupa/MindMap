@@ -461,9 +461,9 @@
             "type": "integer"
           },
           "runs": {
-            "description": "Measure runs on the selected set.",
+            "description": "Tally runs on the selected set.",
             "items": {
-              "$ref": "#/components/schemas/MeasureRunSummary"
+              "$ref": "#/components/schemas/TallyRunSummary"
             },
             "title": "Runs",
             "type": "array"
@@ -805,408 +805,6 @@
         "title": "ChatMessageIn",
         "type": "object"
       },
-      "CompanionLaunch": {
-        "properties": {
-          "reader": {
-            "title": "Reader",
-            "type": "string"
-          },
-          "source_run": {
-            "format": "uuid",
-            "title": "Source Run",
-            "type": "string"
-          },
-          "transcripts": {
-            "anyOf": [
-              {
-                "items": {
-                  "format": "uuid",
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Read only these transcripts; all of them when empty.",
-            "title": "Transcripts"
-          }
-        },
-        "required": [
-          "source_run",
-          "reader"
-        ],
-        "title": "CompanionLaunch",
-        "type": "object"
-      },
-      "CompanionReaderOut": {
-        "properties": {
-          "key": {
-            "title": "Key",
-            "type": "string"
-          },
-          "model": {
-            "title": "Model",
-            "type": "string"
-          },
-          "runner": {
-            "title": "Runner",
-            "type": "string"
-          },
-          "signals": {
-            "items": {
-              "$ref": "#/components/schemas/CompanionSignalSpecOut"
-            },
-            "title": "Signals",
-            "type": "array"
-          },
-          "version": {
-            "title": "Version",
-            "type": "string"
-          }
-        },
-        "required": [
-          "key",
-          "model",
-          "runner",
-          "version",
-          "signals"
-        ],
-        "title": "CompanionReaderOut",
-        "type": "object"
-      },
-      "CompanionRunOut": {
-        "properties": {
-          "agreements": {
-            "items": {
-              "$ref": "#/components/schemas/SignalAgreementOut"
-            },
-            "title": "Agreements",
-            "type": "array"
-          },
-          "counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Counts",
-            "type": "object"
-          },
-          "dropped": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Dropped",
-            "type": "object"
-          },
-          "lens_run": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/RunOut"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "The Lens run the signals are compared with."
-          },
-          "lens_runs": {
-            "description": "Finished Lens runs on the same source run.",
-            "items": {
-              "$ref": "#/components/schemas/RunOut"
-            },
-            "title": "Lens Runs",
-            "type": "array"
-          },
-          "reader": {
-            "$ref": "#/components/schemas/CompanionReaderOut"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "samples": {
-            "items": {
-              "$ref": "#/components/schemas/CompanionSampleOut"
-            },
-            "title": "Samples",
-            "type": "array"
-          },
-          "source": {
-            "$ref": "#/components/schemas/RunOut"
-          }
-        },
-        "required": [
-          "run",
-          "source",
-          "reader",
-          "counts",
-          "samples",
-          "dropped",
-          "lens_run",
-          "lens_runs",
-          "agreements"
-        ],
-        "title": "CompanionRunOut",
-        "type": "object"
-      },
-      "CompanionRunSummary": {
-        "properties": {
-          "counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Counts",
-            "type": "object"
-          },
-          "reader": {
-            "$ref": "#/components/schemas/CompanionReaderOut"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "source": {
-            "$ref": "#/components/schemas/RunOut"
-          }
-        },
-        "required": [
-          "run",
-          "source",
-          "reader",
-          "counts"
-        ],
-        "title": "CompanionRunSummary",
-        "type": "object"
-      },
-      "CompanionSampleOut": {
-        "properties": {
-          "attempts": {
-            "title": "Attempts",
-            "type": "integer"
-          },
-          "detail": {
-            "additionalProperties": true,
-            "title": "Detail",
-            "type": "object"
-          },
-          "epoch": {
-            "title": "Epoch",
-            "type": "integer"
-          },
-          "error": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Error"
-          },
-          "heartbeat_at": {
-            "anyOf": [
-              {
-                "format": "date-time",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Heartbeat At"
-          },
-          "id": {
-            "format": "uuid",
-            "title": "Id",
-            "type": "string"
-          },
-          "sample_index": {
-            "title": "Sample Index",
-            "type": "integer"
-          },
-          "status": {
-            "title": "Status",
-            "type": "string"
-          },
-          "tokens_used": {
-            "title": "Tokens Used",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "id",
-          "sample_index",
-          "epoch",
-          "status",
-          "attempts",
-          "heartbeat_at",
-          "tokens_used",
-          "error",
-          "detail"
-        ],
-        "title": "CompanionSampleOut",
-        "type": "object"
-      },
-      "CompanionSignalOut": {
-        "properties": {
-          "char_end": {
-            "title": "Char End",
-            "type": "integer"
-          },
-          "char_start": {
-            "title": "Char Start",
-            "type": "integer"
-          },
-          "explanation": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Explanation"
-          },
-          "id": {
-            "format": "uuid",
-            "title": "Id",
-            "type": "string"
-          },
-          "kind": {
-            "title": "Kind",
-            "type": "string"
-          },
-          "label": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Label"
-          },
-          "message_id": {
-            "format": "uuid",
-            "title": "Message Id",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "peak": {
-            "title": "Peak",
-            "type": "number"
-          },
-          "present_at": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Present At"
-          },
-          "tokens": {
-            "items": {
-              "$ref": "#/components/schemas/TokenValueOut"
-            },
-            "title": "Tokens",
-            "type": "array"
-          }
-        },
-        "required": [
-          "id",
-          "message_id",
-          "name",
-          "kind",
-          "label",
-          "present_at",
-          "char_start",
-          "char_end",
-          "tokens",
-          "peak",
-          "explanation"
-        ],
-        "title": "CompanionSignalOut",
-        "type": "object"
-      },
-      "CompanionSignalSpecOut": {
-        "properties": {
-          "description": {
-            "title": "Description",
-            "type": "string"
-          },
-          "kind": {
-            "title": "Kind",
-            "type": "string"
-          },
-          "label": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Label"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "present_at": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Present At"
-          }
-        },
-        "required": [
-          "name",
-          "kind",
-          "description",
-          "label",
-          "present_at"
-        ],
-        "title": "CompanionSignalSpecOut",
-        "type": "object"
-      },
-      "CompanionTranscriptOut": {
-        "properties": {
-          "reader": {
-            "$ref": "#/components/schemas/CompanionReaderOut"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "signals": {
-            "items": {
-              "$ref": "#/components/schemas/CompanionSignalOut"
-            },
-            "title": "Signals",
-            "type": "array"
-          }
-        },
-        "required": [
-          "run",
-          "reader",
-          "signals"
-        ],
-        "title": "CompanionTranscriptOut",
-        "type": "object"
-      },
       "ConsensusOut": {
         "properties": {
           "by_judge": {
@@ -1487,6 +1085,659 @@
         "title": "EpochTallyOut",
         "type": "object"
       },
+      "EthosCompareOut": {
+        "properties": {
+          "a": {
+            "$ref": "#/components/schemas/EthosRunSummary"
+          },
+          "b": {
+            "$ref": "#/components/schemas/EthosRunSummary"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/LabelComparisonOut"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "scenarios": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioComparisonOut"
+            },
+            "title": "Scenarios",
+            "type": "array"
+          },
+          "shared_scenarios": {
+            "title": "Shared Scenarios",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "a",
+          "b",
+          "shared_scenarios",
+          "labels",
+          "scenarios"
+        ],
+        "title": "EthosCompareOut",
+        "type": "object"
+      },
+      "EthosDisputeOut": {
+        "properties": {
+          "annotations": {
+            "items": {
+              "$ref": "#/components/schemas/AnnotationOut"
+            },
+            "title": "Annotations",
+            "type": "array"
+          },
+          "by_judge": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "By Judge",
+            "type": "object"
+          },
+          "ethos_run_id": {
+            "format": "uuid",
+            "title": "Ethos Run Id",
+            "type": "string"
+          },
+          "ethos_run_title": {
+            "title": "Ethos Run Title",
+            "type": "string"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "median": {
+            "title": "Median",
+            "type": "number"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "reply_text": {
+            "title": "Reply Text",
+            "type": "string"
+          },
+          "reviewed_by_me": {
+            "title": "Reviewed By Me",
+            "type": "boolean"
+          },
+          "reviews": {
+            "title": "Reviews",
+            "type": "integer"
+          },
+          "scenario_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Key"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ethos_run_id",
+          "ethos_run_title",
+          "transcript_id",
+          "scenario_key",
+          "message_id",
+          "reply_text",
+          "label",
+          "family",
+          "median",
+          "by_judge",
+          "annotations",
+          "reviews",
+          "reviewed_by_me"
+        ],
+        "title": "EthosDisputeOut",
+        "type": "object"
+      },
+      "EthosEvidenceOut": {
+        "properties": {
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "intensity": {
+            "title": "Intensity",
+            "type": "integer"
+          },
+          "judge": {
+            "title": "Judge",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "quote": {
+            "title": "Quote",
+            "type": "string"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "transcript_id",
+          "message_id",
+          "label",
+          "judge",
+          "intensity",
+          "quote",
+          "channel"
+        ],
+        "title": "EthosEvidenceOut",
+        "type": "object"
+      },
+      "EthosFamilyOut": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "source"
+        ],
+        "title": "EthosFamilyOut",
+        "type": "object"
+      },
+      "EthosLabelOut": {
+        "properties": {
+          "counter_examples": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Counter Examples",
+            "type": "array"
+          },
+          "definition": {
+            "title": "Definition",
+            "type": "string"
+          },
+          "examples": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Examples",
+            "type": "array"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "trust_status": {
+            "title": "Trust Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "family",
+          "definition",
+          "examples",
+          "counter_examples",
+          "trust_status"
+        ],
+        "title": "EthosLabelOut",
+        "type": "object"
+      },
+      "EthosLaunch": {
+        "properties": {
+          "source_run": {
+            "format": "uuid",
+            "title": "Source Run",
+            "type": "string"
+          },
+          "token_budget": {
+            "anyOf": [
+              {
+                "minimum": 10000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token Budget"
+          },
+          "transcripts": {
+            "anyOf": [
+              {
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Read only these transcripts; all of them when empty.",
+            "title": "Transcripts"
+          }
+        },
+        "required": [
+          "source_run"
+        ],
+        "title": "EthosLaunch",
+        "type": "object"
+      },
+      "EthosQueueOut": {
+        "properties": {
+          "hidden_for_content_notes": {
+            "title": "Hidden For Content Notes",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/EthosDisputeOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "hidden_for_content_notes"
+        ],
+        "title": "EthosQueueOut",
+        "type": "object"
+      },
+      "EthosRunOut": {
+        "properties": {
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "dropped": {
+            "items": {
+              "$ref": "#/components/schemas/DroppedCountOut"
+            },
+            "title": "Dropped",
+            "type": "array"
+          },
+          "evidence": {
+            "description": "The findings behind one label, when a label is asked for.",
+            "items": {
+              "$ref": "#/components/schemas/EthosEvidenceOut"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "judge_counts": {
+            "items": {
+              "$ref": "#/components/schemas/JudgeCountOut"
+            },
+            "title": "Judge Counts",
+            "type": "array"
+          },
+          "judges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Judges",
+            "type": "array"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/LabelPrevalenceOut"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "mean_fit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Fit"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/SampleOut"
+            },
+            "title": "Samples",
+            "type": "array"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "transcripts": {
+            "items": {
+              "$ref": "#/components/schemas/EthosTranscriptSummary"
+            },
+            "title": "Transcripts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "counts",
+          "mean_fit",
+          "judges",
+          "samples",
+          "labels",
+          "transcripts",
+          "judge_counts",
+          "dropped",
+          "evidence"
+        ],
+        "title": "EthosRunOut",
+        "type": "object"
+      },
+      "EthosRunSummary": {
+        "properties": {
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "mean_fit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Fit"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "counts",
+          "mean_fit"
+        ],
+        "title": "EthosRunSummary",
+        "type": "object"
+      },
+      "EthosSourceOut": {
+        "properties": {
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "transcripts": {
+            "title": "Transcripts",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "run",
+          "transcripts"
+        ],
+        "title": "EthosSourceOut",
+        "type": "object"
+      },
+      "EthosTranscriptOut": {
+        "properties": {
+          "annotations": {
+            "items": {
+              "$ref": "#/components/schemas/AnnotationOut"
+            },
+            "title": "Annotations",
+            "type": "array"
+          },
+          "content_notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Content Notes",
+            "type": "array"
+          },
+          "dropped": {
+            "items": {
+              "$ref": "#/components/schemas/DroppedCountOut"
+            },
+            "title": "Dropped",
+            "type": "array"
+          },
+          "expected": {
+            "items": {
+              "$ref": "#/components/schemas/ExpectationOut"
+            },
+            "title": "Expected",
+            "type": "array"
+          },
+          "judges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Judges",
+            "type": "array"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/EthosLabelOut"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/MessageOut"
+            },
+            "title": "Messages",
+            "type": "array"
+          },
+          "replies": {
+            "items": {
+              "$ref": "#/components/schemas/ReplyEthosOut"
+            },
+            "title": "Replies",
+            "type": "array"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "scenario_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Key"
+          },
+          "scenario_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Type"
+          },
+          "seed_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seed Text"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "transcript_id",
+          "scenario_key",
+          "scenario_type",
+          "seed_text",
+          "content_notes",
+          "judges",
+          "messages",
+          "replies",
+          "annotations",
+          "expected",
+          "labels",
+          "dropped"
+        ],
+        "title": "EthosTranscriptOut",
+        "type": "object"
+      },
+      "EthosTranscriptSummary": {
+        "properties": {
+          "content_notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Content Notes",
+            "type": "array"
+          },
+          "disputed": {
+            "title": "Disputed",
+            "type": "integer"
+          },
+          "epoch": {
+            "title": "Epoch",
+            "type": "integer"
+          },
+          "fit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fit"
+          },
+          "replies": {
+            "title": "Replies",
+            "type": "integer"
+          },
+          "sample_index": {
+            "title": "Sample Index",
+            "type": "integer"
+          },
+          "scenario_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Key"
+          },
+          "scenario_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Type"
+          },
+          "transcript_id": {
+            "format": "uuid",
+            "title": "Transcript Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "transcript_id",
+          "sample_index",
+          "epoch",
+          "scenario_key",
+          "scenario_type",
+          "content_notes",
+          "replies",
+          "fit",
+          "disputed"
+        ],
+        "title": "EthosTranscriptSummary",
+        "type": "object"
+      },
       "ExpectationOut": {
         "properties": {
           "expect": {
@@ -1518,148 +1769,6 @@
           "max"
         ],
         "title": "ExpectationOut",
-        "type": "object"
-      },
-      "ExploreLaunch": {
-        "properties": {
-          "agent": {
-            "title": "Agent",
-            "type": "string"
-          },
-          "compaction": {
-            "default": true,
-            "description": "Let Petri summarise long audits.",
-            "title": "Compaction",
-            "type": "boolean"
-          },
-          "epochs": {
-            "default": 1,
-            "maximum": 10.0,
-            "minimum": 1.0,
-            "title": "Epochs",
-            "type": "integer"
-          },
-          "max_turns": {
-            "default": 30,
-            "maximum": 60.0,
-            "minimum": 2.0,
-            "title": "Max Turns",
-            "type": "integer"
-          },
-          "seeds": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Seed keys; empty means use tags.",
-            "title": "Seeds"
-          },
-          "tags": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Use every suitable seed with a tag.",
-            "title": "Tags"
-          },
-          "token_budget": {
-            "anyOf": [
-              {
-                "minimum": 10000.0,
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Token Budget"
-          },
-          "version": {
-            "title": "Version",
-            "type": "string"
-          }
-        },
-        "required": [
-          "agent",
-          "version"
-        ],
-        "title": "ExploreLaunch",
-        "type": "object"
-      },
-      "ExploreRunOut": {
-        "properties": {
-          "agent": {
-            "title": "Agent",
-            "type": "string"
-          },
-          "counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Counts",
-            "type": "object"
-          },
-          "dimensions": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Dimensions",
-            "type": "array"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "samples": {
-            "items": {
-              "$ref": "#/components/schemas/SampleOut"
-            },
-            "title": "Samples",
-            "type": "array"
-          },
-          "seeds": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Seeds",
-            "type": "array"
-          },
-          "transcripts": {
-            "items": {
-              "$ref": "#/components/schemas/TranscriptSummary"
-            },
-            "title": "Transcripts",
-            "type": "array"
-          },
-          "version": {
-            "title": "Version",
-            "type": "string"
-          }
-        },
-        "required": [
-          "run",
-          "agent",
-          "version",
-          "seeds",
-          "samples",
-          "counts",
-          "dimensions",
-          "transcripts"
-        ],
-        "title": "ExploreRunOut",
         "type": "object"
       },
       "FitOut": {
@@ -1855,7 +1964,7 @@
           },
           "labels": {
             "items": {
-              "$ref": "#/components/schemas/LensLabelOut"
+              "$ref": "#/components/schemas/EthosLabelOut"
             },
             "title": "Labels",
             "type": "array"
@@ -2313,6 +2422,148 @@
         "title": "HealthOut",
         "type": "object"
       },
+      "InquiryLaunch": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "compaction": {
+            "default": true,
+            "description": "Let Petri summarise long audits.",
+            "title": "Compaction",
+            "type": "boolean"
+          },
+          "epochs": {
+            "default": 1,
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Epochs",
+            "type": "integer"
+          },
+          "max_turns": {
+            "default": 30,
+            "maximum": 60.0,
+            "minimum": 2.0,
+            "title": "Max Turns",
+            "type": "integer"
+          },
+          "seeds": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Seed keys; empty means use tags.",
+            "title": "Seeds"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Use every suitable seed with a tag.",
+            "title": "Tags"
+          },
+          "token_budget": {
+            "anyOf": [
+              {
+                "minimum": 10000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token Budget"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "agent",
+          "version"
+        ],
+        "title": "InquiryLaunch",
+        "type": "object"
+      },
+      "InquiryRunOut": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "dimensions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Dimensions",
+            "type": "array"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/SampleOut"
+            },
+            "title": "Samples",
+            "type": "array"
+          },
+          "seeds": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Seeds",
+            "type": "array"
+          },
+          "transcripts": {
+            "items": {
+              "$ref": "#/components/schemas/TranscriptSummary"
+            },
+            "title": "Transcripts",
+            "type": "array"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run",
+          "agent",
+          "version",
+          "seeds",
+          "samples",
+          "counts",
+          "dimensions",
+          "transcripts"
+        ],
+        "title": "InquiryRunOut",
+        "type": "object"
+      },
       "IntervalOut": {
         "properties": {
           "high": {
@@ -2506,659 +2757,6 @@
         "title": "LabelPrevalenceOut",
         "type": "object"
       },
-      "LensCompareOut": {
-        "properties": {
-          "a": {
-            "$ref": "#/components/schemas/LensRunSummary"
-          },
-          "b": {
-            "$ref": "#/components/schemas/LensRunSummary"
-          },
-          "labels": {
-            "items": {
-              "$ref": "#/components/schemas/LabelComparisonOut"
-            },
-            "title": "Labels",
-            "type": "array"
-          },
-          "scenarios": {
-            "items": {
-              "$ref": "#/components/schemas/ScenarioComparisonOut"
-            },
-            "title": "Scenarios",
-            "type": "array"
-          },
-          "shared_scenarios": {
-            "title": "Shared Scenarios",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "a",
-          "b",
-          "shared_scenarios",
-          "labels",
-          "scenarios"
-        ],
-        "title": "LensCompareOut",
-        "type": "object"
-      },
-      "LensDisputeOut": {
-        "properties": {
-          "annotations": {
-            "items": {
-              "$ref": "#/components/schemas/AnnotationOut"
-            },
-            "title": "Annotations",
-            "type": "array"
-          },
-          "by_judge": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "By Judge",
-            "type": "object"
-          },
-          "family": {
-            "title": "Family",
-            "type": "string"
-          },
-          "label": {
-            "title": "Label",
-            "type": "string"
-          },
-          "lens_run_id": {
-            "format": "uuid",
-            "title": "Lens Run Id",
-            "type": "string"
-          },
-          "lens_run_title": {
-            "title": "Lens Run Title",
-            "type": "string"
-          },
-          "median": {
-            "title": "Median",
-            "type": "number"
-          },
-          "message_id": {
-            "format": "uuid",
-            "title": "Message Id",
-            "type": "string"
-          },
-          "reply_text": {
-            "title": "Reply Text",
-            "type": "string"
-          },
-          "reviewed_by_me": {
-            "title": "Reviewed By Me",
-            "type": "boolean"
-          },
-          "reviews": {
-            "title": "Reviews",
-            "type": "integer"
-          },
-          "scenario_key": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Scenario Key"
-          },
-          "transcript_id": {
-            "format": "uuid",
-            "title": "Transcript Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "lens_run_id",
-          "lens_run_title",
-          "transcript_id",
-          "scenario_key",
-          "message_id",
-          "reply_text",
-          "label",
-          "family",
-          "median",
-          "by_judge",
-          "annotations",
-          "reviews",
-          "reviewed_by_me"
-        ],
-        "title": "LensDisputeOut",
-        "type": "object"
-      },
-      "LensEvidenceOut": {
-        "properties": {
-          "channel": {
-            "title": "Channel",
-            "type": "string"
-          },
-          "id": {
-            "format": "uuid",
-            "title": "Id",
-            "type": "string"
-          },
-          "intensity": {
-            "title": "Intensity",
-            "type": "integer"
-          },
-          "judge": {
-            "title": "Judge",
-            "type": "string"
-          },
-          "label": {
-            "title": "Label",
-            "type": "string"
-          },
-          "message_id": {
-            "format": "uuid",
-            "title": "Message Id",
-            "type": "string"
-          },
-          "quote": {
-            "title": "Quote",
-            "type": "string"
-          },
-          "transcript_id": {
-            "format": "uuid",
-            "title": "Transcript Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "transcript_id",
-          "message_id",
-          "label",
-          "judge",
-          "intensity",
-          "quote",
-          "channel"
-        ],
-        "title": "LensEvidenceOut",
-        "type": "object"
-      },
-      "LensFamilyOut": {
-        "properties": {
-          "key": {
-            "title": "Key",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "source": {
-            "title": "Source",
-            "type": "string"
-          }
-        },
-        "required": [
-          "key",
-          "name",
-          "source"
-        ],
-        "title": "LensFamilyOut",
-        "type": "object"
-      },
-      "LensLabelOut": {
-        "properties": {
-          "counter_examples": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Counter Examples",
-            "type": "array"
-          },
-          "definition": {
-            "title": "Definition",
-            "type": "string"
-          },
-          "examples": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Examples",
-            "type": "array"
-          },
-          "family": {
-            "title": "Family",
-            "type": "string"
-          },
-          "key": {
-            "title": "Key",
-            "type": "string"
-          },
-          "trust_status": {
-            "title": "Trust Status",
-            "type": "string"
-          }
-        },
-        "required": [
-          "key",
-          "family",
-          "definition",
-          "examples",
-          "counter_examples",
-          "trust_status"
-        ],
-        "title": "LensLabelOut",
-        "type": "object"
-      },
-      "LensLaunch": {
-        "properties": {
-          "source_run": {
-            "format": "uuid",
-            "title": "Source Run",
-            "type": "string"
-          },
-          "token_budget": {
-            "anyOf": [
-              {
-                "minimum": 10000.0,
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Token Budget"
-          },
-          "transcripts": {
-            "anyOf": [
-              {
-                "items": {
-                  "format": "uuid",
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Read only these transcripts; all of them when empty.",
-            "title": "Transcripts"
-          }
-        },
-        "required": [
-          "source_run"
-        ],
-        "title": "LensLaunch",
-        "type": "object"
-      },
-      "LensQueueOut": {
-        "properties": {
-          "hidden_for_content_notes": {
-            "title": "Hidden For Content Notes",
-            "type": "integer"
-          },
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/LensDisputeOut"
-            },
-            "title": "Items",
-            "type": "array"
-          }
-        },
-        "required": [
-          "items",
-          "hidden_for_content_notes"
-        ],
-        "title": "LensQueueOut",
-        "type": "object"
-      },
-      "LensRunOut": {
-        "properties": {
-          "counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Counts",
-            "type": "object"
-          },
-          "dropped": {
-            "items": {
-              "$ref": "#/components/schemas/DroppedCountOut"
-            },
-            "title": "Dropped",
-            "type": "array"
-          },
-          "evidence": {
-            "description": "The findings behind one label, when a label is asked for.",
-            "items": {
-              "$ref": "#/components/schemas/LensEvidenceOut"
-            },
-            "title": "Evidence",
-            "type": "array"
-          },
-          "judge_counts": {
-            "items": {
-              "$ref": "#/components/schemas/JudgeCountOut"
-            },
-            "title": "Judge Counts",
-            "type": "array"
-          },
-          "judges": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Judges",
-            "type": "array"
-          },
-          "labels": {
-            "items": {
-              "$ref": "#/components/schemas/LabelPrevalenceOut"
-            },
-            "title": "Labels",
-            "type": "array"
-          },
-          "mean_fit": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Mean Fit"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "samples": {
-            "items": {
-              "$ref": "#/components/schemas/SampleOut"
-            },
-            "title": "Samples",
-            "type": "array"
-          },
-          "source": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "transcripts": {
-            "items": {
-              "$ref": "#/components/schemas/LensTranscriptSummary"
-            },
-            "title": "Transcripts",
-            "type": "array"
-          }
-        },
-        "required": [
-          "run",
-          "source",
-          "counts",
-          "mean_fit",
-          "judges",
-          "samples",
-          "labels",
-          "transcripts",
-          "judge_counts",
-          "dropped",
-          "evidence"
-        ],
-        "title": "LensRunOut",
-        "type": "object"
-      },
-      "LensRunSummary": {
-        "properties": {
-          "counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Counts",
-            "type": "object"
-          },
-          "mean_fit": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Mean Fit"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "source": {
-            "$ref": "#/components/schemas/RunOut"
-          }
-        },
-        "required": [
-          "run",
-          "source",
-          "counts",
-          "mean_fit"
-        ],
-        "title": "LensRunSummary",
-        "type": "object"
-      },
-      "LensSourceOut": {
-        "properties": {
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "transcripts": {
-            "title": "Transcripts",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "run",
-          "transcripts"
-        ],
-        "title": "LensSourceOut",
-        "type": "object"
-      },
-      "LensTranscriptOut": {
-        "properties": {
-          "annotations": {
-            "items": {
-              "$ref": "#/components/schemas/AnnotationOut"
-            },
-            "title": "Annotations",
-            "type": "array"
-          },
-          "content_notes": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Content Notes",
-            "type": "array"
-          },
-          "dropped": {
-            "items": {
-              "$ref": "#/components/schemas/DroppedCountOut"
-            },
-            "title": "Dropped",
-            "type": "array"
-          },
-          "expected": {
-            "items": {
-              "$ref": "#/components/schemas/ExpectationOut"
-            },
-            "title": "Expected",
-            "type": "array"
-          },
-          "judges": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Judges",
-            "type": "array"
-          },
-          "labels": {
-            "items": {
-              "$ref": "#/components/schemas/LensLabelOut"
-            },
-            "title": "Labels",
-            "type": "array"
-          },
-          "messages": {
-            "items": {
-              "$ref": "#/components/schemas/MessageOut"
-            },
-            "title": "Messages",
-            "type": "array"
-          },
-          "replies": {
-            "items": {
-              "$ref": "#/components/schemas/ReplyLensOut"
-            },
-            "title": "Replies",
-            "type": "array"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "scenario_key": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Scenario Key"
-          },
-          "scenario_type": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Scenario Type"
-          },
-          "seed_text": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Seed Text"
-          },
-          "source": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "transcript_id": {
-            "format": "uuid",
-            "title": "Transcript Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "run",
-          "source",
-          "transcript_id",
-          "scenario_key",
-          "scenario_type",
-          "seed_text",
-          "content_notes",
-          "judges",
-          "messages",
-          "replies",
-          "annotations",
-          "expected",
-          "labels",
-          "dropped"
-        ],
-        "title": "LensTranscriptOut",
-        "type": "object"
-      },
-      "LensTranscriptSummary": {
-        "properties": {
-          "content_notes": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Content Notes",
-            "type": "array"
-          },
-          "disputed": {
-            "title": "Disputed",
-            "type": "integer"
-          },
-          "epoch": {
-            "title": "Epoch",
-            "type": "integer"
-          },
-          "fit": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fit"
-          },
-          "replies": {
-            "title": "Replies",
-            "type": "integer"
-          },
-          "sample_index": {
-            "title": "Sample Index",
-            "type": "integer"
-          },
-          "scenario_key": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Scenario Key"
-          },
-          "scenario_type": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Scenario Type"
-          },
-          "transcript_id": {
-            "format": "uuid",
-            "title": "Transcript Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "transcript_id",
-          "sample_index",
-          "epoch",
-          "scenario_key",
-          "scenario_type",
-          "content_notes",
-          "replies",
-          "fit",
-          "disputed"
-        ],
-        "title": "LensTranscriptSummary",
-        "type": "object"
-      },
       "MeOut": {
         "properties": {
           "email": {
@@ -3207,193 +2805,6 @@
           "sensitive_opt_in"
         ],
         "title": "MeUpdate",
-        "type": "object"
-      },
-      "MeasureLaunch": {
-        "properties": {
-          "agent": {
-            "title": "Agent",
-            "type": "string"
-          },
-          "compaction": {
-            "default": true,
-            "description": "Let Petri summarise long audits.",
-            "title": "Compaction",
-            "type": "boolean"
-          },
-          "epochs": {
-            "default": 3,
-            "description": "Repetitions of every scenario.",
-            "maximum": 10.0,
-            "minimum": 1.0,
-            "title": "Epochs",
-            "type": "integer"
-          },
-          "max_turns": {
-            "default": 15,
-            "maximum": 60.0,
-            "minimum": 2.0,
-            "title": "Max Turns",
-            "type": "integer"
-          },
-          "scenario_set": {
-            "format": "uuid",
-            "title": "Scenario Set",
-            "type": "string"
-          },
-          "token_budget": {
-            "anyOf": [
-              {
-                "minimum": 10000.0,
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Per prompt version.",
-            "title": "Token Budget"
-          },
-          "versions": {
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 10,
-            "minItems": 1,
-            "title": "Versions",
-            "type": "array"
-          }
-        },
-        "required": [
-          "agent",
-          "versions",
-          "scenario_set"
-        ],
-        "title": "MeasureLaunch",
-        "type": "object"
-      },
-      "MeasureRunOut": {
-        "properties": {
-          "agent": {
-            "title": "Agent",
-            "type": "string"
-          },
-          "behaviour": {
-            "title": "Behaviour",
-            "type": "string"
-          },
-          "by_scenario": {
-            "items": {
-              "$ref": "#/components/schemas/ScenarioTallyOut"
-            },
-            "title": "By Scenario",
-            "type": "array"
-          },
-          "counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Counts",
-            "type": "object"
-          },
-          "elicitation": {
-            "$ref": "#/components/schemas/ElicitationOut"
-          },
-          "rollouts": {
-            "items": {
-              "$ref": "#/components/schemas/RolloutOut"
-            },
-            "title": "Rollouts",
-            "type": "array"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "samples": {
-            "items": {
-              "$ref": "#/components/schemas/SampleOut"
-            },
-            "title": "Samples",
-            "type": "array"
-          },
-          "scenario_set": {
-            "format": "uuid",
-            "title": "Scenario Set",
-            "type": "string"
-          },
-          "suite": {
-            "title": "Suite",
-            "type": "string"
-          },
-          "version": {
-            "title": "Version",
-            "type": "string"
-          }
-        },
-        "required": [
-          "run",
-          "agent",
-          "version",
-          "behaviour",
-          "scenario_set",
-          "suite",
-          "counts",
-          "elicitation",
-          "samples",
-          "rollouts",
-          "by_scenario"
-        ],
-        "title": "MeasureRunOut",
-        "type": "object"
-      },
-      "MeasureRunSummary": {
-        "properties": {
-          "agent": {
-            "title": "Agent",
-            "type": "string"
-          },
-          "behaviour": {
-            "title": "Behaviour",
-            "type": "string"
-          },
-          "counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Counts",
-            "type": "object"
-          },
-          "elicitation": {
-            "$ref": "#/components/schemas/ElicitationOut"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "scenario_set": {
-            "format": "uuid",
-            "title": "Scenario Set",
-            "type": "string"
-          },
-          "suite": {
-            "title": "Suite",
-            "type": "string"
-          },
-          "version": {
-            "title": "Version",
-            "type": "string"
-          }
-        },
-        "required": [
-          "run",
-          "agent",
-          "version",
-          "behaviour",
-          "scenario_set",
-          "suite",
-          "counts",
-          "elicitation"
-        ],
-        "title": "MeasureRunSummary",
         "type": "object"
       },
       "MessageOut": {
@@ -3623,148 +3034,6 @@
         "title": "PersonaOut",
         "type": "object"
       },
-      "PlaygroundOut": {
-        "properties": {
-          "agent": {
-            "title": "Agent",
-            "type": "string"
-          },
-          "messages": {
-            "items": {
-              "$ref": "#/components/schemas/MessageOut"
-            },
-            "title": "Messages",
-            "type": "array"
-          },
-          "persona": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/PersonaOut"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "version": {
-            "title": "Version",
-            "type": "string"
-          }
-        },
-        "required": [
-          "run",
-          "agent",
-          "version",
-          "persona",
-          "messages"
-        ],
-        "title": "PlaygroundOut",
-        "type": "object"
-      },
-      "PlaygroundSay": {
-        "properties": {
-          "content": {
-            "maxLength": 20000,
-            "minLength": 1,
-            "title": "Content",
-            "type": "string"
-          }
-        },
-        "required": [
-          "content"
-        ],
-        "title": "PlaygroundSay",
-        "type": "object"
-      },
-      "PlaygroundStart": {
-        "properties": {
-          "agent": {
-            "title": "Agent",
-            "type": "string"
-          },
-          "context": {
-            "anyOf": [
-              {
-                "maxLength": 8000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "What the agent's connected systems would show, in deployed mode.",
-            "title": "Context"
-          },
-          "mode": {
-            "default": "deployed",
-            "pattern": "^(deployed|open)$",
-            "title": "Mode",
-            "type": "string"
-          },
-          "persona": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Persona"
-          },
-          "system_prompt": {
-            "anyOf": [
-              {
-                "maxLength": 20000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Open mode only: the system prompt to use.",
-            "title": "System Prompt"
-          },
-          "version": {
-            "title": "Version",
-            "type": "string"
-          }
-        },
-        "required": [
-          "agent",
-          "version"
-        ],
-        "title": "PlaygroundStart",
-        "type": "object"
-      },
-      "PlaygroundTurnOut": {
-        "properties": {
-          "messages": {
-            "items": {
-              "$ref": "#/components/schemas/MessageOut"
-            },
-            "title": "Messages",
-            "type": "array"
-          },
-          "run": {
-            "$ref": "#/components/schemas/RunOut"
-          },
-          "stopped_at_budget": {
-            "title": "Stopped At Budget",
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "run",
-          "messages",
-          "stopped_at_budget"
-        ],
-        "title": "PlaygroundTurnOut",
-        "type": "object"
-      },
       "PromptDiffOut": {
         "properties": {
           "added": {
@@ -3937,7 +3206,149 @@
         "title": "ReadinessOut",
         "type": "object"
       },
-      "ReplyLensOut": {
+      "RehearsalOut": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/MessageOut"
+            },
+            "title": "Messages",
+            "type": "array"
+          },
+          "persona": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PersonaOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run",
+          "agent",
+          "version",
+          "persona",
+          "messages"
+        ],
+        "title": "RehearsalOut",
+        "type": "object"
+      },
+      "RehearsalSay": {
+        "properties": {
+          "content": {
+            "maxLength": 20000,
+            "minLength": 1,
+            "title": "Content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "title": "RehearsalSay",
+        "type": "object"
+      },
+      "RehearsalStart": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "context": {
+            "anyOf": [
+              {
+                "maxLength": 8000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "What the agent's connected systems would show, in deployed mode.",
+            "title": "Context"
+          },
+          "mode": {
+            "default": "deployed",
+            "pattern": "^(deployed|open)$",
+            "title": "Mode",
+            "type": "string"
+          },
+          "persona": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Persona"
+          },
+          "system_prompt": {
+            "anyOf": [
+              {
+                "maxLength": 20000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Open mode only: the system prompt to use.",
+            "title": "System Prompt"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "agent",
+          "version"
+        ],
+        "title": "RehearsalStart",
+        "type": "object"
+      },
+      "RehearsalTurnOut": {
+        "properties": {
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/MessageOut"
+            },
+            "title": "Messages",
+            "type": "array"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "stopped_at_budget": {
+            "title": "Stopped At Budget",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "run",
+          "messages",
+          "stopped_at_budget"
+        ],
+        "title": "RehearsalTurnOut",
+        "type": "object"
+      },
+      "ReplyEthosOut": {
         "properties": {
           "fit": {
             "anyOf": [
@@ -3972,7 +3383,7 @@
           "labels",
           "fit"
         ],
-        "title": "ReplyLensOut",
+        "title": "ReplyEthosOut",
         "type": "object"
       },
       "ReplyRefOut": {
@@ -4434,7 +3845,7 @@
                 "type": "null"
               }
             ],
-            "description": "How the agent was reached, for Measure runs.",
+            "description": "How the agent was reached, for Tally runs.",
             "title": "Route"
           },
           "seed_hash": {
@@ -5065,11 +4476,11 @@
             "title": "Both",
             "type": "array"
           },
-          "companion_only": {
+          "ethos_only": {
             "items": {
               "$ref": "#/components/schemas/ReplyRefOut"
             },
-            "title": "Companion Only",
+            "title": "Ethos Only",
             "type": "array"
           },
           "family": {
@@ -5083,13 +4494,6 @@
           "label": {
             "title": "Label",
             "type": "string"
-          },
-          "lens_only": {
-            "items": {
-              "$ref": "#/components/schemas/ReplyRefOut"
-            },
-            "title": "Lens Only",
-            "type": "array"
           },
           "neither": {
             "items": {
@@ -5132,6 +4536,13 @@
               }
             ],
             "title": "Trust Status"
+          },
+          "witness_only": {
+            "items": {
+              "$ref": "#/components/schemas/ReplyRefOut"
+            },
+            "title": "Witness Only",
+            "type": "array"
           }
         },
         "required": [
@@ -5145,8 +4556,8 @@
           "agreement",
           "positive",
           "both",
-          "lens_only",
-          "companion_only",
+          "ethos_only",
+          "witness_only",
           "neither"
         ],
         "title": "SignalAgreementOut",
@@ -5251,6 +4662,69 @@
         "title": "SystemCheckOut",
         "type": "object"
       },
+      "TallyLaunch": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "compaction": {
+            "default": true,
+            "description": "Let Petri summarise long audits.",
+            "title": "Compaction",
+            "type": "boolean"
+          },
+          "epochs": {
+            "default": 3,
+            "description": "Repetitions of every scenario.",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Epochs",
+            "type": "integer"
+          },
+          "max_turns": {
+            "default": 15,
+            "maximum": 60.0,
+            "minimum": 2.0,
+            "title": "Max Turns",
+            "type": "integer"
+          },
+          "scenario_set": {
+            "format": "uuid",
+            "title": "Scenario Set",
+            "type": "string"
+          },
+          "token_budget": {
+            "anyOf": [
+              {
+                "minimum": 10000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Per prompt version.",
+            "title": "Token Budget"
+          },
+          "versions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Versions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "agent",
+          "versions",
+          "scenario_set"
+        ],
+        "title": "TallyLaunch",
+        "type": "object"
+      },
       "TallyOut": {
         "properties": {
           "elicited": {
@@ -5300,18 +4774,142 @@
         "title": "TallyOut",
         "type": "object"
       },
+      "TallyRunOut": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "behaviour": {
+            "title": "Behaviour",
+            "type": "string"
+          },
+          "by_scenario": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioTallyOut"
+            },
+            "title": "By Scenario",
+            "type": "array"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "elicitation": {
+            "$ref": "#/components/schemas/ElicitationOut"
+          },
+          "rollouts": {
+            "items": {
+              "$ref": "#/components/schemas/RolloutOut"
+            },
+            "title": "Rollouts",
+            "type": "array"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/SampleOut"
+            },
+            "title": "Samples",
+            "type": "array"
+          },
+          "scenario_set": {
+            "format": "uuid",
+            "title": "Scenario Set",
+            "type": "string"
+          },
+          "suite": {
+            "title": "Suite",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run",
+          "agent",
+          "version",
+          "behaviour",
+          "scenario_set",
+          "suite",
+          "counts",
+          "elicitation",
+          "samples",
+          "rollouts",
+          "by_scenario"
+        ],
+        "title": "TallyRunOut",
+        "type": "object"
+      },
+      "TallyRunSummary": {
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "behaviour": {
+            "title": "Behaviour",
+            "type": "string"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "elicitation": {
+            "$ref": "#/components/schemas/ElicitationOut"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "scenario_set": {
+            "format": "uuid",
+            "title": "Scenario Set",
+            "type": "string"
+          },
+          "suite": {
+            "title": "Suite",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run",
+          "agent",
+          "version",
+          "behaviour",
+          "scenario_set",
+          "suite",
+          "counts",
+          "elicitation"
+        ],
+        "title": "TallyRunSummary",
+        "type": "object"
+      },
       "TaxonomyOut": {
         "properties": {
           "families": {
             "items": {
-              "$ref": "#/components/schemas/LensFamilyOut"
+              "$ref": "#/components/schemas/EthosFamilyOut"
             },
             "title": "Families",
             "type": "array"
           },
           "labels": {
             "items": {
-              "$ref": "#/components/schemas/LensLabelOut"
+              "$ref": "#/components/schemas/EthosLabelOut"
             },
             "title": "Labels",
             "type": "array"
@@ -5736,11 +5334,413 @@
         ],
         "title": "ValidationError",
         "type": "object"
+      },
+      "WitnessLaunch": {
+        "properties": {
+          "reader": {
+            "title": "Reader",
+            "type": "string"
+          },
+          "source_run": {
+            "format": "uuid",
+            "title": "Source Run",
+            "type": "string"
+          },
+          "transcripts": {
+            "anyOf": [
+              {
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Read only these transcripts; all of them when empty.",
+            "title": "Transcripts"
+          }
+        },
+        "required": [
+          "source_run",
+          "reader"
+        ],
+        "title": "WitnessLaunch",
+        "type": "object"
+      },
+      "WitnessReaderOut": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "runner": {
+            "title": "Runner",
+            "type": "string"
+          },
+          "signals": {
+            "items": {
+              "$ref": "#/components/schemas/WitnessSignalSpecOut"
+            },
+            "title": "Signals",
+            "type": "array"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "model",
+          "runner",
+          "version",
+          "signals"
+        ],
+        "title": "WitnessReaderOut",
+        "type": "object"
+      },
+      "WitnessRunOut": {
+        "properties": {
+          "agreements": {
+            "items": {
+              "$ref": "#/components/schemas/SignalAgreementOut"
+            },
+            "title": "Agreements",
+            "type": "array"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "dropped": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Dropped",
+            "type": "object"
+          },
+          "ethos_run": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The Ethos run the signals are compared with."
+          },
+          "ethos_runs": {
+            "description": "Finished Ethos runs on the same source run.",
+            "items": {
+              "$ref": "#/components/schemas/RunOut"
+            },
+            "title": "Ethos Runs",
+            "type": "array"
+          },
+          "reader": {
+            "$ref": "#/components/schemas/WitnessReaderOut"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/WitnessSampleOut"
+            },
+            "title": "Samples",
+            "type": "array"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "reader",
+          "counts",
+          "samples",
+          "dropped",
+          "ethos_run",
+          "ethos_runs",
+          "agreements"
+        ],
+        "title": "WitnessRunOut",
+        "type": "object"
+      },
+      "WitnessRunSummary": {
+        "properties": {
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "reader": {
+            "$ref": "#/components/schemas/WitnessReaderOut"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "source": {
+            "$ref": "#/components/schemas/RunOut"
+          }
+        },
+        "required": [
+          "run",
+          "source",
+          "reader",
+          "counts"
+        ],
+        "title": "WitnessRunSummary",
+        "type": "object"
+      },
+      "WitnessSampleOut": {
+        "properties": {
+          "attempts": {
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "detail": {
+            "additionalProperties": true,
+            "title": "Detail",
+            "type": "object"
+          },
+          "epoch": {
+            "title": "Epoch",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "heartbeat_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Heartbeat At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "sample_index": {
+            "title": "Sample Index",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "tokens_used": {
+            "title": "Tokens Used",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "sample_index",
+          "epoch",
+          "status",
+          "attempts",
+          "heartbeat_at",
+          "tokens_used",
+          "error",
+          "detail"
+        ],
+        "title": "WitnessSampleOut",
+        "type": "object"
+      },
+      "WitnessSignalOut": {
+        "properties": {
+          "char_end": {
+            "title": "Char End",
+            "type": "integer"
+          },
+          "char_start": {
+            "title": "Char Start",
+            "type": "integer"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "peak": {
+            "title": "Peak",
+            "type": "number"
+          },
+          "present_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Present At"
+          },
+          "tokens": {
+            "items": {
+              "$ref": "#/components/schemas/TokenValueOut"
+            },
+            "title": "Tokens",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "message_id",
+          "name",
+          "kind",
+          "label",
+          "present_at",
+          "char_start",
+          "char_end",
+          "tokens",
+          "peak",
+          "explanation"
+        ],
+        "title": "WitnessSignalOut",
+        "type": "object"
+      },
+      "WitnessSignalSpecOut": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "present_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Present At"
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "description",
+          "label",
+          "present_at"
+        ],
+        "title": "WitnessSignalSpecOut",
+        "type": "object"
+      },
+      "WitnessTranscriptOut": {
+        "properties": {
+          "reader": {
+            "$ref": "#/components/schemas/WitnessReaderOut"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          },
+          "signals": {
+            "items": {
+              "$ref": "#/components/schemas/WitnessSignalOut"
+            },
+            "title": "Signals",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run",
+          "reader",
+          "signals"
+        ],
+        "title": "WitnessTranscriptOut",
+        "type": "object"
       }
     }
   },
   "info": {
-    "description": "Tests our AI agents three ways: Explore, Measure and Lens.",
+    "description": "Tests our AI agents three ways: Inquiry, Tally and Ethos.",
     "title": "Agora API",
     "version": "0.1.0"
   },
@@ -6040,50 +6040,29 @@
         ]
       }
     },
-    "/api/companion/readers": {
+    "/api/ethos/compare": {
       "get": {
-        "operationId": "list_readers",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/CompanionReaderOut"
-                  },
-                  "title": "Response List Readers",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "List Readers",
-        "tags": [
-          "companion"
-        ]
-      }
-    },
-    "/api/companion/runs": {
-      "get": {
-        "operationId": "list_companion_runs",
+        "description": "Prompt A beside prompt B, on the scenarios both runs read.",
+        "operationId": "compare_ethos_runs",
         "parameters": [
           {
             "in": "query",
-            "name": "source_run",
-            "required": false,
+            "name": "a",
+            "required": true,
             "schema": {
-              "anyOf": [
-                {
-                  "format": "uuid",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Source Run"
+              "format": "uuid",
+              "title": "A",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "b",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "B",
+              "type": "string"
             }
           }
         ],
@@ -6092,11 +6071,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/CompanionRunSummary"
-                  },
-                  "title": "Response List Companion Runs",
-                  "type": "array"
+                  "$ref": "#/components/schemas/EthosCompareOut"
                 }
               }
             },
@@ -6113,18 +6088,43 @@
             "description": "Validation Error"
           }
         },
-        "summary": "List Companion Runs",
+        "summary": "Compare Ethos Runs",
         "tags": [
-          "companion"
+          "ethos"
+        ]
+      }
+    },
+    "/api/ethos/runs": {
+      "get": {
+        "operationId": "list_ethos_runs",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EthosRunSummary"
+                  },
+                  "title": "Response List Ethos Runs",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Ethos Runs",
+        "tags": [
+          "ethos"
         ]
       },
       "post": {
-        "operationId": "launch_companion",
+        "operationId": "launch_ethos",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CompanionLaunch"
+                "$ref": "#/components/schemas/EthosLaunch"
               }
             }
           },
@@ -6152,16 +6152,15 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Launch Companion",
+        "summary": "Launch Ethos",
         "tags": [
-          "companion"
+          "ethos"
         ]
       }
     },
-    "/api/companion/runs/{run_id}": {
+    "/api/ethos/runs/{run_id}": {
       "get": {
-        "description": "The run, and its signals beside a Lens run on the same source: the one asked\nfor, or the latest finished one.",
-        "operationId": "read_companion_run",
+        "operationId": "read_ethos_run",
         "parameters": [
           {
             "in": "path",
@@ -6175,19 +6174,18 @@
           },
           {
             "in": "query",
-            "name": "lens_run",
+            "name": "label",
             "required": false,
             "schema": {
               "anyOf": [
                 {
-                  "format": "uuid",
                   "type": "string"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Lens Run"
+              "title": "Label"
             }
           }
         ],
@@ -6196,7 +6194,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CompanionRunOut"
+                  "$ref": "#/components/schemas/EthosRunOut"
                 }
               }
             },
@@ -6213,15 +6211,15 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Read Companion Run",
+        "summary": "Read Ethos Run",
         "tags": [
-          "companion"
+          "ethos"
         ]
       }
     },
-    "/api/companion/runs/{run_id}/cancel": {
+    "/api/ethos/runs/{run_id}/cancel": {
       "post": {
-        "operationId": "cancel_companion_run",
+        "operationId": "cancel_ethos_run",
         "parameters": [
           {
             "in": "path",
@@ -6256,15 +6254,15 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Cancel Companion Run",
+        "summary": "Cancel Ethos Run",
         "tags": [
-          "companion"
+          "ethos"
         ]
       }
     },
-    "/api/companion/runs/{run_id}/events": {
+    "/api/ethos/runs/{run_id}/events": {
       "get": {
-        "operationId": "stream_companion_run",
+        "operationId": "stream_ethos_run",
         "parameters": [
           {
             "in": "path",
@@ -6314,15 +6312,15 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Stream Companion Run",
+        "summary": "Stream Ethos Run",
         "tags": [
-          "companion"
+          "ethos"
         ]
       }
     },
-    "/api/companion/runs/{run_id}/transcripts/{transcript_id}": {
+    "/api/ethos/runs/{run_id}/transcripts/{transcript_id}": {
       "get": {
-        "operationId": "read_companion_transcript",
+        "operationId": "read_ethos_transcript",
         "parameters": [
           {
             "in": "path",
@@ -6350,7 +6348,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CompanionTranscriptOut"
+                  "$ref": "#/components/schemas/EthosTranscriptOut"
                 }
               }
             },
@@ -6367,13 +6365,105 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Read Companion Transcript",
+        "summary": "Read Ethos Transcript",
         "tags": [
-          "companion"
+          "ethos"
         ]
       }
     },
-    "/api/explore/dimensions": {
+    "/api/ethos/sources": {
+      "get": {
+        "description": "Finished runs whose transcripts Ethos can read.",
+        "operationId": "list_ethos_sources",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EthosSourceOut"
+                  },
+                  "title": "Response List Ethos Sources",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Ethos Sources",
+        "tags": [
+          "ethos"
+        ]
+      }
+    },
+    "/api/ethos/taxonomy": {
+      "get": {
+        "description": "The taxonomy in git, with each label's trust status as stored.",
+        "operationId": "read_taxonomy",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Read Taxonomy",
+        "tags": [
+          "ethos"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "description": "Liveness: the process is up. Never touches the database.",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/health/ready": {
+      "get": {
+        "description": "Readiness: the database answers and the queue schema is in place.",
+        "operationId": "ready",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Ready",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/inquiry/dimensions": {
       "get": {
         "description": "Our dimensions first, then Petri's built-in ones.",
         "operationId": "list_dimensions",
@@ -6395,13 +6485,13 @@
         },
         "summary": "List Dimensions",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       }
     },
-    "/api/explore/runs": {
+    "/api/inquiry/runs": {
       "get": {
-        "operationId": "list_explore_runs",
+        "operationId": "list_inquiry_runs",
         "responses": {
           "200": {
             "content": {
@@ -6410,7 +6500,7 @@
                   "items": {
                     "$ref": "#/components/schemas/RunOut"
                   },
-                  "title": "Response List Explore Runs",
+                  "title": "Response List Inquiry Runs",
                   "type": "array"
                 }
               }
@@ -6418,18 +6508,18 @@
             "description": "Successful Response"
           }
         },
-        "summary": "List Explore Runs",
+        "summary": "List Inquiry Runs",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       },
       "post": {
-        "operationId": "launch_explore",
+        "operationId": "launch_inquiry",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ExploreLaunch"
+                "$ref": "#/components/schemas/InquiryLaunch"
               }
             }
           },
@@ -6457,15 +6547,15 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Launch Explore",
+        "summary": "Launch Inquiry",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       }
     },
-    "/api/explore/runs/{run_id}": {
+    "/api/inquiry/runs/{run_id}": {
       "get": {
-        "operationId": "read_explore_run",
+        "operationId": "read_inquiry_run",
         "parameters": [
           {
             "in": "path",
@@ -6483,7 +6573,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExploreRunOut"
+                  "$ref": "#/components/schemas/InquiryRunOut"
                 }
               }
             },
@@ -6500,15 +6590,15 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Read Explore Run",
+        "summary": "Read Inquiry Run",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       }
     },
-    "/api/explore/runs/{run_id}/cancel": {
+    "/api/inquiry/runs/{run_id}/cancel": {
       "post": {
-        "operationId": "cancel_explore_run",
+        "operationId": "cancel_inquiry_run",
         "parameters": [
           {
             "in": "path",
@@ -6543,16 +6633,16 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Cancel Explore Run",
+        "summary": "Cancel Inquiry Run",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       }
     },
-    "/api/explore/runs/{run_id}/events": {
+    "/api/inquiry/runs/{run_id}/events": {
       "get": {
         "description": "Sample counts as they change. Clients reconnect after the stream ends, or poll.",
-        "operationId": "stream_explore_run",
+        "operationId": "stream_inquiry_run",
         "parameters": [
           {
             "in": "path",
@@ -6602,13 +6692,13 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Stream Explore Run",
+        "summary": "Stream Inquiry Run",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       }
     },
-    "/api/explore/seeds": {
+    "/api/inquiry/seeds": {
       "get": {
         "operationId": "list_seeds",
         "parameters": [
@@ -6657,11 +6747,11 @@
         },
         "summary": "List Seeds",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       }
     },
-    "/api/explore/transcripts/{transcript_id}": {
+    "/api/inquiry/transcripts/{transcript_id}": {
       "get": {
         "operationId": "read_transcript",
         "parameters": [
@@ -6700,11 +6790,11 @@
         },
         "summary": "Read Transcript",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       }
     },
-    "/api/explore/transcripts/{transcript_id}/log": {
+    "/api/inquiry/transcripts/{transcript_id}/log": {
       "get": {
         "description": "A short-lived link to the sample's Inspect log, for opening in Inspect View.",
         "operationId": "transcript_log",
@@ -6744,13 +6834,13 @@
         },
         "summary": "Transcript Log",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       }
     },
-    "/api/explore/transcripts/{transcript_id}/thinking": {
+    "/api/inquiry/transcripts/{transcript_id}/thinking": {
       "get": {
-        "description": "Full thinking, where Anthropic granted it: for admins and compliance only, and\nevery read is audited. Lens never reads it.",
+        "description": "Full thinking, where Anthropic granted it: for admins and compliance only, and\nevery read is audited. Ethos never reads it.",
         "operationId": "read_full_thinking",
         "parameters": [
           {
@@ -6792,1346 +6882,11 @@
         },
         "summary": "Read Full Thinking",
         "tags": [
-          "explore"
+          "inquiry"
         ]
       }
     },
-    "/api/health": {
-      "get": {
-        "description": "Liveness: the process is up. Never touches the database.",
-        "operationId": "health",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HealthOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Health",
-        "tags": [
-          "health"
-        ]
-      }
-    },
-    "/api/health/ready": {
-      "get": {
-        "description": "Readiness: the database answers and the queue schema is in place.",
-        "operationId": "ready",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReadinessOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Ready",
-        "tags": [
-          "health"
-        ]
-      }
-    },
-    "/api/lens/compare": {
-      "get": {
-        "description": "Prompt A beside prompt B, on the scenarios both runs read.",
-        "operationId": "compare_lens_runs",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "a",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "A",
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "b",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "B",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LensCompareOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Compare Lens Runs",
-        "tags": [
-          "lens"
-        ]
-      }
-    },
-    "/api/lens/runs": {
-      "get": {
-        "operationId": "list_lens_runs",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/LensRunSummary"
-                  },
-                  "title": "Response List Lens Runs",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "List Lens Runs",
-        "tags": [
-          "lens"
-        ]
-      },
-      "post": {
-        "operationId": "launch_lens",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LensLaunch"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RunOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Launch Lens",
-        "tags": [
-          "lens"
-        ]
-      }
-    },
-    "/api/lens/runs/{run_id}": {
-      "get": {
-        "operationId": "read_lens_run",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "label",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Label"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LensRunOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Read Lens Run",
-        "tags": [
-          "lens"
-        ]
-      }
-    },
-    "/api/lens/runs/{run_id}/cancel": {
-      "post": {
-        "operationId": "cancel_lens_run",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RunOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Cancel Lens Run",
-        "tags": [
-          "lens"
-        ]
-      }
-    },
-    "/api/lens/runs/{run_id}/events": {
-      "get": {
-        "operationId": "stream_lens_run",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "text/event-stream": {
-                "itemSchema": {
-                  "properties": {
-                    "data": {
-                      "type": "string"
-                    },
-                    "event": {
-                      "type": "string"
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "retry": {
-                      "minimum": 0,
-                      "type": "integer"
-                    }
-                  },
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Stream Lens Run",
-        "tags": [
-          "lens"
-        ]
-      }
-    },
-    "/api/lens/runs/{run_id}/transcripts/{transcript_id}": {
-      "get": {
-        "operationId": "read_lens_transcript",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "transcript_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Transcript Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LensTranscriptOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Read Lens Transcript",
-        "tags": [
-          "lens"
-        ]
-      }
-    },
-    "/api/lens/sources": {
-      "get": {
-        "description": "Finished runs whose transcripts Lens can read.",
-        "operationId": "list_lens_sources",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/LensSourceOut"
-                  },
-                  "title": "Response List Lens Sources",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "List Lens Sources",
-        "tags": [
-          "lens"
-        ]
-      }
-    },
-    "/api/lens/taxonomy": {
-      "get": {
-        "description": "The taxonomy in git, with each label's trust status as stored.",
-        "operationId": "read_taxonomy",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TaxonomyOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Read Taxonomy",
-        "tags": [
-          "lens"
-        ]
-      }
-    },
-    "/api/me": {
-      "get": {
-        "operationId": "read_me",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MeOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Read Me",
-        "tags": [
-          "me"
-        ]
-      },
-      "patch": {
-        "operationId": "update_me",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MeUpdate"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MeOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Update Me",
-        "tags": [
-          "me"
-        ]
-      }
-    },
-    "/api/measure/behaviours": {
-      "get": {
-        "operationId": "list_behaviours",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/BehaviourSummary"
-                  },
-                  "title": "Response List Behaviours",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "List Behaviours",
-        "tags": [
-          "measure"
-        ]
-      }
-    },
-    "/api/measure/behaviours/{key}": {
-      "get": {
-        "operationId": "read_behaviour",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "key",
-            "required": true,
-            "schema": {
-              "title": "Key",
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "scenario_set",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "format": "uuid",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Scenario Set"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BehaviourDetail"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Read Behaviour",
-        "tags": [
-          "measure"
-        ]
-      }
-    },
-    "/api/measure/behaviours/{key}/scenario-sets": {
-      "post": {
-        "description": "Run Bloom's understanding and ideation for the behaviour as it is in git now.",
-        "operationId": "generate_scenario_set",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "key",
-            "required": true,
-            "schema": {
-              "title": "Key",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScenarioGenerate"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RunOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Generate Scenario Set",
-        "tags": [
-          "measure"
-        ]
-      }
-    },
-    "/api/measure/runs": {
-      "get": {
-        "operationId": "list_measure_runs",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "behaviour",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Behaviour"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/MeasureRunSummary"
-                  },
-                  "title": "Response List Measure Runs",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "List Measure Runs",
-        "tags": [
-          "measure"
-        ]
-      },
-      "post": {
-        "description": "One run per prompt version, all against the same scenarios: a suite.",
-        "operationId": "launch_measure",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MeasureLaunch"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/RunOut"
-                  },
-                  "title": "Response Launch Measure",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Launch Measure",
-        "tags": [
-          "measure"
-        ]
-      }
-    },
-    "/api/measure/runs/{run_id}": {
-      "get": {
-        "operationId": "read_measure_run",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MeasureRunOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Read Measure Run",
-        "tags": [
-          "measure"
-        ]
-      }
-    },
-    "/api/measure/runs/{run_id}/cancel": {
-      "post": {
-        "operationId": "cancel_measure_run",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RunOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Cancel Measure Run",
-        "tags": [
-          "measure"
-        ]
-      }
-    },
-    "/api/measure/runs/{run_id}/events": {
-      "get": {
-        "description": "Sample counts as they change, for suites and scenario generation alike.",
-        "operationId": "stream_measure_run",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "text/event-stream": {
-                "itemSchema": {
-                  "properties": {
-                    "data": {
-                      "type": "string"
-                    },
-                    "event": {
-                      "type": "string"
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "retry": {
-                      "minimum": 0,
-                      "type": "integer"
-                    }
-                  },
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Stream Measure Run",
-        "tags": [
-          "measure"
-        ]
-      }
-    },
-    "/api/measure/scenario-sets/{scenario_set_id}": {
-      "get": {
-        "operationId": "read_scenario_set",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "scenario_set_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Scenario Set Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScenarioSetOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Read Scenario Set",
-        "tags": [
-          "measure"
-        ]
-      }
-    },
-    "/api/models": {
-      "get": {
-        "description": "The exact model behind each role, from config/models.yaml.",
-        "operationId": "model_roles",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ModelRolesOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Model Roles",
-        "tags": [
-          "models"
-        ]
-      }
-    },
-    "/api/playground": {
-      "get": {
-        "operationId": "list_conversations",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "mine",
-            "required": false,
-            "schema": {
-              "default": true,
-              "title": "Mine",
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/RunOut"
-                  },
-                  "title": "Response List Conversations",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "List Conversations",
-        "tags": [
-          "playground"
-        ]
-      },
-      "post": {
-        "operationId": "start_conversation",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PlaygroundStart"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PlaygroundOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Start Conversation",
-        "tags": [
-          "playground"
-        ]
-      }
-    },
-    "/api/playground/{run_id}": {
-      "get": {
-        "operationId": "read_conversation",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PlaygroundOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Read Conversation",
-        "tags": [
-          "playground"
-        ]
-      }
-    },
-    "/api/playground/{run_id}/finish": {
-      "post": {
-        "operationId": "finish_conversation",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PlaygroundOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Finish Conversation",
-        "tags": [
-          "playground"
-        ]
-      }
-    },
-    "/api/playground/{run_id}/messages": {
-      "post": {
-        "operationId": "say",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PlaygroundSay"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PlaygroundTurnOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Say",
-        "tags": [
-          "playground"
-        ]
-      }
-    },
-    "/api/reports/runs": {
-      "get": {
-        "description": "Recent runs of every kind, for export.",
-        "operationId": "list_report_runs",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/RunOut"
-                  },
-                  "title": "Response List Report Runs",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "List Report Runs",
-        "tags": [
-          "reports"
-        ]
-      }
-    },
-    "/api/reports/runs/{run_id}/findings.csv": {
-      "get": {
-        "description": "One row per Lens finding, with the run's provenance. Quotes from transcripts with\ncontent notes are left blank.",
-        "operationId": "export_findings",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Export Findings",
-        "tags": [
-          "reports"
-        ]
-      }
-    },
-    "/api/reports/runs/{run_id}/provenance": {
-      "get": {
-        "description": "Everything needed to reproduce the run, including its full config.",
-        "operationId": "run_provenance",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "additionalProperties": true,
-                  "title": "Response Run Provenance",
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Run Provenance",
-        "tags": [
-          "reports"
-        ]
-      }
-    },
-    "/api/reports/runs/{run_id}/report.pdf": {
-      "get": {
-        "description": "A printable report of one run, opening with its full provenance.",
-        "operationId": "export_report",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Export Report",
-        "tags": [
-          "reports"
-        ]
-      }
-    },
-    "/api/reports/runs/{run_id}/scores.csv": {
-      "get": {
-        "description": "One row per transcript and dimension, each carrying the run's provenance.\nScores from transcripts with content notes are included; their text is not.",
-        "operationId": "export_scores",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "run_id",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "title": "Run Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Export Scores",
-        "tags": [
-          "reports"
-        ]
-      }
-    },
-    "/api/review": {
+    "/api/jury": {
       "post": {
         "operationId": "create_review",
         "requestBody": {
@@ -8168,11 +6923,55 @@
         },
         "summary": "Create Review",
         "tags": [
-          "review"
+          "jury"
         ]
       }
     },
-    "/api/review/gold-sets": {
+    "/api/jury/ethos-queue": {
+      "get": {
+        "description": "Replies where Ethos judges differ by two points or more on a label, newest runs\nfirst. A verdict is recorded on a judge's finding and never changes it.",
+        "operationId": "ethos_queue",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EthosQueueOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ethos Queue",
+        "tags": [
+          "jury"
+        ]
+      }
+    },
+    "/api/jury/gold-sets": {
       "get": {
         "operationId": "list_gold_sets",
         "responses": {
@@ -8236,7 +7035,7 @@
         ]
       }
     },
-    "/api/review/gold-sets/{set_id}": {
+    "/api/jury/gold-sets/{set_id}": {
       "get": {
         "operationId": "read_gold_set",
         "parameters": [
@@ -8279,7 +7078,7 @@
         ]
       }
     },
-    "/api/review/gold-sets/{set_id}/agreement": {
+    "/api/jury/gold-sets/{set_id}/agreement": {
       "post": {
         "operationId": "compute_gold_agreement",
         "parameters": [
@@ -8326,7 +7125,7 @@
         ]
       }
     },
-    "/api/review/gold-sets/{set_id}/items": {
+    "/api/jury/gold-sets/{set_id}/items": {
       "post": {
         "operationId": "add_gold_items",
         "parameters": [
@@ -8379,7 +7178,7 @@
         ]
       }
     },
-    "/api/review/gold-sets/{set_id}/items/{item_id}": {
+    "/api/jury/gold-sets/{set_id}/items/{item_id}": {
       "get": {
         "operationId": "read_gold_item",
         "parameters": [
@@ -8432,7 +7231,7 @@
         ]
       }
     },
-    "/api/review/gold-sets/{set_id}/items/{item_id}/ratings": {
+    "/api/jury/gold-sets/{set_id}/items/{item_id}/ratings": {
       "put": {
         "operationId": "save_gold_ratings",
         "parameters": [
@@ -8499,51 +7298,7 @@
         ]
       }
     },
-    "/api/review/lens-queue": {
-      "get": {
-        "description": "Replies where Lens judges differ by two points or more on a label, newest runs\nfirst. A verdict is recorded on a judge's finding and never changes it.",
-        "operationId": "lens_queue",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "schema": {
-              "default": 50,
-              "title": "Limit",
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LensQueueOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Lens Queue",
-        "tags": [
-          "review"
-        ]
-      }
-    },
-    "/api/review/queue": {
+    "/api/jury/queue": {
       "get": {
         "operationId": "score_queue",
         "parameters": [
@@ -8582,11 +7337,11 @@
         },
         "summary": "Score Queue",
         "tags": [
-          "review"
+          "jury"
         ]
       }
     },
-    "/api/review/reviews": {
+    "/api/jury/reviews": {
       "get": {
         "operationId": "list_reviews",
         "parameters": [
@@ -8651,7 +7406,497 @@
         },
         "summary": "List Reviews",
         "tags": [
-          "review"
+          "jury"
+        ]
+      }
+    },
+    "/api/me": {
+      "get": {
+        "operationId": "read_me",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Read Me",
+        "tags": [
+          "me"
+        ]
+      },
+      "patch": {
+        "operationId": "update_me",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Me",
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/api/models": {
+      "get": {
+        "description": "The exact model behind each role, from config/models.yaml.",
+        "operationId": "model_roles",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelRolesOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Model Roles",
+        "tags": [
+          "models"
+        ]
+      }
+    },
+    "/api/record/runs": {
+      "get": {
+        "description": "Recent runs of every kind, for export.",
+        "operationId": "list_report_runs",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RunOut"
+                  },
+                  "title": "Response List Report Runs",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Report Runs",
+        "tags": [
+          "record"
+        ]
+      }
+    },
+    "/api/record/runs/{run_id}/findings.csv": {
+      "get": {
+        "description": "One row per Ethos finding, with the run's provenance. Quotes from transcripts with\ncontent notes are left blank.",
+        "operationId": "export_findings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Findings",
+        "tags": [
+          "record"
+        ]
+      }
+    },
+    "/api/record/runs/{run_id}/provenance": {
+      "get": {
+        "description": "Everything needed to reproduce the run, including its full config.",
+        "operationId": "run_provenance",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Run Provenance",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Run Provenance",
+        "tags": [
+          "record"
+        ]
+      }
+    },
+    "/api/record/runs/{run_id}/report.pdf": {
+      "get": {
+        "description": "A printable report of one run, opening with its full provenance.",
+        "operationId": "export_report",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Report",
+        "tags": [
+          "record"
+        ]
+      }
+    },
+    "/api/record/runs/{run_id}/scores.csv": {
+      "get": {
+        "description": "One row per transcript and dimension, each carrying the run's provenance.\nScores from transcripts with content notes are included; their text is not.",
+        "operationId": "export_scores",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Scores",
+        "tags": [
+          "record"
+        ]
+      }
+    },
+    "/api/rehearsal": {
+      "get": {
+        "operationId": "list_conversations",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "mine",
+            "required": false,
+            "schema": {
+              "default": true,
+              "title": "Mine",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RunOut"
+                  },
+                  "title": "Response List Conversations",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Conversations",
+        "tags": [
+          "rehearsal"
+        ]
+      },
+      "post": {
+        "operationId": "start_conversation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RehearsalStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RehearsalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Start Conversation",
+        "tags": [
+          "rehearsal"
+        ]
+      }
+    },
+    "/api/rehearsal/{run_id}": {
+      "get": {
+        "operationId": "read_conversation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RehearsalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Conversation",
+        "tags": [
+          "rehearsal"
+        ]
+      }
+    },
+    "/api/rehearsal/{run_id}/finish": {
+      "post": {
+        "operationId": "finish_conversation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RehearsalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Finish Conversation",
+        "tags": [
+          "rehearsal"
+        ]
+      }
+    },
+    "/api/rehearsal/{run_id}/messages": {
+      "post": {
+        "operationId": "say",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RehearsalSay"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RehearsalTurnOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Say",
+        "tags": [
+          "rehearsal"
         ]
       }
     },
@@ -8932,6 +8177,428 @@
         ]
       }
     },
+    "/api/tally/behaviours": {
+      "get": {
+        "operationId": "list_behaviours",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BehaviourSummary"
+                  },
+                  "title": "Response List Behaviours",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Behaviours",
+        "tags": [
+          "tally"
+        ]
+      }
+    },
+    "/api/tally/behaviours/{key}": {
+      "get": {
+        "operationId": "read_behaviour",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scenario_set",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scenario Set"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BehaviourDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Behaviour",
+        "tags": [
+          "tally"
+        ]
+      }
+    },
+    "/api/tally/behaviours/{key}/scenario-sets": {
+      "post": {
+        "description": "Run Bloom's understanding and ideation for the behaviour as it is in git now.",
+        "operationId": "generate_scenario_set",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScenarioGenerate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Generate Scenario Set",
+        "tags": [
+          "tally"
+        ]
+      }
+    },
+    "/api/tally/runs": {
+      "get": {
+        "operationId": "list_tally_runs",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "behaviour",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Behaviour"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TallyRunSummary"
+                  },
+                  "title": "Response List Tally Runs",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Tally Runs",
+        "tags": [
+          "tally"
+        ]
+      },
+      "post": {
+        "description": "One run per prompt version, all against the same scenarios: a suite.",
+        "operationId": "launch_tally",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TallyLaunch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RunOut"
+                  },
+                  "title": "Response Launch Tally",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Launch Tally",
+        "tags": [
+          "tally"
+        ]
+      }
+    },
+    "/api/tally/runs/{run_id}": {
+      "get": {
+        "operationId": "read_tally_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TallyRunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Tally Run",
+        "tags": [
+          "tally"
+        ]
+      }
+    },
+    "/api/tally/runs/{run_id}/cancel": {
+      "post": {
+        "operationId": "cancel_tally_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Tally Run",
+        "tags": [
+          "tally"
+        ]
+      }
+    },
+    "/api/tally/runs/{run_id}/events": {
+      "get": {
+        "description": "Sample counts as they change, for suites and scenario generation alike.",
+        "operationId": "stream_tally_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "itemSchema": {
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    },
+                    "event": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "retry": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stream Tally Run",
+        "tags": [
+          "tally"
+        ]
+      }
+    },
+    "/api/tally/scenario-sets/{scenario_set_id}": {
+      "get": {
+        "operationId": "read_scenario_set",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "scenario_set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Scenario Set Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioSetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Scenario Set",
+        "tags": [
+          "tally"
+        ]
+      }
+    },
     "/api/tokens": {
       "get": {
         "operationId": "list_tokens",
@@ -9193,6 +8860,339 @@
         "summary": "Chat Completions",
         "tags": [
           "openai-compatible"
+        ]
+      }
+    },
+    "/api/witness/readers": {
+      "get": {
+        "operationId": "list_readers",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WitnessReaderOut"
+                  },
+                  "title": "Response List Readers",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Readers",
+        "tags": [
+          "witness"
+        ]
+      }
+    },
+    "/api/witness/runs": {
+      "get": {
+        "operationId": "list_witness_runs",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "source_run",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source Run"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WitnessRunSummary"
+                  },
+                  "title": "Response List Witness Runs",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Witness Runs",
+        "tags": [
+          "witness"
+        ]
+      },
+      "post": {
+        "operationId": "launch_witness",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WitnessLaunch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Launch Witness",
+        "tags": [
+          "witness"
+        ]
+      }
+    },
+    "/api/witness/runs/{run_id}": {
+      "get": {
+        "description": "The run, and its signals beside an Ethos run on the same source: the one asked\nfor, or the latest finished one.",
+        "operationId": "read_witness_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ethos_run",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Ethos Run"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WitnessRunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Witness Run",
+        "tags": [
+          "witness"
+        ]
+      }
+    },
+    "/api/witness/runs/{run_id}/cancel": {
+      "post": {
+        "operationId": "cancel_witness_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Witness Run",
+        "tags": [
+          "witness"
+        ]
+      }
+    },
+    "/api/witness/runs/{run_id}/events": {
+      "get": {
+        "operationId": "stream_witness_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "itemSchema": {
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    },
+                    "event": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "retry": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stream Witness Run",
+        "tags": [
+          "witness"
+        ]
+      }
+    },
+    "/api/witness/runs/{run_id}/transcripts/{transcript_id}": {
+      "get": {
+        "operationId": "read_witness_transcript",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "transcript_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transcript Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WitnessTranscriptOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Witness Transcript",
+        "tags": [
+          "witness"
         ]
       }
     }

@@ -178,7 +178,7 @@ class RunOut(Out):
     model_ids: dict[str, Any]
     engine_versions: dict[str, Any]
     adapter_mode: str | None
-    route: str | None = Field(description="How the agent was reached, for Measure runs.")
+    route: str | None = Field(description="How the agent was reached, for Tally runs.")
     behaviour_id: uuid.UUID | None
     token_budget: int
     tokens_used: int
@@ -205,7 +205,7 @@ class MessageOut(Out):
     model: str | None
 
 
-class PlaygroundStart(BaseModel):
+class RehearsalStart(BaseModel):
     agent: str
     version: str
     persona: str | None = None
@@ -220,7 +220,7 @@ class PlaygroundStart(BaseModel):
     )
 
 
-class PlaygroundOut(BaseModel):
+class RehearsalOut(BaseModel):
     run: RunOut
     agent: str
     version: str
@@ -228,11 +228,11 @@ class PlaygroundOut(BaseModel):
     messages: list[MessageOut]
 
 
-class PlaygroundSay(BaseModel):
+class RehearsalSay(BaseModel):
     content: str = Field(min_length=1, max_length=20000)
 
 
-class PlaygroundTurnOut(BaseModel):
+class RehearsalTurnOut(BaseModel):
     run: RunOut
     messages: list[MessageOut]
     stopped_at_budget: bool
@@ -281,7 +281,7 @@ class SeedOut(BaseModel):
     sha256: str
 
 
-class ExploreLaunch(BaseModel):
+class InquiryLaunch(BaseModel):
     agent: str
     version: str
     seeds: list[str] | None = Field(default=None, description="Seed keys; empty means use tags.")
@@ -324,7 +324,7 @@ class TranscriptSummary(Out):
     scores: dict[str, float]
 
 
-class ExploreRunOut(BaseModel):
+class InquiryRunOut(BaseModel):
     run: RunOut
     agent: str
     version: str
@@ -405,7 +405,7 @@ class ReviewQueueOut(BaseModel):
     )
 
 
-# Measure
+# Tally
 
 
 class ScenarioSetSummary(Out):
@@ -504,7 +504,7 @@ class RolloutOut(BaseModel):
     content_notes: list[str]
 
 
-class MeasureRunSummary(BaseModel):
+class TallyRunSummary(BaseModel):
     run: RunOut
     agent: str
     version: str
@@ -515,7 +515,7 @@ class MeasureRunSummary(BaseModel):
     elicitation: ElicitationOut
 
 
-class MeasureRunOut(MeasureRunSummary):
+class TallyRunOut(TallyRunSummary):
     samples: list[SampleOut]
     rollouts: list[RolloutOut]
     by_scenario: list[ScenarioTallyOut]
@@ -525,7 +525,7 @@ class BehaviourDetail(BehaviourSummary):
     scenario_sets: list[ScenarioSetSummary]
     generations: list[RunOut]
     selected_set: uuid.UUID | None
-    runs: list[MeasureRunSummary] = Field(description="Measure runs on the selected set.")
+    runs: list[TallyRunSummary] = Field(description="Tally runs on the selected set.")
     top_rollouts: list[RolloutOut] = Field(description="The highest presence scores.")
 
 
@@ -533,7 +533,7 @@ class ScenarioGenerate(BaseModel):
     token_budget: int | None = Field(default=None, ge=10_000)
 
 
-class MeasureLaunch(BaseModel):
+class TallyLaunch(BaseModel):
     agent: str
     versions: list[str] = Field(min_length=1, max_length=10)
     scenario_set: uuid.UUID
@@ -543,16 +543,16 @@ class MeasureLaunch(BaseModel):
     compaction: bool = Field(default=True, description="Let Petri summarise long audits.")
 
 
-# Lens
+# Ethos
 
 
-class LensFamilyOut(BaseModel):
+class EthosFamilyOut(BaseModel):
     key: str
     name: str
     source: str
 
 
-class LensLabelOut(BaseModel):
+class EthosLabelOut(BaseModel):
     key: str
     family: str
     definition: str
@@ -563,16 +563,16 @@ class LensLabelOut(BaseModel):
 
 class TaxonomyOut(BaseModel):
     version: str
-    families: list[LensFamilyOut]
-    labels: list[LensLabelOut]
+    families: list[EthosFamilyOut]
+    labels: list[EthosLabelOut]
 
 
-class LensSourceOut(BaseModel):
+class EthosSourceOut(BaseModel):
     run: RunOut
     transcripts: int
 
 
-class LensLaunch(BaseModel):
+class EthosLaunch(BaseModel):
     source_run: uuid.UUID
     transcripts: list[uuid.UUID] | None = Field(
         default=None, description="Read only these transcripts; all of them when empty."
@@ -609,7 +609,7 @@ class JudgeCountOut(BaseModel):
     dropped: int
 
 
-class LensTranscriptSummary(BaseModel):
+class EthosTranscriptSummary(BaseModel):
     transcript_id: uuid.UUID
     sample_index: int
     epoch: int
@@ -621,7 +621,7 @@ class LensTranscriptSummary(BaseModel):
     disputed: int
 
 
-class LensEvidenceOut(BaseModel):
+class EthosEvidenceOut(BaseModel):
     id: uuid.UUID
     transcript_id: uuid.UUID
     message_id: uuid.UUID
@@ -632,21 +632,21 @@ class LensEvidenceOut(BaseModel):
     channel: str
 
 
-class LensRunSummary(BaseModel):
+class EthosRunSummary(BaseModel):
     run: RunOut
     source: RunOut
     counts: dict[str, int]
     mean_fit: float | None
 
 
-class LensRunOut(LensRunSummary):
+class EthosRunOut(EthosRunSummary):
     judges: list[str]
     samples: list[SampleOut]
     labels: list[LabelPrevalenceOut]
-    transcripts: list[LensTranscriptSummary]
+    transcripts: list[EthosTranscriptSummary]
     judge_counts: list[JudgeCountOut]
     dropped: list[DroppedCountOut]
-    evidence: list[LensEvidenceOut] = Field(
+    evidence: list[EthosEvidenceOut] = Field(
         description="The findings behind one label, when a label is asked for."
     )
 
@@ -667,7 +667,7 @@ class FitOut(BaseModel):
     out_of_band: list[str]
 
 
-class ReplyLensOut(BaseModel):
+class ReplyEthosOut(BaseModel):
     message_id: uuid.UUID
     index: int
     labels: list[ConsensusOut]
@@ -696,7 +696,7 @@ class ExpectationOut(BaseModel):
     max: int
 
 
-class LensTranscriptOut(BaseModel):
+class EthosTranscriptOut(BaseModel):
     run: RunOut
     source: RunOut
     transcript_id: uuid.UUID
@@ -706,10 +706,10 @@ class LensTranscriptOut(BaseModel):
     content_notes: list[str]
     judges: list[str]
     messages: list[MessageOut]
-    replies: list[ReplyLensOut]
+    replies: list[ReplyEthosOut]
     annotations: list[AnnotationOut]
     expected: list[ExpectationOut]
-    labels: list[LensLabelOut]
+    labels: list[EthosLabelOut]
     dropped: list[DroppedCountOut]
 
 
@@ -729,9 +729,9 @@ class ScenarioComparisonOut(BaseModel):
     b_transcripts: list[uuid.UUID]
 
 
-class LensCompareOut(BaseModel):
-    a: LensRunSummary
-    b: LensRunSummary
+class EthosCompareOut(BaseModel):
+    a: EthosRunSummary
+    b: EthosRunSummary
     shared_scenarios: int
     labels: list[LabelComparisonOut]
     scenarios: list[ScenarioComparisonOut]
@@ -819,14 +819,14 @@ class GoldItemDetail(BaseModel):
     content_notes: list[str]
     messages: list[MessageOut]
     replies: list[uuid.UUID]
-    labels: list[LensLabelOut]
+    labels: list[EthosLabelOut]
     mine: list[GoldRatingOut] = Field(description="Your ratings only; others stay hidden.")
     next_item: uuid.UUID | None
 
 
-class LensDisputeOut(BaseModel):
-    lens_run_id: uuid.UUID
-    lens_run_title: str
+class EthosDisputeOut(BaseModel):
+    ethos_run_id: uuid.UUID
+    ethos_run_title: str
     transcript_id: uuid.UUID
     scenario_key: str | None
     message_id: uuid.UUID
@@ -840,8 +840,8 @@ class LensDisputeOut(BaseModel):
     reviewed_by_me: bool
 
 
-class LensQueueOut(BaseModel):
-    items: list[LensDisputeOut]
+class EthosQueueOut(BaseModel):
+    items: list[EthosDisputeOut]
     hidden_for_content_notes: int
 
 
@@ -851,7 +851,7 @@ class FullThinkingOut(BaseModel):
     thinking_full: str
 
 
-class CompanionSignalSpecOut(BaseModel):
+class WitnessSignalSpecOut(BaseModel):
     name: str
     kind: str
     description: str
@@ -859,15 +859,15 @@ class CompanionSignalSpecOut(BaseModel):
     present_at: float | None
 
 
-class CompanionReaderOut(BaseModel):
+class WitnessReaderOut(BaseModel):
     key: str
     model: str
     runner: str
     version: str
-    signals: list[CompanionSignalSpecOut]
+    signals: list[WitnessSignalSpecOut]
 
 
-class CompanionLaunch(BaseModel):
+class WitnessLaunch(BaseModel):
     source_run: uuid.UUID
     reader: str
     transcripts: list[uuid.UUID] | None = Field(
@@ -875,14 +875,14 @@ class CompanionLaunch(BaseModel):
     )
 
 
-class CompanionRunSummary(BaseModel):
+class WitnessRunSummary(BaseModel):
     run: RunOut
     source: RunOut
-    reader: CompanionReaderOut
+    reader: WitnessReaderOut
     counts: dict[str, int]
 
 
-class CompanionSampleOut(SampleOut):
+class WitnessSampleOut(SampleOut):
     detail: dict[str, Any]
 
 
@@ -905,16 +905,16 @@ class SignalAgreementOut(BaseModel):
     agreement: float | None = Field(description="Share of replies where both agree.")
     positive: float | None = Field(description="Of replies either flags, the share both flag.")
     both: list[ReplyRefOut]
-    lens_only: list[ReplyRefOut]
-    companion_only: list[ReplyRefOut]
+    ethos_only: list[ReplyRefOut]
+    witness_only: list[ReplyRefOut]
     neither: list[ReplyRefOut]
 
 
-class CompanionRunOut(CompanionRunSummary):
-    samples: list[CompanionSampleOut]
+class WitnessRunOut(WitnessRunSummary):
+    samples: list[WitnessSampleOut]
     dropped: dict[str, int]
-    lens_run: RunOut | None = Field(description="The Lens run the signals are compared with.")
-    lens_runs: list[RunOut] = Field(description="Finished Lens runs on the same source run.")
+    ethos_run: RunOut | None = Field(description="The Ethos run the signals are compared with.")
+    ethos_runs: list[RunOut] = Field(description="Finished Ethos runs on the same source run.")
     agreements: list[SignalAgreementOut]
 
 
@@ -924,7 +924,7 @@ class TokenValueOut(BaseModel):
     value: float
 
 
-class CompanionSignalOut(BaseModel):
+class WitnessSignalOut(BaseModel):
     id: uuid.UUID
     message_id: uuid.UUID
     name: str
@@ -938,7 +938,7 @@ class CompanionSignalOut(BaseModel):
     explanation: str | None
 
 
-class CompanionTranscriptOut(BaseModel):
+class WitnessTranscriptOut(BaseModel):
     run: RunOut
-    reader: CompanionReaderOut
-    signals: list[CompanionSignalOut]
+    reader: WitnessReaderOut
+    signals: list[WitnessSignalOut]

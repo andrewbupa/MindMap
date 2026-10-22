@@ -45,5 +45,5 @@ async def sign_in_as(
         "name": email.split("@")[0],
         **claims,
     }
-    await http.get("/api/auth/login", params={"next": "/explore"})
+    await http.get("/api/auth/login", params={"next": "/inquiry"})
     return await http.get("/api/auth/callback", params={"code": "x", "state": "fake"})

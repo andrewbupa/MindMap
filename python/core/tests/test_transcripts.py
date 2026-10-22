@@ -19,7 +19,7 @@ async def test_messages_round_trip_through_postgres_and_spaces(
     db: AsyncSession, s3_server: str
 ) -> None:
     run = Run(
-        kind="playground",
+        kind="rehearsal",
         status="running",
         config={"k": 1},
         config_hash="0" * 64,
@@ -56,7 +56,7 @@ async def test_messages_round_trip_through_postgres_and_spaces(
         model_id="mockllm/model",
         generate={"reasoning_effort": "medium"},
         usage=ModelUsage(input_tokens=10, output_tokens=5, total_tokens=15),
-        task="agora/playground",
+        task="agora/rehearsal",
         metadata={"prompt_sha": "a" * 64, "agent": "claims-assistant"},
     )
     uri = await store_log(get_storage(), log, log_key(run.id, transcript.id))

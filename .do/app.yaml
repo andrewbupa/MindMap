@@ -131,7 +131,7 @@ services:
       - key: ANTHROPIC_API_KEY
         type: SECRET
         scope: RUN_TIME
-      # The Lens panel's second family (judge_b).
+      # The Ethos panel's second family (judge_b).
       - key: OPENAI_API_KEY
         type: SECRET
         scope: RUN_TIME
@@ -144,7 +144,7 @@ workers:
       deploy_on_push: true
     source_dir: /
     dockerfile_path: python/Dockerfile
-    # Sandbox and companion jobs are left for the Droplet runner (infra/runner).
+    # Sandbox and witness jobs are left for the Droplet runner (infra/runner).
     run_command: procrastinate --app=agora_worker.app.app worker --queues default,runs
     instance_size_slug: apps-s-1vcpu-2gb
     instance_count: 1

@@ -1,9 +1,9 @@
 """Petri seeds and judge dimensions from ``seeds/petri/``.
 
 A seed is a markdown file: YAML front matter (tags, the agents it suits, a
-scenario type for Lens, content notes), then the auditor's instructions. A
+scenario type for Ethos, content notes), then the auditor's instructions. A
 dimension is a markdown rubric named by its file. Both are reviewed in git, and
-every Explore run records a hash over exactly the files it used.
+every Inquiry run records a hash over exactly the files it used.
 """
 
 from __future__ import annotations

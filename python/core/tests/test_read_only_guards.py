@@ -13,7 +13,7 @@ from agora_core.models import AuditEvent, Message, Run, RunStatus, Score, Transc
 
 def _run(**overrides: object) -> Run:
     values: dict[str, object] = {
-        "kind": "explore",
+        "kind": "inquiry",
         "config": {"k": 1},
         "config_hash": "0" * 64,
         "git_commit": "abc",

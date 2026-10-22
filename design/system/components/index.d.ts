@@ -18,7 +18,7 @@ export interface DialogProps { title: string; children?: React.ReactNode; action
 export interface ToastProps { children: React.ReactNode; tone?: 'ok' | 'warn' | 'danger' | 'info'; action?: React.ReactNode }
 export interface NoticeProps { children: React.ReactNode; title?: string; tone?: 'info' | 'danger' }
 export interface CardProps { title?: string; actions?: React.ReactNode; children?: React.ReactNode; label?: string; className?: string }
-export interface PageHeaderProps { title: string; intro?: string; note?: string; area?: 'home' | 'agents' | 'explore' | 'measure' | 'lens' | 'review' | 'reports' | 'settings'; actions?: React.ReactNode }
+export interface PageHeaderProps { title: string; intro?: string; note?: string; area?: 'home' | 'agents' | 'inquiry' | 'tally' | 'ethos' | 'review' | 'reports' | 'settings'; actions?: React.ReactNode }
 export interface BadgeProps { tone?: Tone; icon?: React.ReactNode; children: React.ReactNode }
 export interface MonoProps { children: React.ReactNode; truncate?: number; plain?: boolean; title?: string }
 export interface NavItem { label: string; href: string }
@@ -51,7 +51,7 @@ export interface ProfileStripProps { cells: ProfileCell[]; label?: string }
 export interface FindingPaneProps { label: string; family: Family; median: Intensity; judges: Array<{ model: string; intensity: Intensity; quotes?: string[]; dropped?: string[]; rationale?: string }>; definition?: string; trust?: Trust; agreement?: number; onClose?: () => void }
 export interface TurnTimelineProps { rows: Array<{ label: string; family: Family; values: Intensity[] }>; replies?: number; label?: string }
 export interface CompareViewProps { a: { name: string }; b: { name: string }; rows: Array<{ label: string; family: Family; a: number; b: number; diff: number; low: number; high: number }>; span?: number }
-export interface CompanionPaneProps { text: string; signals: Array<{ id: string; name: string; kind: 'probe' | 'persona' | 'autoencoder'; spans: Array<{ start: number; end: number; value: number }> }>; model?: string; active?: string; explanations?: Array<{ quote: string; text: string }> }
+export interface WitnessPaneProps { text: string; signals: Array<{ id: string; name: string; kind: 'probe' | 'persona' | 'autoencoder'; spans: Array<{ start: number; end: number; value: number }> }>; model?: string; active?: string; explanations?: Array<{ quote: string; text: string }> }
 
 export interface DiffLine { n: number; text: string; change?: 'added' | 'removed' }
 export interface DiffViewProps { left: { title: string; lines: DiffLine[] }; right: { title: string; lines: DiffLine[] } }
@@ -95,7 +95,7 @@ export declare function ProfileStrip(props: ProfileStripProps): React.ReactEleme
 export declare function FindingPane(props: FindingPaneProps): React.ReactElement;
 export declare function TurnTimeline(props: TurnTimelineProps): React.ReactElement;
 export declare function CompareView(props: CompareViewProps): React.ReactElement;
-export declare function CompanionPane(props: CompanionPaneProps): React.ReactElement;
+export declare function WitnessPane(props: WitnessPaneProps): React.ReactElement;
 export declare function DiffView(props: DiffViewProps): React.ReactElement;
 export declare function EmptyState(props: EmptyStateProps): React.ReactElement;
 export declare function LoadingState(props: LoadingStateProps): React.ReactElement;

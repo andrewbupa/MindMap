@@ -1,9 +1,9 @@
-"""The gold set: transcripts labelled independently by experts, to calibrate Lens.
+"""The gold set: transcripts labelled independently by experts, to calibrate Ethos.
 
 Items are drawn from finished runs by a seeded, repeatable sample. Each expert rates
 every label on every reply of an item, from 0 (absent) to 3 (dominant), without
 seeing the judges' findings or the other experts' ratings. Agreement is
-Krippendorff's alpha per label (ordinal): between the experts, and between each Lens
+Krippendorff's alpha per label (ordinal): between the experts, and between each Ethos
 judge and the experts' median. The experts' alpha sets each label's trust.
 """
 
@@ -21,7 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from agora_core import audit
 from agora_core.agreement import alpha, pairable_values, trust
-from agora_core.lens.runs import READABLE
+from agora_core.ethos.runs import READABLE
 from agora_core.models import (
     FINISHED_STATUSES,
     Agreement,
@@ -57,7 +57,7 @@ async def add_items(
     db: AsyncSession, gold_set: GoldSet, source: Run, *, size: int, seed: int
 ) -> list[GoldItem]:
     if source.kind not in READABLE:
-        raise GoldError("Gold items come from Explore, Measure or playground runs.")
+        raise GoldError("Gold items come from Inquiry, Tally or rehearsal runs.")
     if source.status not in {s.value for s in FINISHED_STATUSES}:
         raise GoldError("Gold items come from finished runs only.")
     existing = set(
@@ -199,8 +199,8 @@ async def labellers_by_item(db: AsyncSession, gold_set: GoldSet) -> dict[uuid.UU
 async def _judge_values(
     db: AsyncSession, gold_set: GoldSet, version: str, keys: dict[uuid.UUID, str]
 ) -> dict[str, dict[tuple[uuid.UUID, str], int]]:
-    """For each Lens judge: its highest intensity per reply and label, 0 where it found
-    nothing, from the newest finished Lens run that read each gold transcript."""
+    """For each Ethos judge: its highest intensity per reply and label, 0 where it found
+    nothing, from the newest finished Ethos run that read each gold transcript."""
     transcripts = set(
         (
             await db.execute(
@@ -211,7 +211,7 @@ async def _judge_values(
     runs = (
         await db.execute(
             select(Run)
-            .where(Run.kind == RunKind.lens.value)
+            .where(Run.kind == RunKind.ethos.value)
             .where(Run.status == RunStatus.succeeded.value)
             .where(Run.taxonomy_version == version)
             .order_by(Run.created_at.desc())

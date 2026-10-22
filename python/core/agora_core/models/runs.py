@@ -30,14 +30,14 @@ from agora_core.models.base import Base, CreatedAt, UUIDPrimaryKey
 
 
 class RunKind(StrEnum):
-    explore = "explore"
-    measure = "measure"
-    lens = "lens"
-    playground = "playground"
+    inquiry = "inquiry"
+    tally = "tally"
+    ethos = "ethos"
+    rehearsal = "rehearsal"
     # Bloom's understanding and ideation for one behaviour version.
     scenarios = "scenarios"
-    # An open-weight model's per-token signals on a finished run (agora_core.companion).
-    companion = "companion"
+    # An open-weight model's per-token signals on a finished run (agora_core.witness).
+    witness = "witness"
 
 
 class RunStatus(StrEnum):
@@ -81,7 +81,7 @@ class Run(UUIDPrimaryKey, CreatedAt, Base):
     tool_profile_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("tool_profile.id"))
     scenario_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("scenario.id"))
     behaviour_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("behaviour.id"))
-    # A Lens run reads transcripts produced by another run.
+    # An Ethos run reads transcripts produced by another run.
     source_run_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("run.id"))
 
     # Provenance: enough to reproduce the run months later.
@@ -192,7 +192,7 @@ class Score(UUIDPrimaryKey, CreatedAt, Base):
 class ScenarioSet(UUIDPrimaryKey, CreatedAt, Base):
     """The scenarios and judge dimensions Bloom generated for one behaviour version.
 
-    Written once by its generation run, then read by every Measure run that uses it,
+    Written once by its generation run, then read by every Tally run that uses it,
     so each prompt version faces identical scenarios.
     """
 

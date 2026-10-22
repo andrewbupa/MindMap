@@ -1,4 +1,4 @@
-"""Following and cancelling runs made of sample jobs: Explore, Measure and scenario sets."""
+"""Following and cancelling runs made of sample jobs: Inquiry, Tally and scenario sets."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from fastapi.sse import ServerSentEvent
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from agora_api.schemas import RunOut
-from agora_core import audit, explore
+from agora_core import audit, inquiry
 from agora_core.db import get_sessionmaker
 from agora_core.models import Role, Run, RunStatus, User
 
@@ -32,12 +32,12 @@ async def status_events(run_id: uuid.UUID) -> AsyncIterator[ServerSentEvent]:
             state: dict[str, object] = {
                 "status": run.status,
                 "tokens_used": run.tokens_used,
-                "counts": await explore.sample_counts(fresh, run_id),
+                "counts": await inquiry.sample_counts(fresh, run_id),
             }
         if state != last:
             last = state
             yield ServerSentEvent(data=state, event="status", retry=3000)
-        if state["status"] not in explore.OPEN:
+        if state["status"] not in inquiry.OPEN:
             return
         await asyncio.sleep(POLL_SECONDS)
 
@@ -48,7 +48,7 @@ async def cancel_run(run: Run, user: User, db: AsyncSession) -> RunOut:
         raise HTTPException(
             status.HTTP_403_FORBIDDEN, "Only the person who launched this can cancel it."
         )
-    if run.status not in explore.OPEN:
+    if run.status not in inquiry.OPEN:
         raise HTTPException(status.HTTP_409_CONFLICT, "This run has already finished.")
     run.status = RunStatus.cancelled.value
     run.finished_at = datetime.now(UTC)

@@ -50,8 +50,8 @@ export default async function AgentPage({ params }: { params: Promise<{ key: str
                 <td>{version.notes}</td>
                 <td>{formatWhen(version.created_at)}</td>
                 <td>
-                  <Link href={`/agents/${agent.key}/playground?version=${version.version}`}>
-                    Try in playground
+                  <Link href={`/agents/${agent.key}/rehearsal?version=${version.version}`}>
+                    Try in rehearsal
                   </Link>
                 </td>
               </tr>

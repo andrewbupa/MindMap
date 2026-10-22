@@ -32,8 +32,8 @@ x-python: &python
     # The development model needs no provider key. To use real models, set
     # AGORA_MODELS_FILE=/app/config/models.yaml and ANTHROPIC_API_KEY in .env.compose.
     AGORA_MODELS_FILE: ${AGORA_MODELS_FILE:-/app/config/models.dev.yaml}
-    # The local worker takes every queue, companion included, with the lexicon reader.
-    AGORA_COMPANION_FILE: ${AGORA_COMPANION_FILE:-/app/config/companion.dev.yaml}
+    # The local worker takes every queue, witness included, with the lexicon reader.
+    AGORA_WITNESS_FILE: ${AGORA_WITNESS_FILE:-/app/config/witness.dev.yaml}
   depends_on:
     postgres:
       condition: service_healthy

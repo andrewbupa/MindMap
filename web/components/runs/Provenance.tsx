@@ -17,11 +17,11 @@ const STATUS_TONES: Record<string, Tone> = {
 };
 
 const SEED_NOTES: Record<string, string> = {
-  explore: "Over the seeds used and every judge rubric",
-  measure: "Over the behaviour and its scenario set. Cite rates with it.",
+  inquiry: "Over the seeds used and every judge rubric",
+  tally: "Over the behaviour and its scenario set. Cite rates with it.",
   scenarios: "Over the behaviour's definition and examples",
-  lens: "The seed hash of the run Lens read",
-  companion: "The seed hash of the run the open model read",
+  ethos: "The seed hash of the run Ethos read",
+  witness: "The seed hash of the run the open model read",
 };
 
 const ROUTES: Record<string, string> = {
@@ -45,7 +45,7 @@ export function Provenance({ run }: { run: RunOut }) {
     else setError("The log could not be opened.");
   }
 
-  const perSample = run.kind === "explore" || run.kind === "measure" || run.kind === "lens";
+  const perSample = run.kind === "inquiry" || run.kind === "tally" || run.kind === "ethos";
   const seedNote = SEED_NOTES[run.kind] ?? "Over the seeds this run used";
   const log = run.log_uri ? (
     <LinkButton onClick={openLog} title="Download the Inspect .eval log">
@@ -162,7 +162,7 @@ export function Provenance({ run }: { run: RunOut }) {
           <th scope="row">Finished</th>
           <td>{formatWhen(run.finished_at, "Still running")}</td>
         </tr>
-        {perSample || run.kind === "scenarios" || run.kind === "lens" ? null : (
+        {perSample || run.kind === "scenarios" || run.kind === "ethos" ? null : (
           <tr>
             <th scope="row">Transcript</th>
             <td>

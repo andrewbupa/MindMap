@@ -465,7 +465,7 @@ a.bn-score:hover .bn-score-num { text-decoration-color: var(--color-text); }
 .bn-diverge .bn-ib-band { top: 3px; bottom: 3px; }
 .bn-diverge .bn-bead { position: absolute; top: -1px; width: 14px; height: 14px; margin-left: -7px; --bn-bead: var(--color-chart-1); }
 
-/* CompanionPane */
+/* WitnessPane */
 .bn-signal-text { margin: 0; line-height: 1.75; max-width: 42rem; }
 .bn-sig { border-radius: 3px; padding: 1px 0; background: color-mix(in srgb, var(--color-signal) var(--bn-sv), transparent); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .bn-sig-scale { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--text-xs); color: var(--color-text-muted); }

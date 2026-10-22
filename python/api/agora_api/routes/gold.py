@@ -16,6 +16,7 @@ from sqlalchemy import select
 from agora_api.deps import AdminUser, AppSettings, Db, require_role
 from agora_api.schemas import (
     AgreementOut,
+    EthosLabelOut,
     GoldItemDetail,
     GoldItemOut,
     GoldItemsAdd,
@@ -24,12 +25,11 @@ from agora_api.schemas import (
     GoldSetCreate,
     GoldSetOut,
     GoldSetSummary,
-    LensLabelOut,
     MessageOut,
 )
 from agora_core import gold
-from agora_core.lens.read import is_reply
-from agora_core.lens.taxonomy import load_lens
+from agora_core.ethos.read import is_reply
+from agora_core.ethos.taxonomy import load_ethos
 from agora_core.models import (
     GoldItem,
     GoldLabel,
@@ -44,14 +44,14 @@ from agora_core.models import (
     User,
 )
 
-router = APIRouter(prefix="/review/gold-sets", tags=["gold"])
+router = APIRouter(prefix="/jury/gold-sets", tags=["gold"])
 
 ReviewerUser = Annotated[User, Depends(require_role(Role.reviewer))]
 
 
 def _rank(settings: AppSettings) -> dict[str, int]:
     """Each label's place in the taxonomy, so lists follow it family by family."""
-    return {label.key: i for i, label in enumerate(load_lens(settings.repo_root).taxonomy.labels)}
+    return {label.key: i for i, label in enumerate(load_ethos(settings.repo_root).taxonomy.labels)}
 
 
 async def _gold_set(db: Db, set_id: uuid.UUID) -> GoldSet:
@@ -98,7 +98,7 @@ async def create_gold_set(body: GoldSetCreate, user: AdminUser, db: Db) -> GoldS
         .first()
     )
     if latest is None:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "No Lens taxonomy is loaded.")
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "No Ethos taxonomy is loaded.")
     try:
         gold_set, _ = await gold.create_gold_set(
             db,
@@ -288,7 +288,7 @@ async def read_gold_item(
         messages=[MessageOut.model_validate(m) for m in messages],
         replies=[m.id for m in messages if is_reply(m)],
         labels=[
-            LensLabelOut(
+            EthosLabelOut(
                 key=label.key,
                 family=label.family,
                 definition=" ".join(label.definition.split()),

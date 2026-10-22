@@ -39,8 +39,8 @@ class Settings(BaseSettings):
     repo_root: Path = REPO_ROOT
     # Model roles; defaults to config/models.yaml under repo_root.
     models_file: Path | None = None
-    # Open-model companion readers; config/companion.yaml when unset.
-    companion_file: Path | None = None
+    # Open-model witness readers; config/witness.yaml when unset.
+    witness_file: Path | None = None
 
     # Postgres. App Platform supplies ${db.DATABASE_URL} and ${db.CA_CERT}.
     database_url: str = "postgresql://agora:agora@localhost:5432/agora"

@@ -1,7 +1,7 @@
 # Agora
 
-Internal platform that tests our AI agents three ways: Explore (Petri 3),
-Measure (Bloom) and Lens (expressed dispositions, read from text).
+Internal platform that tests our AI agents three ways: Inquiry (Petri 3),
+Tally (Bloom) and Ethos (expressed dispositions, read from text).
 Full brief: docs/BRIEF.md. Read it before starting any milestone.
 
 ## How we work
@@ -23,7 +23,7 @@ Full brief: docs/BRIEF.md. Read it before starting any milestone.
   seeds, tests or screenshots: everything is synthetic.
 - Finished runs are read-only. Every run stores git commit, config hash,
   prompt SHA, seed hash, taxonomy version and resolved model IDs.
-- Lens findings must quote the transcript exactly; verify quotes in code
+- Ethos findings must quote the transcript exactly; verify quotes in code
   and drop any that do not match.
 - Label thinking summaries as summaries. Never prompt a target model to
   narrate its reasoning in its visible answer.

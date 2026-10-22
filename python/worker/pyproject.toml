@@ -1,7 +1,7 @@
 [project]
 name = "agora-worker"
 version = "0.1.0"
-description = "Agora background worker: job runners for Explore, Measure and Lens"
+description = "Agora background worker: job runners for Inquiry, Tally and Ethos"
 requires-python = ">=3.12,<3.13"
 dependencies = [
   "agora-core",

@@ -93,4 +93,4 @@ def test_every_task_has_a_queue_some_worker_takes() -> None:
     # Procrastinate's own tasks sit on its builtin queue; Agora never defers them.
     ours = {name: task.queue for name, task in app.tasks.items() if "procrastinate" not in name}
     assert set(ours.values()) <= known
-    assert ours["companion_sample"] == queue.COMPANION_QUEUE
+    assert ours["witness_sample"] == queue.WITNESS_QUEUE

@@ -48,7 +48,7 @@
   --color-chart-1: #2a78d6;
   --color-chart-grid: #e2ded6;
 
-  /* Lens label families, in a fixed order that passes the palette checks on each
+  /* Ethos label families, in a fixed order that passes the palette checks on each
      surface. Saturation carries intensity. Three light hues sit below 3:1 against
      the surface, so every tint carries a visible label. */
   --family-care: #2a78d6;

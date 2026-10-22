@@ -7,10 +7,10 @@ example transcripts. Every example must be synthetic.
 Agora reads these front matter keys as well as petri_bloom's own:
 
 - `agents`: the agents this behaviour is measured on.
-- `scenario_type`: the Lens scenario type of its scenarios, for expected profiles.
+- `scenario_type`: the Ethos scenario type of its scenarios, for expected profiles.
 - `content_notes`: notes such as `self_harm` that gate who may read its transcripts.
 
-Scenarios are generated from a behaviour in Agora (Measure, then the behaviour,
+Scenarios are generated from a behaviour in Agora (Tally, then the behaviour,
 then "Generate scenarios") and stored in Postgres, never in this folder. Changing
 `BEHAVIOR.md` makes a new behaviour version, whose scenarios must be generated
 again; rates are only compared across prompt versions that faced the same

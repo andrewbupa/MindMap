@@ -20,7 +20,7 @@ export default async function VersionPage({
     <>
       <PageHeader title={`${key} ${prompt.version}`}>
         <p>
-          {prompt.notes} <Link href={`/agents/${key}/playground?version=${version}`}>Try it</Link>
+          {prompt.notes} <Link href={`/agents/${key}/rehearsal?version=${version}`}>Try it</Link>
         </p>
       </PageHeader>
       <Card title="Provenance">

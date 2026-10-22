@@ -1,6 +1,5 @@
 from agora_core.models.base import Base
-from agora_core.models.identity import ApiToken, AuditEvent, Role, User, UserSession
-from agora_core.models.lens import (
+from agora_core.models.ethos import (
     Annotation,
     DroppedFinding,
     Expectation,
@@ -9,6 +8,7 @@ from agora_core.models.lens import (
     TaxonomyVersion,
     TrustStatus,
 )
+from agora_core.models.identity import ApiToken, AuditEvent, Role, User, UserSession
 from agora_core.models.registry import (
     Agent,
     Behaviour,
@@ -30,7 +30,7 @@ from agora_core.models.runs import (
     Score,
     Transcript,
 )
-from agora_core.models.system import CompanionSignal, DataImport, SystemCheck
+from agora_core.models.system import DataImport, SystemCheck, WitnessSignal
 
 __all__ = [
     "FINISHED_STATUSES",
@@ -41,7 +41,6 @@ __all__ = [
     "AuditEvent",
     "Base",
     "Behaviour",
-    "CompanionSignal",
     "DataImport",
     "Domain",
     "DroppedFinding",
@@ -70,4 +69,5 @@ __all__ = [
     "TrustStatus",
     "User",
     "UserSession",
+    "WitnessSignal",
 ]

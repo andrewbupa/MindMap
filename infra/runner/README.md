@@ -5,7 +5,7 @@ and into the same Spaces bucket as the App Platform worker:
 
 | Queue | Work | Status |
 | --- | --- | --- |
-| `companion` | An open-weight model reads a transcript and reports per-token signals | Ready; no production reader configured yet |
+| `witness` | An open-weight model reads a transcript and reports per-token signals | Ready; no production reader configured yet |
 | `sandbox` | Petri Dish audits in Docker sandboxes | Waiting on the decisions in docs/DECISIONS.md, milestone 7 |
 
 The App Platform worker listens on `default,runs` only (`.do/app.yaml`), so jobs on
@@ -15,11 +15,11 @@ is taken by one of the two.
 ## What runs where
 
 - The runner container is Agora's Python image plus the Docker CLI (`Dockerfile`),
-  running `procrastinate worker --queues sandbox,companion --concurrency 1`.
-- It holds the host's Docker socket and starts sibling containers: a companion
+  running `procrastinate worker --queues sandbox,witness --concurrency 1`.
+- It holds the host's Docker socket and starts sibling containers: a witness
   reader's GPU image, or a Dish sandbox. Socket access is root on the host, so the
   Droplet runs nothing else.
-- A companion reader is a command in `config/companion.yaml`. The usual form is
+- A witness reader is a command in `config/witness.yaml`. The usual form is
   `docker run --rm -i --gpus all --network none -v /srv/models:/models:ro <image@digest>`:
   the image has the GPU and the weights, and no network.
 
@@ -66,10 +66,10 @@ them, and a sample refuses a reader whose configuration changed since launch.
 Compose stops the container with SIGTERM and waits 120 seconds, as App Platform does.
 A job cut off mid-sample is re-queued by the stalled-job task, like any other.
 
-## The companion contract
+## The witness contract
 
 The reader's command gets one JSON request on stdin and writes one JSON response on
-stdout (`agora.companion/1`, defined in `agora_core/companion.py`):
+stdout (`agora.witness/1`, defined in `agora_core/witness.py`):
 
 - Request: the reader key, model, `version`, the signals to report, every message of
   the conversation in order (`id`, `index`, `role`, `text`), and `score`, the ids of
@@ -88,4 +88,4 @@ finite. The raw response is kept in Spaces beside the run.
 
 - `docker compose -f /srv/agora/infra/runner/compose.yaml logs -f`
 - Jobs waiting for a runner:
-  `SELECT queue_name, status, count(*) FROM procrastinate_jobs WHERE queue_name IN ('sandbox', 'companion') GROUP BY 1, 2;`
+  `SELECT queue_name, status, count(*) FROM procrastinate_jobs WHERE queue_name IN ('sandbox', 'witness') GROUP BY 1, 2;`
