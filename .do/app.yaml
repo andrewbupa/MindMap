@@ -1,19 +1,21 @@
 # DigitalOcean App Platform spec for Agora. Deploys on every push to main.
 #
+# Agora runs in the existing app bupa-ai-poc, which keeps its name and address.
 # Validate without a token:   make spec   (doctl apps spec validate --schema-only)
-# Create the app once:        doctl apps create --spec .do/app.yaml
-# Apply later changes:        doctl apps update <app-id> --spec .do/app.yaml
+# Apply changes:              doctl apps update <app-id> --spec .do/app.yaml
 #
 # Secrets (type: SECRET) carry no value here. Set them once in the control panel;
 # App Platform encrypts them. To keep them across `doctl apps update`, copy the
 # encrypted EV[...] values from `doctl apps spec get <app-id>` into this file.
 # Never commit a plaintext secret. See docs/RUNBOOK.md.
-name: agora
+name: bupa-ai-poc
 # Sydney: App Platform region syd, with Postgres and Spaces in syd1.
 region: syd
 # Server-sent events must not be buffered or cached at the edge.
 disable_edge_cache: true
 disable_email_obfuscation: true
+features:
+  - buildpack-stack=ubuntu-22
 
 alerts:
   - rule: DEPLOYMENT_FAILED

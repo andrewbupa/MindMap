@@ -85,9 +85,12 @@ Do these in order. Everything lives in the Sydney region.
    - redirect URI `https://<app-domain>/api/auth/callback`
    - sign-out redirect `https://<app-domain>/signed-out`
    - scopes `openid profile email`, plus a `groups` claim if roles come from groups
-4. **App.** `doctl apps create --spec .do/app.yaml`, then connect the GitHub
-   repository when prompted. Set the values marked `set-me` or empty in the spec,
-   and set every secret in the control panel:
+4. **App.** Agora runs in the existing app `bupa-ai-poc`, which keeps its name and
+   address; applying the spec replaces the earlier proof of concept's service.
+   Give DigitalOcean's GitHub app access to `andrewbupa/agora`, then apply the spec
+   in the control panel (Settings, App Spec) or with `doctl apps update <app-id>
+   --spec .do/app.yaml`. Set the values marked `set-me` or empty in the spec, and
+   set every secret in the control panel:
 
    | Variable | Where it comes from |
    | --- | --- |
