@@ -11,6 +11,7 @@ from agora_core.registry import load_registry, sync_registry
 from agora_core.storage import get_storage
 from agora_core.transcripts import fetch_log
 from agora_worker.tasks.inquiry import execute_sample
+from testsupport.ethos import inquiry_run
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 from testsupport.petri import ScriptedRoles, auditor_script, claims_target, judge_output
 
@@ -229,3 +230,27 @@ async def test_concurrent_samples_in_one_worker_both_succeed(
     for sample in samples:
         await db.refresh(sample)
         assert sample.status == "succeeded", sample.error
+
+
+async def test_launch_estimates_draw_on_finished_runs(
+    client: httpx.AsyncClient,
+    idp: FakeOIDCClient,
+    registry: None,
+    db: AsyncSession,
+    s3_server: str,
+) -> None:
+    await sign_in_as(client, idp, "admin@example.test")
+    four = {"kind": "inquiry", "samples": 4}
+    before = (await client.get("/api/runs/estimate", params=four)).json()
+    assert before["basis_runs"] == 0 and before["estimated_tokens"] is None
+    assert before["default_budget"] == 5_000_000
+
+    run = await inquiry_run(client, idp, db)
+    stored = await db.get(Run, run["id"])
+    assert stored is not None
+    used = stored.tokens_used
+    after = (await client.get("/api/runs/estimate", params=four)).json()
+    assert after["basis_runs"] == 1 and after["basis_samples"] == 1
+    assert after["tokens_per_sample"] == used and after["estimated_tokens"] == used * 4
+    nonsense = await client.get("/api/runs/estimate", params={**four, "kind": "nonsense"})
+    assert nonsense.status_code == 422

@@ -106,3 +106,37 @@
   color: var(--color-text-muted);
   font-size: var(--text-sm);
 }
+
+/* The message the reader chose. */
+.ag-msg-selected .ag-msg-body {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.ag-msg-body[role="button"] {
+  cursor: pointer;
+}
+
+.ag-route {
+  display: grid;
+}
+
+/* A reply's text with its highlights. */
+.ag-msg-text {
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+.ag-msg-body {
+  white-space: pre-wrap;
+}
+
+.ag-estimate {
+  display: grid;
+  gap: 6px;
+  max-width: 28rem;
+}
+
+a.ag-btn {
+  text-decoration: none;
+}

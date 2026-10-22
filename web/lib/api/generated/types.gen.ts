@@ -2223,6 +2223,57 @@ export type RolloutOut = {
 };
 
 /**
+ * RunEstimateOut
+ *
+ * A launch's likely use, from recent finished runs of the same kind.
+ */
+export type RunEstimateOut = {
+    /**
+     * Basis Runs
+     *
+     * Finished runs the estimate draws on.
+     */
+    basis_runs: number;
+    /**
+     * Basis Samples
+     */
+    basis_samples: number;
+    /**
+     * Cost Per Sample Usd
+     */
+    cost_per_sample_usd?: number | null;
+    /**
+     * Default Budget
+     */
+    default_budget: number;
+    /**
+     * Estimated Cost Usd
+     */
+    estimated_cost_usd?: number | null;
+    /**
+     * Estimated Tokens
+     */
+    estimated_tokens?: number | null;
+    /**
+     * Kind
+     */
+    kind: string;
+    /**
+     * Samples
+     */
+    samples: number;
+    /**
+     * Tokens Per Sample
+     */
+    tokens_per_sample?: number | null;
+};
+
+/**
+ * RunKind
+ */
+export type RunKind = 'inquiry' | 'tally' | 'ethos' | 'rehearsal' | 'scenarios' | 'witness';
+
+/**
  * RunOut
  */
 export type RunOut = {
@@ -4796,6 +4847,37 @@ export type SayResponses = {
 };
 
 export type SayResponse = SayResponses[keyof SayResponses];
+
+export type EstimateRunData = {
+    body?: never;
+    path?: never;
+    query: {
+        kind: RunKind;
+        /**
+         * Samples
+         */
+        samples: number;
+    };
+    url: '/api/runs/estimate';
+};
+
+export type EstimateRunErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type EstimateRunError = EstimateRunErrors[keyof EstimateRunErrors];
+
+export type EstimateRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunEstimateOut;
+};
+
+export type EstimateRunResponse = EstimateRunResponses[keyof EstimateRunResponses];
 
 export type ReadRunData = {
     body?: never;

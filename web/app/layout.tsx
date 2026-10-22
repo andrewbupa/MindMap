@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { InlineScript } from "@/components/shell/InlineScript";
 import { THEME_SCRIPT } from "@/components/shell/theme";
 
 import "@/styles/tokens.css";
@@ -19,7 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en-AU" data-theme="dark" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <InlineScript html={THEME_SCRIPT} />
       </head>
       <body>{children}</body>
     </html>

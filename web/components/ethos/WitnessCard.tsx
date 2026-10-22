@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import agentStyles from "@/components/agents/agents.module.css";
-import { StatusBadge } from "@/components/runs/Provenance";
+import { StatusBadge } from "@/components/runs/StatusBadge";
 import { Button, Card, Notice, formatWhen } from "@/components/ui";
 import { launchWitness, type WitnessReaderOut, type WitnessRunSummary } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ETHOS_QUIET } from "@/components/ethos/family";
+import { ETHOS_NOTE } from "@/components/ethos/family";
 import { Notice, PageHeader } from "@/components/ui";
 import { ethosQueue } from "@/lib/api";
 import { getMe, serverClient } from "@/lib/api/server";
@@ -25,7 +25,7 @@ export default async function EthosReviewPage() {
   const { data } = await ethosQueue({ client: await serverClient(), throwOnError: true });
   return (
     <>
-      <PageHeader title="Ethos disagreements" note={ETHOS_QUIET}>
+      <PageHeader title="Ethos disagreements" note={ETHOS_NOTE}>
         <p>
           Replies where the Ethos judges differ by two points or more on a label. Record your
           verdict on each judge&apos;s finding, and the intensity you would give. Verdicts sit

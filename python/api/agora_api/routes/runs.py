@@ -2,16 +2,66 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
+from sqlalchemy import func, select
 
 from agora_api.deps import Db, ReaderUser
-from agora_api.schemas import RunOut, SignedUrlOut
+from agora_api.models_dep import Roles
+from agora_api.schemas import RunEstimateOut, RunOut, SignedUrlOut
 from agora_core import audit
-from agora_core.models import Run
+from agora_core.models import FINISHED_STATUSES, Run, RunKind, RunSample
 from agora_core.storage import get_storage
 from agora_core.transcripts import key_from_uri
 
 router = APIRouter(prefix="/runs", tags=["runs"])
+
+# How many recent finished runs an estimate draws on.
+ESTIMATE_BASIS = 20
+
+
+@router.get("/estimate")
+async def estimate_run(
+    _: ReaderUser, db: Db, roles: Roles, kind: RunKind, samples: int = Query(ge=1, le=100_000)
+) -> RunEstimateOut:
+    """What a launch of this many samples is likely to use, from recent finished runs of the
+    same kind: their tokens and recorded cost per finished sample."""
+    recent = (
+        await db.execute(
+            select(Run.id, Run.tokens_used, Run.cost_usd)
+            .where(Run.kind == kind.value, Run.status.in_([s.value for s in FINISHED_STATUSES]))
+            .where(Run.tokens_used > 0)
+            .order_by(Run.finished_at.desc())
+            .limit(ESTIMATE_BASIS)
+        )
+    ).all()
+    budget = roles.budget(kind.value)
+    if not recent:
+        return RunEstimateOut(
+            kind=kind.value, samples=samples, basis_runs=0, basis_samples=0, default_budget=budget
+        )
+    finished = (
+        await db.execute(
+            select(func.count())
+            .select_from(RunSample)
+            .where(RunSample.run_id.in_([row.id for row in recent]))
+            .where(RunSample.tokens_used > 0)
+        )
+    ).scalar_one()
+    tokens = sum(row.tokens_used for row in recent)
+    cost = sum(float(row.cost_usd) for row in recent)
+    per_tokens = tokens / finished if finished else None
+    per_cost = cost / finished if finished else None
+    return RunEstimateOut(
+        kind=kind.value,
+        samples=samples,
+        basis_runs=len(recent),
+        basis_samples=finished,
+        tokens_per_sample=round(per_tokens) if per_tokens is not None else None,
+        cost_per_sample_usd=per_cost,
+        estimated_tokens=round(per_tokens * samples) if per_tokens is not None else None,
+        estimated_cost_usd=per_cost * samples if per_cost is not None else None,
+        default_budget=budget,
+    )
 
 
 @router.get("/{run_id}")

@@ -70,7 +70,7 @@ export function LabelItem({ item }: { item: GoldItemDetail }) {
       <div className={runStyles.thread}>
         {item.messages.map((message) => {
           if (!replies.has(message.id)) {
-            return <MessageView key={message.id} message={message} speaker="Member (played by the auditor)" />;
+            return <MessageView key={message.id} message={message} />;
           }
           return (
             <Card key={message.id} title={`Reply ${item.replies.indexOf(message.id) + 1}`}>

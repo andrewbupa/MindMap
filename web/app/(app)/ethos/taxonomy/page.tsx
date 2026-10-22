@@ -1,4 +1,4 @@
-import { ETHOS_QUIET, familyColour, labelName } from "@/components/ethos/family";
+import { ETHOS_NOTE, familyColour, labelName } from "@/components/ethos/family";
 import styles from "@/components/ethos/ethos.module.css";
 import { Badge, Card, PageHeader, sentenceCase } from "@/components/ui";
 import { readTaxonomy } from "@/lib/api";
@@ -10,7 +10,7 @@ export default async function TaxonomyPage() {
   const { data } = await readTaxonomy({ client: await serverClient(), throwOnError: true });
   return (
     <>
-      <PageHeader title="Ethos labels" note={ETHOS_QUIET}>
+      <PageHeader title="Ethos labels" note={ETHOS_NOTE}>
         <p>
           Taxonomy {data.version}, from seeds/ethos/taxonomy.yaml. Every finding records the
           version it used. A label&apos;s trust follows expert agreement on the gold set.

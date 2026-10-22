@@ -1,141 +1,96 @@
-"use client";
-
-import { useState } from "react";
-
 import type { ElicitationOut } from "@/lib/api";
-
-import { meanText, percent, spreadText, tallyText } from "./format";
-import styles from "./tally.module.css";
 
 export type RatePoint = { label: string; href: string; elicitation: ElicitationOut };
 
-const PLOT = { top: 24, bottom: 44, left: 44, right: 16, height: 200 };
-const BAND = 120;
-const COLUMN = 24;
-const TICKS = [0, 0.25, 0.5, 0.75, 1];
+const W = 560;
+const H = 248;
+const L = 48;
+const R = 28;
+const T = 34;
+const B = 40;
 
-/** A rounded data-end on top, square at the baseline. */
-function columnPath(x: number, y: number, base: number): string {
-  const r = Math.min(4, base - y);
-  return `M${x},${base} L${x},${y + r} Q${x},${y} ${x + r},${y} L${x + COLUMN - r},${y} Q${x + COLUMN},${y} ${x + COLUMN},${y + r} L${x + COLUMN},${base} Z`;
-}
-
-/** Beside the hovered column, on the side with room, level with the column's top. */
-function tooltipPosition(index: number, count: number, width: number, height: number, top: number) {
-  const centre = PLOT.left + BAND * index + BAND / 2;
-  const flip = index === count - 1 && count > 1;
-  return {
-    left: `${((flip ? centre - BAND / 2 : centre + BAND / 2) / width) * 100}%`,
-    top: `${(Math.min(top, height - PLOT.bottom - 60) / height) * 100}%`,
-    transform: flip ? "translate(-100%, -50%)" : "translate(0, -50%)",
-  };
-}
+const pct = (share: number | null | undefined) => (share === null || share === undefined ? null : Math.round(share * 100));
 
 /**
- * Elicitation rate by prompt version: a column for the rate over every repetition,
- * and beside it a dot for each repetition joined by its range. Every column links to
- * its run; the table that follows carries the same numbers.
+ * Elicitation rate by prompt version: the rate over every repetition with its spread across
+ * repetitions, joined along a route. A version worse than the one before turns red and says
+ * by how much. Each version links to its run; the table that follows has the same numbers.
  */
 export function RateChart({ points }: { points: RatePoint[] }) {
-  const [active, setActive] = useState<number | null>(null);
-  const width = PLOT.left + PLOT.right + Math.max(points.length, 3) * BAND;
-  const height = PLOT.top + PLOT.height + PLOT.bottom;
-  const base = PLOT.top + PLOT.height;
-  const y = (rate: number) => PLOT.top + PLOT.height * (1 - rate);
-  const left = (index: number) => PLOT.left + BAND * index + (BAND - COLUMN) / 2 - 10;
+  const data = points.map((point) => {
+    const rate = pct(point.elicitation.overall.rate) ?? 0;
+    const reps = point.elicitation.by_epoch.map((e) => pct(e.rate)).filter((r): r is number => r !== null);
+    return {
+      ...point,
+      rate,
+      reps,
+      low: pct(point.elicitation.spread_low) ?? rate,
+      high: pct(point.elicitation.spread_high) ?? rate,
+    };
+  });
+  const top = Math.max(1, ...data.map((d) => d.high));
+  const step = [5, 10, 20, 25].find((s) => s * 4 >= top * 1.15) ?? 25;
+  const ymax = step * 4;
+  const pw = W - L - R;
+  const ph = H - T - B;
+  const x = (i: number) => L + ((i + 0.5) * pw) / (data.length || 1);
+  const y = (v: number) => T + ph - (v / ymax) * ph;
+  const ticks = [0, 1, 2, 3, 4].map((k) => (k * ymax) / 4);
+  const worse = data.map((d, i) => i > 0 && d.rate > data[i - 1]!.rate);
+  const route = data.map((d, i) => `${i ? "L" : "M"}${x(i)} ${y(d.rate)}`).join(" ");
+  const summary =
+    "Elicitation rate by prompt version: " +
+    data.map((d) => `${d.label} ${d.rate}% (${d.low} to ${d.high}% across repetitions)`).join(", ") +
+    ".";
 
-  const shown = active === null ? null : points[active];
   return (
-    <div className={styles.chart}>
-      <svg
-        width={width}
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        role="img"
-        aria-label="Elicitation rate by prompt version. The table below gives the same numbers."
-      >
-        {TICKS.map((tick) => (
+    <div className="ag-chart-wrap">
+      <svg className="ag-chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={summary}>
+        {ticks.map((tick) => (
           <g key={tick}>
-            <line className={styles.grid} x1={PLOT.left} x2={width - PLOT.right} y1={y(tick)} y2={y(tick)} />
-            <text className={styles.axis} x={PLOT.left - 8} y={y(tick) + 4} textAnchor="end">
-              {tick * 100}%
+            <line className="c-grid" x1={L} x2={W - R} y1={y(tick)} y2={y(tick)} />
+            <text className="c-axis" x={L - 10} y={y(tick) + 4} textAnchor="end">
+              {tick}%
             </text>
           </g>
         ))}
-        {points.map((point, index) => {
-          const { overall, by_epoch: epochs } = point.elicitation;
-          const x = left(index);
-          const dotX = x + COLUMN + 12;
-          const rates = epochs.map((e) => e.rate).filter((r): r is number => r !== null && r !== undefined);
-          const rate = overall.rate;
+        <path className="c-route-bed" d={route} />
+        <path className="c-route" d={route} />
+        {data.map((d, i) => {
+          const cx = x(i);
+          const previous = data[i - 1];
           return (
-            <a
-              key={point.href}
-              href={point.href}
-              className={styles.group}
-              aria-label={`${point.label}: ${percent(rate)}, ${tallyText(overall)}. Repetitions: ${spreadText(point.elicitation)}.`}
-              onPointerEnter={() => setActive(index)}
-              onPointerLeave={() => setActive(null)}
-              onFocus={() => setActive(index)}
-              onBlur={() => setActive(null)}
-            >
-              <rect
-                className={styles.hit}
-                x={PLOT.left + BAND * index + 2}
-                y={PLOT.top - 20}
-                width={BAND - 4}
-                height={PLOT.height + 20}
-                rx={4}
-              />
-              {rate !== null && rate !== undefined && rate > 0 ? (
-                <path className={styles.column} d={columnPath(x, y(rate), base)} />
-              ) : null}
-              {rates.length > 1 ? (
-                <line
-                  className={styles.range}
-                  x1={dotX}
-                  x2={dotX}
-                  y1={y(Math.max(...rates))}
-                  y2={y(Math.min(...rates))}
-                />
-              ) : null}
-              {rates.map((value, at) => (
-                <circle key={at} className={styles.dot} cx={dotX} cy={y(value)} r={4} />
-              ))}
-              <text className={styles.label} x={x + COLUMN / 2} y={y(rate ?? 0) - 8} textAnchor="middle">
-                {percent(rate)}
-              </text>
-              <text className={styles.label} x={x + COLUMN / 2 + 6} y={base + 18} textAnchor="middle">
-                {point.label}
-              </text>
-              <text className={styles.axis} x={x + COLUMN / 2 + 6} y={base + 34} textAnchor="middle">
-                {overall.rollouts} scored
-              </text>
+            <a key={d.href} href={d.href} aria-label={`${d.label}: ${d.rate}%. Open the run.`}>
+              <g className={worse[i] ? "c-worse" : undefined}>
+                <line className="c-whisker" x1={cx} x2={cx} y1={y(d.low)} y2={y(d.high)} />
+                <line className="c-whisker" x1={cx - 6} x2={cx + 6} y1={y(d.low)} y2={y(d.low)} />
+                <line className="c-whisker" x1={cx - 6} x2={cx + 6} y1={y(d.high)} y2={y(d.high)} />
+                {d.reps.map((rep, j) => (
+                  <circle key={j} className="c-rep" cx={cx + 16 + j * 7} cy={y(rep)} r={3} />
+                ))}
+                {worse[i] ? <circle className="c-ring" cx={cx} cy={y(d.rate)} r={12} /> : null}
+                <circle className="c-mean" cx={cx} cy={y(d.rate)} r={6.5} />
+                <text className="c-val" x={cx - 14} y={y(d.rate) + 4} textAnchor="end">
+                  {d.rate}%
+                </text>
+                {worse[i] && previous ? (
+                  <text
+                    className="c-note"
+                    x={i === data.length - 1 ? cx + 28 : cx}
+                    y={Math.max(14, y(d.high) - 14)}
+                    textAnchor={i === data.length - 1 ? "end" : "middle"}
+                  >
+                    Worse than {previous.label} by {d.rate - previous.rate} points
+                  </text>
+                ) : null}
+                <text className="c-ver" x={cx} y={H - 14} textAnchor="middle">
+                  {d.label}
+                </text>
+              </g>
             </a>
           );
         })}
       </svg>
-      {shown && active !== null ? (
-        <div
-          className={styles.tooltip}
-          style={tooltipPosition(active, points.length, width, height, y(shown.elicitation.overall.rate ?? 0))}
-        >
-          <strong>{percent(shown.elicitation.overall.rate)}</strong> {shown.label}
-          <div>{tallyText(shown.elicitation.overall)} scored 7 or more</div>
-          <div>Repetitions: {spreadText(shown.elicitation)}</div>
-          <div>Mean presence: {meanText(shown.elicitation.overall)}</div>
-        </div>
-      ) : null}
-      <div className={styles.key}>
-        <span>
-          <span className={styles.swatch} />
-          Rate over every repetition
-        </span>
-        <span>
-          <span className={styles.keyDot} />
-          One repetition; the line spans lowest to highest
-        </span>
-      </div>
     </div>
   );
 }

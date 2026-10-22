@@ -946,3 +946,17 @@ class WitnessTranscriptOut(BaseModel):
     run: RunOut
     reader: WitnessReaderOut
     signals: list[WitnessSignalOut]
+
+
+class RunEstimateOut(BaseModel):
+    """A launch's likely use, from recent finished runs of the same kind."""
+
+    kind: str
+    samples: int
+    basis_runs: int = Field(description="Finished runs the estimate draws on.")
+    basis_samples: int
+    tokens_per_sample: int | None = None
+    cost_per_sample_usd: float | None = None
+    estimated_tokens: int | None = None
+    estimated_cost_usd: float | None = None
+    default_budget: int

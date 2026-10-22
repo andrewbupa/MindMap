@@ -1,20 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
-import { Badge, LinkButton, Mono, formatWhen, sentenceCase, type Tone } from "@/components/ui";
+import { LinkButton, Mono, formatNumber, formatWhen, sentenceCase } from "@/components/ui";
 import { runLog, type RunOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 
-import styles from "./runs.module.css";
-
-const STATUS_TONES: Record<string, Tone> = {
-  running: "warn",
-  succeeded: "ok",
-  failed: "danger",
-  stopped_at_budget: "warn",
-};
+import { StatusBadge } from "./StatusBadge";
 
 const SEED_NOTES: Record<string, string> = {
   inquiry: "Over the seeds used and every judge rubric",
@@ -29,11 +22,7 @@ const ROUTES: Record<string, string> = {
   openai_endpoint: "The adapter's OpenAI-compatible endpoint",
 };
 
-export function StatusBadge({ status }: { status: string }) {
-  return <Badge tone={STATUS_TONES[status] ?? "neutral"}>{sentenceCase(status)}</Badge>;
-}
-
-/** Everything recorded about a run, with each value linked to the evidence behind it. */
+/** Everything recorded about a run, each value with the evidence behind it. */
 export function Provenance({ run }: { run: RunOut }) {
   const [error, setError] = useState<string | null>(null);
   const config = run.config as { agent?: string; version?: string };
@@ -42,136 +31,108 @@ export function Provenance({ run }: { run: RunOut }) {
     setError(null);
     const { data } = await runLog({ client: browserClient, path: { run_id: run.id } });
     if (data) window.location.assign(data.url);
-    else setError("The log could not be opened.");
+    else setError("The log could not be opened. Try again in a moment.");
   }
 
   const perSample = run.kind === "inquiry" || run.kind === "tally" || run.kind === "ethos";
-  const seedNote = SEED_NOTES[run.kind] ?? "Over the seeds this run used";
-  const log = run.log_uri ? (
-    <LinkButton onClick={openLog} title="Download the Inspect .eval log">
-      Inspect log
-    </LinkButton>
-  ) : (
-    "Written when the run finishes"
+  const rows: [string, ReactNode][] = [];
+  const add = (label: string, value: ReactNode) => rows.push([label, value]);
+
+  add("Status", <StatusBadge status={run.status} />);
+  if (config.agent && config.version) {
+    add(
+      "Prompt",
+      <>
+        <Link className="ag-link" href={`/agents/${config.agent}/versions/${config.version}`}>
+          {config.agent}, {config.version}
+        </Link>
+        {run.prompt_sha ? <Mono truncate={14}>{run.prompt_sha}</Mono> : null}
+      </>,
+    );
+  }
+  add(
+    "Models",
+    <div className="ag-prov-models">
+      {Object.entries(run.model_ids).map(([role, model]) => (
+        <span key={role} style={{ display: "contents" }}>
+          <span className="ag-muted">{sentenceCase(role)}</span>
+          <Mono plain>{String(model)}</Mono>
+        </span>
+      ))}
+    </div>,
   );
+  if (run.adapter_mode) add("Mode", sentenceCase(run.adapter_mode));
+  if (run.route) add("Route", ROUTES[run.route] ?? run.route);
+  add(
+    "Config hash",
+    <details className="ag-fold">
+      <summary>
+        <Mono truncate={14}>{run.config_hash}</Mono>
+      </summary>
+      <div className="ag-fold-body ag-code">{JSON.stringify(run.config, null, 2)}</div>
+    </details>,
+  );
+  if (run.seed_hash) {
+    add(
+      "Seed hash",
+      <>
+        <Mono truncate={14}>{run.seed_hash}</Mono>
+        <span className="ag-muted">{SEED_NOTES[run.kind] ?? "Over the seeds this run used"}</span>
+      </>,
+    );
+  }
+  if (run.taxonomy_version) add("Taxonomy version", <Mono>{run.taxonomy_version}</Mono>);
+  const engines = Object.entries(run.engine_versions);
+  if (engines.length) {
+    add(
+      "Engines",
+      engines.map(([name, version]) => (
+        <Mono key={name} plain>
+          {name} {String(version)}
+        </Mono>
+      )),
+    );
+  }
+  add("Commit", <Mono truncate={9}>{run.git_commit}</Mono>);
+  const share = run.token_budget ? Math.min(100, (run.tokens_used / run.token_budget) * 100) : 0;
+  add(
+    "Tokens",
+    <span className="ag-meter">
+      <span className="ag-meter-track ag-channel" aria-hidden="true">
+        <span style={{ width: `calc(${share}% - 2px)` }} />
+      </span>
+      <span className="ag-num">
+        {formatNumber(run.tokens_used)} of {formatNumber(run.token_budget)}
+      </span>
+    </span>,
+  );
+  add("Estimated cost", `US$${run.cost_usd.toFixed(4)}`);
+  add("Started", formatWhen(run.started_at, "Not started"));
+  add("Finished", formatWhen(run.finished_at, "Still running"));
+  if (perSample) {
+    add("Inspect logs", <span className="ag-muted">Each sample&apos;s log is on its transcript page</span>);
+  } else if (run.kind !== "scenarios") {
+    add(
+      "Inspect log",
+      run.log_uri ? (
+        <>
+          <LinkButton onClick={openLog}>Download the Inspect log</LinkButton>
+          {error ? <span role="alert">{error}</span> : null}
+        </>
+      ) : (
+        <span className="ag-muted">Written when the run finishes</span>
+      ),
+    );
+  }
 
   return (
-    <table className={styles.provenance}>
-      <tbody>
-        <tr>
-          <th scope="row">Status</th>
-          <td>
-            <StatusBadge status={run.status} />
-          </td>
-        </tr>
-        {config.agent && config.version ? (
-          <tr>
-            <th scope="row">Prompt</th>
-            <td>
-              <Link href={`/agents/${config.agent}/versions/${config.version}`}>
-                {config.agent} {config.version}
-              </Link>
-              <br />
-              <Mono>{run.prompt_sha?.slice(0, 16)}</Mono>
-            </td>
-          </tr>
-        ) : null}
-        {Object.entries(run.model_ids).map(([role, model]) => (
-          <tr key={role}>
-            <th scope="row">{sentenceCase(role)} model</th>
-            <td>
-              <Mono>{String(model)}</Mono>
-            </td>
-          </tr>
-        ))}
-        <tr>
-          <th scope="row">Mode</th>
-          <td>{run.adapter_mode ? sentenceCase(run.adapter_mode) : "Not applicable"}</td>
-        </tr>
-        {run.route ? (
-          <tr>
-            <th scope="row">Route</th>
-            <td>{ROUTES[run.route] ?? run.route}</td>
-          </tr>
-        ) : null}
-        <tr>
-          <th scope="row">Config hash</th>
-          <td>
-            <details>
-              <summary>
-                <Mono>{run.config_hash.slice(0, 16)}</Mono>
-              </summary>
-              <pre className={styles.quiet}>{JSON.stringify(run.config, null, 2)}</pre>
-            </details>
-          </td>
-        </tr>
-        {run.seed_hash ? (
-          <tr>
-            <th scope="row">Seed hash</th>
-            <td>
-              <Mono>{run.seed_hash.slice(0, 16)}</Mono>
-              <br />
-              <span className={styles.quiet}>{seedNote}</span>
-            </td>
-          </tr>
-        ) : null}
-        {Object.keys(run.engine_versions).length ? (
-          <tr>
-            <th scope="row">Engines</th>
-            <td>
-              {Object.entries(run.engine_versions).map(([name, version]) => (
-                <div key={name}>
-                  <Mono>
-                    {name} {String(version)}
-                  </Mono>
-                </div>
-              ))}
-            </td>
-          </tr>
-        ) : null}
-        <tr>
-          <th scope="row">Commit</th>
-          <td>
-            <Mono>{run.git_commit.slice(0, 12)}</Mono>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">Tokens</th>
-          <td>
-            {run.tokens_used.toLocaleString("en-AU")} of {run.token_budget.toLocaleString("en-AU")}
-            <br />
-            <span className={styles.quiet}>
-              Counted per model call
-              {perSample
-                ? "; each sample's log is on its transcript page."
-                : run.log_uri
-                  ? <>; each call is in the {log}</>
-                  : "."}
-            </span>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">Estimated cost</th>
-          <td>US${run.cost_usd.toFixed(4)}</td>
-        </tr>
-        <tr>
-          <th scope="row">Started</th>
-          <td>{formatWhen(run.started_at)}</td>
-        </tr>
-        <tr>
-          <th scope="row">Finished</th>
-          <td>{formatWhen(run.finished_at, "Still running")}</td>
-        </tr>
-        {perSample || run.kind === "scenarios" || run.kind === "ethos" ? null : (
-          <tr>
-            <th scope="row">Transcript</th>
-            <td>
-              {log}
-              {error ? <div role="alert">{error}</div> : null}
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+    <dl className="ag-prov">
+      {rows.map(([label, value]) => (
+        <div key={label} style={{ display: "contents" }}>
+          <dt>{label}</dt>
+          <dd>{value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { ETHOS_QUIET } from "@/components/ethos/family";
-import { StatusBadge } from "@/components/runs/Provenance";
+import { ETHOS_NOTE } from "@/components/ethos/family";
+import { StatusBadge } from "@/components/runs/StatusBadge";
 import { Card, PageHeader, formatWhen } from "@/components/ui";
 import { listEthosRuns, listEthosSources } from "@/lib/api";
 import { getMe, serverClient } from "@/lib/api/server";
@@ -25,7 +25,7 @@ export default async function EthosPage({
   ]);
   return (
     <>
-      <PageHeader title="Ethos" note={ETHOS_QUIET}>
+      <PageHeader title="Ethos" note={ETHOS_NOTE}>
         <p>
           A panel of judges from two model families reads each of the agent&apos;s replies and
           marks the dispositions it expressed, how strongly, and whether they suited the moment.

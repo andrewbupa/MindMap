@@ -1,4 +1,4 @@
-import { StatusBadge } from "@/components/runs/Provenance";
+import { StatusBadge } from "@/components/runs/StatusBadge";
 import { Card, PageHeader, formatWhen, sentenceCase } from "@/components/ui";
 import { listReportRuns } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";

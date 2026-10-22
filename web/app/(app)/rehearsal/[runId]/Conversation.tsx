@@ -76,6 +76,7 @@ export function Conversation({ initial, canWrite }: { initial: RehearsalOut; can
               <MessageView
                 key={message.id}
                 message={message}
+                memberName="You"
                 selected={message.id === selectedId}
                 onSelect={() => setSelectedId(message.id)}
               />

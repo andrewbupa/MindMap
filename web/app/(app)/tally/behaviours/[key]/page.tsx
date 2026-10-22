@@ -4,7 +4,7 @@ import { GenerationPanel } from "@/components/tally/GenerationPanel";
 import { RateChart } from "@/components/tally/RateChart";
 import { RateTable, latestByVersion } from "@/components/tally/RateTable";
 import styles from "@/components/tally/tally.module.css";
-import { StatusBadge } from "@/components/runs/Provenance";
+import { StatusBadge } from "@/components/runs/StatusBadge";
 import { Badge, Card, Mono, PageHeader, formatWhen, sentenceCase } from "@/components/ui";
 import { readBehaviour } from "@/lib/api";
 import { getMe, serverClient } from "@/lib/api/server";

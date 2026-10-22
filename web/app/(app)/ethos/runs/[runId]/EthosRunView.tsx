@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { WitnessCard } from "@/components/ethos/WitnessCard";
-import { ETHOS_QUIET, familyColour, formatMedian, labelName } from "@/components/ethos/family";
+import { ETHOS_NOTE, familyColour, formatMedian, labelName } from "@/components/ethos/family";
 import styles from "@/components/ethos/ethos.module.css";
 import { Provenance } from "@/components/runs/Provenance";
 import runStyles from "@/components/runs/runs.module.css";
@@ -78,7 +78,7 @@ export function EthosRunView({
   const families = [...new Set(run.labels.map((l) => l.family))];
   return (
     <>
-      <PageHeader title={run.run.title} note={ETHOS_QUIET}>
+      <PageHeader title={run.run.title} note={ETHOS_NOTE}>
         <p>
           The panel ({run.judges.join(" and ")}) read {run.transcripts.length} conversations from{" "}
           {run.source.title}, with taxonomy {run.run.taxonomy_version}.

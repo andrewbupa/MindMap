@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { CompareView } from "@/components/ethos/CompareView";
-import { ETHOS_QUIET } from "@/components/ethos/family";
+import { ETHOS_NOTE } from "@/components/ethos/family";
 import { Notice, PageHeader } from "@/components/ui";
 import { compareEthosRuns } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";
@@ -17,7 +17,7 @@ export default async function ComparePage({
   if (!a || !b) {
     return (
       <>
-        <PageHeader title="Compare" note={ETHOS_QUIET} />
+        <PageHeader title="Compare" note={ETHOS_NOTE} />
         <Notice>
           Choose two Ethos runs to compare from a run&apos;s page in <Link href="/ethos">Ethos</Link>.
         </Notice>
@@ -29,7 +29,7 @@ export default async function ComparePage({
     const detail = (error as { detail?: unknown } | undefined)?.detail;
     return (
       <>
-        <PageHeader title="Compare" note={ETHOS_QUIET} />
+        <PageHeader title="Compare" note={ETHOS_NOTE} />
         <Notice>{typeof detail === "string" ? detail : "These runs could not be compared."}</Notice>
       </>
     );

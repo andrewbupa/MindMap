@@ -2,19 +2,26 @@
 
 import { useState } from "react";
 
-import { Button, Card, Notice } from "@/components/ui";
+import { Notice } from "@/components/ui";
 import { readFullThinking, type FullThinkingOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 
-import styles from "./runs.module.css";
-
 /** Full thinking, for the rare runs Anthropic returns it. Kept apart from thinking
- * summaries, fetched on request, and only for admins and compliance. */
+ * summaries, fetched when opened, and only for admins and compliance. */
 export function FullThinking({ transcriptId, allowed }: { transcriptId: string; allowed: boolean }) {
   const [items, setItems] = useState<FullThinkingOut[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  if (!allowed) {
+    return (
+      <Notice title="Full thinking (restricted)">
+        This transcript holds full thinking. Only admins and compliance can read it.
+      </Notice>
+    );
+  }
+
   async function open() {
+    if (items) return;
     setError(null);
     const { data, error: failure } = await readFullThinking({
       client: browserClient,
@@ -23,32 +30,30 @@ export function FullThinking({ transcriptId, allowed }: { transcriptId: string; 
     if (data) setItems(data);
     else {
       const detail = (failure as { detail?: unknown } | undefined)?.detail;
-      setError(typeof detail === "string" ? detail : "The full thinking could not be opened.");
+      setError(typeof detail === "string" ? detail : "The full thinking could not be opened. Try again.");
     }
   }
 
   return (
-    <Card title="Full thinking (restricted)">
-      <p className={styles.quiet}>
-        The model&apos;s own reasoning, which Anthropic returns only by special arrangement. It is
-        not a summary. Only admins and compliance can read it, and each reading is recorded in the
-        audit log.
+    <details
+      className="ag-fold ag-thinking"
+      onToggle={(event) => {
+        if ((event.target as HTMLDetailsElement).open) void open();
+      }}
+    >
+      <summary>Full thinking (restricted)</summary>
+      <p className="ag-thinking-note">
+        The model&apos;s own reasoning, not a summary. Admins and compliance only. Each reading is
+        recorded in the audit log, and full thinking is never shown beside summaries.
       </p>
-      {!allowed ? (
-        <p>This transcript holds full thinking. Ask an admin or compliance if you need it.</p>
-      ) : items === null ? (
-        <Button onClick={open}>Read the full thinking</Button>
-      ) : (
-        items.map((item) => (
-          <section key={item.message_id}>
-            <h3>
-              <a href={`#m-${item.index}`}>Reply at message {item.index + 1}</a>
-            </h3>
-            <p className={styles.thinking}>{item.thinking_full}</p>
-          </section>
-        ))
-      )}
       {error ? <Notice tone="danger">{error}</Notice> : null}
-    </Card>
+      {(items ?? []).map((item) => (
+        <div key={item.message_id} className="ag-fold-body">
+          <a href={`#m-${item.index}`}>Reply at message {item.index + 1}</a>
+          {"\n"}
+          {item.thinking_full}
+        </div>
+      ))}
+    </details>
   );
 }

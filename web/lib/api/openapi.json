@@ -3732,6 +3732,97 @@
         "title": "RolloutOut",
         "type": "object"
       },
+      "RunEstimateOut": {
+        "description": "A launch's likely use, from recent finished runs of the same kind.",
+        "properties": {
+          "basis_runs": {
+            "description": "Finished runs the estimate draws on.",
+            "title": "Basis Runs",
+            "type": "integer"
+          },
+          "basis_samples": {
+            "title": "Basis Samples",
+            "type": "integer"
+          },
+          "cost_per_sample_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Per Sample Usd"
+          },
+          "default_budget": {
+            "title": "Default Budget",
+            "type": "integer"
+          },
+          "estimated_cost_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimated Cost Usd"
+          },
+          "estimated_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimated Tokens"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "samples": {
+            "title": "Samples",
+            "type": "integer"
+          },
+          "tokens_per_sample": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tokens Per Sample"
+          }
+        },
+        "required": [
+          "kind",
+          "samples",
+          "basis_runs",
+          "basis_samples",
+          "default_budget"
+        ],
+        "title": "RunEstimateOut",
+        "type": "object"
+      },
+      "RunKind": {
+        "enum": [
+          "inquiry",
+          "tally",
+          "ethos",
+          "rehearsal",
+          "scenarios",
+          "witness"
+        ],
+        "title": "RunKind",
+        "type": "string"
+      },
       "RunOut": {
         "properties": {
           "adapter_mode": {
@@ -7925,6 +8016,59 @@
         "summary": "Say",
         "tags": [
           "rehearsal"
+        ]
+      }
+    },
+    "/api/runs/estimate": {
+      "get": {
+        "description": "What a launch of this many samples is likely to use, from recent finished runs of the\nsame kind: their tokens and recorded cost per finished sample.",
+        "operationId": "estimate_run",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "kind",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RunKind"
+            }
+          },
+          {
+            "in": "query",
+            "name": "samples",
+            "required": true,
+            "schema": {
+              "maximum": 100000,
+              "minimum": 1,
+              "title": "Samples",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunEstimateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Estimate Run",
+        "tags": [
+          "runs"
         ]
       }
     },

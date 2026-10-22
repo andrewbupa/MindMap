@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { percent } from "@/components/tally/format";
 import { latestByVersion } from "@/components/tally/RateTable";
-import { StatusBadge } from "@/components/runs/Provenance";
+import { StatusBadge } from "@/components/runs/StatusBadge";
 import { Badge, Card, PageHeader, formatWhen, sentenceCase } from "@/components/ui";
 import { listBehaviours, listTallyRuns } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";

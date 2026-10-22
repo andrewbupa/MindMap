@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { StatusBadge } from "@/components/runs/Provenance";
+import { StatusBadge } from "@/components/runs/StatusBadge";
 import { Button, Notice } from "@/components/ui";
 import { generateScenarioSet, readBehaviour, type RunOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";

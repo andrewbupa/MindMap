@@ -35,6 +35,25 @@ export function Button({
   );
 }
 
+/** A link that leads to a page where the action happens, drawn as a button. */
+export function ButtonLink({
+  href,
+  variant = "primary",
+  className,
+  children,
+}: {
+  href: string;
+  variant?: "primary" | "secondary";
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <Link href={href} className={cx("ag-btn", variant === "primary" && "ag-btn-primary", className)}>
+      {children}
+    </Link>
+  );
+}
+
 type LinkButtonProps =
   | (ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined })
   | (AnchorHTMLAttributes<HTMLAnchorElement> & { href: string });

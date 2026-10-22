@@ -1,151 +1,136 @@
 import Link from "next/link";
 
+import { DataTable, type Row } from "@/components/data/DataTable";
 import { Card, PageHeader, sentenceCase } from "@/components/ui";
-import type { LabelPrevalenceOut, EthosCompareOut } from "@/lib/api";
+import type { EthosCompareOut, LabelPrevalenceOut } from "@/lib/api";
 
-import { ETHOS_QUIET, familyColour, labelName } from "./family";
-import styles from "./ethos.module.css";
+import { differenceInterval, ETHOS_NOTE } from "./family";
+import { LabelChip } from "./LabelChip";
+
+const SPAN = 0.4;
 
 function percent(value: number | null | undefined): string {
   return value === null || value === undefined ? "Not read" : `${Math.round(value * 100)}%`;
 }
 
-function share(item: LabelPrevalenceOut): string {
-  const range = item.interval ? ` (${percent(item.interval.low)} to ${percent(item.interval.high)})` : "";
-  return `${percent(item.share)}${range}`;
+function points(value: number): string {
+  const whole = Math.round(value * 100);
+  return `${whole > 0 ? "+" : ""}${whole}`;
 }
 
-/** Both runs' shares and intervals on one 0 to 100% track: A hollow, B filled. */
-function Pair({ a, b }: { a: LabelPrevalenceOut; b: LabelPrevalenceOut }) {
-  const x = (value: number) => 6 + value * 188;
-  const mark = (item: LabelPrevalenceOut, y: number, filled: boolean) =>
-    item.share === null || item.share === undefined ? null : (
-      <g>
-        {item.interval ? (
-          <line
-            x1={x(item.interval.low)}
-            x2={x(item.interval.high)}
-            y1={y}
-            y2={y}
-            stroke="var(--color-text-muted)"
-            strokeWidth={1.5}
-          />
-        ) : null}
-        <circle
-          cx={x(item.share)}
-          cy={y}
-          r={4}
-          fill={filled ? "var(--color-chart-1)" : "var(--color-surface)"}
-          stroke={filled ? "var(--color-surface)" : "var(--color-text)"}
-          strokeWidth={filled ? 2 : 1.5}
-        />
-      </g>
-    );
-  return (
-    <svg width={200} height={24} viewBox="0 0 200 24" aria-hidden="true">
-      <line x1={6} x2={194} y1={12} y2={12} stroke="var(--color-chart-grid)" />
-      {mark(a, 7, false)}
-      {mark(b, 17, true)}
-    </svg>
-  );
+function bounds(item: LabelPrevalenceOut) {
+  return item.share === null || item.share === undefined || !item.interval
+    ? null
+    : { share: item.share, low: item.interval.low, high: item.interval.high };
 }
 
-/** Prompt A beside prompt B on the scenarios both read: shares, intervals, difference. */
+/** Prompt A beside prompt B on the scenarios both read: shares, and the difference with its interval. */
 export function CompareView({ data }: { data: EthosCompareOut }) {
-  const families = [...new Set(data.labels.map((l) => l.family))];
   const versionOf = (run: EthosCompareOut["a"]) =>
     [run.run.config.agent, run.run.config.version].filter(Boolean).join(" ") || run.run.title;
+  const a = versionOf(data.a);
+  const b = versionOf(data.b);
+  const pc = (v: number) => `${50 + (Math.max(-SPAN, Math.min(SPAN, v)) / SPAN) * 50}%`;
   return (
     <>
-      <PageHeader title={`Compare: ${versionOf(data.a)} and ${versionOf(data.b)}`} note={ETHOS_QUIET}>
+      <PageHeader title={`Compare ${a} with ${b}`} note={ETHOS_NOTE}>
         <p>
           A is <Link href={`/ethos/runs/${data.a.run.id}`}>{data.a.run.title}</Link>; B is{" "}
-          <Link href={`/ethos/runs/${data.b.run.id}`}>{data.b.run.title}</Link>. Only the{" "}
-          {data.shared_scenarios} scenarios both read are compared.
+          <Link href={`/ethos/runs/${data.b.run.id}`}>{data.b.run.title}</Link>. Only the {data.shared_scenarios}{" "}
+          scenarios both read are compared.
         </p>
       </PageHeader>
       <Card title="Labels">
-        <p className={styles.quiet}>
-          Share of replies expressing each label, with 95% Wilson intervals. On the track, A is
-          the hollow circle and B the filled one. Where intervals overlap, the difference may be
-          noise.
+        <p className="ag-quiet">
+          The share of replies expressing each label. The track shows B minus A with its 95% interval (Newcombe&apos;s
+          method, from each share&apos;s Wilson interval); where the interval crosses the middle line, the difference
+          may be noise. Each share opens the findings behind it.
         </p>
-        <table className={styles.numbers}>
-          <thead>
-            <tr>
-              <th scope="col">Label</th>
-              <th scope="col">A</th>
-              <th scope="col">B</th>
-              <th scope="col">
-                <span className="visually-hidden">A and B on a track</span>
-              </th>
-              <th scope="col">B minus A</th>
-            </tr>
-          </thead>
-          {families.map((family) => (
-            <tbody key={family}>
-              <tr>
-                <th scope="rowgroup" colSpan={5}>
-                  <span className={styles.swatch} style={{ background: familyColour(family) }} />
-                  {sentenceCase(family)}
-                </th>
-              </tr>
-              {data.labels
-                .filter((l) => l.family === family)
-                .map((row) => (
-                  <tr key={row.label}>
-                    <td>{labelName(row.label)}</td>
-                    <td>
-                      <Link href={`/ethos/runs/${data.a.run.id}?label=${row.label}#evidence`}>{share(row.a)}</Link>
-                    </td>
-                    <td>
-                      <Link href={`/ethos/runs/${data.b.run.id}?label=${row.label}#evidence`}>{share(row.b)}</Link>
-                    </td>
-                    <td>
-                      <Pair a={row.a} b={row.b} />
-                    </td>
-                    <td>
-                      {row.difference === null || row.difference === undefined
-                        ? "Not read"
-                        : `${row.difference > 0 ? "+" : ""}${Math.round(row.difference * 100)} points`}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          ))}
-        </table>
+        <div className="ag-cmp" role="table" aria-label={`Prompt ${a} beside prompt ${b}`}>
+          <div role="row" className="ag-row">
+            <span className="ag-cmp-h" role="columnheader">
+              Label
+            </span>
+            <span className="ag-cmp-h" role="columnheader">
+              A
+            </span>
+            <span className="ag-cmp-h" role="columnheader">
+              B
+            </span>
+            <span className="ag-cmp-h" role="columnheader">
+              Difference, B minus A, with 95% interval
+            </span>
+            <span className="ag-cmp-h" role="columnheader">
+              <span className="ag-sr">In words</span>
+            </span>
+          </div>
+          {data.labels.map((row) => {
+            const left = bounds(row.a);
+            const right = bounds(row.b);
+            const interval = left && right ? differenceInterval(left, right) : null;
+            const diff = row.difference;
+            const words =
+              diff === null || diff === undefined || !interval
+                ? "Not read in both runs"
+                : `${points(diff)} points (${points(interval.low)} to ${points(interval.high)})`;
+            return (
+              <div key={row.label} role="row" className="ag-row">
+                <span role="rowheader">
+                  <LabelChip family={row.family} label={row.label} />
+                </span>
+                <span role="cell" className="ag-num">
+                  <Link href={`/ethos/runs/${data.a.run.id}?label=${row.label}#evidence`}>{percent(row.a.share)}</Link>
+                </span>
+                <span role="cell" className="ag-num">
+                  <Link href={`/ethos/runs/${data.b.run.id}?label=${row.label}#evidence`}>{percent(row.b.share)}</Link>
+                </span>
+                <div role="cell" className="ag-diverge ag-channel" aria-label={words}>
+                  {interval && diff !== null && diff !== undefined ? (
+                    <>
+                      <span
+                        className="ag-ib-band"
+                        aria-hidden="true"
+                        style={{ left: pc(interval.low), width: `calc(${pc(interval.high)} - ${pc(interval.low)})` }}
+                      />
+                      <span className="ag-bead" aria-hidden="true" style={{ left: pc(diff) }} />
+                    </>
+                  ) : null}
+                </div>
+                <span role="cell" className="ag-num">
+                  {words}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </Card>
       <Card title="Fit by scenario">
-        <table className={styles.numbers}>
-          <thead>
-            <tr>
-              <th scope="col">Scenario</th>
-              <th scope="col">A</th>
-              <th scope="col">B</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.scenarios.map((row) => (
-              <tr key={row.scenario_key}>
-                <td>{sentenceCase(row.scenario_key.split("/").pop()!.replaceAll(/[-_]/g, " "))}</td>
-                <td>
-                  {row.a_transcripts[0] ? (
-                    <Link href={`/ethos/runs/${data.a.run.id}/transcripts/${row.a_transcripts[0]}`}>
-                      {row.a_fit === null || row.a_fit === undefined ? "No profile" : percent(row.a_fit)}
-                    </Link>
-                  ) : null}
-                </td>
-                <td>
-                  {row.b_transcripts[0] ? (
-                    <Link href={`/ethos/runs/${data.b.run.id}/transcripts/${row.b_transcripts[0]}`}>
-                      {row.b_fit === null || row.b_fit === undefined ? "No profile" : percent(row.b_fit)}
-                    </Link>
-                  ) : null}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable
+          columns={[
+            { key: "scenario", label: "Scenario" },
+            { key: "a", label: `A: ${a}`, align: "right" },
+            { key: "b", label: `B: ${b}`, align: "right" },
+          ]}
+          rows={data.scenarios.map(
+            (row): Row => ({
+              id: row.scenario_key,
+              cells: {
+                scenario: sentenceCase(row.scenario_key.split("/").pop()!.replaceAll(/[-_]/g, " ")),
+                a: row.a_transcripts[0] ? (
+                  <Link href={`/ethos/runs/${data.a.run.id}/transcripts/${row.a_transcripts[0]}`}>
+                    {row.a_fit === null || row.a_fit === undefined ? "No profile" : percent(row.a_fit)}
+                  </Link>
+                ) : null,
+                b: row.b_transcripts[0] ? (
+                  <Link href={`/ethos/runs/${data.b.run.id}/transcripts/${row.b_transcripts[0]}`}>
+                    {row.b_fit === null || row.b_fit === undefined ? "No profile" : percent(row.b_fit)}
+                  </Link>
+                ) : null,
+              },
+              sort: { scenario: row.scenario_key, a: row.a_fit, b: row.b_fit },
+            }),
+          )}
+        />
       </Card>
     </>
   );
