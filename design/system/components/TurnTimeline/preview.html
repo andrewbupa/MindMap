@@ -1,0 +1,16 @@
+<!-- @dsCard group="Lens" height=238 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TurnTimeline</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Spline+Sans+Mono:wght@300..700&display=swap">
+</head>
+<body>
+<div id="root" class="bn-stack"></div>
+<script>
+var B = window.Bench, h = React.createElement, F = React.Fragment;
+ReactDOM.createRoot(document.getElementById('root')).render(h('div',{style:{maxWidth:640}},h(B.TurnTimeline,{rows:[{label:'Emotional reaction',family:'care',values:[2,1,1,0,1,2]},{label:'Scope discipline',family:'judgement',values:[2,3,2,2,1,2]},{label:'Purposeful question',family:'curiosity',values:[1,0,1,1,0,0]},{label:'Padding',family:'risk',values:[0,0,1,2,2,1]}]})));
+</script>
+</body>
+</html>

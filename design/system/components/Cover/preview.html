@@ -1,0 +1,61 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bench</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans); overflow: hidden; }
+  .cover { position: relative; height: 288px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; overflow: hidden; }
+  .art svg { display: block; width: 480px; height: 288px; }
+  .accent { fill: var(--color-accent); }
+  .deep { fill: var(--color-channel); }
+  .tint { fill: var(--color-surface-muted); }
+  .silver { fill: var(--color-signal); }
+  .blk { rx: var(--radius-md); }
+  .pill { rx: 18px; }
+  .lane { fill: none; stroke: var(--color-accent); stroke-width: var(--space-4); stroke-linecap: round; stroke-linejoin: round; }
+  .lip { fill: none; stroke: var(--color-rim); stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round; }
+  .words { position: absolute; left: var(--space-6); bottom: var(--space-6); max-width: 440px; }
+  .name { margin: 0; font-size: 120px; line-height: .9; font-weight: 600; font-stretch: 88%; letter-spacing: -.025em; color: var(--color-text); }
+  .tag { margin: var(--space-3) 0 0 4px; font-size: 14px; line-height: 20px; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      color-accent 144x216 slab bled off the top (the identity hue, largest) · color-channel 304x224 bleeding off the right (the deep groove) · color-surface-muted 144x56 (the relief tint) · color-signal 96x36 pill bled off the top (the silver, small) — about 40% of 960x288
+  arrangement one tall accent slab with a tint satellite beneath it, the deep slab beside them; space-4 gutters, bottoms on one line space-5 above the edge
+  pattern     "a rounded groove routed through the surface" (README): four lanes of channel routed through the deep slab, three concentric lanes turning down and one hairpin, drawn in color-accent with a color-rim lip lit from the top left
+  scales      lane width space-4 (16), lane pitch space-6 + space-4 (40), turn radii 8, 48, 88 and a 24 hairpin; corners radius-md; the silver pill rx half its 36 height
+-->
+<defs><clipPath id="deep"><rect x="176" y="40" width="320" height="224" rx="12"/></clipPath></defs>
+<rect class="accent blk" x="16" y="-24" width="144" height="216" rx="12"/>
+<rect class="tint blk" x="16" y="208" width="144" height="56" rx="12"/>
+<rect class="silver pill" x="176" y="-12" width="96" height="36" rx="18"/>
+<rect class="deep blk" x="176" y="40" width="320" height="224" rx="12"/>
+<g clip-path="url(#deep)">
+  <path class="lane" d="M500 72H296A88 88 0 0 0 208 160V300"/>
+  <path class="lane" d="M500 112H296A48 48 0 0 0 248 160V300"/>
+  <path class="lane" d="M500 152H296A8 8 0 0 0 288 160V300"/>
+  <path class="lane" d="M500 192H392A24 24 0 0 0 392 240H500"/>
+  <g transform="translate(-3 -3)">
+    <path class="lip" d="M500 72H296A88 88 0 0 0 208 160V300"/>
+    <path class="lip" d="M500 112H296A48 48 0 0 0 248 160V300"/>
+    <path class="lip" d="M500 152H296A8 8 0 0 0 288 160V300"/>
+    <path class="lip" d="M500 192H392A24 24 0 0 0 392 240H500"/>
+  </g>
+</g>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Bench</h1>
+<p class="tag">A calm instrument for seeing how our agents behave.</p>
+</div>
+</div>
+</body>
+</html>

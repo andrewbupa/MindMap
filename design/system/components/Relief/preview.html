@@ -1,0 +1,16 @@
+<!-- @dsCard group="Motif" height=268 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Relief</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Spline+Sans+Mono:wght@300..700&display=swap">
+</head>
+<body>
+<div id="root" class="bn-stack"></div>
+<script>
+var B = window.Bench, h = React.createElement, F = React.Fragment;
+ReactDOM.createRoot(document.getElementById('root')).render(h('div',{style:{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:16,width:'100%'}},['route','hairpin'].map(function(v){return h(B.Relief,{key:v,variant:v,preserve:'xMidYMid meet',style:{width:'100%',height:180}})})));
+</script>
+</body>
+</html>

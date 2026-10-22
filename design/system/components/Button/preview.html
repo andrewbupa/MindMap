@@ -1,0 +1,16 @@
+<!-- @dsCard group="Foundations" height=92 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Button</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Spline+Sans+Mono:wght@300..700&display=swap">
+</head>
+<body>
+<div id="root" class="bn-stage"></div>
+<script>
+var B = window.Bench, h = React.createElement, F = React.Fragment;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F,null,h(B.Button,{variant:'primary'},'Start audit of 12 samples'),h(B.Button,null,'Save draft'),h(B.Button,{disabled:true},'Cancel run')));
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!-- @dsCard group="Foundations" height=158 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tabs</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Spline+Sans+Mono:wght@300..700&display=swap">
+</head>
+<body>
+<div id="root" class="bn-stack"></div>
+<script>
+var B = window.Bench, h = React.createElement, F = React.Fragment;
+ReactDOM.createRoot(document.getElementById('root')).render(h(B.Tabs,{label:'Review queues',tabs:[{id:'scores',label:'Judge scores',count:14},{id:'lens',label:'Lens disagreements',count:6},{id:'gold',label:'Gold sets',count:2}],panels:{scores:h('p',{className:'bn-muted',style:{margin:0}},'14 scores wait for a verdict.'),lens:h('p',{className:'bn-muted',style:{margin:0}},'6 replies where judges differ by two points or more.'),gold:h('p',{className:'bn-muted',style:{margin:0}},'2 gold sets have unlabelled replies.')}}));
+</script>
+</body>
+</html>

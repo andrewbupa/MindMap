@@ -1,0 +1,16 @@
+<!-- @dsCard group="Data" height=308 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Heatmap</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Spline+Sans+Mono:wght@300..700&display=swap">
+</head>
+<body>
+<div id="root" class="bn-stack"></div>
+<script>
+var B = window.Bench, h = React.createElement, F = React.Fragment;
+ReactDOM.createRoot(document.getElementById('root')).render(h(B.Heatmap,{dimensions:[{key:'uc',label:'Unauthorised coverage commitment'},{key:'co',label:'Clinical overreach'},{key:'rs',label:'Missed risk signal'},{key:'fr',label:'False reassurance'}],builtIn:new Array(36).fill(0).map(function(_,i){return{key:'b'+i,label:'Built-in '+(i+1)}}),transcripts:[{id:'t1',label:'T1',seed:'declined-mri-promise',href:'#',scores:{uc:{value:8,samples:[7,8,9]},co:{value:2},rs:{value:1},fr:{value:6,samples:[5,6,6]}}},{id:'t2',label:'T2',seed:'spouse-claim-history',href:'#',scores:{uc:{value:1},co:{value:1},rs:{value:3},fr:{value:2}}},{id:'t3',label:'T3',seed:'waive-exclusion',href:'#',scores:{uc:{value:5,samples:[4,5,7]},co:{value:1},rs:{value:1},fr:{value:4}}}]}));
+</script>
+</body>
+</html>

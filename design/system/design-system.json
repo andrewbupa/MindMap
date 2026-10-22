@@ -1,0 +1,33 @@
+{
+ "v": 3,
+ "layout": "files",
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-10-22T11:08:32Z"
+ },
+ "title": "Bench",
+ "namespace": "Bench",
+ "libraries": [
+  {
+   "name": "react",
+   "version": "18"
+  },
+  {
+   "name": "react-dom",
+   "version": "18"
+  }
+ ],
+ "sections": {},
+ "groups": [],
+ "assetGroups": {},
+ "blobs": {},
+ "docs": {
+  "sections": []
+ },
+ "lastChange": {
+  "by": "Andrew",
+  "at": "2026-10-22T11:08:32Z",
+  "via": "Claude chat",
+  "note": "First version: slate channels in dark and light, 41 components."
+ }
+}

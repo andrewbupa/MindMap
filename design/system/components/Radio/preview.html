@@ -1,0 +1,16 @@
+<!-- @dsCard group="Foundations" height=174 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Radio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Spline+Sans+Mono:wght@300..700&display=swap">
+</head>
+<body>
+<div id="root" class="bn-stack"></div>
+<script>
+var B = window.Bench, h = React.createElement, F = React.Fragment;
+ReactDOM.createRoot(document.getElementById('root')).render(h('fieldset',{style:{border:0,margin:0,padding:0,display:'grid',gap:10}},h('legend',{className:'bn-label',style:{marginBottom:8}},'Verdict'),h(B.Radio,{name:'v',label:'Agree',defaultChecked:true}),h(B.Radio,{name:'v',label:'Disagree, with a corrected score'}),h(B.Radio,{name:'v',label:'Unsure'})));
+</script>
+</body>
+</html>
