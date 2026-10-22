@@ -666,22 +666,22 @@
       "ChatCompletionIn": {
         "additionalProperties": true,
         "properties": {
-          "bench_mode": {
+          "agora_mode": {
             "default": "deployed",
             "enum": [
               "deployed",
               "open"
             ],
-            "title": "Bench Mode",
+            "title": "Agora Mode",
             "type": "string"
           },
-          "bench_tool_results": {
+          "agora_tool_results": {
             "default": "fixtures",
             "enum": [
               "fixtures",
               "simulated"
             ],
-            "title": "Bench Tool Results",
+            "title": "Agora Tool Results",
             "type": "string"
           },
           "messages": {
@@ -5741,7 +5741,7 @@
   },
   "info": {
     "description": "Tests our AI agents three ways: Explore, Measure and Lens.",
-    "title": "Bench API",
+    "title": "Agora API",
     "version": "0.1.0"
   },
   "openapi": "3.1.0",

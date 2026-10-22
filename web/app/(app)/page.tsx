@@ -11,7 +11,7 @@ export default async function HomePage() {
     <>
       <PageHeader title={`Welcome, ${user.name}`}>
         <p>
-          Bench puts our agents through simulated conversations and reports how they behave. Each
+          Agora puts our agents through simulated conversations and reports how they behave. Each
           week this page will show new runs, regressions by prompt version, and items awaiting
           review.
         </p>

@@ -50,7 +50,7 @@ export default async function AuditPage({
               <td>
                 <Mono>{event.action}</Mono>
               </td>
-              <td>{event.actor_id ? <Mono>{event.actor_id.slice(0, 8)}</Mono> : "Bench"}</td>
+              <td>{event.actor_id ? <Mono>{event.actor_id.slice(0, 8)}</Mono> : "Agora"}</td>
               <td>
                 {event.target_type ? (
                   <>

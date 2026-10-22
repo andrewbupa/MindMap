@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const SESSION_COOKIE = "bench_session";
+const SESSION_COOKIE = "agora_session";
 
 /**
  * Sends visitors without a session cookie straight to sign-in, and passes the
@@ -16,7 +16,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(login);
   }
   const headers = new Headers(request.headers);
-  headers.set("x-bench-path", path);
+  headers.set("x-agora-path", path);
   return NextResponse.next({ request: { headers } });
 }
 

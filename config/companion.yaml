@@ -1,4 +1,4 @@
-# Open-model companion readers (bench_core.companion). Each names an open-weight
+# Open-model companion readers (agora_core.companion). Each names an open-weight
 # model, the command the Droplet runner runs to read a transcript with it, and the
 # signals it reports, with the Lens label each is meant to track.
 #

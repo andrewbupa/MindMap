@@ -7,10 +7,10 @@ package_update: true
 packages: [ca-certificates, curl, git]
 
 write_files:
-  - path: /etc/bench/README
+  - path: /etc/agora/README
     permissions: "0644"
     content: |
-      runner.env holds Bench's runner settings and secrets. Mode 0600, owner root.
+      runner.env holds Agora's runner settings and secrets. Mode 0600, owner root.
       See infra/runner/README.md in the repository.
 
 runcmd:
@@ -28,5 +28,5 @@ runcmd:
   - nvidia-ctk runtime configure --runtime=docker
   - systemctl restart docker
   # The checkout, and model weights that companion images mount read-only.
-  - install -d -m 0755 /srv/bench /srv/models
-  - install -d -m 0700 /etc/bench
+  - install -d -m 0755 /srv/agora /srv/models
+  - install -d -m 0700 /etc/agora

@@ -4,32 +4,32 @@
 UV := cd python && uv run
 SPEC_DOCTL ?= doctl
 
-## Start everything locally at http://bench.localhost:3000 (Docker required).
+## Start everything locally at http://agora.localhost:3000 (Docker required).
 dev:
-	BENCH_GIT_COMMIT=$$(git rev-parse HEAD) docker compose up --build
+	AGORA_GIT_COMMIT=$$(git rev-parse HEAD) docker compose up --build
 
 dev-down:
 	docker compose down
 
-## Apply database migrations to BENCH_DATABASE_URL.
+## Apply database migrations to AGORA_DATABASE_URL.
 migrate:
 	$(UV) alembic upgrade head
 
 lint:
 	$(UV) ruff check .
 	$(UV) ruff format --check .
-	$(UV) mypy core/bench_core api/bench_api worker/bench_worker
+	$(UV) mypy core/agora_core api/agora_api worker/agora_worker
 	cd web && npm run lint && npm run typecheck
 
 test:
 	$(UV) pytest
 
 seed-demo:
-	$(UV) python -m bench_worker.cli seed-demo
+	$(UV) python -m agora_worker.cli seed-demo
 
 ## Regenerate the web client from the API's OpenAPI schema.
 openapi:
-	$(UV) python -W ignore -m bench_api.export_openapi ../web/lib/api/openapi.json
+	$(UV) python -W ignore -m agora_api.export_openapi ../web/lib/api/openapi.json
 	cd web && npm run openapi
 
 ## Fail if the committed client is out of date (used in CI).

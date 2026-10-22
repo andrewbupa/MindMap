@@ -6,12 +6,12 @@ from sqlalchemy import select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.config import REPO_ROOT
-from bench_core.models import Message, Run, RunSample, Scenario, ScenarioSet, Score, Transcript
-from bench_core.registry import load_registry, sync_registry
-from bench_core.storage import get_storage
-from bench_core.transcripts import fetch_log
-from bench_worker.tasks.measure import execute_generation, execute_measure_sample
+from agora_core.config import REPO_ROOT
+from agora_core.models import Message, Run, RunSample, Scenario, ScenarioSet, Score, Transcript
+from agora_core.registry import load_registry, sync_registry
+from agora_core.storage import get_storage
+from agora_core.transcripts import fetch_log
+from agora_worker.tasks.measure import execute_generation, execute_measure_sample
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 from testsupport.petri import (
     ScriptedRoles,

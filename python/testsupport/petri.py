@@ -13,8 +13,8 @@ from inspect_ai.model import (
 )
 from inspect_ai.tool import ToolCall
 
-from bench_core.config import REPO_ROOT
-from bench_worker.explore.runner import dimensions
+from agora_core.config import REPO_ROOT
+from agora_worker.explore.runner import dimensions
 from testsupport.agents import USAGE, answer, tool_call
 
 
@@ -105,7 +105,7 @@ def bloom_judge_output(presence: int, dimension: str = "behaviour_presence") -> 
 
 
 def dev_models(role: str, model_id: str, generate: dict[str, Any]) -> Model:
-    """Bench's development model in every role, whatever the run recorded."""
-    from bench_worker.explore.runner import default_models
+    """Agora's development model in every role, whatever the run recorded."""
+    from agora_worker.explore.runner import default_models
 
-    return default_models(role, "benchdev/scripted", {})
+    return default_models(role, "agoradev/scripted", {})

@@ -14,7 +14,7 @@ export default async function AgentsPage() {
       <PageHeader title="Agents">
         <p>
           The agents we test. Prompts, tools, fixtures and personas live in git, so every change is
-          reviewed; Bench loads them on each deploy.
+          reviewed; Agora loads them on each deploy.
         </p>
       </PageHeader>
       <div className={styles.grid}>

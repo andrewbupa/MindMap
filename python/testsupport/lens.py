@@ -10,9 +10,9 @@ from inspect_ai.model import ChatMessage, Model, ModelOutput, get_model
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.models import RunSample
-from bench_worker.tasks.explore import execute_sample
-from bench_worker.tasks.lens import execute_lens_sample
+from agora_core.models import RunSample
+from agora_worker.tasks.explore import execute_sample
+from agora_worker.tasks.lens import execute_lens_sample
 from testsupport.agents import USAGE
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 from testsupport.petri import ScriptedRoles, auditor_script, claims_target, judge_output
@@ -114,9 +114,9 @@ def scripted_judges(role: str, model_id: str, generate: dict[str, Any]) -> Model
 
 
 def dev_judges(role: str, model_id: str, generate: dict[str, Any]) -> Model:
-    from bench_worker.explore.runner import default_models
+    from agora_worker.explore.runner import default_models
 
-    name = "benchpeer/scripted" if role == "judge_b" else "benchdev/scripted"
+    name = "agorapeer/scripted" if role == "judge_b" else "agoradev/scripted"
     return default_models(role, name, {})
 
 

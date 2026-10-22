@@ -9,10 +9,10 @@ resolution-markers = [
 
 [manifest]
 members = [
-    "bench-api",
-    "bench-core",
-    "bench-worker",
-    "bench-workspace",
+    "agora-api",
+    "agora-core",
+    "agora-worker",
+    "agora-workspace",
 ]
 
 [[package]]
@@ -300,12 +300,12 @@ wheels = [
 ]
 
 [[package]]
-name = "bench-api"
+name = "agora-api"
 version = "0.1.0"
 source = { editable = "api" }
 dependencies = [
     { name = "authlib" },
-    { name = "bench-core" },
+    { name = "agora-core" },
     { name = "fastapi" },
     { name = "httpx2" },
     { name = "itsdangerous" },
@@ -316,7 +316,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "authlib", specifier = ">=1.9" },
-    { name = "bench-core", editable = "core" },
+    { name = "agora-core", editable = "core" },
     { name = "fastapi", specifier = ">=0.156" },
     { name = "httpx2", specifier = ">=2.16" },
     { name = "itsdangerous", specifier = ">=2.2" },
@@ -325,7 +325,7 @@ requires-dist = [
 ]
 
 [[package]]
-name = "bench-core"
+name = "agora-core"
 version = "0.1.0"
 source = { editable = "core" }
 dependencies = [
@@ -360,27 +360,27 @@ requires-dist = [
 ]
 
 [[package]]
-name = "bench-worker"
+name = "agora-worker"
 version = "0.1.0"
 source = { editable = "worker" }
 dependencies = [
-    { name = "bench-core" },
+    { name = "agora-core" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "bench-core", editable = "core" }]
+requires-dist = [{ name = "agora-core", editable = "core" }]
 
 [[package]]
-name = "bench-workspace"
+name = "agora-workspace"
 version = "0.1.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
 dev = [
     { name = "asgi-lifespan" },
-    { name = "bench-api" },
-    { name = "bench-core" },
-    { name = "bench-worker" },
+    { name = "agora-api" },
+    { name = "agora-core" },
+    { name = "agora-worker" },
     { name = "boto3-stubs", extra = ["s3"] },
     { name = "httpx" },
     { name = "moto", extra = ["server"] },
@@ -396,9 +396,9 @@ dev = [
 [package.metadata.requires-dev]
 dev = [
     { name = "asgi-lifespan", specifier = ">=2.1" },
-    { name = "bench-api", editable = "api" },
-    { name = "bench-core", editable = "core" },
-    { name = "bench-worker", editable = "worker" },
+    { name = "agora-api", editable = "api" },
+    { name = "agora-core", editable = "core" },
+    { name = "agora-worker", editable = "worker" },
     { name = "boto3-stubs", extras = ["s3"], specifier = ">=1.43" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "moto", extras = ["server"], specifier = ">=5.1" },

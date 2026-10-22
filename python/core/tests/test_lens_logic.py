@@ -5,13 +5,13 @@ import pytest
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.config import REPO_ROOT
-from bench_core.lens.fit import fit
-from bench_core.lens.panel import PanelError, check_panel, consensus
-from bench_core.lens.quotes import Span, locate, verify
-from bench_core.lens.taxonomy import Expect, TaxonomyError, load_lens, sync_lens
-from bench_core.models import ExpectedProfile, Label
-from bench_core.seeds import load_seeds
+from agora_core.config import REPO_ROOT
+from agora_core.lens.fit import fit
+from agora_core.lens.panel import PanelError, check_panel, consensus
+from agora_core.lens.quotes import Span, locate, verify
+from agora_core.lens.taxonomy import Expect, TaxonomyError, load_lens, sync_lens
+from agora_core.models import ExpectedProfile, Label
+from agora_core.seeds import load_seeds
 
 # Quote verification
 

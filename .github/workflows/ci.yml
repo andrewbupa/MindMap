@@ -19,17 +19,17 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_USER: bench
-          POSTGRES_PASSWORD: bench
-          POSTGRES_DB: bench_test
+          POSTGRES_USER: agora
+          POSTGRES_PASSWORD: agora
+          POSTGRES_DB: agora_test
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U bench" --health-interval 2s --health-retries 30
+          --health-cmd "pg_isready -U agora" --health-interval 2s --health-retries 30
     defaults:
       run:
         working-directory: python
     env:
-      BENCH_DATABASE_URL: postgresql://bench:bench@localhost:5432/bench_test
+      AGORA_DATABASE_URL: postgresql://agora:agora@localhost:5432/agora_test
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10
@@ -41,7 +41,7 @@ jobs:
           uv run ruff check .
           uv run ruff format --check .
       - name: Type check
-        run: uv run mypy core/bench_core api/bench_api worker/bench_worker
+        run: uv run mypy core/agora_core api/agora_api worker/agora_worker
       - name: Migrations match the models
         run: |
           uv run alembic upgrade head
@@ -51,7 +51,7 @@ jobs:
         run: uv run pytest
       - name: OpenAPI schema is current
         run: |
-          uv run python -W ignore -m bench_api.export_openapi ../web/lib/api/openapi.json
+          uv run python -W ignore -m agora_api.export_openapi ../web/lib/api/openapi.json
           git diff --exit-code -- ../web/lib/api/openapi.json
 
   web:
@@ -91,8 +91,8 @@ jobs:
         run: docker compose config --quiet
       - name: Runner compose file is valid
         run: |
-          sudo install -d /etc/bench && sudo touch /etc/bench/runner.env
-          BENCH_GIT_COMMIT=ci DOCKER_GID=999 docker compose -f infra/runner/compose.yaml config --quiet
+          sudo install -d /etc/agora && sudo touch /etc/agora/runner.env
+          AGORA_GIT_COMMIT=ci DOCKER_GID=999 docker compose -f infra/runner/compose.yaml config --quiet
 
   images:
     runs-on: ubuntu-24.04

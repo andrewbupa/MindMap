@@ -1,9 +1,9 @@
 # A development reader that marks words from a list, so the companion path can be
-# followed without a GPU. Point BENCH_COMPANION_FILE here. Its values say nothing
+# followed without a GPU. Point AGORA_COMPANION_FILE here. Its values say nothing
 # about any model; production refuses lexicon readers.
 readers:
   lexicon-dev:
-    model: bench/lexicon-dev
+    model: agora/lexicon-dev
     runner: lexicon
     version: lexicon-1
     token_budget: 200000

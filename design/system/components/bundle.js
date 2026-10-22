@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Bench","components":[{"name":"Button"},{"name":"LinkButton"},{"name":"Field"},{"name":"Select"},{"name":"Checkbox"},{"name":"Radio"},{"name":"Tabs"},{"name":"Dialog"},{"name":"Toast"},{"name":"Notice"},{"name":"Card"},{"name":"PageHeader"},{"name":"Badge"},{"name":"Mono"},{"name":"AppShell"},{"name":"Nav"},{"name":"DataTable"},{"name":"ScoreCell"},{"name":"Heatmap"},{"name":"RateChart"},{"name":"RateTable"},{"name":"IntervalBar"},{"name":"StatusBadge"},{"name":"RunProgress"},{"name":"Provenance"},{"name":"MessageView"},{"name":"Cited"},{"name":"ContentNote"},{"name":"FullThinking"},{"name":"LabelChip"},{"name":"TrustBadge"},{"name":"Highlighted"},{"name":"ProfileStrip"},{"name":"FindingPane"},{"name":"TurnTimeline"},{"name":"CompareView"},{"name":"CompanionPane"},{"name":"DiffView"},{"name":"EmptyState"},{"name":"LoadingState"},{"name":"Relief"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Agora","components":[{"name":"Button"},{"name":"LinkButton"},{"name":"Field"},{"name":"Select"},{"name":"Checkbox"},{"name":"Radio"},{"name":"Tabs"},{"name":"Dialog"},{"name":"Toast"},{"name":"Notice"},{"name":"Card"},{"name":"PageHeader"},{"name":"Badge"},{"name":"Mono"},{"name":"AppShell"},{"name":"Nav"},{"name":"DataTable"},{"name":"ScoreCell"},{"name":"Heatmap"},{"name":"RateChart"},{"name":"RateTable"},{"name":"IntervalBar"},{"name":"StatusBadge"},{"name":"RunProgress"},{"name":"Provenance"},{"name":"MessageView"},{"name":"Cited"},{"name":"ContentNote"},{"name":"FullThinking"},{"name":"LabelChip"},{"name":"TrustBadge"},{"name":"Highlighted"},{"name":"ProfileStrip"},{"name":"FindingPane"},{"name":"TurnTimeline"},{"name":"CompareView"},{"name":"CompanionPane"},{"name":"DiffView"},{"name":"EmptyState"},{"name":"LoadingState"},{"name":"Relief"}]} */
 (function () {
   var React = window.React, h = React.createElement, F = React.Fragment;
   var useState = React.useState, useRef = React.useRef, useEffect = React.useEffect;
@@ -158,7 +158,7 @@
   function AppShell(p) {
     return h('div', { className: 'bn-shell' },
       h('div', { className: 'bn-bar' },
-        h('a', { className: 'bn-wordmark', href: '/' }, bead('var(--color-accent)'), 'Bench'),
+        h('a', { className: 'bn-wordmark', href: '/' }, bead('var(--color-accent)'), 'Agora'),
         h(Nav, { items: p.items, current: p.current, onNavigate: p.onNavigate }),
         p.user ? h('div', { className: 'bn-user' }, p.user.name, p.user.role ? h(Badge, null, p.user.role) : null) : null),
       h('main', { className: 'bn-main' }, p.children));
@@ -588,7 +588,7 @@
         lanes('r-crest', 1.25))));
   }
 
-  var Bench = {
+  var Agora = {
     Button: Button, LinkButton: LinkButton, Field: Field, Select: Select, Checkbox: Checkbox, Radio: Radio, Tabs: Tabs, Dialog: Dialog, Toast: Toast,
     Notice: Notice, Card: Card, PageHeader: PageHeader, Badge: Badge, Mono: Mono, AppShell: AppShell, Nav: Nav,
     DataTable: DataTable, ScoreCell: ScoreCell, Heatmap: Heatmap, RateChart: RateChart, RateTable: RateTable, IntervalBar: IntervalBar,
@@ -599,5 +599,5 @@
     DiffView: DiffView, EmptyState: EmptyState, LoadingState: LoadingState, Relief: Relief,
     FAMILIES: FAMILIES, intensityWord: intensityWord
   };
-  window.Bench = Object.assign(window.Bench || {}, Bench);
+  window.Agora = Object.assign(window.Agora || {}, Agora);
 })();

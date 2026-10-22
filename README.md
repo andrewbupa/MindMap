@@ -1,6 +1,6 @@
-# Bench
+# Agora
 
-Bench tests our AI agents three ways:
+Agora tests our AI agents three ways:
 
 - **Explore** (Petri 3) asks what could go wrong across many situations.
 - **Measure** (Bloom) asks how often one chosen behaviour occurs.
@@ -25,6 +25,6 @@ Every run writes Inspect-format transcripts into one shared record.
 | `.do/app.yaml` | DigitalOcean App Platform spec |
 | `infra/` | Local development support, and the runner for milestone 7 |
 
-Start locally with `make dev`, then open <http://bench.localhost:3000>.
+Start locally with `make dev`, then open <http://agora.localhost:3000>.
 
 Everything in this repository is synthetic: no real personal or health data.

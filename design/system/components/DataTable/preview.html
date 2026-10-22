@@ -9,7 +9,7 @@
 <body>
 <div id="root" class="bn-stack"></div>
 <script>
-var B = window.Bench, h = React.createElement, F = React.Fragment;
+var B = window.Agora, h = React.createElement, F = React.Fragment;
 ReactDOM.createRoot(document.getElementById('root')).render(h(B.DataTable,{density:'comfortable',initialSort:{key:'started',dir:'desc'},rows:[{id:1,run:'Explore, claims seeds',prompt:'v12',status:'running',started:'22 Oct, 09:14',samples:36},{id:2,run:'Measure, unauthorised coverage',prompt:'v10 to v12',status:'succeeded',started:'21 Oct, 16:02',samples:108},{id:3,run:'Lens, declined MRI',prompt:'v12',status:'stopped at budget',started:'21 Oct, 11:40',samples:30}],columns:[{key:'run',label:'Run',render:function(r){return h('a',{href:'#'},r.run)}},{key:'prompt',label:'Prompt',render:function(r){return h(B.Mono,{plain:true},r.prompt)}},{key:'status',label:'Status',render:function(r){return h(B.StatusBadge,{status:r.status})}},{key:'samples',label:'Samples',align:'right'},{key:'started',label:'Started',sortValue:function(r){return r.id*-1}}]}));
 </script>
 </body>

@@ -9,14 +9,14 @@ from sqlalchemy import update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_api.main import app
-from bench_api.models_dep import model_factory
-from bench_core.config import REPO_ROOT
-from bench_core.model_roles import ModelRoles, get_model_roles, load_model_roles
-from bench_core.models import Message, User
-from bench_core.registry import load_registry, sync_registry
-from bench_core.storage import get_storage
-from bench_core.transcripts import fetch_log
+from agora_api.main import app
+from agora_api.models_dep import model_factory
+from agora_core.config import REPO_ROOT
+from agora_core.model_roles import ModelRoles, get_model_roles, load_model_roles
+from agora_core.models import Message, User
+from agora_core.registry import load_registry, sync_registry
+from agora_core.storage import get_storage
+from agora_core.transcripts import fetch_log
 from testsupport.agents import RecordingModel, answer, tool_call
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 
@@ -243,7 +243,7 @@ async def test_openai_compatible_endpoint(
     await sign_in_as(client, idp, "admin@example.test")
     created = (await client.post("/api/tokens", json={"name": "Bloom rollouts"})).json()
     token = created["token"]
-    assert token.startswith("bench_") and created["details"]["prefix"] == token[:12]
+    assert token.startswith("agora_") and created["details"]["prefix"] == token[:12]
     client.cookies.clear()
 
     model.outputs += [
@@ -255,16 +255,16 @@ async def test_openai_compatible_endpoint(
     data = response.json()
     assert data["choices"][0]["message"]["content"].startswith("I can't promise")
     assert data["choices"][0]["finish_reason"] == "stop"
-    assert data["bench"]["ignored_parameters"] == ["temperature"]
-    assert data["bench"]["thinking_summary"] == "Avoid promising."
-    assert [step["role"] for step in data["bench"]["steps"]] == ["assistant", "tool"]
+    assert data["agora"]["ignored_parameters"] == ["temperature"]
+    assert data["agora"]["thinking_summary"] == "Avoid promising."
+    assert [step["role"] for step in data["agora"]["steps"]] == ["assistant", "tool"]
     system = model.calls[0]["input"][0]
     assert system.text.startswith("You are the claims assistant")
     assert "<scenario_context>" in system.text and "TEST-100231" in system.text
 
     model.outputs.append(tool_call("get_claim", claim_id="CLM-TEST-5521"))
     simulated = await client.post(
-        url, json={**request, "bench_tool_results": "simulated"}, headers=_bearer(token)
+        url, json={**request, "agora_tool_results": "simulated"}, headers=_bearer(token)
     )
     choice = simulated.json()["choices"][0]
     assert choice["finish_reason"] == "tool_calls"

@@ -8,12 +8,12 @@ from types import SimpleNamespace
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core import queue
-from bench_core.config import REPO_ROOT
-from bench_core.models import SystemCheck
-from bench_core.storage import get_storage
-from bench_worker.app import app
-from bench_worker.tasks.maintenance import retry_stalled_jobs
+from agora_core import queue
+from agora_core.config import REPO_ROOT
+from agora_core.models import SystemCheck
+from agora_core.storage import get_storage
+from agora_worker.app import app
+from agora_worker.tasks.maintenance import retry_stalled_jobs
 
 
 async def _run_queued_jobs() -> None:
@@ -90,7 +90,7 @@ def test_every_task_has_a_queue_some_worker_takes() -> None:
     assert runner is not None
     assert tuple(runner.group(1).split(",")) == queue.RUNNER_QUEUES
     known = set(queue.PLATFORM_QUEUES + queue.RUNNER_QUEUES)
-    # Procrastinate's own tasks sit on its builtin queue; Bench never defers them.
+    # Procrastinate's own tasks sit on its builtin queue; Agora never defers them.
     ours = {name: task.queue for name, task in app.tasks.items() if "procrastinate" not in name}
     assert set(ours.values()) <= known
     assert ours["companion_sample"] == queue.COMPANION_QUEUE

@@ -12,7 +12,7 @@ export function AppShell({ user, children }: { user: MeOut; children: ReactNode 
     <div className={styles.shell}>
       <header className={styles.bar}>
         <Link href="/" className={styles.brand}>
-          Bench
+          Agora
         </Link>
         <Nav />
         <div className={styles.user}>

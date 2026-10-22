@@ -1,39 +1,39 @@
-# Local development: everything Bench needs, behind one front door at
-# http://bench.localhost:3000 (browsers resolve *.localhost to this machine).
+# Local development: everything Agora needs, behind one front door at
+# http://agora.localhost:3000 (browsers resolve *.localhost to this machine).
 #
 #   make dev        build and start everything
 #   make dev-down   stop, keeping data
-name: bench
+name: agora
 
 x-python: &python
   build:
     context: .
     dockerfile: python/Dockerfile
-  image: bench-python:dev
+  image: agora-python:dev
   env_file:
     - path: .env.compose
       required: false
   environment: &python-env
-    BENCH_ENVIRONMENT: local
-    BENCH_GIT_COMMIT: ${BENCH_GIT_COMMIT:-unknown}
-    BENCH_PUBLIC_URL: http://bench.localhost:3000
-    BENCH_DATABASE_URL: postgresql://bench:bench@postgres:5432/bench
-    BENCH_SPACES_ENDPOINT: http://s3:8333
-    BENCH_SPACES_PUBLIC_ENDPOINT: http://localhost:8333
-    BENCH_SPACES_REGION: syd1
-    BENCH_SPACES_BUCKET: bench-logs
-    BENCH_SPACES_KEY: bench
-    BENCH_SPACES_SECRET: bench-secret
-    BENCH_OIDC_METADATA_URL: http://bench.localhost:3000/bench/.well-known/openid-configuration
-    BENCH_OIDC_CLIENT_ID: bench-local
-    BENCH_OIDC_CLIENT_SECRET: bench-local-secret
-    BENCH_BOOTSTRAP_ADMINS: admin@example.test
-    BENCH_SESSION_SECRET: local-only-session-secret-change-me
+    AGORA_ENVIRONMENT: local
+    AGORA_GIT_COMMIT: ${AGORA_GIT_COMMIT:-unknown}
+    AGORA_PUBLIC_URL: http://agora.localhost:3000
+    AGORA_DATABASE_URL: postgresql://agora:agora@postgres:5432/agora
+    AGORA_SPACES_ENDPOINT: http://s3:8333
+    AGORA_SPACES_PUBLIC_ENDPOINT: http://localhost:8333
+    AGORA_SPACES_REGION: syd1
+    AGORA_SPACES_BUCKET: agora-logs
+    AGORA_SPACES_KEY: agora
+    AGORA_SPACES_SECRET: agora-secret
+    AGORA_OIDC_METADATA_URL: http://agora.localhost:3000/agora/.well-known/openid-configuration
+    AGORA_OIDC_CLIENT_ID: agora-local
+    AGORA_OIDC_CLIENT_SECRET: agora-local-secret
+    AGORA_BOOTSTRAP_ADMINS: admin@example.test
+    AGORA_SESSION_SECRET: local-only-session-secret-change-me
     # The development model needs no provider key. To use real models, set
-    # BENCH_MODELS_FILE=/app/config/models.yaml and ANTHROPIC_API_KEY in .env.compose.
-    BENCH_MODELS_FILE: ${BENCH_MODELS_FILE:-/app/config/models.dev.yaml}
+    # AGORA_MODELS_FILE=/app/config/models.yaml and ANTHROPIC_API_KEY in .env.compose.
+    AGORA_MODELS_FILE: ${AGORA_MODELS_FILE:-/app/config/models.dev.yaml}
     # The local worker takes every queue, companion included, with the lexicon reader.
-    BENCH_COMPANION_FILE: ${BENCH_COMPANION_FILE:-/app/config/companion.dev.yaml}
+    AGORA_COMPANION_FILE: ${AGORA_COMPANION_FILE:-/app/config/companion.dev.yaml}
   depends_on:
     postgres:
       condition: service_healthy
@@ -44,15 +44,15 @@ services:
   postgres:
     image: postgres:17
     environment:
-      POSTGRES_USER: bench
-      POSTGRES_PASSWORD: bench
-      POSTGRES_DB: bench
+      POSTGRES_USER: agora
+      POSTGRES_PASSWORD: agora
+      POSTGRES_DB: agora
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "bench"]
+      test: ["CMD", "pg_isready", "-U", "agora"]
       interval: 2s
       retries: 30
 
@@ -77,19 +77,19 @@ services:
 
   migrate:
     <<: *python
-    command: ["sh", "-c", "python -m bench_worker.cli ensure-bucket && python -m bench_worker.cli migrate"]
+    command: ["sh", "-c", "python -m agora_worker.cli ensure-bucket && python -m agora_worker.cli migrate"]
     restart: "no"
 
   api:
     <<: *python
-    command: ["uvicorn", "bench_api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    command: ["uvicorn", "agora_api.main:app", "--host", "0.0.0.0", "--port", "8000"]
     depends_on:
       migrate:
         condition: service_completed_successfully
 
   worker:
     <<: *python
-    command: ["procrastinate", "--app=bench_worker.app.app", "worker"]
+    command: ["procrastinate", "--app=agora_worker.app.app", "worker"]
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -98,9 +98,9 @@ services:
     build:
       context: .
       dockerfile: web/Dockerfile
-    image: bench-web:dev
+    image: agora-web:dev
     environment:
-      BENCH_API_INTERNAL_URL: http://api:8000
+      AGORA_API_INTERNAL_URL: http://api:8000
     depends_on:
       - api
 
@@ -113,7 +113,7 @@ services:
     networks:
       default:
         aliases:
-          - bench.localhost
+          - agora.localhost
     depends_on:
       - web
       - api

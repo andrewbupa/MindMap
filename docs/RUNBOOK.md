@@ -1,6 +1,6 @@
 # Runbook
 
-How to run Bench locally, set it up on DigitalOcean, deploy it, and look after it.
+How to run Agora locally, set it up on DigitalOcean, deploy it, and look after it.
 Updated at the end of each milestone. Last updated: milestone 7.
 
 ## Local development
@@ -11,7 +11,7 @@ Updated at the end of each milestone. Last updated: milestone 7.
 make dev
 ```
 
-Then open <http://bench.localhost:3000>. The stack is Postgres 17, SeaweedFS for
+Then open <http://agora.localhost:3000>. The stack is Postgres 17, SeaweedFS for
 storage, a mock identity provider, the API, the worker, the web app, and Caddy in
 front routing `/api` to the API as App Platform's ingress does.
 
@@ -25,13 +25,13 @@ claims box:
 `admin@example.test` is a bootstrap admin locally. Any other email signs in with
 no role until an admin grants one in Settings, users.
 
-Locally, agents answer through Bench's development model (`benchdev/scripted`),
-which needs no provider key. To use real models, set `BENCH_MODELS_FILE` to
+Locally, agents answer through Agora's development model (`agoradev/scripted`),
+which needs no provider key. To use real models, set `AGORA_MODELS_FILE` to
 `/app/config/models.yaml` and `ANTHROPIC_API_KEY` in `.env.compose` (compose) or
 `.env` (without Docker).
 
 The local worker takes every queue, the companion's included, and reads with the
-development lexicon reader (`BENCH_COMPANION_FILE=config/companion.dev.yaml`), so
+development lexicon reader (`AGORA_COMPANION_FILE=config/companion.dev.yaml`), so
 open-model signals work without a GPU. Its values mean nothing about any model.
 
 `make dev-down` stops everything and keeps data. Signed URLs open on
@@ -45,9 +45,9 @@ You need Python 3.12, uv, Node 22.18 or later, and Postgres.
 cp .env.example .env
 cd python && uv sync && uv run alembic upgrade head
 uv run moto_server -p 9000 &                    # S3 stand-in
-uv run python -m bench_worker.cli ensure-bucket
-uv run uvicorn bench_api.main:app --port 8000 &
-uv run procrastinate --app=bench_worker.app.app worker &
+uv run python -m agora_worker.cli ensure-bucket
+uv run uvicorn agora_api.main:app --port 8000 &
+uv run procrastinate --app=agora_worker.app.app worker &
 cd ../web && npm ci && npm run dev              # forwards /api to port 8000
 ```
 
@@ -59,29 +59,29 @@ ghcr.io/navikt/mock-oauth2-server:6.1.2`), then open <http://localhost:3000>.
 
 | Command | What it does |
 | --- | --- |
-| `make lint` | ruff, mypy (strict in `bench_core`), ESLint and the TypeScript check |
-| `make test` | pytest against `bench_test`; needs Postgres |
-| `make migrate` | Alembic migrations against `BENCH_DATABASE_URL` |
+| `make lint` | ruff, mypy (strict in `agora_core`), ESLint and the TypeScript check |
+| `make test` | pytest against `agora_test`; needs Postgres |
+| `make migrate` | Alembic migrations against `AGORA_DATABASE_URL` |
 | `make openapi` | Regenerate `web/lib/api` from the API schema |
 | `make spec` | Check `.do/app.yaml` against App Platform's schema |
 | `make seed-demo` | Scan synthetic content, create the bucket, and load `agents/` |
 
-Tests expect a database `bench_test` owned by user `bench` (password `bench`) on
-`localhost:5432`, or set `BENCH_DATABASE_URL`. They migrate it from scratch.
+Tests expect a database `agora_test` owned by user `agora` (password `agora`) on
+`localhost:5432`, or set `AGORA_DATABASE_URL`. They migrate it from scratch.
 
 ## Production setup (once)
 
 Do these in order. Everything lives in the Sydney region.
 
-1. **Database.** Create a managed Postgres 17 cluster named `bench-pg` in `syd1`.
-   In the control panel, create the database `bench` and the user `bench` (create
+1. **Database.** Create a managed Postgres 17 cluster named `agora-pg` in `syd1`.
+   In the control panel, create the database `agora` and the user `agora` (create
    the user there, not with SQL, or App Platform cannot read its password). Turn
    on trusted sources; attaching the cluster to the app adds the app
    automatically. Managed Postgres takes daily backups with point-in-time
    recovery; confirm the retention period suits us.
-2. **Spaces.** Create a private bucket `bench-logs` in `syd1` with file listing
+2. **Spaces.** Create a private bucket `agora-logs` in `syd1` with file listing
    restricted. Create a Spaces access key limited to that bucket.
-3. **Identity provider.** Register Bench as a confidential OpenID Connect client:
+3. **Identity provider.** Register Agora as a confidential OpenID Connect client:
    - redirect URI `https://<app-domain>/api/auth/callback`
    - sign-out redirect `https://<app-domain>/signed-out`
    - scopes `openid profile email`, plus a `groups` claim if roles come from groups
@@ -91,12 +91,12 @@ Do these in order. Everything lives in the Sydney region.
 
    | Variable | Where it comes from |
    | --- | --- |
-   | `BENCH_SPACES_KEY`, `BENCH_SPACES_SECRET` | The Spaces access key |
-   | `BENCH_OIDC_CLIENT_SECRET` | The identity provider registration |
-   | `BENCH_SESSION_SECRET` | `python -c "import secrets; print(secrets.token_urlsafe(48))"` |
-   | `BENCH_OIDC_METADATA_URL`, `BENCH_OIDC_CLIENT_ID` | The identity provider registration (not secret) |
-   | `BENCH_BOOTSTRAP_ADMINS` | Comma-separated emails of the first admins |
-   | `BENCH_OIDC_ROLE_MAP` | Optional JSON, e.g. `{"bench-reviewers": "reviewer"}` |
+   | `AGORA_SPACES_KEY`, `AGORA_SPACES_SECRET` | The Spaces access key |
+   | `AGORA_OIDC_CLIENT_SECRET` | The identity provider registration |
+   | `AGORA_SESSION_SECRET` | `python -c "import secrets; print(secrets.token_urlsafe(48))"` |
+   | `AGORA_OIDC_METADATA_URL`, `AGORA_OIDC_CLIENT_ID` | The identity provider registration (not secret) |
+   | `AGORA_BOOTSTRAP_ADMINS` | Comma-separated emails of the first admins |
+   | `AGORA_OIDC_ROLE_MAP` | Optional JSON, e.g. `{"agora-reviewers": "reviewer"}` |
    | `ANTHROPIC_API_KEY` | The Anthropic console; one key per environment |
    | `OPENAI_API_KEY` | The OpenAI platform; for the Lens panel's second judge |
 
@@ -111,7 +111,7 @@ Do these in order. Everything lives in the Sydney region.
 ## Deploying
 
 Every push to `main` deploys. App Platform builds both images, runs the `migrate`
-job (`python -m bench_worker.cli migrate`: Alembic migrations, then the agent
+job (`python -m agora_worker.cli migrate`: Alembic migrations, then the agent
 registry sync), and only if it succeeds replaces the services and the worker. A failed migration should stop the deploy and leave the previous
 version running; answers on DigitalOcean's community forum say so, though the job docs
 do not. Confirm this on the first deploy that carries a migration.
@@ -120,7 +120,7 @@ Spec changes are not picked up from git: apply them with `doctl apps update
 <app-id> --spec .do/app.yaml` after merging.
 
 The runner does not deploy itself. After App Platform deploys, run
-`sudo /srv/bench/infra/runner/deploy.sh <commit>` on the runner Droplet with the
+`sudo /srv/agora/infra/runner/deploy.sh <commit>` on the runner Droplet with the
 same commit, so both sides run the same code.
 
 ### After every deploy
@@ -158,7 +158,7 @@ applies its new SQL migration files, then bump the version pin.
 (`version`, `author`, `notes`) and merge. Never edit a version that has been
 deployed: the deploy will fail, by design, until the edit becomes a new file.
 
-**A tool needs Bench to call an agent.** An admin creates an API token in
+**A tool needs Agora to call an agent.** An admin creates an API token in
 Settings, API tokens, and hands it over as a secret. The tool calls
 `https://<app-domain>/api/v1/agents/<agent>/<version>/chat/completions` with
 `Authorization: Bearer <token>`. Revoke tokens that are no longer needed.
@@ -191,7 +191,7 @@ with its run's seed hash.
 **Changing a behaviour.** Edit `seeds/bloom/<behaviour>/BEHAVIOR.md` and merge.
 That is a new behaviour version with no scenarios: generate a new set, and rerun
 suites on it. Earlier sets and their rates stay readable but are not compared
-with the new ones. Never commit a `scenarios/` folder there; Bench refuses it.
+with the new ones. Never commit a `scenarios/` folder there; Agora refuses it.
 
 **A generation failed.** Its error is on the behaviour page, under generation runs.
 "Look like they contain real personal data" means the synthetic-data scan caught
@@ -211,9 +211,9 @@ answer" means it did not use the answer tool. Both count against the judge and
 are worth raising when choosing models.
 
 **Running the scanners on other logs.** The Lens scanners are ordinary Inspect
-Scout scanners: `scout scan bench_worker/lens/scanners.py -T <log folder> --model
+Scout scanners: `scout scan agora_worker/lens/scanners.py -T <log folder> --model
 <model>` runs them over any folder of Inspect logs, writing Scout's own results
-locally. Bench does not import those results.
+locally. Agora does not import those results.
 
 **Building the gold set.** An admin creates a gold set under Review, Gold sets:
 choose a finished run and how many transcripts (60 to start); the same seed draws
@@ -231,7 +231,7 @@ as CSV, and the provenance as JSON. Every export is in the audit log.
 
 **Someone cannot sign in: "belongs to another sign-in identity".** Their email
 already belongs to an account with a different identity-provider subject, for
-example after they were re-created at the provider. Bench never relinks accounts
+example after they were re-created at the provider. Agora never relinks accounts
 by email on its own. Find the `auth.refused` event in Settings, audit log, which
 records the new issuer and subject; confirm with the person and the identity
 provider's admins that the new identity is theirs; then move the account to it:
@@ -249,7 +249,7 @@ replies. The response view shows a signals pane for the newest companion run tha
 read the conversation, or the one in its `companion` link.
 
 **Companion jobs stay queued.** Only the runner takes the `companion` queue. Check
-it is up (`docker compose -f /srv/bench/infra/runner/compose.yaml ps` on the
+it is up (`docker compose -f /srv/agora/infra/runner/compose.yaml ps` on the
 Droplet) and its logs; see `infra/runner/README.md`.
 
 **A companion sample failed.** The error is on the run page. "Changed after launch"
@@ -262,7 +262,7 @@ in Spaces beside the run (`runs/<run>/samples/<n>-companion.json`).
 **Adding a companion reader.** Add it to `config/companion.yaml`, with its image
 pinned by digest and its `version` set to what the image reports. Pull the image
 and put the weights under `/srv/models` on the runner, then deploy both sides.
-Locally, `BENCH_COMPANION_FILE=config/companion.dev.yaml` gives the lexicon
+Locally, `AGORA_COMPANION_FILE=config/companion.dev.yaml` gives the lexicon
 reader, which needs no GPU.
 
 **Turning on full thinking.** Only once Anthropic has granted the account access:
@@ -278,7 +278,7 @@ Settings, audit log.
 
 Every auditor, target and judge call sends content to a provider. Record each
 provider's retention terms here before it is used, and use zero data retention
-arrangements where available. Bench sends only synthetic content until an admin
+arrangements where available. Agora sends only synthetic content until an admin
 approves an import.
 
 | Provider | Used for | Retention terms | Zero data retention | Confirmed by, date |
@@ -296,7 +296,7 @@ transcripts they read do not leave our infrastructure.
 Built: separate queues for work App Platform cannot host, with a test that every
 task's queue has a worker; full thinking as an opt-in on Anthropic roles, stored
 apart from summaries and readable only by admins and compliance, with each reading
-audited; the open-model companion: reader configuration, the `bench.companion/1`
+audited; the open-model companion: reader configuration, the `agora.companion/1`
 contract, a command runner and a development lexicon reader, signal checks in
 code, companion runs on the `companion` queue with read-only signals, a comparison
 with Lens labels on the run page and in the PDF report, and a signals pane in the
@@ -371,7 +371,7 @@ retention terms; answers to the open questions in docs/DECISIONS.md.
 Built: five behaviours in `seeds/bloom/` in petri_bloom 0.2.6's format; scenario
 generation as a one-job run whose output is a write-once scenario set; suites of
 one run per prompt version, with a job per scenario and repetition that runs
-Bloom's own task with its auditor aimed at Bench's Petri target, so the agent's
+Bloom's own task with its auditor aimed at Agora's Petri target, so the agent's
 real prompt stays fixed; rollouts indexed into the shared transcript and score
 tables; elicitation rates with each repetition's rate and their range; the
 behaviour page with its rate chart and table, the highest-scoring transcripts,

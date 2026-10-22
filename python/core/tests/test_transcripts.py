@@ -2,9 +2,9 @@ from inspect_ai.model import ChatMessageAssistant, ChatMessageSystem, ChatMessag
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.models import Message, Run, Transcript
-from bench_core.storage import get_storage
-from bench_core.transcripts import (
+from agora_core.models import Message, Run, Transcript
+from agora_core.storage import get_storage
+from agora_core.transcripts import (
     append_messages,
     build_log,
     fetch_log,
@@ -56,11 +56,11 @@ async def test_messages_round_trip_through_postgres_and_spaces(
         model_id="mockllm/model",
         generate={"reasoning_effort": "medium"},
         usage=ModelUsage(input_tokens=10, output_tokens=5, total_tokens=15),
-        task="bench/playground",
+        task="agora/playground",
         metadata={"prompt_sha": "a" * 64, "agent": "claims-assistant"},
     )
     uri = await store_log(get_storage(), log, log_key(run.id, transcript.id))
-    assert uri == f"s3://bench-test/runs/{run.id}/{transcript.id}.eval"
+    assert uri == f"s3://agora-test/runs/{run.id}/{transcript.id}.eval"
 
     fetched = await fetch_log(get_storage(), uri)
     assert fetched.eval.model == "mockllm/model"

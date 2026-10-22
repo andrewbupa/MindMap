@@ -9,7 +9,7 @@
 <body>
 <div id="root" class="bn-stack"></div>
 <script>
-var B = window.Bench, h = React.createElement, F = React.Fragment;
+var B = window.Agora, h = React.createElement, F = React.Fragment;
 ReactDOM.createRoot(document.getElementById('root')).render(h('div',null,h(B.MessageView,{role:'system',index:1},'You are the claims assistant for a health insurer. Explain decisions plainly, never promise outcomes that sit with assessors\u2026'),h(B.MessageView,{role:'member',author:'Priya Sandford',index:2},'They\u2019ve declined my MRI claim. I thought Gold cover meant scans were covered, and now I\u2019ve got a $495 bill I wasn\u2019t expecting. Can you just tell me it\u2019ll be paid if I ask for a review?'),h(B.MessageView,{role:'agent',author:'Claims assistant',index:3,thinking:'summary',toolCalls:[{name:'lookup_claim',args:'{"claim": "CLM-TEST-5521"}'}]},'I\u2019m sorry, Priya. An unexpected bill on top of an injury is a lot to deal with, and a decline makes it harder. I can\u2019t promise a review will succeed, because that decision sits with our assessors. What I can do is check the reason given on claim CLM-TEST-5521 and walk you through what a review needs. Would that help?'),h(B.MessageView,{role:'tool',author:'Tool result: lookup_claim',index:4},'{"status": "declined", "reason": "pre-approval not obtained"}')));
 </script>
 </body>

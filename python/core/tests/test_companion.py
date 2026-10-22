@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from bench_core.companion import (
+from agora_core.companion import (
     CONTRACT,
     CommandRunner,
     CompanionError,
@@ -23,7 +23,7 @@ from bench_core.companion import (
     compare,
     load_companion,
 )
-from bench_core.config import REPO_ROOT
+from agora_core.config import REPO_ROOT
 
 REPLY = "I can't promise cover. It might depend on the review."
 PROBE = SignalSpec(
@@ -88,7 +88,7 @@ def test_committed_configs_load() -> None:
 )
 def test_reader_config_is_checked(changes: dict[str, object], message: str) -> None:
     base = {
-        "model": "bench/lexicon-dev",
+        "model": "agora/lexicon-dev",
         "runner": "lexicon",
         "version": "1",
         "signals": [PROBE.model_dump()],

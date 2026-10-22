@@ -1,10 +1,10 @@
-# Bench: build brief for Claude Code
+# Agora: build brief for Claude Code
 
 22 October 2026
 
 ## How to use this brief
 
-Bench is the working title for an internal platform that tests our AI agents in three ways: Explore (Petri), Measure (Bloom) and Lens. This brief asks Claude Code to lay solid foundations for all three in one build, deployed to our existing DigitalOcean App Platform account from a new GitHub repository.
+Agora is the working title for an internal platform that tests our AI agents in three ways: Explore (Petri), Measure (Bloom) and Lens. This brief asks Claude Code to lay solid foundations for all three in one build, deployed to our existing DigitalOcean App Platform account from a new GitHub repository.
 
 1. Create the repository and save this document as `docs/BRIEF.md`.
 2. Save `CLAUDE.md` (supplied alongside this file, and repeated in the final section) at the repository root. Claude Code reads that file at the start of every session.
@@ -13,9 +13,9 @@ Bench is the working title for an internal platform that tests our AI agents in 
 
 Where this brief and a library's current documentation disagree, the documentation wins. Claude Code records each such difference in `docs/DECISIONS.md`.
 
-## What Bench does
+## What Agora does
 
-Bench puts our agents through simulated conversations and reports how they behave. Every run writes Inspect-format transcripts into one shared record, which three slices read in different ways.
+Agora puts our agents through simulated conversations and reports how they behave. Every run writes Inspect-format transcripts into one shared record, which three slices read in different ways.
 
 | Slice | Question it answers | Engine | What it produces |
 | --- | --- | --- | --- |
@@ -25,7 +25,7 @@ Bench puts our agents through simulated conversations and reports how they behav
 
 Petri is built on Inspect and Bloom exports Inspect-compatible transcripts, so Lens can read output from both. Later it will also read sampled production conversations, after consent and de-identification.
 
-Our agents work in health insurance (claims, coverage, disputes) and personal health support. People using Bench: prompt authors, expert reviewers (clinicians, claims specialists, a psychologist), compliance, and administrators.
+Our agents work in health insurance (claims, coverage, disputes) and personal health support. People using Agora: prompt authors, expert reviewers (clinicians, claims specialists, a psychologist), compliance, and administrators.
 
 ## Architecture
 
@@ -65,7 +65,7 @@ People use the web app; the API queues jobs; the worker runs Explore, Measure or
 One monorepo holds everything: a Python workspace for the engine, a Next.js app for the interface, and plain files for prompts, seeds and taxonomy so every change is reviewed in git.
 
 ```text
-bench/
+agora/
   CLAUDE.md                 standing instructions (final section of this brief)
   .do/app.yaml              DigitalOcean App Platform spec
   docker-compose.yml        local Postgres, MinIO (S3 stand-in), api, worker, web
@@ -73,9 +73,9 @@ bench/
   docs/                     BRIEF.md, DECISIONS.md, RUNBOOK.md
   design/                   Claude Design handoff bundles, one folder per handoff
   python/                   uv workspace
-    core/bench_core/        db models, migrations, storage, config, agent adapter, lens logic
-    api/bench_api/          FastAPI service: routes, auth, schemas
-    worker/bench_worker/    job runners: explore, measure, lens, companion
+    core/agora_core/        db models, migrations, storage, config, agent adapter, lens logic
+    api/agora_api/          FastAPI service: routes, auth, schemas
+    worker/agora_worker/    job runners: explore, measure, lens, companion
   agents/                   one folder per agent we test
     claims-assistant/       prompts/, tools.json, fixtures/, personas/
     health-companion/
@@ -126,7 +126,7 @@ Explore runs Petri 3 audits against our own agents, with their real system promp
 
 ### The agent adapter
 
-Petri 3's audit accepts a custom target agent ([reference](https://meridianlabs-ai.github.io/inspect_petri/reference/inspect_petri.html)). Build one adapter in `bench_core/agents` that Petri, Bloom and Lens all use.
+Petri 3's audit accepts a custom target agent ([reference](https://meridianlabs-ai.github.io/inspect_petri/reference/inspect_petri.html)). Build one adapter in `agora_core/agents` that Petri, Bloom and Lens all use.
 
 - Deployed mode, the default: the adapter loads a prompt_version and tool_profile, so the target sees our real system prompt and tool schemas. Scenario context from the auditor (a member profile, a claim record) arrives as a clearly delimited context block.
 - Open mode: passes the auditor's system prompt through, for research on the underlying model.
@@ -215,7 +215,7 @@ Define a `CompanionRunner` interface that takes a transcript and an open-weight 
 
 ## Model access, data handling and audit trail
 
-Every result must be reproducible months later for an internal review or a regulator, and no real personal or health data enters Bench without approval.
+Every result must be reproducible months later for an internal review or a regulator, and no real personal or health data enters Agora without approval.
 
 - **Model roles.** `config/models.yaml` maps roles (target, auditor, judge_a, judge_b, judge_c, scanner, Bloom stages) to exact model IDs. Runs record the resolved IDs, never aliases.
 - **Secrets.** Provider keys live only as encrypted App Platform environment variables and in a local `.env` that git ignores.
@@ -263,32 +263,32 @@ One App Platform app, defined in `.do/app.yaml`, deploys from the GitHub reposit
 A sketch of the spec for Claude Code to complete and check with `doctl apps spec validate .do/app.yaml`:
 
 ```yaml
-name: bench
+name: agora
 region: <closest region that meets our data-residency obligations>
 services:
   - name: web
-    github: { repo: <org>/bench, branch: main, deploy_on_push: true }
+    github: { repo: <org>/agora, branch: main, deploy_on_push: true }
     source_dir: /
     dockerfile_path: web/Dockerfile
     http_port: 3000
     routes: [{ path: / }]
   - name: api
-    github: { repo: <org>/bench, branch: main, deploy_on_push: true }
+    github: { repo: <org>/agora, branch: main, deploy_on_push: true }
     source_dir: /
     dockerfile_path: python/Dockerfile
-    run_command: uvicorn bench_api.main:app --host 0.0.0.0 --port 8000
+    run_command: uvicorn agora_api.main:app --host 0.0.0.0 --port 8000
     http_port: 8000
     routes: [{ path: /api, preserve_path_prefix: true }]
 workers:
   - name: worker
-    github: { repo: <org>/bench, branch: main, deploy_on_push: true }
+    github: { repo: <org>/agora, branch: main, deploy_on_push: true }
     source_dir: /
     dockerfile_path: python/Dockerfile
-    run_command: procrastinate --app=bench_worker.app.app worker
+    run_command: procrastinate --app=agora_worker.app.app worker
 jobs:
   - name: migrate
     kind: PRE_DEPLOY
-    github: { repo: <org>/bench, branch: main }
+    github: { repo: <org>/agora, branch: main }
     source_dir: /
     dockerfile_path: python/Dockerfile
     run_command: alembic upgrade head
@@ -296,7 +296,7 @@ databases:
   - name: db
     engine: PG
     production: true
-    cluster_name: bench-pg
+    cluster_name: agora-pg
 ```
 
 ## Build order
@@ -318,7 +318,7 @@ Seven milestones, each finishing a whole layer and deploying it. Claude Code pla
 The same content ships as a separate `CLAUDE.md` file. Place it at the repository root.
 
 ```markdown
-# Bench
+# Agora
 
 Internal platform that tests our AI agents three ways: Explore (Petri 3),
 Measure (Bloom) and Lens (expressed dispositions, read from text).
@@ -333,7 +333,7 @@ Full brief: docs/BRIEF.md. Read it before starting any milestone.
   Read their current docs before integrating; never guess an API.
 
 ## Stack
-- Python 3.12, uv workspace in python/, ruff, mypy (strict in bench_core).
+- Python 3.12, uv workspace in python/, ruff, mypy (strict in agora_core).
 - FastAPI, SQLAlchemy 2, Alembic, Procrastinate (Postgres-backed queue).
 - Next.js App Router, strict TypeScript, API client generated from OpenAPI.
 - Deploy: DigitalOcean App Platform via .do/app.yaml; logs in Spaces.

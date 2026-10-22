@@ -5,12 +5,12 @@ import pytest
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.config import REPO_ROOT
-from bench_core.models import Message, Run, RunSample, Score, Transcript
-from bench_core.registry import load_registry, sync_registry
-from bench_core.storage import get_storage
-from bench_core.transcripts import fetch_log
-from bench_worker.tasks.explore import execute_sample
+from agora_core.config import REPO_ROOT
+from agora_core.models import Message, Run, RunSample, Score, Transcript
+from agora_core.registry import load_registry, sync_registry
+from agora_core.storage import get_storage
+from agora_core.transcripts import fetch_log
+from agora_worker.tasks.explore import execute_sample
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 from testsupport.petri import ScriptedRoles, auditor_script, claims_target, judge_output
 
@@ -176,13 +176,13 @@ async def test_the_development_model_runs_a_whole_audit(
     db: AsyncSession,
     s3_server: str,
 ) -> None:
-    from bench_worker.explore.runner import default_models
+    from agora_worker.explore.runner import default_models
 
     await launch(client, idp, seeds=["declined-mri-promise"])
     sample = (await db.execute(select(RunSample))).scalar_one()
     await execute_sample(
         sample.id,
-        models=lambda role, model_id, generate: default_models(role, "benchdev/scripted", {}),
+        models=lambda role, model_id, generate: default_models(role, "agoradev/scripted", {}),
     )
     await db.refresh(sample)
     assert sample.status == "succeeded", sample.error
@@ -217,13 +217,13 @@ async def test_concurrent_samples_in_one_worker_both_succeed(
     """Inspect allows one eval_async per process; audits queue behind a lock."""
     import asyncio
 
-    from bench_worker.explore.runner import default_models
+    from agora_worker.explore.runner import default_models
 
     await launch(client, idp, seeds=["declined-mri-promise", "legal-threat"])
     samples = (await db.execute(select(RunSample))).scalars().all()
 
     def models(role: str, model_id: str, generate: dict) -> object:
-        return default_models(role, "benchdev/scripted", {})
+        return default_models(role, "agoradev/scripted", {})
 
     await asyncio.gather(*(execute_sample(s.id, models=models) for s in samples))  # type: ignore[arg-type]
     for sample in samples:

@@ -10,13 +10,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PYTHON_DOWNLOADS=never \
     UV_PROJECT_ENVIRONMENT=/app/python/.venv \
-    BENCH_REPO_ROOT=/app \
-    HOME=/tmp/bench \
-    TIKTOKEN_CACHE_DIR=/tmp/bench/tiktoken \
+    AGORA_REPO_ROOT=/app \
+    HOME=/tmp/agora \
+    TIKTOKEN_CACHE_DIR=/tmp/agora/tiktoken \
     INSPECT_DISPLAY=none \
     PATH=/app/python/.venv/bin:$PATH
 
-RUN groupadd --system bench && useradd --system --gid bench --home-dir /app bench
+RUN groupadd --system agora && useradd --system --gid agora --home-dir /app agora
 
 WORKDIR /app/python
 
@@ -32,8 +32,8 @@ COPY agents/ /app/agents/
 COPY seeds/ /app/seeds/
 COPY config/ /app/config/
 RUN uv sync --frozen --no-dev --all-packages --python /usr/local/bin/python3.12 \
-    && mkdir -p /tmp/bench && chown bench:bench /tmp/bench
+    && mkdir -p /tmp/agora && chown agora:agora /tmp/agora
 
-USER bench
+USER agora
 EXPOSE 8000
-CMD ["uvicorn", "bench_api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "agora_api.main:app", "--host", "0.0.0.0", "--port", "8000"]

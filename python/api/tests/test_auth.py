@@ -7,10 +7,10 @@ import pytest
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_api.auth import identity_from_claims, resolve_roles, safe_next
-from bench_api.sessions import COOKIE_NAME
-from bench_core.config import Settings
-from bench_core.models import AuditEvent, User, UserSession
+from agora_api.auth import identity_from_claims, resolve_roles, safe_next
+from agora_api.sessions import COOKIE_NAME
+from agora_core.config import Settings
+from agora_core.models import AuditEvent, User, UserSession
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 
 
@@ -101,7 +101,7 @@ async def test_role_checks(client: httpx.AsyncClient, idp: FakeOIDCClient) -> No
 async def test_writes_need_the_csrf_header(client: httpx.AsyncClient, idp: FakeOIDCClient) -> None:
     await sign_in_as(client, idp, "admin@example.test")
     response = await client.patch(
-        "/api/me", json={"sensitive_opt_in": True}, headers={"x-bench-request": ""}
+        "/api/me", json={"sensitive_opt_in": True}, headers={"x-agora-request": ""}
     )
     assert response.status_code == 403
     response = await client.patch("/api/me", json={"sensitive_opt_in": True})

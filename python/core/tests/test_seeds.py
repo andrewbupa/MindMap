@@ -4,8 +4,8 @@ from pathlib import Path
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.config import REPO_ROOT
-from bench_core.seeds import (
+from agora_core.config import REPO_ROOT
+from agora_core.seeds import (
     SeedError,
     dimension_names,
     load_seeds,

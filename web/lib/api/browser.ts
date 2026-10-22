@@ -10,6 +10,6 @@ export const browserClient = createClient(
   createConfig({
     baseUrl: "",
     credentials: "same-origin",
-    headers: { "x-bench-request": "1" },
+    headers: { "x-agora-request": "1" },
   }),
 );

@@ -14,9 +14,9 @@ from inspect_ai.model import (
     get_model,
 )
 
-from bench_core.agents.adapter import AgentVersion
-from bench_core.config import REPO_ROOT
-from bench_core.registry import load_registry
+from agora_core.agents.adapter import AgentVersion
+from agora_core.config import REPO_ROOT
+from agora_core.registry import load_registry
 
 USAGE = ModelUsage(input_tokens=1200, output_tokens=150, total_tokens=1350)
 

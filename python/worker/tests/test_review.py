@@ -5,10 +5,10 @@ import pytest
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.config import REPO_ROOT
-from bench_core.models import AuditEvent, RunSample, Score, User
-from bench_core.registry import load_registry, sync_registry
-from bench_worker.tasks.explore import execute_sample
+from agora_core.config import REPO_ROOT
+from agora_core.models import AuditEvent, RunSample, Score, User
+from agora_core.registry import load_registry, sync_registry
+from agora_worker.tasks.explore import execute_sample
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 from testsupport.petri import ScriptedRoles, auditor_script, claims_target, judge_output
 
@@ -111,7 +111,7 @@ async def test_scores_export_carries_provenance_and_is_audited(
     import csv
     import io
 
-    from bench_core.models import Run
+    from agora_core.models import Run
 
     run = (await db.execute(select(Run))).scalar_one()
     response = await client.get(f"/api/reports/runs/{run.id}/scores.csv")

@@ -1,6 +1,6 @@
 import pytest
 
-from bench_core.storage import StorageError, get_storage, object_key, run_prefix
+from agora_core.storage import StorageError, get_storage, object_key, run_prefix
 
 
 def test_object_key_joins_safe_segments() -> None:
@@ -27,9 +27,9 @@ def test_round_trip_and_signed_url(s3_server: str) -> None:
 
 
 def test_signed_urls_can_use_a_public_endpoint(s3_server: str) -> None:
-    from bench_core.config import Settings
-    from bench_core.storage import Storage
+    from agora_core.config import Settings
+    from agora_core.storage import Storage
 
     settings = Settings(spaces_endpoint=s3_server, spaces_public_endpoint="http://localhost:8333")
     url = Storage(settings).signed_url("checks/one.json")
-    assert url.startswith("http://localhost:8333/bench-test/checks/one.json?")
+    assert url.startswith("http://localhost:8333/agora-test/checks/one.json?")

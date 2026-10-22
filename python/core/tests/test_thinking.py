@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 from inspect_ai.model import ChatMessageAssistant, ContentReasoning, ContentText
 
-from bench_core.model_roles import FULL_THINKING_BETA, ModelRolesError, load_model_roles
-from bench_core.transcripts import message_row
+from agora_core.model_roles import FULL_THINKING_BETA, ModelRolesError, load_model_roles
+from agora_core.transcripts import message_row
 
 
 def roles(tmp_path: Path, body: str):  # type: ignore[no-untyped-def]

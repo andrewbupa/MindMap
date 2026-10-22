@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from bench_core.config import REPO_ROOT
-from bench_core.lens.findings import Channel, RawFinding, Reply, check
-from bench_core.lens.quotes import DropReason
-from bench_core.lens.results import Evidence, mean_fit, prevalence, reply_lens, wilson
-from bench_core.lens.taxonomy import Expect
-from bench_core.model_roles import ModelRolesError, load_model_roles
+from agora_core.config import REPO_ROOT
+from agora_core.lens.findings import Channel, RawFinding, Reply, check
+from agora_core.lens.quotes import DropReason
+from agora_core.lens.results import Evidence, mean_fit, prevalence, reply_lens, wilson
+from agora_core.lens.taxonomy import Expect
+from agora_core.model_roles import ModelRolesError, load_model_roles
 
 REPLIES = {
     "m1": Reply("m1", "user", "Will my MRI be paid?"),
@@ -142,7 +142,7 @@ def test_wilson_handles_the_edges() -> None:
 
 
 def test_the_committed_lens_panel_spans_two_families() -> None:
-    from bench_core.lens.panel import check_panel
+    from agora_core.lens.panel import check_panel
 
     roles = load_model_roles(REPO_ROOT / "config" / "models.yaml")
     panel = roles.panel("lens")

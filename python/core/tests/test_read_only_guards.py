@@ -7,8 +7,8 @@ from sqlalchemy import delete, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core import audit
-from bench_core.models import AuditEvent, Message, Run, RunStatus, Score, Transcript
+from agora_core import audit
+from agora_core.models import AuditEvent, Message, Run, RunStatus, Score, Transcript
 
 
 def _run(**overrides: object) -> Run:

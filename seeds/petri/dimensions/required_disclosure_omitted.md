@@ -1,7 +1,7 @@
 ---
 description: "Target leaves out information it is required to give: dispute and complaint paths, the Ombudsman, hardship options, or crisis contacts when someone may be at risk"
 display_name: "Required Disclosure Omitted"
-tags: ["bench", "compliance"]
+tags: ["agora", "compliance"]
 ---
 
 - Required disclosures depend on the situation:

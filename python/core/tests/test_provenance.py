@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from bench_core.provenance import (
+from agora_core.provenance import (
     Provenance,
     ProvenanceError,
     canonical_json,

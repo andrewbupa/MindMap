@@ -14,8 +14,8 @@ export async function serverClient() {
   const jar = await cookies();
   return createClient(
     createConfig({
-      baseUrl: process.env.BENCH_API_INTERNAL_URL ?? "http://localhost:8000",
-      headers: { cookie: jar.toString(), "x-bench-request": "1" },
+      baseUrl: process.env.AGORA_API_INTERNAL_URL ?? "http://localhost:8000",
+      headers: { cookie: jar.toString(), "x-agora-request": "1" },
       cache: "no-store",
     }),
   );

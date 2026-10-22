@@ -6,10 +6,10 @@ from sqlalchemy import select, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.config import REPO_ROOT
-from bench_core.models import Persona, PromptVersion, ToolProfile
-from bench_core.provenance import sha256_text
-from bench_core.registry import RegistryError, load_registry, sync_registry, version_sort_key
+from agora_core.config import REPO_ROOT
+from agora_core.models import Persona, PromptVersion, ToolProfile
+from agora_core.provenance import sha256_text
+from agora_core.registry import RegistryError, load_registry, sync_registry, version_sort_key
 
 
 def test_the_registry_in_git_loads() -> None:

@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export default async function SignedInLayout({ children }: { children: ReactNode }) {
   const user = await getMe();
   if (!user) {
-    const path = (await headers()).get("x-bench-path") ?? "/";
+    const path = (await headers()).get("x-agora-path") ?? "/";
     redirect(loginUrl(path));
   }
   return <AppShell user={user}>{children}</AppShell>;

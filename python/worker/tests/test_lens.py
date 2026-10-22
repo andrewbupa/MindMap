@@ -8,10 +8,10 @@ from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.config import REPO_ROOT
-from bench_core.models import Annotation, DroppedFinding, Message, Run, Transcript
-from bench_core.registry import load_registry, sync_registry
-from bench_core.storage import get_storage
+from agora_core.config import REPO_ROOT
+from agora_core.models import Annotation, DroppedFinding, Message, Run, Transcript
+from agora_core.registry import load_registry, sync_registry
+from agora_core.storage import get_storage
 from testsupport.lens import dev_judges, explore_run, lens_run, run_lens, scripted_judges
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 
@@ -170,7 +170,7 @@ async def test_the_scanners_run_over_an_inspect_log_directory(
     from inspect_scout._display._display import init_display_type
     from inspect_scout.aio import scan_async
 
-    from bench_worker.lens.scanners import judgement
+    from agora_worker.lens.scanners import judgement
 
     await explore_run(client, idp, db)
     transcript = (await db.execute(select(Transcript))).scalar_one()

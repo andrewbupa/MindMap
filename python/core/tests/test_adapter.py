@@ -2,7 +2,7 @@ import json
 
 from inspect_ai.model import ChatMessageTool, ChatMessageUser
 
-from bench_core.agents.adapter import (
+from agora_core.agents.adapter import (
     CONTEXT_OPEN,
     AdapterMode,
     AgentAdapter,
@@ -10,7 +10,7 @@ from bench_core.agents.adapter import (
     TurnEnd,
     split_assistant,
 )
-from bench_core.agents.fixtures import FixtureExecutor
+from agora_core.agents.fixtures import FixtureExecutor
 from testsupport.agents import agent_version, answer, scripted, tool_call
 
 

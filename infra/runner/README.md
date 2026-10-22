@@ -14,7 +14,7 @@ is taken by one of the two.
 
 ## What runs where
 
-- The runner container is Bench's Python image plus the Docker CLI (`Dockerfile`),
+- The runner container is Agora's Python image plus the Docker CLI (`Dockerfile`),
   running `procrastinate worker --queues sandbox,companion --concurrency 1`.
 - It holds the host's Docker socket and starts sibling containers: a companion
   reader's GPU image, or a Dish sandbox. Socket access is root on the host, so the
@@ -34,19 +34,19 @@ is taken by one of the two.
    over HTTPS, and the image registries at build time.
 3. Add the Droplet to the database cluster's trusted sources.
 4. Check the GPU from Docker: `docker run --rm --gpus all ubuntu nvidia-smi`.
-5. Add a read-only deploy key for the repository, then clone it to `/srv/bench`.
-6. Write `/etc/bench/runner.env` (mode 0600, owner root). Use the private
+5. Add a read-only deploy key for the repository, then clone it to `/srv/agora`.
+6. Write `/etc/agora/runner.env` (mode 0600, owner root). Use the private
    (VPC) host in the database URL:
 
    ```sh
-   BENCH_ENVIRONMENT=production
-   BENCH_DATABASE_URL=postgresql://bench:...@private-....db.ondigitalocean.com:25060/bench?sslmode=require
-   BENCH_DATABASE_CA_CERT=...
-   BENCH_SPACES_ENDPOINT=https://syd1.digitaloceanspaces.com
-   BENCH_SPACES_REGION=syd1
-   BENCH_SPACES_BUCKET=...
-   BENCH_SPACES_KEY=...
-   BENCH_SPACES_SECRET=...
+   AGORA_ENVIRONMENT=production
+   AGORA_DATABASE_URL=postgresql://agora:...@private-....db.ondigitalocean.com:25060/agora?sslmode=require
+   AGORA_DATABASE_CA_CERT=...
+   AGORA_SPACES_ENDPOINT=https://syd1.digitaloceanspaces.com
+   AGORA_SPACES_REGION=syd1
+   AGORA_SPACES_BUCKET=...
+   AGORA_SPACES_KEY=...
+   AGORA_SPACES_SECRET=...
    # Only when Dish runs here: the provider keys for its model roles.
    ANTHROPIC_API_KEY=...
    ```
@@ -54,11 +54,11 @@ is taken by one of the two.
    Take the values from the App Platform worker's settings; the runner needs no
    sign-in or session settings.
 7. Put model weights under `/srv/models` and pull or build each reader's image.
-8. Start it: `sudo /srv/bench/infra/runner/deploy.sh`.
+8. Start it: `sudo /srv/agora/infra/runner/deploy.sh`.
 
 ## Deploy a new commit
 
-`sudo /srv/bench/infra/runner/deploy.sh <commit>` checks out the commit, builds the
+`sudo /srv/agora/infra/runner/deploy.sh <commit>` checks out the commit, builds the
 Python and runner images tagged with it, and restarts the container. Deploy the
 runner with the same commit as App Platform: runs record the commit that launched
 them, and a sample refuses a reader whose configuration changed since launch.
@@ -69,7 +69,7 @@ A job cut off mid-sample is re-queued by the stalled-job task, like any other.
 ## The companion contract
 
 The reader's command gets one JSON request on stdin and writes one JSON response on
-stdout (`bench.companion/1`, defined in `bench_core/companion.py`):
+stdout (`agora.companion/1`, defined in `agora_core/companion.py`):
 
 - Request: the reader key, model, `version`, the signals to report, every message of
   the conversation in order (`id`, `index`, `role`, `text`), and `score`, the ids of
@@ -80,12 +80,12 @@ stdout (`bench.companion/1`, defined in `bench_core/companion.py`):
   character offsets into the message text. Explanations (`nla` signals) go in
   `explanation`.
 
-Bench checks every signal in code and drops any that name another message or
+Agora checks every signal in code and drops any that name another message or
 signal, whose offsets fall outside the text or overlap, or whose values are not
 finite. The raw response is kept in Spaces beside the run.
 
 ## Check on it
 
-- `docker compose -f /srv/bench/infra/runner/compose.yaml logs -f`
+- `docker compose -f /srv/agora/infra/runner/compose.yaml logs -f`
 - Jobs waiting for a runner:
   `SELECT queue_name, status, count(*) FROM procrastinate_jobs WHERE queue_name IN ('sandbox', 'companion') GROUP BY 1, 2;`

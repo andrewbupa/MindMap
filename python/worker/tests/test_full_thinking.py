@@ -7,11 +7,11 @@ import pytest
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_api.main import app
-from bench_core.config import REPO_ROOT
-from bench_core.model_roles import FULL_THINKING_BETA, get_model_roles, load_model_roles
-from bench_core.models import AuditEvent, Message, User
-from bench_core.registry import load_registry, sync_registry
+from agora_api.main import app
+from agora_core.config import REPO_ROOT
+from agora_core.model_roles import FULL_THINKING_BETA, get_model_roles, load_model_roles
+from agora_core.models import AuditEvent, Message, User
+from agora_core.registry import load_registry, sync_registry
 from testsupport.lens import explore_run
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 

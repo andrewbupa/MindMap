@@ -10,18 +10,18 @@ from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_api.main import app
-from bench_core.companion import (
+from agora_api.main import app
+from agora_core.companion import (
     CompanionConfig,
     LexiconRunner,
     ReaderConfig,
     get_companion,
     load_companion,
 )
-from bench_core.config import REPO_ROOT
-from bench_core.models import CompanionSignal, Message, RunSample
-from bench_core.registry import load_registry, sync_registry
-from bench_worker.tasks.companion import execute_companion_sample
+from agora_core.config import REPO_ROOT
+from agora_core.models import CompanionSignal, Message, RunSample
+from agora_core.registry import load_registry, sync_registry
+from agora_worker.tasks.companion import execute_companion_sample
 from testsupport.lens import REPLY, explore_run, lens_run, run_lens, scripted_judges
 from testsupport.oidc import FakeOIDCClient
 from testsupport.reports import pdf_text
@@ -69,7 +69,7 @@ async def test_the_companion_reads_a_run_and_sits_beside_lens(
     readers = (await client.get("/api/companion/readers")).json()
     assert [r["key"] for r in readers] == ["lexicon-dev"]
     run = await _launch(client, source)
-    assert run["kind"] == "companion" and run["model_ids"] == {"companion": "bench/lexicon-dev"}
+    assert run["kind"] == "companion" and run["model_ids"] == {"companion": "agora/lexicon-dev"}
     assert run["prompt_sha"] == source["prompt_sha"] and run["seed_hash"] == source["seed_hash"]
     assert run["taxonomy_version"] == lens["taxonomy_version"]
     assert run["config"]["reader_sha"] == companion.reader("lexicon-dev").sha256

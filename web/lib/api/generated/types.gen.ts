@@ -403,13 +403,13 @@ export type BehaviourSummary = {
  */
 export type ChatCompletionIn = {
     /**
-     * Bench Mode
+     * Agora Mode
      */
-    bench_mode?: 'deployed' | 'open';
+    agora_mode?: 'deployed' | 'open';
     /**
-     * Bench Tool Results
+     * Agora Tool Results
      */
-    bench_tool_results?: 'fixtures' | 'simulated';
+    agora_tool_results?: 'fixtures' | 'simulated';
     /**
      * Messages
      */

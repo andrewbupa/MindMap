@@ -7,10 +7,10 @@ import pytest
 from inspect_petri import JudgeDimension
 from petri_bloom import Behavior, Scenario
 
-from bench_core.config import REPO_ROOT
-from bench_core.measure.behaviours import BehaviourError, load_behaviour, load_behaviours
-from bench_core.measure.rates import Rollout, elicitation
-from bench_core.measure.suites import MeasureError, presence_dimension, scenario_ids
+from agora_core.config import REPO_ROOT
+from agora_core.measure.behaviours import BehaviourError, load_behaviour, load_behaviours
+from agora_core.measure.rates import Rollout, elicitation
+from agora_core.measure.suites import MeasureError, presence_dimension, scenario_ids
 
 STARTING_BEHAVIOURS = {
     "unauthorised_coverage_commitment",
@@ -85,7 +85,7 @@ def test_generated_scenarios_may_not_live_in_the_folder(tmp_path: Path) -> None:
     folder = tmp_path / "shortcut"
     (folder / "scenarios").mkdir(parents=True)
     (folder / "BEHAVIOR.md").write_text("---\nmodality: conversation\n---\nA behaviour.\n")
-    with pytest.raises(BehaviourError, match="belong in Bench"):
+    with pytest.raises(BehaviourError, match="belong in Agora"):
         load_behaviour(folder, tmp_path)
 
 

@@ -12,26 +12,26 @@ milestone first within each section.
 Dish to run our agents in their production scaffold once the runner exists.
 petri-dish 0.3.4, read from its installed source, supports three scaffolds through
 inspect-swe: Claude Code, Codex CLI and Gemini CLI. Any other scaffold must be an
-Agent Client Protocol (ACP) agent that Bench would write, running a process inside
+Agent Client Protocol (ACP) agent that Agora would write, running a process inside
 the sandbox. Dish also rewrites every tool call except the todo and plan tools to
 an `auditor_execute` call that the auditor answers. So Dish gives a scaffold's real
 prompt and tool definitions, but simulated tool results. Our Petri target already
 does that for our chat agents without Docker. Dish also installs its ACP adapter,
 and so Claude Code, from npm at the latest version on each run, with no way to pin
 it through `interactive_claude_code`. That breaks our rule that every run pins and
-records its versions. Bench therefore does not install petri-dish yet. The runner
+records its versions. Agora therefore does not install petri-dish yet. The runner
 and its `sandbox` queue are ready for it once the open questions below are settled.
 
 **Full thinking comes through Inspect.** Inspect 0.3.282's Anthropic provider reads
 `anthropic-beta` from a request's `extra_headers`. When the betas include
-`dev-full-thinking-2025-05-14` it stops asking for summarised thinking. Bench sets
+`dev-full-thinking-2025-05-14` it stops asking for summarised thinking. Agora sets
 that header from the role's configuration and never calls the API around Inspect.
 
 ### Design choices
 
 **Work App Platform cannot host has queues of its own.** The App Platform worker
 listens on `default` and `runs` only. The Droplet runner listens on `sandbox` and
-`companion`. A test reads both run commands and checks that every Bench task's
+`companion`. A test reads both run commands and checks that every Agora task's
 queue is taken by one of them.
 
 **Full thinking is opt-in per role and kept apart.** A role in `config/models.yaml`
@@ -46,7 +46,7 @@ audited, and content notes apply. Lens and the companion leave full thinking out
 names an open-weight model, its signals (probe, persona vector or natural language
 autoencoder explanation) and the Lens label each tracks. The runner runs the
 reader's command, which reads one JSON request on stdin and writes one response
-on stdout (`bench.companion/1`). The GPU code and its versions live in the
+on stdout (`agora.companion/1`). The GPU code and its versions live in the
 reader's image, pinned by digest. Each run records the reader's configuration and
 its hash. A sample refuses a reader whose configuration has changed since launch,
 and a runner that reports a different version from the reader's.
@@ -68,7 +68,7 @@ reader's token budget; the run has no cost, because the GPU is ours.
 same source: the newest finished one, or the one chosen. Lens counts a label in a
 reply when the panel's median intensity is 1 or more. A signal counts when any
 token reaches its `present_at`. For each signal and its label, every reply both
-runs read falls in one of four cells: both, Lens only, signal only, neither. Bench
+runs read falls in one of four cells: both, Lens only, signal only, neither. Agora
 shows the counts, the share where they agree, and, of the replies either flags,
 the share both flag. Each count and share opens its replies, which open the
 response view with the signals pane. Transcripts with content notes stay out for
@@ -83,7 +83,7 @@ tints.
 lexicon reader that marks words from a list, so the whole path runs locally and in
 tests. Production refuses lexicon readers, as it refuses development models.
 
-**The runner is a Droplet with the Docker socket.** Its image is Bench's Python
+**The runner is a Droplet with the Docker socket.** Its image is Agora's Python
 image plus the Docker CLI, copied from the `docker:29.9.2-cli` image. It runs one
 job at a time: a reader fills the GPU, and Inspect runs one eval per process.
 Readers run as sibling containers with the GPU, the weights mounted read-only and
@@ -98,7 +98,7 @@ of retrying, since a retry would find the same.
 ### Open questions
 
 1. **Which open model, and which signals?** Anthropic's natural language
-   autoencoder release covers several open models. Which one should Bench read
+   autoencoder release covers several open models. Which one should Agora read
    with, which probes or persona vectors should map to which labels, and who
    trains the probes, on what synthetic data? Until then `config/companion.yaml`
    has no readers.
@@ -116,7 +116,7 @@ of retrying, since a retry would find the same.
 
 ### Where the brief and current documentation differ
 
-**ReportLab 5 has no published release notes we could reach.** Bench pins
+**ReportLab 5 has no published release notes we could reach.** Agora pins
 `reportlab==5.0.1` (August 2026) for PDF reports. Its documentation host is blocked
 here and no 5.0 notes turned up, so the integration uses only Platypus calls whose
 signatures were read from the installed package (`SimpleDocTemplate`, `Paragraph`,
@@ -151,7 +151,7 @@ Judges' alphas inform the choice of judges but do not set trust.
 **Lens disagreements join the review queue.** Every reply where judges differ by
 two points or more on a label, from the twenty newest finished Lens runs, appears
 under Review, Lens disagreements. The reviewer gives the intensity they would, and
-Bench records it against each judge's finding as agree or disagree with a
+Agora records it against each judge's finding as agree or disagree with a
 corrected intensity. Verdicts never change findings.
 
 **PDF reports open with provenance.** Each run's PDF starts with every provenance
@@ -176,7 +176,7 @@ had produced a server error.
 1. **Who labels the gold set?** The brief asks for 60 transcripts labelled by two
    experts each. Which reviewers, and should a clinician and a claims specialist
    label the items that touch their field?
-2. **Agreement with one judge or the panel?** Bench reports each judge against the
+2. **Agreement with one judge or the panel?** Agora reports each judge against the
    experts. The panel's median could be reported too, as the number Lens shows.
 3. **Retired labels.** A retired label still appears in Lens views with its badge.
    Should Lens stop reporting it, or keep it visible for comparison?
@@ -197,7 +197,7 @@ Inspect logs in the tests.
 
 **The worker calls the scanners' judging directly.** Scout's `scan` writes its
 results, a buffer and an index cache to local disk, and starts several processes.
-Bench's Lens jobs call the scanners' shared judging function in memory, one job
+Agora's Lens jobs call the scanners' shared judging function in memory, one job
 per transcript, and keep what they need in Postgres and Spaces: the checked
 findings and dropped findings as rows, and every judge's raw answer as JSON beside
 the run. Running `scout scan` over exported logs still works for anyone who wants
@@ -219,10 +219,10 @@ estimates count it as zero until one is added.
 ### Design choices
 
 **A panel lives in `config/models.yaml`.** `panels.lens` names the judge roles; a
-Lens run records each role's exact model. Bench refuses a panel of fewer than two
+Lens run records each role's exact model. Agora refuses a panel of fewer than two
 or more than three judges, or of a single family, so with Claude as the target no
-family judges its own outputs alone. Locally, `benchpeer/scripted` is a second
-development family that scores some labels two points higher than `benchdev` and
+family judges its own outputs alone. Locally, `agorapeer/scripted` is a second
+development family that scores some labels two points higher than `agoradev` and
 paraphrases its first quote, so disputes and dropped quotes appear in local runs.
 
 **A Lens run reads one finished run.** It records the source run, the taxonomy
@@ -231,8 +231,8 @@ source's prompt SHA and seed hash. Each transcript is one job in which every jud
 reads every family, in parallel. The job reads the label definitions as the run's
 taxonomy version stored them, not as git has them now.
 
-**The judge reads what Bench checks.** The conversation is rebuilt from the stored
-messages with Bench's message ids: each reply's visible words, and its thinking
+**The judge reads what Agora checks.** The conversation is rebuilt from the stored
+messages with Agora's message ids: each reply's visible words, and its thinking
 summary in `<thinking_summary>` tags. System messages are left out, as Scout does
 by default. Every citation therefore resolves to a stored message, and every quote
 is checked against exactly the text the judge saw.
@@ -297,7 +297,7 @@ readers who have not opted in.
 "will not receive updates"; its last commit is 7a18428 (2026-05-07) and its last
 release v1.1.0. Its successor is Meridian Labs' `petri_bloom`, an implementation
 of Bloom on Petri and Inspect, and this is the "Petri 3 Bloom integration" the
-brief asks us to check first. Bench pins `petri-bloom==0.2.6` (the PyPI source
+brief asks us to check first. Agora pins `petri-bloom==0.2.6` (the PyPI source
 matches the repository's head apart from one comment), and CLAUDE.md's "pin
 bloom" applies to it. The frozen repository had no Inspect dependency, wrote
 Petri-style JSON rather than `.eval` logs, reached targets through LiteLLM with no
@@ -307,15 +307,15 @@ rollout.
 **Behaviour folders use petri_bloom's format.** The brief asks for `seed.yaml`,
 `behaviors.json` and `models.json` per behaviour, "as Bloom expects". petri_bloom
 expects `BEHAVIOR.md` (YAML front matter and the definition) and an optional
-`examples/` folder, and chooses models per call rather than per folder. Bench's
+`examples/` folder, and chooses models per call rather than per folder. Agora's
 behaviours live in `seeds/bloom/<behaviour>/BEHAVIOR.md`; models come from the
 `scenarios` role in `config/models.yaml`.
 
 **Our prompt stays fixed without the OpenAI-compatible route.** petri_bloom's
-`bloom_audit` has no target parameter, but its solver can be replaced. Bench keeps
+`bloom_audit` has no target parameter, but its solver can be replaced. Agora keeps
 Bloom's task (its dataset, judge with Bloom's instructions, viewer and metadata)
 and swaps in Bloom's auditor, with the same tools and system message, aimed at
-Bench's Petri target from Explore. The target keeps the agent's real prompt and
+Agora's Petri target from Explore. The target keeps the agent's real prompt and
 passes whatever the auditor stages as a `<scenario_context>` block. Every Measure
 run records `route: petri_target`. The OpenAI-compatible endpoint stays available
 as the brief's fallback route, unused.
@@ -335,22 +335,22 @@ and petri_bloom retries when a reply has no tool call. Petri's judge and Scout d
 not force tools.
 
 **No elicitation rate ships with petri_bloom.** Neither petri_bloom nor Petri
-computes one, so Bench does (`bench_core.measure.rates`): the share of scored
+computes one, so Agora does (`agora_core.measure.rates`): the share of scored
 rollouts with presence 7 or more out of 10, as the brief and Bloom's original code define
-it. Bloom's original counted unparsed scores as 0; Bench counts rollouts the judge
+it. Bloom's original counted unparsed scores as 0; Agora counts rollouts the judge
 did not score apart, shows how many there were, and leaves them out of the rate.
 
 **The presence dimension is found by tag.** petri_bloom's ideation names the
-presence dimension itself and tags it `behavior`; Bench requires exactly one such
+presence dimension itself and tags it `behavior`; Agora requires exactly one such
 dimension in a scenario set and records its name on the set and on every run.
 
 **Variation lineage is not recorded.** petri_bloom writes `variation: <axis>` on a
-variation but nothing linking it to its base scenario, so Bench shows each
+variation but nothing linking it to its base scenario, so Agora shows each
 variation's axis but not which base scenario it came from.
 
 ### Design choices
 
-**Scenarios are generated in Bench and stored in Postgres, once.** Generation is a
+**Scenarios are generated in Agora and stored in Postgres, once.** Generation is a
 run of kind `scenarios` with one sample job, so it shares Explore's lifecycle,
 budget, cancel and status stream. petri_bloom runs in memory on the behaviour as
 it is in git; the result (its Behavior, with understanding, scenarios and
@@ -395,7 +395,7 @@ returns two placeholder scenarios, a variation per axis and one presence
 dimension, so generation and suites run locally without keys.
 
 **Generation usage comes from Inspect's usage record.** petri_bloom calls models
-outside an eval, so Bench resets and reads Inspect's per-task usage record
+outside an eval, so Agora resets and reads Inspect's per-task usage record
 (`init_model_usage`, `model_usage`, internal functions in 0.3.282) around it.
 
 **Chart colour.** The rate chart uses one series colour, `--color-chart-1`
@@ -410,7 +410,7 @@ surfaces; the site's accent blue reads as grey at chart scale.
 2. **How many scenarios?** Each behaviour asks for 4 base scenarios with two
    variation axes, so about 12 scenarios and 36 rollouts per prompt version.
    Bloom's authors used 50 or more. Larger sets narrow the spread and cost more.
-3. **Reviewing generated scenarios.** Sets are generated in Bench and read there.
+3. **Reviewing generated scenarios.** Sets are generated in Agora and read there.
    Should an expert approve a set before suites can use it?
 
 ## Milestone 3: explore
@@ -434,7 +434,7 @@ parsed rubrics, as Petri's docs describe.
 
 **Highlights are text, not structure.** The judge's highlights, summary and
 reasons are free text citing `[Mn]`; Petri resolves each cite to a message id in
-`scanner_references`. Bench stores those references with each transcript and
+`scanner_references`. Agora stores those references with each transcript and
 maps them to message positions, so every cite links to its message. Cites into
 branches the auditor rolled back keep their id but no position.
 
@@ -445,7 +445,7 @@ on by default.
 
 ### Design choices
 
-**Our target, inside Petri.** `bench_worker.explore.target` follows Petri's own
+**Our target, inside Petri.** `agora_worker.explore.target` follows Petri's own
 target agent and TargetContext protocol. The auditor's system message becomes
 the context block after our real prompt (its message id kept, so rollbacks
 replay cleanly), the model sees our real tool schemas, and every tool call is
@@ -465,7 +465,7 @@ noted on the run), failed if all failed, stopped at budget if the budget ran out
 `runs/<run>/samples/<index>-e<epoch>.eval`, and indexed as one transcript: the
 target's surviving conversation, the judge's summary and highlights, and one
 score row per dimension (scale 1 to 10). The transcript page offers the log for
-download, to open in Inspect View; hosting Inspect View inside Bench can follow.
+download, to open in Inspect View; hosting Inspect View inside Agora can follow.
 
 **Token budgets.** Each sample is given the run's remaining tokens as Inspect's
 `token_limit`; a sample that hits it is stored and marked stopped at budget, and
@@ -511,12 +511,12 @@ enabled, Inspect drops `display` and the API returns full thinking; the
 **Sampling settings are refused at load.** Current Claude models reject
 non-default `temperature`, `top_p` and `top_k`. `config/models.yaml` refuses them,
 and the OpenAI-compatible endpoint ignores them and lists them under
-`bench.ignored_parameters`, so variation comes from repetition as the brief says.
+`agora.ignored_parameters`, so variation comes from repetition as the brief says.
 
 **Effort defaults differ by model.** Claude Opus 5.5 defaults to `medium` effort,
 one level below Claude Opus 5, so every role sets its effort explicitly.
 
-**Inspect's synchronous log functions break a running event loop.** Bench calls
+**Inspect's synchronous log functions break a running event loop.** Agora calls
 `write_eval_log_async` and `read_eval_log_async` from async code.
 
 ### Design choices
@@ -524,7 +524,7 @@ one level below Claude Opus 5, so every role sets its effort explicitly.
 **Agents live in git.** `agents/<key>/` holds `agent.yaml`, `prompts/v<n>.md`
 (front matter, then the prompt exactly as the agent receives it), `tools.json`
 and `personas/`. The prompt's SHA-256 is taken over the text after the front
-matter, trimmed. The pre-deploy job (`python -m bench_worker.cli migrate`) applies
+matter, trimmed. The pre-deploy job (`python -m agora_worker.cli migrate`) applies
 migrations and then syncs the registry, replacing the brief's bare `alembic
 upgrade head` so a deploy always knows what git says we test.
 
@@ -547,7 +547,7 @@ into a `<scenario_context>` block after our prompt, introduced by one neutral
 line. Open mode passes the caller's prompt through and offers no tools.
 
 **No refusal fallbacks.** Anthropic recommends server-side refusal fallbacks for
-new code. Bench does not enable them: a fallback would let a different model
+new code. Agora does not enable them: a fallback would let a different model
 answer for the target or a judge, which would misattribute behaviour and break
 provenance. A refusal is recorded as a refusal (`TurnEnd.refused`), which is
 itself a finding.
@@ -573,17 +573,17 @@ would see only what connected systems show.
 **The OpenAI-compatible endpoint uses API tokens.** Admins issue and revoke
 tokens in Settings; only their SHA-256 is stored and each is shown once. Tool
 calls are answered from fixtures by default, with intermediate steps returned in
-`bench.steps`; `bench_tool_results: "simulated"` returns the tool calls for the
+`agora.steps`; `agora_tool_results: "simulated"` returns the tool calls for the
 caller to answer. Streaming is not supported yet.
 
-**A development model.** `benchdev/scripted` is a deterministic Inspect provider
-in `bench_core.agents.dev_model`. It calls a tool when it sees a claim or member
+**A development model.** `agoradev/scripted` is a deterministic Inspect provider
+in `agora_core.agents.dev_model`. It calls a tool when it sees a claim or member
 number and answers plainly with a short thinking summary, so the playground and
 endpoint run end to end without provider keys. `config/models.dev.yaml` uses
 it; docker-compose defaults to that file. Production refuses any role that names
 a development model.
 
-**Personal data scan.** `bench_core.synthetic` checks emails (reserved domains
+**Personal data scan.** `agora_core.synthetic` checks emails (reserved domains
 only), phone numbers (ACMA's fictional ranges and public service lines only),
 Medicare numbers (by check digit), long identifiers (they must carry a `TEST`
 marker) and, for imports, given names. A test runs it over `agents/`, `seeds/`
@@ -618,7 +618,7 @@ the full check happens when the app is created or updated. Source: doctl
 
 **App Platform cannot send runtime logs to Spaces.** Its log forwarding supports
 Papertrail, Datadog, Logtail and OpenSearch only. We read "logs go to a private
-Spaces bucket" as Bench's own files: Inspect `.eval` logs and other artefacts,
+Spaces bucket" as Agora's own files: Inspect `.eval` logs and other artefacts,
 written through the S3 API. Runtime logs stay in App Platform's log viewer until
 we choose a forwarding destination (open question below).
 
@@ -632,7 +632,7 @@ Spaces. Sources: [MinIO CE in 2026](https://glukhov.org/data-infrastructure/obje
 **Procrastinate has no Alembic integration.** Its only migration integration is
 for Django; otherwise "you are responsible for tracking which migrations you've
 applied". We vendor Procrastinate 3.10.0's `schema.sql` into
-`bench_core/migrations/sql/` and apply it in Alembic revision 0003, so the
+`agora_core/migrations/sql/` and apply it in Alembic revision 0003, so the
 pre-deploy job sets up the queue with everything else. To upgrade Procrastinate,
 add an Alembic revision that applies each newer file from
 `procrastinate/sql/migrations/` in order (`pre` files before the code deploy,
@@ -659,13 +659,13 @@ ships no JavaScript API, which Next.js's build-time type check relies on.
 the API depends on `httpx2`. Tests still use `httpx` for the ASGI test client.
 
 **The worker's run command matches the brief.** `procrastinate
---app=bench_worker.app.app worker` is correct for Procrastinate 3.10.
+--app=agora_worker.app.app worker` is correct for Procrastinate 3.10.
 
 ### Design choices
 
-**Repository.** Bench lives in `andrewbupa/MindMap` rather than a new `bench`
-repository; the brief's `bench/` root is this repository's root. The app spec
-deploys from `andrewbupa/MindMap`, branch `main`.
+**Repository.** Agora lives in `andrewbupa/agora` rather than a new `agora`
+repository; the brief's `agora/` root is this repository's root. The app spec
+deploys from `andrewbupa/agora`, branch `main`.
 
 **Region.** App Platform `syd`, with Postgres and Spaces in `syd1`: the only
 Australian region DigitalOcean offers. Confirm this meets our data-residency
@@ -681,13 +681,13 @@ server components call the API, so the API is the only place sessions are
 checked.
 
 **Roles.** A user may hold several of author, reviewer, compliance and admin;
-admin passes every check. When `BENCH_OIDC_ROLE_MAP` maps identity-provider
+admin passes every check. When `AGORA_OIDC_ROLE_MAP` maps identity-provider
 groups to roles, the identity provider is the source of truth and roles follow
 its groups at every sign-in. Without a map, admins grant roles in Settings. Emails
-in `BENCH_BOOTSTRAP_ADMINS` are always admins, which is how the first admin
+in `AGORA_BOOTSTRAP_ADMINS` are always admins, which is how the first admin
 appears. Admins cannot remove their own admin role or deactivate themselves.
 
-**Cross-site request protection.** Every write must carry `X-Bench-Request: 1`. A
+**Cross-site request protection.** Every write must carry `X-Agora-Request: 1`. A
 cross-site form cannot set that header, and a cross-site script cannot send it
 without a CORS preflight, which the API refuses. The OpenAI-compatible endpoint
 in milestone 2 (`/api/v1/...`) uses bearer tokens and is exempt.
@@ -715,7 +715,7 @@ temporary file and connect with `sslmode=verify-full`, so the server's identity
 is checked, not only the encryption.
 
 **Commit provenance.** Components receive `${_self.COMMIT_HASH}` as
-`BENCH_GIT_COMMIT`; `make dev` passes the local commit. A run will refuse to
+`AGORA_GIT_COMMIT`; `make dev` passes the local commit. A run will refuse to
 launch without one.
 
 **Worker restarts.** App Platform sends SIGTERM on deploy and kills after the
@@ -725,11 +725,11 @@ mid-job is re-queued within a minute by `retry_stalled_jobs`.
 
 **Signed URLs.** The bucket is private. Evidence opens through a signed URL that
 lasts five minutes, and each one issued is written to the audit log.
-`BENCH_SPACES_PUBLIC_ENDPOINT` lets signed URLs name a host the browser can reach
+`AGORA_SPACES_PUBLIC_ENDPOINT` lets signed URLs name a host the browser can reach
 when containers use another (locally, `localhost:8333` rather than `s3:8333`).
 
 **Local development mirrors the ingress.** docker-compose puts Caddy in front at
-`http://bench.localhost:3000`, routing `/api` to the API like App Platform's
+`http://agora.localhost:3000`, routing `/api` to the API like App Platform's
 ingress. Browsers resolve `*.localhost` to this machine, and inside the compose
 network the same name points at Caddy, so the mock identity provider
 (`navikt/mock-oauth2-server` 6.1.2) issues tokens with one issuer that both the
@@ -754,7 +754,7 @@ never ships in the web image; we will take the fix when Next publishes one.
 ### Open questions
 
 1. **Identity provider.** Which provider (Microsoft Entra ID, Okta, other)? Do
-   roles come from its groups (set `BENCH_OIDC_ROLE_MAP`) or from admins in Bench?
+   roles come from its groups (set `AGORA_OIDC_ROLE_MAP`) or from admins in Agora?
    Who are the first admins?
 2. **Data residency.** Does Sydney meet our obligations for synthetic data now,
    and for de-identified production samples later?

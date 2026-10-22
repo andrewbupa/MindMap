@@ -1,6 +1,6 @@
 import pytest
 
-from bench_core.agreement import Trust, alpha, pairable_values, trust
+from agora_core.agreement import Trust, alpha, pairable_values, trust
 
 # Krippendorff (2011), "Computing Krippendorff's alpha-reliability", the worked
 # example with four observers, twelve units and missing values.

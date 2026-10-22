@@ -1,6 +1,6 @@
 from collections import Counter
 
-from bench_api.main import app
+from agora_api.main import app
 
 
 def test_operation_ids_are_unique() -> None:

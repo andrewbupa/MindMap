@@ -5,10 +5,10 @@ import pytest
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.config import REPO_ROOT
-from bench_core.gold import sample
-from bench_core.models import User
-from bench_core.registry import load_registry, sync_registry
+from agora_core.config import REPO_ROOT
+from agora_core.gold import sample
+from agora_core.models import User
+from agora_core.registry import load_registry, sync_registry
 from testsupport.lens import explore_run, lens_run, run_lens, scripted_judges
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 
@@ -130,7 +130,7 @@ async def test_experts_label_blind_and_agreement_sets_trust(
 async def test_gold_sets_come_from_finished_runs(
     client: httpx.AsyncClient, idp: FakeOIDCClient, registry: None, db: AsyncSession
 ) -> None:
-    from bench_core.lens.taxonomy import load_lens, sync_lens
+    from agora_core.lens.taxonomy import load_lens, sync_lens
 
     await sync_lens(db, load_lens(REPO_ROOT), "abc123")
     await db.commit()

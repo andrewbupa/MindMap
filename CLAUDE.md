@@ -1,4 +1,4 @@
-# Bench
+# Agora
 
 Internal platform that tests our AI agents three ways: Explore (Petri 3),
 Measure (Bloom) and Lens (expressed dispositions, read from text).
@@ -13,7 +13,7 @@ Full brief: docs/BRIEF.md. Read it before starting any milestone.
   Read their current docs before integrating; never guess an API.
 
 ## Stack
-- Python 3.12, uv workspace in python/, ruff, mypy (strict in bench_core).
+- Python 3.12, uv workspace in python/, ruff, mypy (strict in agora_core).
 - FastAPI, SQLAlchemy 2, Alembic, Procrastinate (Postgres-backed queue).
 - Next.js App Router, strict TypeScript, API client generated from OpenAPI.
 - Deploy: DigitalOcean App Platform via .do/app.yaml; logs in Spaces.

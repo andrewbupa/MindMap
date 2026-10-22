@@ -1,7 +1,7 @@
 import pytest
 
-from bench_core.config import REPO_ROOT
-from bench_core.synthetic import scan_text, scan_tree
+from agora_core.config import REPO_ROOT
+from agora_core.synthetic import scan_text, scan_tree
 
 
 def kinds(text: str, *, names: bool = True) -> list[str]:

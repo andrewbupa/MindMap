@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from bench_core.config import REPO_ROOT
-from bench_core.model_roles import ModelRolesError, load_model_roles, model_family
+from agora_core.config import REPO_ROOT
+from agora_core.model_roles import ModelRolesError, load_model_roles, model_family
 
 
 def write(tmp_path: Path, body: str) -> Path:
@@ -57,13 +57,13 @@ def test_families() -> None:
 
 
 def test_production_refuses_development_models(monkeypatch: pytest.MonkeyPatch) -> None:
-    from bench_core import model_roles
-    from bench_core.config import Environment, Settings
+    from agora_core import model_roles
+    from agora_core.config import Environment, Settings
 
     settings = Settings(
         models_file=Path("config/models.dev.yaml"),
         session_secret="not-the-local-default-but-long-enough",
-        public_url="https://bench.example.test",
+        public_url="https://agora.example.test",
         environment=Environment.production,
     )
     monkeypatch.setattr(model_roles, "get_settings", lambda: settings)

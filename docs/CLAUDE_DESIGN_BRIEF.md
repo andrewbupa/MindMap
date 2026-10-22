@@ -1,7 +1,7 @@
 # Claude Design brief
 
 This file holds the design system, screens and sample content sections of the
-brief, updated to the names Bench's code already uses. Add the remaining sections
+brief, updated to the names Agora's code already uses. Add the remaining sections
 from the original brief (the handoff to Claude Code among them) around it.
 
 ## Design system
@@ -126,12 +126,12 @@ Use these exactly; they come from the data.
 - **Review verdicts:** agree, disagree (with a corrected value), unsure.
 - **Open-model signal kinds:** probe, persona vector, autoencoder explanation.
 
-Some wording is fixed by Bench's rules and must appear as written:
+Some wording is fixed by Agora's rules and must appear as written:
 
 - Lens pages carry the line "Expressed disposition, read from text. Lens does not see inside the model."
 - Thinking summaries are labelled as summaries "of the agent's reasoning, written by a separate model".
 - The open-model pane says its signals are that model's reading of the text, "not the agent's own internals".
-- Reports say that everything in Bench is synthetic.
+- Reports say that everything in Agora is synthetic.
 
 ## Screens
 
@@ -148,7 +148,7 @@ tablet width too. Lens screens matter most and deserve the most iteration.
 | 6 | Measure behaviour page | `/measure/behaviours/[behaviour]` | "Elicitation rate by prompt version" in a `RateChart` (the share of rollouts scoring 7 or more of 10 for presence, with spread across repetitions); "Highest presence scores"; "Scenarios"; "Behaviour version"; scenario generation runs |
 | 7 | Lens response view * | `/lens/runs/[run]/transcripts/[transcript]` | Each reply with its fit, `Highlighted` phrases and `ProfileStrip`; `FindingPane`; the thinking summaries pane; `CompanionPane`; the panel of judges with dropped quotes; `TurnTimeline` |
 | 8 | Lens compare * | `/lens/compare` | Prompt A beside prompt B on the same scenarios; per-label differences with intervals; by scenario |
-| 9 | Review queue * | `/review` | `Tabs` for three queues. Judge scores: agree, disagree with a corrected score, or unsure, with a note. Lens disagreements: replies where judges differ by two points or more; the reviewer picks an intensity, and Bench records agree or disagree against each judge. Gold sets: blind labelling of every label on every reply, then "Save and label the next". Keyboard-first is not built yet: design the keys. Items with content notes stay hidden unless the reviewer opts in under Settings, preferences; show how many are hidden |
+| 9 | Review queue * | `/review` | `Tabs` for three queues. Judge scores: agree, disagree with a corrected score, or unsure, with a note. Lens disagreements: replies where judges differ by two points or more; the reviewer picks an intensity, and Agora records agree or disagree against each judge. Gold sets: blind labelling of every label on every reply, then "Save and label the next". Keyboard-first is not built yet: design the keys. Items with content notes stay hidden unless the reviewer opts in under Settings, preferences; show how many are hidden |
 | 10 | Report export | `/reports` | Each run with its exports: Report (PDF), Scores (CSV), Findings (CSV), Provenance (JSON). A preview of the PDF: provenance first, then sections for the run's kind |
 
 Also in the app, to take the system without a bespoke mock-up. The first two are
@@ -162,7 +162,7 @@ worth one if time allows:
 ## Sample content
 
 Design with realistic content, never lorem ipsum. Everything below is invented for
-layout and contains no real person. It matches Bench's own synthetic fixtures.
+layout and contains no real person. It matches Agora's own synthetic fixtures.
 
 Seed: `declined-mri-promise`. Scenario type: `claim_declined_distress`. Agent:
 Claims assistant (`claims-assistant`), prompt v12. Persona: Priya Sandford, member

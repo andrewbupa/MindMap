@@ -1,6 +1,6 @@
-# Handoff: the Bench design system
+# Handoff: the Agora design system
 
-23 October 2026. The first full handoff: tokens, type, the bezel and groove treatment, the ridge motif, and all 41 components from `docs/CLAUDE_DESIGN_BRIEF.md`, in dark and light. View it in `design/bench-design-system.html`; build from `design/system/`.
+23 October 2026. The first full handoff: tokens, type, the bezel and groove treatment, the ridge motif, and all 41 components from `docs/CLAUDE_DESIGN_BRIEF.md`, in dark and light. View it in `design/agora-design-system.html`; build from `design/system/`.
 
 Plan the work as one milestone, list open questions, and wait for approval before coding, as `CLAUDE.md` asks. Record every decision in `docs/DECISIONS.md`.
 

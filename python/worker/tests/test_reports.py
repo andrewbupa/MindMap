@@ -9,9 +9,9 @@ import pytest
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bench_core.config import REPO_ROOT
-from bench_core.models import AuditEvent, User
-from bench_core.registry import load_registry, sync_registry
+from agora_core.config import REPO_ROOT
+from agora_core.models import AuditEvent, User
+from agora_core.registry import load_registry, sync_registry
 from testsupport.lens import explore_run, lens_run, run_lens, scripted_judges
 from testsupport.oidc import FakeOIDCClient, sign_in_as
 from testsupport.reports import pdf_text

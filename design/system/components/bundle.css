@@ -1,4 +1,4 @@
-/* Bench components. Colours, sizes and shadows come from tokens.css; motion lives here (tokens.json has no motion family). */
+/* Agora components. Colours, sizes and shadows come from tokens.css; motion lives here (tokens.json has no motion family). */
 :root {
   --motion-fast: 120ms;
   --motion-base: 220ms;

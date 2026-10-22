@@ -1,5 +1,5 @@
 [project]
-name = "bench-workspace"
+name = "agora-workspace"
 version = "0.1.0"
 requires-python = ">=3.12,<3.13"
 
@@ -10,15 +10,15 @@ package = false
 members = ["core", "api", "worker"]
 
 [tool.uv.sources]
-bench-core = { workspace = true }
-bench-api = { workspace = true }
-bench-worker = { workspace = true }
+agora-core = { workspace = true }
+agora-api = { workspace = true }
+agora-worker = { workspace = true }
 
 [dependency-groups]
 dev = [
-  "bench-core",
-  "bench-api",
-  "bench-worker",
+  "agora-core",
+  "agora-api",
+  "agora-worker",
   "ruff>=0.17",
   "mypy>=2.4",
   "pytest>=8.4",
@@ -39,7 +39,7 @@ select = ["E", "F", "I", "B", "UP", "SIM", "ASYNC", "S", "RUF"]
 ignore = ["S101", "S311"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["bench_core", "bench_api", "bench_worker"]
+known-first-party = ["agora_core", "agora_api", "agora_worker"]
 
 [tool.ruff.lint.per-file-ignores]
 "**/tests/**" = ["S105", "S106"]
@@ -56,7 +56,7 @@ warn_unused_ignores = true
 check_untyped_defs = true
 
 [[tool.mypy.overrides]]
-module = ["bench_core.*"]
+module = ["agora_core.*"]
 strict = true
 
 

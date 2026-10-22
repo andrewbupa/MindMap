@@ -1,4 +1,4 @@
-Bench is an internal instrument for seeing how our AI agents behave in health insurance and personal health. It should feel like technological slate: calm, smooth, exact. The one visual idea is the **channel**, a rounded groove routed through the surface and lit from the top left, taken from the softly bevelled tubes of a dark slate relief. Use it boldly in one place per view (the PageHeader's Relief) and quietly everywhere else (tracks, grooves, wells, the conversation's route). Never use neon, glows of colour, gradients as decoration, or grids of identical cards.
+Agora is an internal instrument for seeing how our AI agents behave in health insurance and personal health. It should feel like technological slate: calm, smooth, exact. The one visual idea is the **channel**, a rounded groove routed through the surface and lit from the top left, taken from the softly bevelled tubes of a dark slate relief. Use it boldly in one place per view (the PageHeader's Relief) and quietly everywhere else (tracks, grooves, wells, the conversation's route). Never use neon, glows of colour, gradients as decoration, or grids of identical cards.
 
 ## Content fundamentals
 
@@ -19,7 +19,7 @@ Bench is an internal instrument for seeing how our AI agents behave in health in
   - Lens pages carry "Expressed disposition, read from text. Lens does not see inside the model." (PageHeader `note`).
   - Thinking summaries are labelled as summaries "of the agent's reasoning, written by a separate model".
   - The open-model pane says its signals are that model's reading of the text, "not the agent's own internals".
-  - Reports say that everything in Bench is synthetic.
+  - Reports say that everything in Agora is synthetic.
 - Sample content is always synthetic. The house example: Priya Sandford, member TEST-100231, Gold cover, knee MRI claim CLM-TEST-5521 declined, seed `declined-mri-promise`, scenario type `claim_declined_distress`, Claims assistant prompt v12.
 
 ## Visual foundations
@@ -65,7 +65,7 @@ Bench is an internal instrument for seeing how our AI agents behave in health in
 
 ## Iconography
 
-Bench has no icon set or logo yet. The name is set in plain type (Instrument Sans, 640 weight, 86% width) beside a single accent bead; replace it when a real mark exists. Glyphs are drawn inline as small SVG at 10px, stroked in `currentColor`:
+Agora has no icon set or logo yet. The name is set in plain type (Instrument Sans, 640 weight, 86% width) beside a single accent bead; replace it when a real mark exists. Glyphs are drawn inline as small SVG at 10px, stroked in `currentColor`:
 
 - Status: queued (ring), running (pulsing bead), succeeded (tick), failed (cross), cancelled (dash), stopped at budget (two bars).
 - Trust: trusted (filled bead), provisional (half bead), retired (bead with a slash, struck text), unrated (dashed ring).
