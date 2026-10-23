@@ -15,9 +15,7 @@ from agora_core.transcripts import (
 from testsupport.agents import answer
 
 
-async def test_messages_round_trip_through_postgres_and_spaces(
-    db: AsyncSession, s3_server: str
-) -> None:
+async def test_messages_round_trip_through_postgres_and_spaces(db: AsyncSession) -> None:
     run = Run(
         kind="rehearsal",
         status="running",
@@ -60,7 +58,7 @@ async def test_messages_round_trip_through_postgres_and_spaces(
         metadata={"prompt_sha": "a" * 64, "agent": "claims-assistant"},
     )
     uri = await store_log(get_storage(), log, log_key(run.id, transcript.id))
-    assert uri == f"s3://agora-test/runs/{run.id}/{transcript.id}.eval"
+    assert uri == f"db://stored_file/runs/{run.id}/{transcript.id}.eval"
 
     fetched = await fetch_log(get_storage(), uri)
     assert fetched.eval.model == "mockllm/model"

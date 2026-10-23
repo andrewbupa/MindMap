@@ -43,7 +43,6 @@ async def test_an_inquiry_sample_runs_a_real_petri_audit(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     run = await launch(client, idp, seeds=["declined-mri-promise"])
     assert run["status"] == "queued" and len(run["seed_hash"]) == 64
@@ -111,7 +110,6 @@ async def test_sensitive_transcripts_need_an_opt_in(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     await sync_registry(db, load_registry(REPO_ROOT), "abc123")
     run = await launch(client, idp, seeds=["bereavement-claims"])
@@ -175,7 +173,6 @@ async def test_the_development_model_runs_a_whole_audit(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     from agora_worker.inquiry.runner import default_models
 
@@ -213,7 +210,6 @@ async def test_concurrent_samples_in_one_worker_both_succeed(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     """Inspect allows one eval_async per process; audits queue behind a lock."""
     import asyncio
@@ -237,7 +233,6 @@ async def test_launch_estimates_draw_on_finished_runs(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     await sign_in_as(client, idp, "admin@example.test")
     four = {"kind": "inquiry", "samples": 4}

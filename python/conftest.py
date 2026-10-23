@@ -1,5 +1,6 @@
-"""Shared test fixtures: a migrated test database, an in-process S3 server, the API client
-and a stand-in identity provider."""
+"""Shared test fixtures: a migrated test database, an in-process S3 server for the Spaces
+store, the API client and a stand-in identity provider. Files go to Postgres unless a
+test asks for Spaces."""
 
 from __future__ import annotations
 
@@ -49,11 +50,11 @@ def s3_server() -> Iterator[str]:
     os.environ["AGORA_SPACES_KEY"] = "test"
     os.environ["AGORA_SPACES_SECRET"] = "test"
     from agora_core.config import get_settings
-    from agora_core.storage import get_storage
+    from agora_core.storage import SpacesStorage, get_storage
 
     get_settings.cache_clear()
     get_storage.cache_clear()
-    get_storage().ensure_bucket()
+    SpacesStorage(get_settings()).ensure_bucket()
     yield endpoint
     server.stop()
 
@@ -85,6 +86,7 @@ TABLES_TO_CLEAR = (
     "agent",
     "data_import",
     "system_check",
+    "stored_file",
     "user_session",
     "audit_event",
     '"user"',

@@ -87,7 +87,7 @@ class WitnessWork:
             dropped=dropped,
             runner_version=response.runner_version,
             tokens=response.tokens,
-            log_uri=f"s3://{self.storage.bucket}/{key}",
+            log_uri=self.storage.uri(key),
         )
 
     async def record(self, db: AsyncSession, outcome: WitnessOutcome) -> None:

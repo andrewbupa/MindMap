@@ -1,4 +1,5 @@
-"""Witness signals (filled by the Droplet runner), data imports and system checks."""
+"""Witness signals (filled by the Droplet runner), data imports, system checks and stored
+files."""
 
 from __future__ import annotations
 
@@ -6,7 +7,16 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import BigInteger, CheckConstraint, ForeignKey, Index, Integer, String, Text
+from sqlalchemy import (
+    BigInteger,
+    CheckConstraint,
+    ForeignKey,
+    Index,
+    Integer,
+    LargeBinary,
+    String,
+    Text,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from agora_core.models.base import Base, CreatedAt, UUIDPrimaryKey
@@ -74,3 +84,16 @@ class SystemCheck(UUIDPrimaryKey, CreatedAt, Base):
     object_key: Mapped[str | None] = mapped_column(String(1000))
     detail: Mapped[dict[str, Any]] = mapped_column(default=dict, server_default="{}")
     finished_at: Mapped[datetime | None]
+
+
+class StoredFile(CreatedAt, Base):
+    """A file Agora keeps in Postgres when storage is ``database``: an Inspect log, a
+    judge's raw answer or a system check's object. Keys are the ones Spaces would use."""
+
+    __tablename__ = "stored_file"
+
+    key: Mapped[str] = mapped_column(String(1000), primary_key=True)
+    content_type: Mapped[str] = mapped_column(String(200))
+    size: Mapped[int] = mapped_column(BigInteger)
+    sha256: Mapped[str] = mapped_column(String(64))
+    data: Mapped[bytes] = mapped_column(LargeBinary)

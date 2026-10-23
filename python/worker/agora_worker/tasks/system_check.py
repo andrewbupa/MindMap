@@ -61,7 +61,7 @@ async def run_system_check(check_id: str) -> None:
         check.object_key = key
         check.detail = {
             **payload,
-            "bucket": storage.bucket,
+            "store": storage.name,
             "size": stored.size,
             "sha256": sha256_bytes(data),
             "read_back_matches": matches,

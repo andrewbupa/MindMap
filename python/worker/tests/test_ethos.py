@@ -27,7 +27,6 @@ async def test_the_panel_reads_a_transcript_and_quotes_are_checked(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     source = await inquiry_run(client, idp, db)
     run = await ethos_run(client, source["id"])
@@ -123,7 +122,6 @@ async def test_the_development_judges_disagree_and_paraphrase(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     source = await inquiry_run(client, idp, db)
     run = await ethos_run(client, source["id"])
@@ -140,7 +138,6 @@ async def test_compare_two_prompt_versions_on_the_same_scenarios(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     first = await ethos_run(client, (await inquiry_run(client, idp, db, "v1"))["id"])
     second = await ethos_run(client, (await inquiry_run(client, idp, db, "v2"))["id"])
@@ -161,7 +158,6 @@ async def test_the_scanners_run_over_an_inspect_log_directory(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

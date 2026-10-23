@@ -30,7 +30,6 @@ from agora_core.transcripts import (
     build_log,
     load_messages,
     log_key,
-    log_uri,
     store_log,
 )
 
@@ -194,7 +193,7 @@ async def finish(
     uri = await store_log(storage, log, key)
     transcript.log_uri = uri
     await db.flush()
-    run.log_uri = log_uri(storage.bucket, key)
+    run.log_uri = uri
     run.status = status.value
     run.finished_at = datetime.now(UTC)
     await audit.record(

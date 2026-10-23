@@ -1,7 +1,7 @@
 # Runner
 
 A Droplet that takes the work App Platform cannot host, from the same Postgres queue
-and into the same Spaces bucket as the App Platform worker:
+and into the same storage (Postgres, or Spaces) as the App Platform worker:
 
 | Queue | Work | Status |
 | --- | --- | --- |
@@ -32,7 +32,10 @@ is taken by one of the two.
 2. Add a cloud firewall: SSH from your administrators' addresses only, nothing else
    inbound. Outbound needs Postgres over the VPC, Spaces and the model providers
    over HTTPS, and the image registries at build time.
-3. Add the Droplet to the database cluster's trusted sources.
+3. Add the Droplet to the database cluster's trusted sources. The runner needs a
+   database it can reach from outside App Platform. App Platform's dev database,
+   which the prototype uses, may not allow that; if it does not, move the app to a
+   managed cluster first (docs/RUNBOOK.md).
 4. Check the GPU from Docker: `docker run --rm --gpus all ubuntu nvidia-smi`.
 5. Add a read-only deploy key for the repository, then clone it to `/srv/agora`.
 6. Write `/etc/agora/runner.env` (mode 0600, owner root). Use the private
@@ -42,11 +45,13 @@ is taken by one of the two.
    AGORA_ENVIRONMENT=production
    AGORA_DATABASE_URL=postgresql://agora:...@private-....db.ondigitalocean.com:25060/agora?sslmode=require
    AGORA_DATABASE_CA_CERT=...
-   AGORA_SPACES_ENDPOINT=https://syd1.digitaloceanspaces.com
-   AGORA_SPACES_REGION=syd1
-   AGORA_SPACES_BUCKET=...
-   AGORA_SPACES_KEY=...
-   AGORA_SPACES_SECRET=...
+   # Only if the app keeps files in Spaces (AGORA_STORAGE=spaces):
+   # AGORA_STORAGE=spaces
+   # AGORA_SPACES_ENDPOINT=https://syd1.digitaloceanspaces.com
+   # AGORA_SPACES_REGION=syd1
+   # AGORA_SPACES_BUCKET=...
+   # AGORA_SPACES_KEY=...
+   # AGORA_SPACES_SECRET=...
    # Only when Dish runs here: the provider keys for its model roles.
    ANTHROPIC_API_KEY=...
    ```

@@ -6700,6 +6700,41 @@
         ]
       }
     },
+    "/api/files/{token}": {
+      "get": {
+        "operationId": "read_file",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read File",
+        "tags": [
+          "files"
+        ]
+      }
+    },
     "/api/health": {
       "get": {
         "description": "Liveness: the process is up. Never touches the database.",

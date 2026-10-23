@@ -31,7 +31,6 @@ async def test_full_thinking_is_stored_apart_and_read_only_by_oversight(
     client: httpx.AsyncClient,
     idp: FakeOIDCClient,
     db: AsyncSession,
-    s3_server: str,
     full_thinking: None,
 ) -> None:
     await sync_registry(db, load_registry(REPO_ROOT), "abc123")

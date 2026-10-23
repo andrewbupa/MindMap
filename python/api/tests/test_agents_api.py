@@ -88,7 +88,6 @@ async def test_rehearsal_conversation_becomes_a_read_only_run(
     registry: None,
     model: RecordingModel,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     await sign_in_as(client, idp, "admin@example.test")
     started = await client.post(
@@ -138,7 +137,10 @@ async def test_rehearsal_conversation_becomes_a_read_only_run(
     assert log.samples is not None and len(log.samples[0].messages) == 5
 
     link = (await client.get(f"/api/runs/{run['id']}/log")).json()
-    assert "X-Amz-Signature=" in link["url"]
+    assert link["url"].startswith("/api/files/")
+    download = await client.get(link["url"])
+    assert download.status_code == 200 and download.content.startswith(b"PK")
+    assert download.headers["content-disposition"] == f'attachment; filename="{run["id"]}.eval"'
 
     again = await client.post(f"/api/rehearsal/{run['id']}/messages", json={"content": "Hello?"})
     assert again.status_code == 409
@@ -153,7 +155,6 @@ async def test_rehearsal_stops_cleanly_at_the_budget(
     registry: None,
     model: RecordingModel,
     small_budget: None,
-    s3_server: str,
 ) -> None:
     await sign_in_as(client, idp, "admin@example.test")
     run = (

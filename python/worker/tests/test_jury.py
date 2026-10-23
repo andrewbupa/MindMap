@@ -14,9 +14,7 @@ from testsupport.petri import ScriptedRoles, auditor_script, claims_target, judg
 
 
 @pytest.fixture
-async def audited(
-    client: httpx.AsyncClient, idp: FakeOIDCClient, db: AsyncSession, s3_server: str
-) -> None:
+async def audited(client: httpx.AsyncClient, idp: FakeOIDCClient, db: AsyncSession) -> None:
     """Two audited transcripts: one plain, one with a bereavement content note."""
     await sync_registry(db, load_registry(REPO_ROOT), "abc123")
     await db.commit()

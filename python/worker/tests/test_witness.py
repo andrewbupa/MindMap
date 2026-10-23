@@ -58,7 +58,6 @@ async def test_the_witness_reads_a_run_and_sits_beside_ethos(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
     witness: WitnessConfig,
     tmp_path: Path,
 ) -> None:
@@ -147,7 +146,6 @@ async def test_changed_readers_and_runners_on_other_versions_fail_at_once(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
     witness: WitnessConfig,
 ) -> None:
     source = await inquiry_run(client, idp, db)
@@ -184,7 +182,6 @@ async def test_launching_checks_the_source_and_the_reader(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
     witness: WitnessConfig,
 ) -> None:
     source = await inquiry_run(client, idp, db)

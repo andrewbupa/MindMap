@@ -25,6 +25,15 @@ class Environment(StrEnum):
     production = "production"
 
 
+class StorageKind(StrEnum):
+    """Where Agora keeps files: Inspect logs and the judges' raw answers."""
+
+    # A table in Postgres: no bucket to pay for, enough for a prototype.
+    database = "database"
+    # DigitalOcean Spaces, or any S3-compatible store.
+    spaces = "spaces"
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="AGORA_",
@@ -45,8 +54,17 @@ class Settings(BaseSettings):
     # Postgres. App Platform supplies ${db.DATABASE_URL} and ${db.CA_CERT}.
     database_url: str = "postgresql://agora:agora@localhost:5432/agora"
     database_ca_cert: SecretStr | None = None
+    # Connections each process may hold. App Platform's dev database allows few, so
+    # the spec lowers these.
+    database_pool_size: int = 5
+    database_max_overflow: int = 5
+    queue_pool_size: int = 5
 
-    # Spaces, or any S3-compatible store (SeaweedFS in docker-compose, moto in tests).
+    # Files live in Postgres unless this says spaces.
+    storage: StorageKind = StorageKind.database
+    signed_url_seconds: int = 300
+
+    # Spaces, or any S3-compatible store (moto in tests). Used only when storage is spaces.
     spaces_endpoint: str = "http://localhost:9000"
     # Where browsers reach storage, if not at spaces_endpoint. Used only for signed URLs.
     spaces_public_endpoint: str | None = None
@@ -54,7 +72,6 @@ class Settings(BaseSettings):
     spaces_bucket: str = "agora-logs"
     spaces_key: SecretStr = SecretStr("agora")
     spaces_secret: SecretStr = SecretStr("agora-secret")
-    signed_url_seconds: int = 300
 
     # OpenID Connect single sign-on.
     oidc_metadata_url: str = "http://localhost:8080/agora/.well-known/openid-configuration"

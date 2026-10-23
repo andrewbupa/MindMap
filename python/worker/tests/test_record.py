@@ -28,7 +28,6 @@ async def test_ethos_disagreements_reach_the_review_queue(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     source = await inquiry_run(client, idp, db)
     run = await ethos_run(client, source["id"])
@@ -63,7 +62,6 @@ async def test_reports_export_pdf_and_findings_with_provenance(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
     tmp_path: Path,
 ) -> None:
     source = await inquiry_run(client, idp, db)

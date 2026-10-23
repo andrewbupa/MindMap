@@ -18,7 +18,7 @@ from alembic import command as alembic
 from alembic.config import Config
 from botocore.exceptions import BotoCoreError, ClientError
 
-from agora_core.config import Environment, get_settings
+from agora_core.config import Environment, StorageKind, get_settings
 from agora_core.db import session_scope
 from agora_core.ethos.taxonomy import load_ethos, sync_ethos
 from agora_core.provenance import current_git_commit
@@ -32,12 +32,15 @@ log = logging.getLogger("agora_worker.cli")
 
 def ensure_bucket() -> None:
     settings = get_settings()
+    if settings.storage is StorageKind.database:
+        print("files are kept in Postgres; there is no bucket to create")
+        return
     if settings.environment is Environment.production:
         raise SystemExit("In production the Spaces bucket is created by hand; see docs/RUNBOOK.md.")
     # Local storage servers can take a few seconds to accept connections.
     for attempt in range(30):
         try:
-            get_storage().ensure_bucket()
+            get_storage().ensure_ready()
             break
         except (BotoCoreError, ClientError) as error:
             if attempt == 29:

@@ -1,6 +1,9 @@
 # DigitalOcean App Platform spec for Agora. Deploys on every push to main.
 #
 # Agora runs in the existing app bupa-ai-poc, which keeps its name and address.
+# A lean prototype: App Platform's dev database holds everything, files included,
+# so there is no managed cluster or Spaces bucket to pay for. docs/RUNBOOK.md says
+# how to move to a managed cluster and Spaces later.
 # Validate without a token:   make spec   (doctl apps spec validate --schema-only)
 # Apply changes:              doctl apps update <app-id> --spec .do/app.yaml
 #
@@ -28,20 +31,20 @@ envs:
   - key: AGORA_PUBLIC_URL
     value: ${APP_URL}
     scope: RUN_TIME
-  - key: AGORA_SPACES_ENDPOINT
-    value: https://syd1.digitaloceanspaces.com
+  # Inspect logs and the judges' raw answers are kept in Postgres.
+  - key: AGORA_STORAGE
+    value: database
     scope: RUN_TIME
-  - key: AGORA_SPACES_REGION
-    value: syd1
+  # The dev database allows few connections, so each process keeps a small pool:
+  # at most 5 for SQLAlchemy and 2 for the queue, in the API and the worker alike.
+  - key: AGORA_DATABASE_POOL_SIZE
+    value: "3"
     scope: RUN_TIME
-  - key: AGORA_SPACES_BUCKET
-    value: agora-logs
+  - key: AGORA_DATABASE_MAX_OVERFLOW
+    value: "2"
     scope: RUN_TIME
-  - key: AGORA_SPACES_KEY
-    type: SECRET
-    scope: RUN_TIME
-  - key: AGORA_SPACES_SECRET
-    type: SECRET
+  - key: AGORA_QUEUE_POOL_SIZE
+    value: "2"
     scope: RUN_TIME
   # Only App Platform's load balancer can reach the API, so Uvicorn may trust
   # its X-Forwarded-* headers.
@@ -72,7 +75,7 @@ services:
     source_dir: /
     dockerfile_path: web/Dockerfile
     http_port: 3000
-    instance_size_slug: apps-s-1vcpu-1gb
+    instance_size_slug: apps-s-1vcpu-0.5gb
     instance_count: 1
     health_check:
       http_path: /healthz
@@ -146,7 +149,8 @@ workers:
     dockerfile_path: python/Dockerfile
     # Sandbox and witness jobs are left for the Droplet runner (infra/runner).
     run_command: procrastinate --app=agora_worker.app.app worker --queues default,runs
-    instance_size_slug: apps-s-1vcpu-2gb
+    # Raise to apps-s-1vcpu-2gb if audits restart it for want of memory.
+    instance_size_slug: apps-s-1vcpu-1gb
     instance_count: 1
     # Jobs get 100 s to finish after SIGTERM (agora_core.queue.WORKER_DEFAULTS).
     termination:
@@ -166,11 +170,11 @@ jobs:
     instance_size_slug: apps-s-1vcpu-0.5gb
     envs: *python_envs
 
+# A dev database, made with the app: no cluster to create by hand. It has no
+# automatic backups. Agora needs Postgres 13 or later; App Platform picks the
+# version. For a managed cluster instead, set production: true, cluster_name,
+# db_name and db_user (docs/RUNBOOK.md).
 databases:
   - name: db
     engine: PG
-    version: "17"
-    production: true
-    cluster_name: agora-pg
-    db_name: agora
-    db_user: agora
+    production: false

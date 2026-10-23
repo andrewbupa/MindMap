@@ -1,24 +1,33 @@
-"""Object storage on DigitalOcean Spaces, or any S3-compatible store.
+"""Where Agora keeps files: Inspect logs, the judges' raw answers and system checks.
 
-Containers on App Platform have temporary disks. Anything worth keeping is written
-to a temporary path, uploaded here, and served back through short-lived signed URLs.
-The bucket is private: there are no public objects.
+Containers on App Platform have temporary disks, so files go to Postgres (the
+default, table ``stored_file``) or to DigitalOcean Spaces. Either way nothing is
+public. Spaces signs its own short-lived URLs; for Postgres the API signs a link to
+``/api/files/<token>`` and serves the file to a signed-in reader.
 """
 
 from __future__ import annotations
 
 import asyncio
+import base64
+import hashlib
+import hmac
+import json
 import re
+import time
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
+from sqlalchemy.dialects.postgresql import insert
 
-from agora_core.config import Settings, get_settings
+from agora_core.config import Settings, StorageKind, get_settings
+from agora_core.db import session_scope
+from agora_core.models import StoredFile
 
 if TYPE_CHECKING:
     from mypy_boto3_s3 import S3Client
@@ -48,11 +57,37 @@ class StoredObject:
     size: int
     etag: str
 
-    def uri(self, bucket: str) -> str:
-        return f"s3://{bucket}/{self.key}"
+
+class Storage(Protocol):
+    """What the rest of Agora needs from a store."""
+
+    name: str
+    signed_url_seconds: int
+
+    def uri(self, key: str) -> str:
+        """How a run or transcript records where its file is."""
+        ...
+
+    def signed_url(self, key: str, filename: str | None = None) -> str:
+        """A short-lived link a browser can open; with a filename, a download."""
+        ...
+
+    def ensure_ready(self) -> None:
+        """Make the store usable, where that needs doing (a bucket, locally)."""
+        ...
+
+    async def aput_bytes(self, key: str, data: bytes, content_type: str) -> StoredObject: ...
+
+    async def aget_bytes(self, key: str) -> bytes: ...
+
+    async def aput_file(self, key: str, path: Path, content_type: str) -> StoredObject: ...
 
 
-class Storage:
+class SpacesStorage:
+    """DigitalOcean Spaces, or any S3-compatible store."""
+
+    name = "spaces"
+
     def __init__(self, settings: Settings) -> None:
         self.bucket = settings.spaces_bucket
         self.region = settings.spaces_region
@@ -117,6 +152,12 @@ class Storage:
             "get_object", Params=params, ExpiresIn=self.signed_url_seconds
         )
 
+    def uri(self, key: str) -> str:
+        return f"s3://{self.bucket}/{key}"
+
+    def ensure_ready(self) -> None:
+        self.ensure_bucket()
+
     def ensure_bucket(self) -> None:
         """Create the bucket if missing. Used locally; in production it is made by hand."""
         try:
@@ -156,6 +197,94 @@ def _client(settings: Settings, endpoint: str) -> S3Client:
     )
 
 
+# Signed download links for files kept in Postgres.
+_SALT = b"agora.download."
+_FILENAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,199}$")
+
+
+def _b64(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).rstrip(b"=").decode()
+
+
+def _unb64(text: str) -> bytes:
+    return base64.urlsafe_b64decode(text + "=" * (-len(text) % 4))
+
+
+def sign_download(
+    secret: str, key: str, filename: str | None, seconds: int, now: float | None = None
+) -> str:
+    """A token naming one file, valid for ``seconds``, signed with the session secret."""
+    if filename is not None and not _FILENAME.match(filename):
+        raise StorageError(f"unsafe filename: {filename!r}")
+    expires = int((now if now is not None else time.time()) + seconds)
+    body = _b64(json.dumps({"k": key, "f": filename, "e": expires}, separators=(",", ":")).encode())
+    mac = hmac.new(secret.encode(), _SALT + body.encode(), hashlib.sha256).digest()
+    return f"{body}.{_b64(mac)}"
+
+
+def read_download(secret: str, token: str, now: float | None = None) -> tuple[str, str | None]:
+    """The key and filename a token names, if its signature holds and it has not expired."""
+    try:
+        body, mac = token.split(".")
+        expected = hmac.new(secret.encode(), _SALT + body.encode(), hashlib.sha256).digest()
+        if not hmac.compare_digest(expected, _unb64(mac)):
+            raise StorageError("bad signature")
+        claims = json.loads(_unb64(body))
+    except (ValueError, TypeError) as error:
+        raise StorageError("malformed download token") from error
+    if int(claims["e"]) < (now if now is not None else time.time()):
+        raise StorageError("expired download token")
+    return str(claims["k"]), claims["f"]
+
+
+class DatabaseStorage:
+    """Files in Postgres, one row each, under the keys Spaces would use. Writing a key
+    again replaces it, as in a bucket."""
+
+    name = "database"
+
+    def __init__(self, settings: Settings) -> None:
+        self.signed_url_seconds = settings.signed_url_seconds
+        self._secret = settings.session_secret.get_secret_value()
+
+    def uri(self, key: str) -> str:
+        return f"db://stored_file/{key}"
+
+    def signed_url(self, key: str, filename: str | None = None) -> str:
+        return f"/api/files/{sign_download(self._secret, key, filename, self.signed_url_seconds)}"
+
+    def ensure_ready(self) -> None:
+        """Nothing to do: migrations create the table."""
+
+    async def aput_bytes(self, key: str, data: bytes, content_type: str) -> StoredObject:
+        digest = hashlib.sha256(data).hexdigest()
+        row = {"key": key, "content_type": content_type, "size": len(data), "sha256": digest}
+        statement = insert(StoredFile).values(data=data, **row)
+        statement = statement.on_conflict_do_update(
+            index_elements=[StoredFile.key], set_={"data": statement.excluded.data, **row}
+        )
+        async with session_scope() as db:
+            await db.execute(statement)
+        return StoredObject(key=key, size=len(data), etag=digest)
+
+    async def aread(self, key: str) -> tuple[bytes, str]:
+        """A file and its content type."""
+        async with session_scope() as db:
+            found = await db.get(StoredFile, key)
+            if found is None:
+                raise StorageError(f"could not read {key}: no such file")
+            return found.data, found.content_type
+
+    async def aget_bytes(self, key: str) -> bytes:
+        return (await self.aread(key))[0]
+
+    async def aput_file(self, key: str, path: Path, content_type: str) -> StoredObject:
+        return await self.aput_bytes(key, await asyncio.to_thread(path.read_bytes), content_type)
+
+
 @lru_cache
 def get_storage() -> Storage:
-    return Storage(get_settings())
+    settings = get_settings()
+    if settings.storage is StorageKind.spaces:
+        return SpacesStorage(settings)
+    return DatabaseStorage(settings)

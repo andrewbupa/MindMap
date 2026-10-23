@@ -41,7 +41,9 @@ def libpq_url(settings: Settings) -> str:
     query = dict(parse_qsl(parts.query))
     if settings.database_ca_cert is not None:
         pem = settings.database_ca_cert.get_secret_value().strip()
-        if pem:
+        # Anything but a certificate (an empty or unresolved binding) leaves the URL's
+        # own sslmode in place.
+        if pem.startswith("-----BEGIN"):
             query["sslrootcert"] = str(_write_ca_cert(pem + "\n"))
             query["sslmode"] = "verify-full"
     return urlunsplit((scheme, parts.netloc, parts.path, urlencode(query), parts.fragment))
@@ -55,11 +57,12 @@ def sqlalchemy_url(settings: Settings) -> str:
 
 @lru_cache
 def get_engine() -> AsyncEngine:
+    settings = get_settings()
     return create_async_engine(
-        sqlalchemy_url(get_settings()),
+        sqlalchemy_url(settings),
         pool_pre_ping=True,
-        pool_size=5,
-        max_overflow=5,
+        pool_size=settings.database_pool_size,
+        max_overflow=settings.database_max_overflow,
     )
 
 

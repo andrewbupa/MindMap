@@ -30,7 +30,7 @@ from agora_core.models.runs import (
     Score,
     Transcript,
 )
-from agora_core.models.system import DataImport, SystemCheck, WitnessSignal
+from agora_core.models.system import DataImport, StoredFile, SystemCheck, WitnessSignal
 
 __all__ = [
     "FINISHED_STATUSES",
@@ -62,6 +62,7 @@ __all__ = [
     "Scenario",
     "ScenarioSet",
     "Score",
+    "StoredFile",
     "SystemCheck",
     "TaxonomyVersion",
     "Theme",

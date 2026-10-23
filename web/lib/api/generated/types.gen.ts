@@ -4002,6 +4002,34 @@ export type ReadTaxonomyResponses = {
 
 export type ReadTaxonomyResponse = ReadTaxonomyResponses[keyof ReadTaxonomyResponses];
 
+export type ReadFileData = {
+    body?: never;
+    path: {
+        /**
+         * Token
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/api/files/{token}';
+};
+
+export type ReadFileErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadFileError = ReadFileErrors[keyof ReadFileErrors];
+
+export type ReadFileResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type HealthData = {
     body?: never;
     path?: never;

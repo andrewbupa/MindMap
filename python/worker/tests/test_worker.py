@@ -21,9 +21,7 @@ async def _run_queued_jobs() -> None:
         await app.run_worker_async(wait=False, install_signal_handlers=False, listen_notify=False)
 
 
-async def test_system_check_writes_to_storage_and_records_evidence(
-    db: AsyncSession, s3_server: str
-) -> None:
+async def test_system_check_writes_to_storage_and_records_evidence(db: AsyncSession) -> None:
     check = SystemCheck(status="queued")
     db.add(check)
     await db.commit()
@@ -34,8 +32,8 @@ async def test_system_check_writes_to_storage_and_records_evidence(
     await db.refresh(check)
     assert check.status == "succeeded"
     assert check.object_key == f"system-checks/{check.id}.json"
-    assert check.detail["read_back_matches"] is True
-    stored = json.loads(get_storage().get_bytes(check.object_key))
+    assert check.detail["read_back_matches"] is True and check.detail["store"] == "database"
+    stored = json.loads(await get_storage().aget_bytes(check.object_key))
     assert stored["check_id"] == str(check.id)
     assert stored["commit"] == "0" * 40
 
@@ -43,7 +41,7 @@ async def test_system_check_writes_to_storage_and_records_evidence(
     assert "system_check.complete" in audit
 
 
-async def test_missing_check_is_ignored(db: AsyncSession, s3_server: str) -> None:
+async def test_missing_check_is_ignored(db: AsyncSession) -> None:
     async with app.open_async():
         await queue.defer("system_check", check_id=str(uuid.uuid4()))
     await _run_queued_jobs()

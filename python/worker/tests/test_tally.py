@@ -134,7 +134,6 @@ async def test_a_suite_reports_the_elicitation_rate_with_its_spread(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     detail = await generate(client, idp, db)
     (run,) = await launch(client, detail["scenario_set"]["id"], epochs=2)
@@ -212,7 +211,6 @@ async def test_the_development_model_runs_a_suite_of_two_prompt_versions(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     detail = await generate(client, idp, db)
     runs = await launch(client, detail["scenario_set"]["id"], versions=["v1", "v2"], epochs=1)
@@ -270,7 +268,6 @@ async def test_home_names_a_prompt_version_whose_rate_rose(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     detail = await generate(client, idp, db)
     runs = await launch(client, detail["scenario_set"]["id"], versions=["v1", "v2"], epochs=1)

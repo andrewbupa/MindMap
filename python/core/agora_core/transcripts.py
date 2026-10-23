@@ -49,10 +49,6 @@ def log_key(run_id: uuid.UUID, transcript_id: uuid.UUID) -> str:
     return object_key("runs", str(run_id), f"{transcript_id}.eval")
 
 
-def log_uri(bucket: str, key: str) -> str:
-    return f"s3://{bucket}/{key}"
-
-
 def key_from_uri(uri: str) -> str:
     return uri.split("/", 3)[3]
 
@@ -166,7 +162,7 @@ async def store_log(storage: Storage, log: EvalLog, key: str) -> str:
         path = Path(scratch) / "transcript.eval"
         await write_eval_log_async(log, location=str(path), format="eval")
         await storage.aput_file(key, path, "application/zip")
-    return log_uri(storage.bucket, key)
+    return storage.uri(key)
 
 
 async def fetch_log(storage: Storage, uri: str) -> EvalLog:

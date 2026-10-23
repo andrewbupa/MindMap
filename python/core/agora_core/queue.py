@@ -39,12 +39,13 @@ WORKER_DEFAULTS: WorkerOptions = {
 
 
 def build_app(import_paths: list[str] | None = None) -> procrastinate.App:
+    settings = get_settings()
     return procrastinate.App(
         connector=procrastinate.PsycopgConnector(
-            conninfo=libpq_url(get_settings()),
+            conninfo=libpq_url(settings),
             kwargs={"application_name": "agora"},
             min_size=1,
-            max_size=5,
+            max_size=settings.queue_pool_size,
         ),
         import_paths=import_paths or [],
         worker_defaults=WORKER_DEFAULTS,

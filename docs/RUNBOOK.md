@@ -11,9 +11,10 @@ Updated at the end of each milestone. Last updated: milestone 8.
 make dev
 ```
 
-Then open <http://agora.localhost:3000>. The stack is Postgres 17, SeaweedFS for
-storage, a mock identity provider, the API, the worker, the web app, and Caddy in
-front routing `/api` to the API as App Platform's ingress does.
+Then open <http://agora.localhost:3000>. The stack is Postgres 17, a mock identity
+provider, the API, the worker, the web app, and Caddy in front routing `/api` to
+the API as App Platform's ingress does. Files (Inspect logs, the judges' raw
+answers) are kept in Postgres, as in production.
 
 To sign in, type any username into the mock provider's form and put this in the
 claims box:
@@ -34,8 +35,7 @@ The local worker takes every queue, the witness's included, and reads with the
 development lexicon reader (`AGORA_WITNESS_FILE=config/witness.dev.yaml`), so
 open-model signals work without a GPU. Its values mean nothing about any model.
 
-`make dev-down` stops everything and keeps data. Signed URLs open on
-`http://localhost:8333`, where compose publishes SeaweedFS.
+`make dev-down` stops everything and keeps data.
 
 ### Without Docker
 
@@ -44,8 +44,6 @@ You need Python 3.12, uv, Node 22.18 or later, and Postgres.
 ```sh
 cp .env.example .env
 cd python && uv sync && uv run alembic upgrade head
-uv run moto_server -p 9000 &                    # S3 stand-in
-uv run python -m agora_worker.cli ensure-bucket
 uv run uvicorn agora_api.main:app --port 8000 &
 uv run procrastinate --app=agora_worker.app.app worker &
 cd ../web && npm ci && npm run dev              # forwards /api to port 8000
@@ -64,7 +62,7 @@ ghcr.io/navikt/mock-oauth2-server:6.1.2`), then open <http://localhost:3000>.
 | `make migrate` | Alembic migrations against `AGORA_DATABASE_URL` |
 | `make openapi` | Regenerate `web/lib/api` from the API schema |
 | `make spec` | Check `.do/app.yaml` against App Platform's schema |
-| `make seed-demo` | Scan synthetic content, create the bucket, and load `agents/` |
+| `make seed-demo` | Scan synthetic content and load `agents/` (and create the bucket, with Spaces) |
 | `cd web && npm run test:a11y` | axe-core on every screen in both themes; needs the stack running |
 
 Tests expect a database `agora_test` owned by user `agora` (password `agora`) on
@@ -85,19 +83,20 @@ set `NEXT_PUBLIC_AGORA_TIME_ZONE` when building the web app.
 
 Do these in order. Everything lives in the Sydney region.
 
-1. **Database.** Create a managed Postgres 17 cluster named `agora-pg` in `syd1`.
-   In the control panel, create the database `agora` and the user `agora` (create
-   the user there, not with SQL, or App Platform cannot read its password). Turn
-   on trusted sources; attaching the cluster to the app adds the app
-   automatically. Managed Postgres takes daily backups with point-in-time
-   recovery; confirm the retention period suits us.
-2. **Spaces.** Create a private bucket `agora-logs` in `syd1` with file listing
-   restricted. Create a Spaces access key limited to that bucket.
-3. **Identity provider.** Register Agora as a confidential OpenID Connect client:
+The prototype runs lean: App Platform's dev database, made by the spec with the
+app, holds everything, files included. There is no database cluster to create and
+no Spaces bucket. The dev database is small; check its limits and backups in the
+control panel, and treat its data as replaceable. "Moving to a managed database
+and Spaces" below says how to grow out of it.
+
+1. **Main branch.** The spec deploys from `main`; create it if it does not exist.
+2. **Identity provider.** Register Agora as a confidential OpenID Connect client:
    - redirect URI `https://<app-domain>/api/auth/callback`
    - sign-out redirect `https://<app-domain>/signed-out`
    - scopes `openid profile email`, plus a `groups` claim if roles come from groups
-4. **App.** Agora runs in the existing app `bupa-ai-poc`, which keeps its name and
+   - in Entra ID, add `email` as an optional claim on the ID token. Bootstrap
+     admins are matched on that claim alone.
+3. **App.** Agora runs in the existing app `bupa-ai-poc`, which keeps its name and
    address; applying the spec replaces the earlier proof of concept's service.
    Give DigitalOcean's GitHub app access to `andrewbupa/agora`, then apply the spec
    in the control panel (Settings, App Spec) or with `doctl apps update <app-id>
@@ -106,7 +105,6 @@ Do these in order. Everything lives in the Sydney region.
 
    | Variable | Where it comes from |
    | --- | --- |
-   | `AGORA_SPACES_KEY`, `AGORA_SPACES_SECRET` | The Spaces access key |
    | `AGORA_OIDC_CLIENT_SECRET` | The identity provider registration |
    | `AGORA_SESSION_SECRET` | `python -c "import secrets; print(secrets.token_urlsafe(48))"` |
    | `AGORA_OIDC_METADATA_URL`, `AGORA_OIDC_CLIENT_ID` | The identity provider registration (not secret) |
@@ -116,13 +114,36 @@ Do these in order. Everything lives in the Sydney region.
    | `OPENAI_API_KEY` | The OpenAI platform; for the Ethos panel's second judge |
    | `NEXT_PUBLIC_AGORA_TIME_ZONE` | Optional, on the web component at build time; defaults to `Australia/Sydney` |
 
-5. **Keep secrets in the spec encrypted.** Run `doctl apps spec get <app-id>` and
+4. **Keep secrets in the spec encrypted.** Run `doctl apps spec get <app-id>` and
    copy the `EV[...]` values it shows into `.do/app.yaml`, so later `doctl apps
    update` calls keep them. Never commit a plaintext secret.
-6. **First deploy.** Merge to `main`. Then follow "After every deploy" below.
-7. **Runner, when it is needed.** Witness readers (and Dish, later) run on a GPU
+5. **First deploy.** Merge to `main`. Then follow "After every deploy" below.
+6. **Runner, when it is needed.** Witness readers (and Dish, later) run on a GPU
    Droplet that takes the `witness` and `sandbox` queues. Follow
-   `infra/runner/README.md`. Until a runner exists, jobs on those queues wait.
+   `infra/runner/README.md`; the runner needs a managed database it can reach.
+   Until a runner exists, jobs on those queues wait.
+
+### Moving to a managed database and Spaces
+
+Do this when the prototype outgrows the dev database: more data than it holds,
+backups that matter, or the witness runner.
+
+1. Create a managed Postgres 17 cluster `agora-pg` in `syd1`, with the database
+   `agora` and the user `agora` made in the control panel (not with SQL, or App
+   Platform cannot read the password). Managed Postgres takes daily backups with
+   point-in-time recovery.
+2. Copy the data across with `pg_dump` from the dev database and `pg_restore`
+   into the cluster, while the app is paused.
+3. In the spec, set the database to `production: true`, `cluster_name: agora-pg`,
+   `db_name: agora` and `db_user: agora`, and raise or remove the pool settings
+   (`AGORA_DATABASE_POOL_SIZE`, `AGORA_DATABASE_MAX_OVERFLOW`,
+   `AGORA_QUEUE_POOL_SIZE`).
+4. For Spaces too: create a private bucket `agora-logs` in `syd1` and a key limited
+   to it, then set `AGORA_STORAGE=spaces`, `AGORA_SPACES_ENDPOINT`,
+   `AGORA_SPACES_REGION`, `AGORA_SPACES_BUCKET`, and the secrets
+   `AGORA_SPACES_KEY` and `AGORA_SPACES_SECRET`. Files written before then stay in
+   Postgres and open only while storage is `database`, so copy them across first
+   if the old logs matter.
 
 ## Deploying
 
@@ -273,7 +294,7 @@ means `config/witness.yaml` changed since the run began: launch a new run.
 "Reports version" means the reader's image reports a different version from the
 reader's `version`: fix the image or the configuration, then launch again. Signals
 that fail the checks are dropped and counted on the run page; the raw response is
-in Spaces beside the run (`runs/<run>/samples/<n>-witness.json`).
+in storage beside the run (`runs/<run>/samples/<n>-witness.json`).
 
 **Adding a witness reader.** Add it to `config/witness.yaml`, with its image
 pinned by digest and its `version` set to what the image reports. Pull the image
@@ -331,6 +352,16 @@ entirely by keys, recording a verdict; the theme switch saved, kept after a
 reload, and following the device. The populated Jury queues were checked with
 axe-core on local data only; on a fresh stack the development judges leave them
 empty.
+
+Since then, for a lean prototype: files (Inspect logs, the judges' raw answers,
+system check objects) are kept in Postgres by default, served through short-lived
+signed links at `/api/files/<token>` to signed-in readers; the spec uses App
+Platform's dev database, smaller containers and small connection pools, with no
+managed cluster or Spaces bucket; SeaweedFS is gone from `make dev`. Verified: 207
+Python tests, now run on the database store, with Spaces kept by its own tests; in
+a browser, a system check's object opened from Postgres and a rehearsal's Inspect
+log downloaded as a valid file; both specs validate against App Platform's schema.
+Not verified: the dev database itself, which only DigitalOcean can provide.
 
 Waiting on: the first deploy to `bupa-ai-poc` (the steps above, with `main`
 created and the DigitalOcean GitHub app given access to `andrewbupa/agora`);

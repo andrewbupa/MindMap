@@ -80,7 +80,7 @@ async def run_task(
     roles: dict[str, Model],
     metadata: dict[str, Any],
 ) -> SampleOutcome:
-    """Evaluate a one-sample Petri task, upload its log to Spaces, and return the sample."""
+    """Evaluate a one-sample Petri task, store its log, and return the sample."""
     with tempfile.TemporaryDirectory(prefix="agora-sample-") as scratch:
         async with EVAL_LOCK:
             logs = await eval_async(
@@ -95,7 +95,7 @@ async def run_task(
             )
         location = logs[0].location
         log = await read_eval_log_async(location)
-        uri = f"s3://{storage.bucket}/{sample_key(run_id, index, epoch)}"
+        uri = storage.uri(sample_key(run_id, index, epoch))
         await storage.aput_file(sample_key(run_id, index, epoch), Path(location), "application/zip")
 
     if not log.samples:

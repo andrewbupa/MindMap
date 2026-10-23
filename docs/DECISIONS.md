@@ -96,6 +96,23 @@ transitions, and the gold-labelling keys. axe cannot measure contrast over
 gradients; there the design's token table, which states each pairing's ratio,
 stands.
 
+**The prototype keeps its files in Postgres.** Agora's screens read only Postgres;
+the files (an Inspect log per conversation, the judges' raw answers, system check
+objects) are kept for evidence and download. For a prototype they go to a
+`stored_file` table under the keys Spaces would use, and the API serves them
+through links signed with the session secret that last as long as a Spaces signed
+URL and open only for a signed-in reader. JSON opens in the browser; everything
+else downloads. `AGORA_STORAGE=spaces` brings Spaces back. This replaces Spaces
+and, locally, SeaweedFS, from milestone 1.
+
+**The prototype runs on App Platform's dev database.** It is made with the app and
+costs a fraction of a managed cluster. It allows few connections, so the spec keeps each process to five
+SQLAlchemy connections and two for the queue; a job holds one session at a time,
+so the worker's four jobs fit. A certificate binding that is empty or unresolved
+is ignored rather than breaking the connection. The managed cluster comes back
+when backups matter, the data outgrows it, or the witness runner needs to reach
+it from outside App Platform.
+
 ### Open questions
 
 1. **Should Ethos count towards regressions?** A fall in mean fit between prompt
@@ -109,6 +126,10 @@ stands.
    on a fresh stack, so CI checks their empty states. The populated queues were
    checked by hand in both themes. Should the development model make one lasting
    disagreement so CI covers them too?
+5. **When does the prototype move to a managed database?** A managed cluster has
+   daily backups with point-in-time recovery; the dev database is not meant to
+   keep data safe. Is losing the prototype's runs acceptable, or should the move
+   come before people rely on its results?
 
 ## Milestone 7: runner
 

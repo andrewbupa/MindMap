@@ -49,7 +49,7 @@ class EthosWork:
         # What every judge said, before any checking, kept as evidence beside the findings.
         key = raw_key(self.claim.run_id, self.claim.index)
         await self.storage.aput_bytes(key, reading.raw_json(), "application/json")
-        reading.log_uri = f"s3://{self.storage.bucket}/{key}"
+        reading.log_uri = self.storage.uri(key)
         return reading
 
     async def record(self, db: AsyncSession, outcome: PanelReading) -> None:

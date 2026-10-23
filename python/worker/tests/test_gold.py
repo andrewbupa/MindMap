@@ -61,7 +61,6 @@ async def test_experts_label_blind_and_agreement_sets_trust(
     idp: FakeOIDCClient,
     registry: None,
     db: AsyncSession,
-    s3_server: str,
 ) -> None:
     source = await inquiry_run(client, idp, db, seeds=SEEDS, epochs=2)
     run = await ethos_run(client, source["id"])
