@@ -37,6 +37,7 @@ const ROUTES: [string, (s: Seeded) => string][] = [
   ["Users", () => "/settings/users"],
   ["Audit log", () => "/settings/audit"],
   ["Model roles", () => "/settings/models"],
+  ["Spend", () => "/settings/spend"],
   ["API tokens", () => "/settings/tokens"],
   ["System checks", () => "/settings/system"],
 ];

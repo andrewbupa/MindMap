@@ -102,6 +102,14 @@ under `providers` in `config/models.yaml`, so a change is reviewed in git like t
 model it covers, Settings can show them, and production can refuse to start while a
 role uses a provider with no terms recorded. The runbook says where they are.
 
+**Spend is estimated and counted by month in Sydney.** The brief asks for cost per
+run and per month. Each run's cost is estimated from its tokens and the prices in
+`config/models.yaml`; the Spend page in Settings sums it by the month a run started,
+in `AGORA_TIME_ZONE` (Australia/Sydney, the same zone the web app shows times in),
+and each month links to Record filtered to its runs. A model with no price counts as
+nothing, so the page names any such model; today that is judge B's. Providers'
+invoices remain the final word.
+
 **The prototype keeps its files in Postgres.** Agora's screens read only Postgres;
 the files (an Inspect log per conversation, the judges' raw answers, system check
 objects) are kept for evidence and download. For a prototype they go to a

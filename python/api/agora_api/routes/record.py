@@ -7,12 +7,13 @@ import io
 import json
 import uuid
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 from fastapi.responses import Response
 from sqlalchemy import select
 
 from agora_api.deps import AppSettings, Db, ReaderUser
 from agora_api.report_pdf import Section, run_report
+from agora_api.routes.runs import started_month
 from agora_api.schemas import RunOut
 from agora_core import audit
 from agora_core.ethos.read import load_run_ethos
@@ -126,9 +127,18 @@ async def run_provenance(run_id: uuid.UUID, user: ReaderUser, db: Db) -> dict[st
 
 
 @router.get("/runs")
-async def list_report_runs(_: ReaderUser, db: Db) -> list[RunOut]:
-    """Recent runs of every kind, for export."""
-    runs = (await db.execute(select(Run).order_by(Run.created_at.desc()).limit(100))).scalars()
+async def list_report_runs(
+    _: ReaderUser,
+    db: Db,
+    settings: AppSettings,
+    month: str | None = Query(default=None, pattern=r"^\d{4}-(0[1-9]|1[0-2])$"),
+    limit: int = Query(default=100, ge=1, le=1000),
+) -> list[RunOut]:
+    """Recent runs of every kind, for export; with a month, the runs started in it."""
+    query = select(Run).order_by(Run.created_at.desc()).limit(limit)
+    if month:
+        query = query.where(started_month(settings.time_zone) == month)
+    runs = (await db.execute(query)).scalars()
     return [RunOut.model_validate(run) for run in runs]
 
 

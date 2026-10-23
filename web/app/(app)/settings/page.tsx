@@ -38,6 +38,12 @@ export default async function SettingsPage() {
       show: admin,
     },
     {
+      href: "/settings/spend",
+      title: "Spend",
+      text: "Estimated cost by month and by kind of run, linked to the runs behind it.",
+      show: true,
+    },
+    {
       href: "/settings/models",
       title: "Model roles and budgets",
       text: "The exact model behind each role, and the default token budget for each kind of run.",

@@ -2686,6 +2686,29 @@
         "title": "JudgeReference",
         "type": "object"
       },
+      "KindSpendOut": {
+        "properties": {
+          "cost_usd": {
+            "title": "Cost Usd",
+            "type": "number"
+          },
+          "runs": {
+            "title": "Runs",
+            "type": "integer"
+          },
+          "tokens": {
+            "title": "Tokens",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "runs",
+          "tokens",
+          "cost_usd"
+        ],
+        "title": "KindSpendOut",
+        "type": "object"
+      },
       "LabelComparisonOut": {
         "properties": {
           "a": {
@@ -3020,6 +3043,43 @@
           "providers"
         ],
         "title": "ModelRolesOut",
+        "type": "object"
+      },
+      "MonthSpendOut": {
+        "properties": {
+          "by_kind": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/KindSpendOut"
+            },
+            "title": "By Kind",
+            "type": "object"
+          },
+          "cost_usd": {
+            "title": "Cost Usd",
+            "type": "number"
+          },
+          "month": {
+            "description": "YYYY-MM, in the spend time zone.",
+            "title": "Month",
+            "type": "string"
+          },
+          "runs": {
+            "title": "Runs",
+            "type": "integer"
+          },
+          "tokens": {
+            "title": "Tokens",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "month",
+          "runs",
+          "tokens",
+          "cost_usd",
+          "by_kind"
+        ],
+        "title": "MonthSpendOut",
         "type": "object"
       },
       "Page_AuditEventOut_": {
@@ -4870,6 +4930,37 @@
           "expires_in"
         ],
         "title": "SignedUrlOut",
+        "type": "object"
+      },
+      "SpendOut": {
+        "description": "Estimated spend by the month runs started, newest first, with empty months.",
+        "properties": {
+          "months": {
+            "items": {
+              "$ref": "#/components/schemas/MonthSpendOut"
+            },
+            "title": "Months",
+            "type": "array"
+          },
+          "time_zone": {
+            "title": "Time Zone",
+            "type": "string"
+          },
+          "unpriced_models": {
+            "description": "Models a role uses that have no price, so their tokens count as nothing.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Unpriced Models",
+            "type": "array"
+          }
+        },
+        "required": [
+          "time_zone",
+          "months",
+          "unpriced_models"
+        ],
+        "title": "SpendOut",
         "type": "object"
       },
       "SystemCheckOut": {
@@ -7913,8 +8004,39 @@
     },
     "/api/record/runs": {
       "get": {
-        "description": "Recent runs of every kind, for export.",
+        "description": "Recent runs of every kind, for export; with a month, the runs started in it.",
         "operationId": "list_report_runs",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "month",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Month"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -7929,6 +8051,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "summary": "List Report Runs",
@@ -8367,6 +8499,52 @@
           }
         },
         "summary": "Estimate Run",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/runs/spend": {
+      "get": {
+        "description": "Estimated spend by the month runs started, from each run's tokens and the prices\nin config/models.yaml.",
+        "operationId": "spend",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "months",
+            "required": false,
+            "schema": {
+              "default": 6,
+              "maximum": 24,
+              "minimum": 1,
+              "title": "Months",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Spend",
         "tags": [
           "runs"
         ]

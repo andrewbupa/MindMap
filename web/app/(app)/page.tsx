@@ -4,8 +4,18 @@ import { DataTable, type Row } from "@/components/data/DataTable";
 import { RunTable } from "@/components/runs/RunTable";
 import { KIND_NAMES, runHref } from "@/components/runs/href";
 import { percent } from "@/components/tally/format";
-import { Badge, ButtonLink, Card, Mono, Notice, PageHeader, formatWhen, sentenceCase } from "@/components/ui";
-import { weekInReview, type WeekOut } from "@/lib/api";
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  Mono,
+  Notice,
+  PageHeader,
+  formatUsd,
+  formatWhen,
+  sentenceCase,
+} from "@/components/ui";
+import { spend, weekInReview, type WeekOut } from "@/lib/api";
 import { getMe, serverClient } from "@/lib/api/server";
 import { hasRole } from "@/lib/auth";
 
@@ -99,7 +109,12 @@ export default async function HomePage() {
       </>
     );
   }
-  const { data: week } = await weekInReview({ client: await serverClient(), throwOnError: true });
+  const client = await serverClient();
+  const [{ data: week }, { data: money }] = await Promise.all([
+    weekInReview({ client, throwOnError: true }),
+    spend({ client, query: { months: 1 }, throwOnError: true }),
+  ]);
+  const thisMonth = money.months[0];
   const kinds = Object.entries(week.by_kind).sort(([, a], [, b]) => b - a);
   const started = kinds.reduce((sum, [, n]) => sum + n, 0);
   return (
@@ -136,6 +151,14 @@ export default async function HomePage() {
               <a href="#regressions">{week.regressions.length}</a>
             </dd>
           </div>
+          {thisMonth ? (
+            <div className="ag-stat">
+              <dt>Estimated spend this month</dt>
+              <dd>
+                <Link href="/settings/spend">{formatUsd(thisMonth.cost_usd)}</Link>
+              </dd>
+            </div>
+          ) : null}
         </dl>
         {kinds.length ? (
           <p className="ag-row" style={{ gap: "var(--space-2)", marginBottom: 0 }}>

@@ -12,6 +12,7 @@ from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
@@ -45,6 +46,9 @@ class Settings(BaseSettings):
     environment: Environment = Environment.local
     git_commit: str = "unknown"
     public_url: str = "http://localhost:3000"
+    # The zone months are counted in, for spend. Keep it the same as the web app's
+    # NEXT_PUBLIC_AGORA_TIME_ZONE, which formats times on screen.
+    time_zone: str = "Australia/Sydney"
     repo_root: Path = REPO_ROOT
     # Model roles; defaults to config/models.yaml under repo_root.
     models_file: Path | None = None
@@ -92,6 +96,15 @@ class Settings(BaseSettings):
     def _parse_role_map(cls, value: Any) -> Any:
         if isinstance(value, str):
             return json.loads(value) if value.strip() else {}
+        return value
+
+    @field_validator("time_zone")
+    @classmethod
+    def _known_zone(cls, value: str) -> str:
+        try:
+            ZoneInfo(value)
+        except (ZoneInfoNotFoundError, ValueError) as error:
+            raise ValueError(f"unknown time zone {value!r}") from error
         return value
 
     @field_validator("bootstrap_admins", mode="before")

@@ -25,6 +25,18 @@ export function formatDay(value: string): string {
   return DAY.format(new Date(`${value.slice(0, 10)}T00:00:00Z`));
 }
 
+const MONTH = new Intl.DateTimeFormat("en-AU", { month: "long", year: "numeric", timeZone: "UTC" });
+
+/** A month such as 2026-10, as "October 2026". */
+export function formatMonth(value: string): string {
+  return MONTH.format(new Date(`${value}-01T00:00:00Z`));
+}
+
+/** Estimated spend in US dollars, to the cent. */
+export function formatUsd(value: number): string {
+  return `US$${value.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 export function formatNumber(value: number): string {
   return Math.round(value).toLocaleString("en-GB");
 }

@@ -1,14 +1,26 @@
 from __future__ import annotations
 
 import uuid
+from collections import defaultdict
+from datetime import UTC, datetime
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy import func, select
 
-from agora_api.deps import Db, ReaderUser
+from agora_api.deps import AppSettings, Db, ReaderUser
 from agora_api.models_dep import Roles
-from agora_api.schemas import RunEstimateOut, RunOut, SignedUrlOut
+from agora_api.schemas import (
+    KindSpendOut,
+    MonthSpendOut,
+    RunEstimateOut,
+    RunOut,
+    SignedUrlOut,
+    SpendOut,
+)
 from agora_core import audit
+from agora_core.model_roles import DEV_FAMILIES
 from agora_core.models import FINISHED_STATUSES, Run, RunKind, RunSample
 from agora_core.storage import get_storage
 from agora_core.transcripts import key_from_uri
@@ -17,6 +29,66 @@ router = APIRouter(prefix="/runs", tags=["runs"])
 
 # How many recent finished runs an estimate draws on.
 ESTIMATE_BASIS = 20
+
+
+def started_month(time_zone: str) -> Any:
+    """The month a run started, as YYYY-MM in the given zone."""
+    return func.to_char(func.timezone(time_zone, Run.created_at), "YYYY-MM")
+
+
+def _months_back(now: datetime, count: int) -> list[str]:
+    year, month = now.year, now.month
+    months = []
+    for _ in range(count):
+        months.append(f"{year:04d}-{month:02d}")
+        year, month = (year, month - 1) if month > 1 else (year - 1, 12)
+    return months
+
+
+@router.get("/spend")
+async def spend(
+    _: ReaderUser,
+    db: Db,
+    settings: AppSettings,
+    roles: Roles,
+    months: int = Query(default=6, ge=1, le=24),
+) -> SpendOut:
+    """Estimated spend by the month runs started, from each run's tokens and the prices
+    in config/models.yaml."""
+    zone = ZoneInfo(settings.time_zone)
+    wanted = _months_back(datetime.now(UTC).astimezone(zone), months)
+    month = started_month(settings.time_zone)
+    rows = (
+        await db.execute(
+            select(
+                month.label("month"),
+                Run.kind,
+                func.count(),
+                func.coalesce(func.sum(Run.tokens_used), 0),
+                func.coalesce(func.sum(Run.cost_usd), 0),
+            )
+            .where(month.in_(wanted))
+            .group_by(month, Run.kind)
+        )
+    ).all()
+    by_month: dict[str, dict[str, KindSpendOut]] = defaultdict(dict)
+    for name, kind, runs, tokens, cost in rows:
+        by_month[name][kind] = KindSpendOut(runs=runs, tokens=int(tokens), cost_usd=float(cost))
+    used = {role.model for role in roles.roles.values() if role.family not in DEV_FAMILIES}
+    return SpendOut(
+        time_zone=settings.time_zone,
+        months=[
+            MonthSpendOut(
+                month=name,
+                runs=sum(k.runs for k in by_month[name].values()),
+                tokens=sum(k.tokens for k in by_month[name].values()),
+                cost_usd=round(sum(k.cost_usd for k in by_month[name].values()), 4),
+                by_kind=dict(sorted(by_month[name].items())),
+            )
+            for name in wanted
+        ],
+        unpriced_models=sorted(used - set(roles.prices)),
+    )
 
 
 @router.get("/estimate")

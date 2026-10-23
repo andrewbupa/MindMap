@@ -961,6 +961,30 @@ class WitnessTranscriptOut(BaseModel):
     signals: list[WitnessSignalOut]
 
 
+class KindSpendOut(BaseModel):
+    runs: int
+    tokens: int
+    cost_usd: float
+
+
+class MonthSpendOut(BaseModel):
+    month: str = Field(description="YYYY-MM, in the spend time zone.")
+    runs: int
+    tokens: int
+    cost_usd: float
+    by_kind: dict[str, KindSpendOut]
+
+
+class SpendOut(BaseModel):
+    """Estimated spend by the month runs started, newest first, with empty months."""
+
+    time_zone: str
+    months: list[MonthSpendOut]
+    unpriced_models: list[str] = Field(
+        description="Models a role uses that have no price, so their tokens count as nothing."
+    )
+
+
 class RunEstimateOut(BaseModel):
     """A launch's likely use, from recent finished runs of the same kind."""
 

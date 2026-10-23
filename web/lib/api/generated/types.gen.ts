@@ -1610,6 +1610,24 @@ export type JudgeReference = {
 };
 
 /**
+ * KindSpendOut
+ */
+export type KindSpendOut = {
+    /**
+     * Cost Usd
+     */
+    cost_usd: number;
+    /**
+     * Runs
+     */
+    runs: number;
+    /**
+     * Tokens
+     */
+    tokens: number;
+};
+
+/**
  * LabelComparisonOut
  */
 export type LabelComparisonOut = {
@@ -1813,6 +1831,36 @@ export type ModelRolesOut = {
      * Roles
      */
     roles: Array<ModelRoleOut>;
+};
+
+/**
+ * MonthSpendOut
+ */
+export type MonthSpendOut = {
+    /**
+     * By Kind
+     */
+    by_kind: {
+        [key: string]: KindSpendOut;
+    };
+    /**
+     * Cost Usd
+     */
+    cost_usd: number;
+    /**
+     * Month
+     *
+     * YYYY-MM, in the spend time zone.
+     */
+    month: string;
+    /**
+     * Runs
+     */
+    runs: number;
+    /**
+     * Tokens
+     */
+    tokens: number;
 };
 
 /**
@@ -2901,6 +2949,28 @@ export type SignedUrlOut = {
      * Url
      */
     url: string;
+};
+
+/**
+ * SpendOut
+ *
+ * Estimated spend by the month runs started, newest first, with empty months.
+ */
+export type SpendOut = {
+    /**
+     * Months
+     */
+    months: Array<MonthSpendOut>;
+    /**
+     * Time Zone
+     */
+    time_zone: string;
+    /**
+     * Unpriced Models
+     *
+     * Models a role uses that have no price, so their tokens count as nothing.
+     */
+    unpriced_models: Array<string>;
 };
 
 /**
@@ -4789,9 +4859,27 @@ export type ModelRolesResponse = ModelRolesResponses[keyof ModelRolesResponses];
 export type ListReportRunsData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * Month
+         */
+        month?: string | null;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
     url: '/api/record/runs';
 };
+
+export type ListReportRunsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListReportRunsError = ListReportRunsErrors[keyof ListReportRunsErrors];
 
 export type ListReportRunsResponses = {
     /**
@@ -5099,6 +5187,36 @@ export type EstimateRunResponses = {
 };
 
 export type EstimateRunResponse = EstimateRunResponses[keyof EstimateRunResponses];
+
+export type SpendData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Months
+         */
+        months?: number;
+    };
+    url: '/api/runs/spend';
+};
+
+export type SpendErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SpendError = SpendErrors[keyof SpendErrors];
+
+export type SpendResponses = {
+    /**
+     * Successful Response
+     */
+    200: SpendOut;
+};
+
+export type SpendResponse = SpendResponses[keyof SpendResponses];
 
 export type ReadRunData = {
     body?: never;

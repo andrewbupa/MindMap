@@ -113,6 +113,7 @@ and Spaces" below says how to grow out of it.
    | `ANTHROPIC_API_KEY` | The Anthropic console; one key per environment |
    | `OPENAI_API_KEY` | The OpenAI platform; for the Ethos panel's second judge |
    | `NEXT_PUBLIC_AGORA_TIME_ZONE` | Optional, on the web component at build time; defaults to `Australia/Sydney` |
+   | `AGORA_TIME_ZONE` | Optional; the zone spend is counted by month in. Keep it the same as `NEXT_PUBLIC_AGORA_TIME_ZONE` |
 
 4. **Keep secrets in the spec encrypted.** Run `doctl apps spec get <app-id>` and
    copy the `EV[...]` values it shows into `.do/app.yaml`, so later `doctl apps
