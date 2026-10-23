@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { Card, Notice, PageHeader, formatWhen } from "@/components/ui";
+import { DataTable } from "@/components/data/DataTable";
+import { Card, EmptyState, Notice, PageHeader, formatWhen } from "@/components/ui";
 import { listGoldSets, listEthosSources } from "@/lib/api";
 import { getMe, serverClient } from "@/lib/api/server";
 import { hasRole } from "@/lib/auth";
@@ -35,36 +36,40 @@ export default async function GoldSetsPage() {
           findings or anyone else&apos;s ratings.
         </p>
       </PageHeader>
-      <JuryNav current="/jury/gold" />
+      <JuryNav />
       <Card title="Gold sets">
-        {sets.length === 0 ? (
-          <p>No gold sets yet.</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Gold set</th>
-                <th scope="col">Items</th>
-                <th scope="col">Labelled by two experts</th>
-                <th scope="col">Labelled by you</th>
-                <th scope="col">Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sets.map((set) => (
-                <tr key={set.id}>
-                  <td>
-                    <Link href={`/jury/gold/${set.id}`}>{set.name}</Link>
-                  </td>
-                  <td>{set.items}</td>
-                  <td>{set.fully_labelled}</td>
-                  <td>{set.labelled_by_me}</td>
-                  <td>{formatWhen(set.created_at)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+        <DataTable
+          columns={[
+            { key: "name", label: "Gold set" },
+            { key: "items", label: "Items", align: "right" },
+            { key: "full", label: "Labelled by two experts", align: "right" },
+            { key: "mine", label: "Labelled by you", align: "right" },
+            { key: "created", label: "Created", nowrap: true },
+          ]}
+          rows={sets.map((set) => ({
+            id: set.id,
+            cells: {
+              name: <Link href={`/jury/gold/${set.id}`}>{set.name}</Link>,
+              items: set.items,
+              full: set.fully_labelled,
+              mine: set.labelled_by_me,
+              created: formatWhen(set.created_at),
+            },
+            sort: {
+              name: set.name,
+              items: set.items,
+              full: set.fully_labelled,
+              mine: set.labelled_by_me,
+              created: set.created_at,
+            },
+          }))}
+          empty={
+            <EmptyState title="No gold sets yet">
+              An admin draws one from a finished run. Two experts then label each transcript without seeing the
+              judges.
+            </EmptyState>
+          }
+        />
       </Card>
       {hasRole(user, "admin") ? (
         <Card title="Create a gold set">

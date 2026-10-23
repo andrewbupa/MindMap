@@ -30,7 +30,7 @@ export default async function ReviewPage() {
           the judge&apos;s score; it never changes it.
         </p>
       </PageHeader>
-      <JuryNav current="/jury" />
+      <JuryNav />
       {data.hidden_for_content_notes > 0 ? (
         <Notice>
           {data.hidden_for_content_notes} items touch self-harm, abuse or bereavement and are

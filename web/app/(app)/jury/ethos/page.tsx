@@ -32,7 +32,7 @@ export default async function EthosReviewPage() {
           beside the findings; they never change them.
         </p>
       </PageHeader>
-      <JuryNav current="/jury/ethos" />
+      <JuryNav />
       {data.hidden_for_content_notes > 0 ? (
         <Notice>
           {data.hidden_for_content_notes} items touch self-harm, abuse or bereavement and are

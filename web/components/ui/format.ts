@@ -5,11 +5,17 @@ export function sentenceCase(value: string): string {
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
+/**
+ * Times read in one zone for everyone, so a page rendered on the server matches the
+ * browser that hydrates it. Set NEXT_PUBLIC_AGORA_TIME_ZONE to change it.
+ */
+export const TIME_ZONE = process.env.NEXT_PUBLIC_AGORA_TIME_ZONE || "Australia/Sydney";
+
+const WHEN = new Intl.DateTimeFormat("en-AU", { dateStyle: "medium", timeStyle: "short", timeZone: TIME_ZONE });
+
 export function formatWhen(value: string | null | undefined, fallback = "Not recorded"): string {
   if (!value) return fallback;
-  return new Intl.DateTimeFormat("en-AU", { dateStyle: "medium", timeStyle: "short" }).format(
-    new Date(value),
-  );
+  return WHEN.format(new Date(value));
 }
 
 export function formatNumber(value: number): string {

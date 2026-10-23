@@ -153,3 +153,40 @@ a.ag-btn {
 .ag-stat dd a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 5px; text-decoration-color: var(--color-border-strong); }
 .ag-stat dd a:hover { text-decoration-color: currentColor; }
 .ag-nowrap { white-space: nowrap; }
+
+/* Keyboard keys, and the list of shortcuts beside a queue. */
+.ag-kbd {
+  display: inline-grid; place-items: center; min-width: 1.6em; height: 1.6em; padding: 0 .35em;
+  border-radius: var(--radius-sm); border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-muted); box-shadow: 0 1px 0 var(--color-bezel-lo);
+  font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1; color: var(--color-text);
+}
+.ag-keys { display: grid; gap: var(--space-3); }
+.ag-keys dl { display: grid; gap: var(--space-2); margin: 0; }
+.ag-keys-row { display: grid; grid-template-columns: 4.5rem 1fr; gap: var(--space-3); align-items: center; font-size: var(--text-sm); }
+.ag-keys-row dt { display: flex; gap: var(--space-1); }
+.ag-keys-row dd { margin: 0; color: var(--color-text-muted); }
+
+/* A review queue: the items, with the one being reviewed marked. */
+.ag-queue { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; max-height: 26rem; overflow: auto; }
+.ag-queue button {
+  width: 100%; text-align: left; display: grid; gap: 2px; padding: var(--space-2) var(--space-3);
+  border: 0; border-radius: var(--radius-sm); background: none; color: var(--color-text); font: inherit; font-size: var(--text-sm); cursor: pointer;
+}
+.ag-queue button:hover { background: var(--color-surface-muted); }
+.ag-queue button[aria-current="true"] { background: var(--color-surface-muted); box-shadow: inset 2px 0 0 var(--color-accent); }
+.ag-queue .ag-hint { margin: 0; }
+.ag-item-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin: 0 0 var(--space-2); }
+.ag-item-head h2 { margin: 0; font-size: var(--text-lg); }
+.ag-item-head h2:focus { outline: none; }
+.ag-item-head h2:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; border-radius: var(--radius-sm); }
+.ag-choices { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+
+/* The blind labelling grid: one row per label, one column per intensity. */
+.ag-center { text-align: center; }
+.ag-rating td .ag-check { display: inline-grid; grid-template-columns: auto; }
+.ag-rating tbody th[scope="row"] { font-weight: 500; }
+.ag-rating-family {
+  font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--color-text-muted);
+  border-left: 3px solid var(--fam);
+}

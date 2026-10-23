@@ -3,8 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import styles from "@/components/agents/agents.module.css";
-import { Button, Notice } from "@/components/ui";
+import { Button, Field, Notice, Select } from "@/components/ui";
 import { createGoldSet, type EthosSourceOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 
@@ -32,37 +31,30 @@ export function CreateGoldSet({ sources }: { sources: EthosSourceOut[] }) {
 
   if (!sources.length) return <p>No finished runs to draw from yet.</p>;
   return (
-    <div>
+    <div className="ag-form" style={{ maxWidth: "none" }}>
       {error ? <Notice tone="danger">{error}</Notice> : null}
-      <div className={styles.inlineForm}>
-        <label className={styles.field}>
-          Name
-          <input value={name} onChange={(event) => setName(event.target.value)} />
-        </label>
-        <label className={styles.field}>
-          Draw from
-          <select value={source} onChange={(event) => setSource(event.target.value)}>
-            {sources.map((item) => (
-              <option key={item.run.id} value={item.run.id}>
-                {item.run.title} ({item.transcripts})
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.field}>
-          Transcripts
-          <input type="number" min={1} max={500} value={size} onChange={(e) => setSize(Number(e.target.value))} />
-        </label>
-        <label className={styles.field}>
-          Seed
-          <input type="number" value={seed} onChange={(e) => setSeed(Number(e.target.value))} />
-        </label>
+      <div className="ag-form-row">
+        <Field label="Name" value={name} onChange={(event) => setName(event.target.value)} hint="At least three characters." />
+        <Select
+          label="Draw from"
+          value={source}
+          onChange={(event) => setSource(event.target.value)}
+          options={sources.map((item) => ({ value: item.run.id, label: `${item.run.title} (${item.transcripts})` }))}
+        />
+        <Field label="Transcripts" type="number" min={1} max={500} value={size} onChange={(e) => setSize(Number(e.target.value))} />
+        <Field
+          label="Seed"
+          type="number"
+          value={seed}
+          onChange={(e) => setSeed(Number(e.target.value))}
+          hint="The same seed draws the same transcripts."
+        />
       </div>
-      <p>
+      <div>
         <Button onClick={create} disabled={name.trim().length < 3 || !source}>
           Create gold set
         </Button>
-      </p>
+      </div>
     </div>
   );
 }

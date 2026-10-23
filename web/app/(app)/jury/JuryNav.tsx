@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { TabLinks } from "@/components/ui";
 
 const PAGES = [
   { href: "/jury", label: "Judge scores" },
@@ -7,20 +7,10 @@ const PAGES = [
 ];
 
 /** The review area's three queues. */
-export function JuryNav({ current }: { current: string }) {
+export function JuryNav() {
   return (
-    <nav aria-label="Jury" style={{ display: "flex", gap: "var(--space-4)", marginBottom: "var(--space-4)" }}>
-      {PAGES.map((page) =>
-        page.href === current ? (
-          <strong key={page.href} aria-current="page">
-            {page.label}
-          </strong>
-        ) : (
-          <Link key={page.href} href={page.href}>
-            {page.label}
-          </Link>
-        ),
-      )}
-    </nav>
+    <div style={{ marginBottom: "var(--space-5)" }}>
+      <TabLinks label="Jury" tabs={PAGES} />
+    </div>
   );
 }

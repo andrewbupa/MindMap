@@ -25,13 +25,11 @@ export function ComputeAgreement({ setId }: { setId: string }) {
   }
 
   return (
-    <div>
+    <div style={{ marginTop: "var(--space-4)" }}>
       {error ? <Notice tone="danger">{error}</Notice> : null}
-      <p>
-        <Button variant="secondary" onClick={compute} disabled={busy}>
-          Compute agreement and update trust
-        </Button>
-      </p>
+      <Button variant="secondary" onClick={compute} disabled={busy}>
+        Compute agreement and update trust
+      </Button>
     </div>
   );
 }

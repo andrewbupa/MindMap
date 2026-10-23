@@ -4,6 +4,7 @@ import {
   useId,
   type InputHTMLAttributes,
   type ReactNode,
+  type Ref,
   type SelectHTMLAttributes,
   type TextareaHTMLAttributes,
 } from "react";
@@ -68,8 +69,9 @@ export function TextArea({
   error,
   className,
   id: given,
+  ref,
   ...input
-}: Labelled & TextareaHTMLAttributes<HTMLTextAreaElement>) {
+}: Labelled & TextareaHTMLAttributes<HTMLTextAreaElement> & { ref?: Ref<HTMLTextAreaElement> }) {
   const auto = useId();
   const id = given ?? auto;
   return (
@@ -78,6 +80,7 @@ export function TextArea({
         {label}
       </label>
       <textarea
+        ref={ref}
         id={id}
         className="ag-input"
         aria-invalid={error ? true : undefined}
