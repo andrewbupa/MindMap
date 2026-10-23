@@ -367,6 +367,15 @@ a browser, a system check's object opened from Postgres and a rehearsal's Inspec
 log downloaded as a valid file; both specs validate against App Platform's schema.
 Not verified: the dev database itself, which only DigitalOcean can provide.
 
+Then three requirements from the brief that had not been built: each provider's
+retention terms in Settings, kept under `providers` in `config/models.yaml`, with
+production refusing to start while a role's provider has none; estimated spend by
+month in Settings, spend, each month linked to Record filtered to its runs, with
+each run's cost on Record and this month's figure on Home; and an Ethos comparison
+exported as PDF and CSV from the compare view, with both runs' provenance. Verified
+by 211 tests and in a browser: the providers table, the spend page and a
+month's runs, and both comparison downloads opened.
+
 Waiting on: the first deploy to `bupa-ai-poc` (the steps above, with `main`
 created and the DigitalOcean GitHub app given access to `andrewbupa/agora`);
 review of the screens once live; the open questions in docs/DECISIONS.md.

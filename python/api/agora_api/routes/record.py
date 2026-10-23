@@ -12,9 +12,10 @@ from fastapi.responses import Response
 from sqlalchemy import select
 
 from agora_api.deps import AppSettings, Db, ReaderUser
-from agora_api.report_pdf import Section, run_report
+from agora_api.report_pdf import Section, comparison_report, run_report
+from agora_api.routes.ethos import build_comparison
 from agora_api.routes.runs import started_month
-from agora_api.schemas import RunOut
+from agora_api.schemas import EthosCompareOut, IntervalOut, LabelPrevalenceOut, RunOut
 from agora_core import audit
 from agora_core.ethos.read import load_run_ethos
 from agora_core.ethos.taxonomy import load_ethos
@@ -431,4 +432,168 @@ async def export_report(
         pdf,
         media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="agora-{run.kind}-{run.id}.pdf"'},
+    )
+
+
+# Comparing two Ethos runs: the compare view, exported.
+SHARE_FIELDS = ("replies", "expressed", "share", "low", "high")
+COMPARISON_FIELDS = (
+    "label",
+    "family",
+    "shared_scenarios",
+    *(
+        f"{side}_{name}"
+        for side in "ab"
+        for name in ("replies", "expressed", "share", "low", "high")
+    ),
+    "difference",
+    "difference_low",
+    "difference_high",
+    *(f"{side}_{name}" for side in "ab" for name in PROVENANCE),
+)
+
+
+def _points(value: float) -> str:
+    """Percentage points with a sign, as on screen: +20, -5, or 0."""
+    whole = round(value * 100)
+    return f"+{whole}" if whole > 0 else str(whole)
+
+
+def _number(value: float | None) -> str:
+    return "" if value is None else f"{value:.4f}"
+
+
+def _interval(interval: IntervalOut | None) -> tuple[str, str]:
+    return ("", "") if interval is None else (_number(interval.low), _number(interval.high))
+
+
+async def _comparison_audited(db: Db, user: User, a: Run, b: Run, fmt: str, rows: int) -> None:
+    await audit.record(
+        db,
+        "report.export",
+        actor_id=user.id,
+        target_type="run",
+        target_id=a.id,
+        detail={"format": fmt, "compared_with": str(b.id), "rows": rows},
+    )
+    await db.commit()
+
+
+@router.get("/compare.csv", response_class=Response)
+async def export_comparison(
+    a: uuid.UUID, b: uuid.UUID, user: ReaderUser, db: Db, settings: AppSettings
+) -> Response:
+    """One row per label, A beside B on the scenarios both read, each row carrying both
+    runs' provenance. It counts what the compare view counts for this reader."""
+    comparison, run_a, run_b = await build_comparison(db, settings, user, a, b)
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=COMPARISON_FIELDS)
+    writer.writeheader()
+    shared = {
+        **{f"a_{k}": v for k, v in provenance(run_a).items()},
+        **{f"b_{k}": v for k, v in provenance(run_b).items()},
+    }
+    for row in comparison.labels:
+        a_low, a_high = _interval(row.a.interval)
+        b_low, b_high = _interval(row.b.interval)
+        d_low, d_high = _interval(row.difference_interval)
+        writer.writerow(
+            {
+                "label": row.label,
+                "family": row.family,
+                "shared_scenarios": comparison.shared_scenarios,
+                "a_replies": row.a.replies,
+                "a_expressed": row.a.expressed,
+                "a_share": _number(row.a.share),
+                "a_low": a_low,
+                "a_high": a_high,
+                "b_replies": row.b.replies,
+                "b_expressed": row.b.expressed,
+                "b_share": _number(row.b.share),
+                "b_low": b_low,
+                "b_high": b_high,
+                "difference": _number(row.difference),
+                "difference_low": d_low,
+                "difference_high": d_high,
+                **shared,
+            }
+        )
+    await _comparison_audited(db, user, run_a, run_b, "compare.csv", len(comparison.labels))
+    return Response(
+        buffer.getvalue(),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="agora-compare-{a}-{b}.csv"'},
+    )
+
+
+def _share(item: LabelPrevalenceOut) -> str:
+    """A share with its count and interval, such as "40% (4 of 10; 17% to 69%)"."""
+    if item.share is None:
+        return "No replies"
+    text = f"{_percent(item.share)} ({item.expressed} of {item.replies}"
+    if item.interval is not None:
+        text += f"; {_percent(item.interval.low)} to {_percent(item.interval.high)}"
+    return text + ")"
+
+
+def _comparison_sections(comparison: EthosCompareOut) -> list[Section]:
+    rows = []
+    for row in comparison.labels:
+        if row.difference is None:
+            change = "Not comparable"
+        elif row.difference_interval is None:
+            change = f"{_points(row.difference)} points"
+        else:
+            low, high = row.difference_interval.low, row.difference_interval.high
+            change = f"{_points(row.difference)} points ({_points(low)} to {_points(high)})"
+        label = row.label.replace("_", " ").capitalize()
+        rows.append([label, row.family, _share(row.a), _share(row.b), change])
+    fits = [
+        [
+            item.scenario_key.split("/")[-1].replace("_", " ").replace("-", " ").capitalize(),
+            "No fit" if item.a_fit is None else _percent(item.a_fit),
+            "No fit" if item.b_fit is None else _percent(item.b_fit),
+        ]
+        for item in comparison.scenarios
+    ]
+    return [
+        Section(
+            heading="Labels",
+            intro=(
+                f"The share of replies expressing each label on the {comparison.shared_scenarios} "
+                "scenarios both runs read, with 95% Wilson intervals. The change is B minus A, "
+                "in percentage points, with Newcombe's 95% interval; where it spans zero, the "
+                "difference may be noise. Expressed dispositions are read from text; Ethos does "
+                "not see inside the model."
+            ),
+            header=["Label", "Family", "A", "B", "B minus A"],
+            rows=rows,
+        ),
+        Section(
+            heading="Fit by scenario",
+            intro="How well each scenario's replies matched what it expects, in each run.",
+            header=["Scenario", "A", "B"],
+            rows=fits,
+            note=(
+                "Conversations with content notes the reader has not opted in to are left out, "
+                "as they are on screen."
+            ),
+        ),
+    ]
+
+
+@router.get("/compare.pdf", response_class=Response)
+async def export_comparison_report(
+    a: uuid.UUID, b: uuid.UUID, user: ReaderUser, db: Db, settings: AppSettings
+) -> Response:
+    """The compare view as a printable report, opening with both runs' provenance."""
+    comparison, run_a, run_b = await build_comparison(db, settings, user, a, b)
+    pdf = comparison_report(
+        run_a, run_b, generated_by=user.email, sections=_comparison_sections(comparison)
+    )
+    await _comparison_audited(db, user, run_a, run_b, "compare.pdf", 1)
+    return Response(
+        pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="agora-compare-{a}-{b}.pdf"'},
     )

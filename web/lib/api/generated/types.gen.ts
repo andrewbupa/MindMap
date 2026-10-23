@@ -1640,6 +1640,10 @@ export type LabelComparisonOut = {
      */
     difference: number | null;
     /**
+     * 95% interval for the difference, by Newcombe's hybrid score method.
+     */
+    difference_interval: IntervalOut | null;
+    /**
      * Family
      */
     family: string;
@@ -4855,6 +4859,70 @@ export type ModelRolesResponses = {
 };
 
 export type ModelRolesResponse = ModelRolesResponses[keyof ModelRolesResponses];
+
+export type ExportComparisonData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * A
+         */
+        a: string;
+        /**
+         * B
+         */
+        b: string;
+    };
+    url: '/api/record/compare.csv';
+};
+
+export type ExportComparisonErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ExportComparisonError = ExportComparisonErrors[keyof ExportComparisonErrors];
+
+export type ExportComparisonResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ExportComparisonReportData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * A
+         */
+        a: string;
+        /**
+         * B
+         */
+        b: string;
+    };
+    url: '/api/record/compare.pdf';
+};
+
+export type ExportComparisonReportErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ExportComparisonReportError = ExportComparisonReportErrors[keyof ExportComparisonReportErrors];
+
+export type ExportComparisonReportResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type ListReportRunsData = {
     body?: never;

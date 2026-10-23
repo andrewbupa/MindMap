@@ -110,6 +110,14 @@ and each month links to Record filtered to its runs. A model with no price count
 nothing, so the page names any such model; today that is judge B's. Providers'
 invoices remain the final word.
 
+**A comparison exports what the compare view shows.** Record exports a run or a
+comparison. The compare view's Ethos comparison now downloads as a PDF, opening with
+both runs' full provenance, and as a CSV with one row per label and both runs'
+provenance on every row. Both come from the same code as the view, so they count
+what the reader sees, content-note opt-ins included. Newcombe's interval for each
+difference moved from the browser to the API, so the page and the exports carry
+one interval, not two copies of the formula.
+
 **The prototype keeps its files in Postgres.** Agora's screens read only Postgres;
 the files (an Inspect log per conversation, the judges' raw answers, system check
 objects) are kept for evidence and download. For a prototype they go to a

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import csv
+import io
 from pathlib import Path
 
 import httpx
@@ -9,7 +11,14 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from agora_core.config import REPO_ROOT
-from agora_core.models import Annotation, DroppedFinding, Message, Run, Transcript
+from agora_core.models import (
+    Annotation,
+    AuditEvent,
+    DroppedFinding,
+    Message,
+    Run,
+    Transcript,
+)
 from agora_core.registry import load_registry, sync_registry
 from agora_core.storage import get_storage
 from testsupport.ethos import dev_judges, ethos_run, inquiry_run, run_ethos, scripted_judges
@@ -151,6 +160,31 @@ async def test_compare_two_prompt_versions_on_the_same_scenarios(
     assert labels["calibrated_uncertainty"]["a"]["share"] == 0.5  # 1 of 2 replies
     assert labels["calibrated_uncertainty"]["a"]["interval"]["low"] > 0
     assert len(result["scenarios"]) == 1
+    compared = [item for item in result["labels"] if item["difference"] is not None]
+    assert compared
+    for item in compared:
+        interval = item["difference_interval"]
+        assert interval["low"] <= item["difference"] <= interval["high"]
+
+    # The same comparison, exported, with both runs' provenance on every row.
+    params = {"a": first["id"], "b": second["id"]}
+    exported = await client.get("/api/record/compare.csv", params=params)
+    assert exported.status_code == 200
+    rows = list(csv.DictReader(io.StringIO(exported.text)))
+    assert len(rows) == len(result["labels"])
+    row = next(r for r in rows if r["label"] == "calibrated_uncertainty")
+    assert row["a_share"] == "0.5000" and row["shared_scenarios"] == "1"
+    assert row["a_run_id"] == first["id"] and row["b_run_id"] == second["id"]
+    assert row["a_git_commit"] and row["b_taxonomy_version"]
+    report = await client.get("/api/record/compare.pdf", params=params)
+    assert report.status_code == 200 and report.content.startswith(b"%PDF")
+    exports = (
+        (await db.execute(select(AuditEvent.detail).where(AuditEvent.action == "report.export")))
+        .scalars()
+        .all()
+    )
+    assert {e["format"] for e in exports} >= {"compare.csv", "compare.pdf"}
+    assert all(e["compared_with"] == second["id"] for e in exports)
 
 
 async def test_the_scanners_run_over_an_inspect_log_directory(

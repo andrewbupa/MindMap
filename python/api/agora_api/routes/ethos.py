@@ -44,7 +44,7 @@ from agora_api.schemas import (
 from agora_core import inquiry, queue
 from agora_core.ethos.panel import PanelError
 from agora_core.ethos.read import LabelInfo, ResponseView, RunEthos, load_run_ethos
-from agora_core.ethos.results import ReplyEthos, mean_fit, prevalence
+from agora_core.ethos.results import ReplyEthos, difference_interval, mean_fit, prevalence
 from agora_core.ethos.runs import READABLE, EthosError, create_ethos_run
 from agora_core.ethos.taxonomy import TaxonomyError, load_ethos
 from agora_core.model_roles import ModelRolesError
@@ -388,6 +388,14 @@ async def compare_ethos_runs(
     a: uuid.UUID, b: uuid.UUID, user: ReaderUser, db: Db, settings: AppSettings
 ) -> EthosCompareOut:
     """Prompt A beside prompt B, on the scenarios both runs read."""
+    return (await build_comparison(db, settings, user, a, b))[0]
+
+
+async def build_comparison(
+    db: Db, settings: AppSettings, user: User, a: uuid.UUID, b: uuid.UUID
+) -> tuple[EthosCompareOut, Run, Run]:
+    """The comparison the compare view shows, with the two runs, for the view and its
+    exports alike. Conversations the reader has not opted in to are left out."""
     run_a, run_b = await _ethos_run(db, a), await _ethos_run(db, b)
     if run_a.taxonomy_version != run_b.taxonomy_version:
         raise HTTPException(
@@ -414,17 +422,28 @@ async def compare_ethos_runs(
     for label in ethos_a.labels:
         if label.key not in side_b:
             continue
-        left, right = side_a[label.key].share, side_b[label.key].share
+        left, right = side_a[label.key], side_b[label.key]
+        difference: float | None = None
+        interval: IntervalOut | None = None
+        if left.share is not None and right.share is not None:
+            difference = right.share - left.share
+            if left.interval is not None and right.interval is not None:
+                low, high = difference_interval(
+                    (left.share, left.interval.low, left.interval.high),
+                    (right.share, right.interval.low, right.interval.high),
+                )
+                interval = IntervalOut(low=low, high=high)
         labels.append(
             LabelComparisonOut(
                 label=label.key,
                 family=label.family,
-                a=side_a[label.key],
-                b=side_b[label.key],
-                difference=right - left if left is not None and right is not None else None,
+                a=left,
+                b=right,
+                difference=difference,
+                difference_interval=interval,
             )
         )
-    return EthosCompareOut(
+    comparison = EthosCompareOut(
         a=await _summary(db, run_a, ethos_a),
         b=await _summary(db, run_b, ethos_b),
         shared_scenarios=len(shared),
@@ -440,6 +459,7 @@ async def compare_ethos_runs(
             for key in shared
         ],
     )
+    return comparison, run_a, run_b
 
 
 @router.get("/runs/{run_id}/events", response_class=EventSourceResponse)

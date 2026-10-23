@@ -85,6 +85,20 @@ def wilson(successes: int, trials: int, z: float = 1.96) -> tuple[float, float] 
     return max(0.0, centre - margin), min(1.0, centre + margin)
 
 
+def difference_interval(
+    a: tuple[float, float, float], b: tuple[float, float, float]
+) -> tuple[float, float]:
+    """A 95% interval for share B minus share A, by Newcombe's hybrid score method from
+    the two Wilson intervals. Each side is (share, low, high)."""
+    a_share, a_low, a_high = a
+    b_share, b_low, b_high = b
+    difference = b_share - a_share
+    return (
+        difference - math.sqrt((b_share - b_low) ** 2 + (a_high - a_share) ** 2),
+        difference + math.sqrt((b_high - b_share) ** 2 + (a_share - a_low) ** 2),
+    )
+
+
 @dataclass(frozen=True)
 class Prevalence:
     """How many replies expressed a label: median intensity of 1 or more."""

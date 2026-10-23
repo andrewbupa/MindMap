@@ -103,6 +103,22 @@ def provenance_rows(run: Run) -> list[list[str]]:
 
 
 def run_report(run: Run, *, generated_by: str, sections: list[Section]) -> bytes:
+    return _report(run.title, [("Provenance", run)], generated_by, sections)
+
+
+def comparison_report(a: Run, b: Run, *, generated_by: str, sections: list[Section]) -> bytes:
+    """Two runs side by side, each with its full provenance, then the comparison."""
+    return _report(
+        f"Comparison: {a.title} beside {b.title}",
+        [(f"Provenance of A: {a.title}", a), (f"Provenance of B: {b.title}", b)],
+        generated_by,
+        sections,
+    )
+
+
+def _report(
+    title: str, runs: list[tuple[str, Run]], generated_by: str, sections: list[Section]
+) -> bytes:
     buffer = io.BytesIO()
     styles = _styles()
     doc = SimpleDocTemplate(
@@ -112,12 +128,12 @@ def run_report(run: Run, *, generated_by: str, sections: list[Section]) -> bytes
         rightMargin=18 * mm,
         topMargin=18 * mm,
         bottomMargin=18 * mm,
-        title=f"Agora report: {run.title}",
+        title=f"Agora report: {title}",
         author="Agora",
     )
     width = doc.width
     story: list[Flowable] = [
-        Paragraph(escape(run.title), styles["title"]),
+        Paragraph(escape(title), styles["title"]),
         Paragraph(
             escape(
                 f"Agora report, generated {datetime.now(UTC):%d %B %Y, %H:%M} UTC for "
@@ -126,17 +142,20 @@ def run_report(run: Run, *, generated_by: str, sections: list[Section]) -> bytes
             ),
             styles["quiet"],
         ),
-        Spacer(1, 6 * mm),
-        Paragraph("Provenance", styles["heading"]),
-        _table(
-            ["Field", "Value"],
-            provenance_rows(run),
-            styles["cell"],
-            width,
-            widths=[0.22, 0.78],
-            value_style=styles["mono"],
-        ),
     ]
+    for heading, run in runs:
+        story += [
+            Spacer(1, 6 * mm),
+            Paragraph(escape(heading), styles["heading"]),
+            _table(
+                ["Field", "Value"],
+                provenance_rows(run),
+                styles["cell"],
+                width,
+                widths=[0.22, 0.78],
+                value_style=styles["mono"],
+            ),
+        ]
     for section in sections:
         story += [Spacer(1, 5 * mm), Paragraph(escape(section.heading), styles["heading"])]
         if section.intro:

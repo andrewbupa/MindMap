@@ -143,3 +143,16 @@ async def test_sync_stores_a_version_once_and_refuses_silent_edits(
     path.write_text(path.read_text().replace("warmth, compassion", "warmth, kindness"))
     with pytest.raises(TaxonomyError, match="differs from the stored version"):
         await sync_ethos(db, load_ethos(ethos_copy), "ghi")
+
+
+def test_the_difference_interval_follows_newcombe() -> None:
+    from agora_core.ethos.results import difference_interval, wilson
+
+    a_low, a_high = wilson(2, 10) or (0, 0)
+    b_low, b_high = wilson(6, 10) or (0, 0)
+    low, high = difference_interval((0.2, a_low, a_high), (0.6, b_low, b_high))
+    # Newcombe's hybrid score interval for 6/10 minus 2/10.
+    assert low == pytest.approx(-0.0225, abs=1e-3)
+    assert high == pytest.approx(0.6725, abs=1e-3)
+    same = difference_interval((0.5, 0.2, 0.8), (0.5, 0.2, 0.8))
+    assert same[0] < 0 < same[1]

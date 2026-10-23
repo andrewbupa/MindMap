@@ -736,6 +736,9 @@ class LabelComparisonOut(BaseModel):
     a: LabelPrevalenceOut
     b: LabelPrevalenceOut
     difference: float | None = Field(description="Share in B minus share in A.")
+    difference_interval: IntervalOut | None = Field(
+        description="95% interval for the difference, by Newcombe's hybrid score method."
+    )
 
 
 class ScenarioComparisonOut(BaseModel):

@@ -2,9 +2,9 @@ import Link from "next/link";
 
 import { DataTable, type Row } from "@/components/data/DataTable";
 import { Card, PageHeader, sentenceCase } from "@/components/ui";
-import type { EthosCompareOut, LabelPrevalenceOut } from "@/lib/api";
+import type { EthosCompareOut } from "@/lib/api";
 
-import { differenceInterval, ETHOS_NOTE } from "./family";
+import { ETHOS_NOTE } from "./family";
 import { LabelChip } from "./LabelChip";
 
 const SPAN = 0.4;
@@ -18,12 +18,6 @@ function points(value: number): string {
   return `${whole > 0 ? "+" : ""}${whole}`;
 }
 
-function bounds(item: LabelPrevalenceOut) {
-  return item.share === null || item.share === undefined || !item.interval
-    ? null
-    : { share: item.share, low: item.interval.low, high: item.interval.high };
-}
-
 /** Prompt A beside prompt B on the scenarios both read: shares, and the difference with its interval. */
 export function CompareView({ data }: { data: EthosCompareOut }) {
   const versionOf = (run: EthosCompareOut["a"]) =>
@@ -33,7 +27,20 @@ export function CompareView({ data }: { data: EthosCompareOut }) {
   const pc = (v: number) => `${50 + (Math.max(-SPAN, Math.min(SPAN, v)) / SPAN) * 50}%`;
   return (
     <>
-      <PageHeader title={`Compare ${a} with ${b}`} note={ETHOS_NOTE}>
+      <PageHeader
+        title={`Compare ${a} with ${b}`}
+        note={ETHOS_NOTE}
+        actions={
+          <span className="ag-row">
+            <a className="ag-btn" href={`/api/record/compare.pdf?a=${data.a.run.id}&b=${data.b.run.id}`}>
+              Download report (PDF)
+            </a>
+            <a className="ag-btn" href={`/api/record/compare.csv?a=${data.a.run.id}&b=${data.b.run.id}`}>
+              Download labels (CSV)
+            </a>
+          </span>
+        }
+      >
         <p>
           A is <Link href={`/ethos/runs/${data.a.run.id}`}>{data.a.run.title}</Link>; B is{" "}
           <Link href={`/ethos/runs/${data.b.run.id}`}>{data.b.run.title}</Link>. Only the {data.shared_scenarios}{" "}
@@ -65,9 +72,8 @@ export function CompareView({ data }: { data: EthosCompareOut }) {
             </span>
           </div>
           {data.labels.map((row) => {
-            const left = bounds(row.a);
-            const right = bounds(row.b);
-            const interval = left && right ? differenceInterval(left, right) : null;
+            // Newcombe's interval, worked out by the API so exports carry the same one.
+            const interval = row.difference_interval ?? null;
             const diff = row.difference;
             const words =
               diff === null || diff === undefined || !interval

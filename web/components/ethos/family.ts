@@ -45,17 +45,3 @@ export const SIGNAL_KINDS: Record<string, string> = {
   nla: "Autoencoder explanation",
 };
 
-/**
- * A 95% interval for the difference of two shares, B minus A, from each share's Wilson
- * interval (Newcombe's hybrid score method). Shares and bounds run from 0 to 1.
- */
-export function differenceInterval(
-  a: { share: number; low: number; high: number },
-  b: { share: number; low: number; high: number },
-): { low: number; high: number } {
-  const diff = b.share - a.share;
-  return {
-    low: diff - Math.sqrt((b.share - b.low) ** 2 + (a.high - a.share) ** 2),
-    high: diff + Math.sqrt((b.high - b.share) ** 2 + (a.share - a.low) ** 2),
-  };
-}

@@ -2729,6 +2729,17 @@
             "description": "Share in B minus share in A.",
             "title": "Difference"
           },
+          "difference_interval": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IntervalOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "95% interval for the difference, by Newcombe's hybrid score method."
+          },
           "family": {
             "title": "Family",
             "type": "string"
@@ -2743,7 +2754,8 @@
           "family",
           "a",
           "b",
-          "difference"
+          "difference",
+          "difference_interval"
         ],
         "title": "LabelComparisonOut",
         "type": "object"
@@ -7999,6 +8011,100 @@
         "summary": "Model Roles",
         "tags": [
           "models"
+        ]
+      }
+    },
+    "/api/record/compare.csv": {
+      "get": {
+        "description": "One row per label, A beside B on the scenarios both read, each row carrying both\nruns' provenance. It counts what the compare view counts for this reader.",
+        "operationId": "export_comparison",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "a",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "A",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "b",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "B",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Comparison",
+        "tags": [
+          "record"
+        ]
+      }
+    },
+    "/api/record/compare.pdf": {
+      "get": {
+        "description": "The compare view as a printable report, opening with both runs' provenance.",
+        "operationId": "export_comparison_report",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "a",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "A",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "b",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "B",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Comparison Report",
+        "tags": [
+          "record"
         ]
       }
     },
