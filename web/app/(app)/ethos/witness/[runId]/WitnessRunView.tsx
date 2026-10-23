@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-import { SIGNAL_KINDS, familyColour, labelName } from "@/components/ethos/family";
-import styles from "@/components/ethos/ethos.module.css";
+import { SIGNAL_KINDS, labelName } from "@/components/ethos/family";
+import { LabelChip, TrustBadge } from "@/components/ethos/LabelChip";
 import { Provenance } from "@/components/runs/Provenance";
-import runStyles from "@/components/runs/runs.module.css";
-import { Badge, Card, Notice, PageHeader, sentenceCase } from "@/components/ui";
+import { RunProgress } from "@/components/runs/RunProgress";
+import { Card, Mono, Notice, PageHeader, sentenceCase } from "@/components/ui";
 import { readWitnessRun, type WitnessRunOut, type ReplyRefOut, type SignalAgreementOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 import { useLiveStatus } from "@/lib/useLiveStatus";
@@ -74,28 +74,22 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
     <>
       <PageHeader title={data.run.title} note={QUIET}>
         <p>
-          {data.reader.model} read {transcripts} conversations from{" "}
+          <Mono plain>{data.reader.model}</Mono> read {transcripts} conversations from{" "}
           {ethos ? <Link href={`/ethos/runs/${ethos.id}`}>{data.source.title}</Link> : data.source.title} with
           the reader {data.reader.key}, version {data.reader.version}.
         </p>
       </PageHeader>
       <Card title="Progress">
-        <div className={runStyles.counts}>
-          {Object.entries(counts).map(([status, n]) => (
-            <Badge key={status}>
-              {sentenceCase(status)}: {n}
-            </Badge>
-          ))}
-        </div>
+        <RunProgress counts={counts} unit="conversations" />
         {waiting ? (
-          <p className={styles.quiet}>
+          <p className="ag-quiet">
             Witness jobs wait on the witness queue until the Droplet runner takes them. If they stay
             queued, check the runner (see the runbook).
           </p>
         ) : null}
         {data.run.error ? <Notice tone="danger">{data.run.error}</Notice> : null}
         {Object.keys(data.dropped).length ? (
-          <p className={styles.quiet}>
+          <p className="ag-quiet">
             Signals dropped by the checks:{" "}
             {Object.entries(data.dropped)
               .map(([reason, n]) => `${n} (${reason.replaceAll("_", " ")})`)
@@ -112,7 +106,7 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
           </p>
         ) : (
           <>
-            <p className={styles.quiet}>
+            <p className="ag-quiet">
               Compared with <Link href={`/ethos/runs/${ethos.id}`}>{ethos.title}</Link>, over the replies both
               read. Ethos counts a label when the panel&apos;s median intensity is 1 or more; a signal counts
               when any token reaches its threshold. Each count opens its replies.
@@ -133,7 +127,7 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
             {data.agreements.length === 0 ? (
               <p>None of this reader&apos;s signals is tied to an Ethos label.</p>
             ) : (
-              <table className={styles.numbers}>
+              <div className="ag-table-wrap"><table className="ag-table">
                 <thead>
                   <tr>
                     <th scope="col">Signal</th>
@@ -152,19 +146,15 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
                     <tr key={a.signal}>
                       <th scope="row">
                         {labelName(a.signal)}
-                        <div className={styles.quiet}>{SIGNAL_KINDS[a.kind] ?? a.kind}</div>
+                        <div className="ag-quiet">{SIGNAL_KINDS[a.kind] ?? a.kind}</div>
                       </th>
                       <td>
-                        <span className={styles.swatch} style={{ background: familyColour(a.family) }} />
-                        <Link href={`/ethos/runs/${ethos.id}?label=${a.label}`}>{labelName(a.label)}</Link>
-                        {a.trust_status ? (
-                          <>
-                            {" "}
-                            <Badge tone={a.trust_status === "trusted" ? "ok" : "neutral"}>
-                              {sentenceCase(a.trust_status)}
-                            </Badge>
-                          </>
-                        ) : null}
+                        <span className="ag-row" style={{ gap: "var(--space-2)" }}>
+                          <Link href={`/ethos/runs/${ethos.id}?label=${a.label}`} style={{ textDecoration: "none" }}>
+                            <LabelChip family={a.family} label={a.label} />
+                          </Link>
+                          {a.trust_status ? <TrustBadge trust={a.trust_status} /> : null}
+                        </span>
                       </td>
                       {CELLS.map((cell) => (
                         <td key={cell.key}>
@@ -180,7 +170,7 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></div>
             )}
           </>
         )}
@@ -189,7 +179,7 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
         ? data.agreements.map((a) => (
             <div key={a.signal} id={`signal-${a.signal}`}>
               <Card title={`${labelName(a.signal)} beside ${labelName(a.label).toLowerCase()}`}>
-                <p className={styles.quiet}>
+                <p className="ag-quiet">
                   {a.replies} replies. They agree on {a.both.length + a.neither.length} ({percent(a.agreement)}).
                   Of the {a.both.length + a.ethos_only.length + a.witness_only.length} that either flags,
                   both flag {a.both.length} ({percent(a.positive)}).
@@ -215,7 +205,7 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
           ))
         : null}
       <Card title="Reader">
-        <table>
+        <div className="ag-table-wrap"><table className="ag-table">
           <thead>
             <tr>
               <th scope="col">Signal</th>
@@ -229,7 +219,7 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
               <tr key={s.name}>
                 <th scope="row" title={s.description}>
                   {labelName(s.name)}
-                  <div className={styles.quiet}>{s.description}</div>
+                  <div className="ag-quiet">{s.description}</div>
                 </th>
                 <td>{SIGNAL_KINDS[s.kind] ?? s.kind}</td>
                 <td>{s.label ? labelName(s.label) : "No label"}</td>
@@ -237,7 +227,7 @@ export function WitnessRunView({ data }: { data: WitnessRunOut }) {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </Card>
       <Card title="Run">
         <Provenance run={data.run} />

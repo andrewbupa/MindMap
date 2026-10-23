@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 import { ETHOS_NOTE } from "@/components/ethos/family";
-import { StatusBadge } from "@/components/runs/StatusBadge";
-import { Card, PageHeader, formatWhen } from "@/components/ui";
+import { RunTable } from "@/components/runs/RunTable";
+import { Card, EmptyState, LinkButton, PageHeader } from "@/components/ui";
 import { listEthosRuns, listEthosSources } from "@/lib/api";
 import { getMe, serverClient } from "@/lib/api/server";
 import { hasRole } from "@/lib/auth";
@@ -25,12 +25,15 @@ export default async function EthosPage({
   ]);
   return (
     <>
-      <PageHeader title="Ethos" note={ETHOS_NOTE}>
+      <PageHeader
+        title="Ethos"
+        note={ETHOS_NOTE}
+        actions={<LinkButton href="/ethos/taxonomy">Read the labels and expected profiles</LinkButton>}
+      >
         <p>
-          A panel of judges from two model families reads each of the agent&apos;s replies and
-          marks the dispositions it expressed, how strongly, and whether they suited the moment.
-          Every finding quotes the reply exactly; quotes that cannot be found are dropped.{" "}
-          <Link href="/ethos/taxonomy">The labels</Link>
+          A panel of judges from two model families reads each of the agent&apos;s replies and marks the dispositions it
+          expressed, how strongly, and whether they suited the moment. Every finding quotes the reply exactly; quotes
+          that cannot be found are dropped.
         </p>
       </PageHeader>
       {user && hasRole(user, "author") ? (
@@ -40,40 +43,26 @@ export default async function EthosPage({
       ) : null}
       <Card title="Ethos runs">
         {runs.length === 0 ? (
-          <p>No Ethos runs yet.</p>
+          <EmptyState title="No Ethos runs yet">Read a finished Inquiry or Tally run with the panel.</EmptyState>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Run</th>
-                <th scope="col">Status</th>
-                <th scope="col">Mean fit</th>
-                <th scope="col">Started</th>
-              </tr>
-            </thead>
-            <tbody>
-              {runs.map((item) => (
-                <tr key={item.run.id}>
-                  <td>
-                    <Link href={`/ethos/runs/${item.run.id}`}>{item.run.title}</Link>
-                  </td>
-                  <td>
-                    <StatusBadge status={item.run.status} />
-                  </td>
-                  <td>
-                    {item.mean_fit === null || item.mean_fit === undefined ? (
-                      "No profile"
-                    ) : (
-                      <Link href={`/ethos/runs/${item.run.id}#transcripts`}>
-                        {Math.round(item.mean_fit * 100)}%
-                      </Link>
-                    )}
-                  </td>
-                  <td>{formatWhen(item.run.created_at)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <RunTable
+            runs={runs.map((item) => item.run)}
+            href={(run) => `/ethos/runs/${run.id}`}
+            extra={[
+              {
+                column: { key: "fit", label: "Mean fit", align: "right" },
+                cell: (run) => {
+                  const fit = runs.find((item) => item.run.id === run.id)?.mean_fit;
+                  return fit === null || fit === undefined ? (
+                    <span className="ag-muted">No profile</span>
+                  ) : (
+                    <Link href={`/ethos/runs/${run.id}#transcripts`}>{Math.round(fit * 100)}%</Link>
+                  );
+                },
+                sort: (run) => runs.find((item) => item.run.id === run.id)?.mean_fit ?? null,
+              },
+            ]}
+          />
         )}
       </Card>
     </>

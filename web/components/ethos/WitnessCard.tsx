@@ -4,13 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import agentStyles from "@/components/agents/agents.module.css";
+import { DataTable } from "@/components/data/DataTable";
 import { StatusBadge } from "@/components/runs/StatusBadge";
-import { Button, Card, Notice, formatWhen } from "@/components/ui";
+import { Button, Card, Mono, Notice, Select, formatWhen } from "@/components/ui";
 import { launchWitness, type WitnessReaderOut, type WitnessRunSummary } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
-
-import styles from "./ethos.module.css";
 
 /** Witness runs on the same source as an Ethos run, and a way to start one. */
 export function WitnessCard({
@@ -34,14 +32,11 @@ export function WitnessCard({
   async function start() {
     setBusy(true);
     setError(null);
-    const { data, error: failed } = await launchWitness({
-      client: browserClient,
-      body: { source_run: sourceRunId, reader },
-    });
+    const { data, error: failed } = await launchWitness({ client: browserClient, body: { source_run: sourceRunId, reader } });
     setBusy(false);
     if (!data) {
       const detail = (failed as { detail?: unknown } | undefined)?.detail;
-      setError(typeof detail === "string" ? detail : "The witness could not be started.");
+      setError(typeof detail === "string" ? detail : "The open model could not be started. Try again.");
       return;
     }
     router.push(`/ethos/witness/${data.id}?ethos_run=${ethosRunId}`);
@@ -49,53 +44,51 @@ export function WitnessCard({
 
   return (
     <Card title="Signals from an open model">
-      <p className={styles.quiet}>
-        An open-weight model reads the same conversations on the Droplet runner and reports
-        per-token signals. Set beside these labels, they show where text and internals agree.
+      <p className="ag-quiet">
+        An open-weight model reads the same conversations on the Droplet runner and reports per-token signals. Set
+        beside these labels, they show where text and internals agree.
       </p>
       {runs.length ? (
-        <table>
-          <tbody>
-            {runs.map((item) => (
-              <tr key={item.run.id}>
-                <td>
-                  <Link href={`/ethos/witness/${item.run.id}?ethos_run=${ethosRunId}`}>
-                    {item.reader.key}
-                  </Link>{" "}
-                  <span className={styles.quiet}>{item.reader.model}</span>
-                </td>
-                <td>
-                  <StatusBadge status={item.run.status} />
-                </td>
-                <td>{formatWhen(item.run.created_at)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable
+          density="dense"
+          columns={[
+            { key: "reader", label: "Reader" },
+            { key: "status", label: "Status" },
+            { key: "started", label: "Started" },
+          ]}
+          rows={runs.map((item) => ({
+            id: item.run.id,
+            cells: {
+              reader: (
+                <>
+                  <Link href={`/ethos/witness/${item.run.id}?ethos_run=${ethosRunId}`}>{item.reader.key}</Link>{" "}
+                  <Mono plain>{item.reader.model}</Mono>
+                </>
+              ),
+              status: <StatusBadge status={item.run.status} />,
+              started: formatWhen(item.run.created_at),
+            },
+          }))}
+        />
       ) : (
         <p>No open model has read this run yet.</p>
       )}
       {canLaunch ? (
         readers.length ? (
-          <div className={agentStyles.inlineForm}>
-            <label className={agentStyles.field}>
-              Reader
-              <select value={reader} onChange={(event) => setReader(event.target.value)}>
-                {readers.map((item) => (
-                  <option key={item.key} value={item.key}>
-                    {item.key} ({item.model})
-                  </option>
-                ))}
-              </select>
-            </label>
+          <div className="ag-form-row" style={{ marginTop: "var(--space-4)" }}>
+            <Select
+              label="Reader"
+              value={reader}
+              onChange={(event) => setReader(event.target.value)}
+              options={readers.map((item) => ({ value: item.key, label: `${item.key} (${item.model})` }))}
+            />
             <Button onClick={start} disabled={busy || !reader}>
               Read with the open model
             </Button>
           </div>
         ) : (
-          <p className={styles.quiet}>
-            No witness reader is configured. Readers are set in config/witness.yaml and run on
-            the Droplet runner.
+          <p className="ag-quiet">
+            No Witness reader is configured. Readers are set in config/witness.yaml and run on the Droplet runner.
           </p>
         )
       ) : null}

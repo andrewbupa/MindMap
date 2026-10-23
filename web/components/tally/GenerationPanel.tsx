@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { StatusBadge } from "@/components/runs/StatusBadge";
-import { Button, Notice } from "@/components/ui";
+import { Button, Notice, formatNumber } from "@/components/ui";
 import { generateScenarioSet, readBehaviour, type RunOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 import { useLiveStatus } from "@/lib/useLiveStatus";
@@ -69,7 +69,7 @@ export function GenerationPanel({
       {running && live ? (
         <p>
           Generating scenarios: <StatusBadge status={live.status} />{" "}
-          {live.tokens_used ? `${live.tokens_used.toLocaleString("en-AU")} tokens so far.` : null}{" "}
+          {live.tokens_used ? `${formatNumber(live.tokens_used)} tokens so far.` : null}{" "}
           Bloom writes its understanding of the behaviour, then the scenarios and their variations.
         </p>
       ) : null}

@@ -27,7 +27,7 @@ export function RunTable({
     { key: "status", label: "Status" },
     ...extra.map((e) => e.column),
     { key: "tokens", label: "Tokens", align: "right" },
-    { key: "started", label: "Started" },
+    { key: "started", label: "Started", nowrap: true },
   ];
   const rows: Row[] = runs.map((run) => ({
     id: run.id,

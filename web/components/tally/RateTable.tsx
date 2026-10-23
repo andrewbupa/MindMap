@@ -42,13 +42,13 @@ export function latestByVersion(runs: TallyRunSummary[]): TallyRunSummary[] {
 export function RateTable({ runs, caption }: { runs: TallyRunSummary[]; caption?: string }) {
   const columns: Column[] = [
     { key: "version", label: "Prompt version" },
-    { key: "rate", label: "Elicitation rate", align: "right" },
+    { key: "rate", label: "Rate", align: "right" },
     { key: "scored", label: "Scored 7 or more", align: "right" },
-    { key: "spread", label: "Spread across repetitions", align: "right" },
+    { key: "spread", label: "Spread", align: "right" },
     { key: "mean", label: "Mean presence", align: "right" },
-    { key: "change", label: "Change" },
+    { key: "change", label: "Change", nowrap: true },
     { key: "status", label: "Status" },
-    { key: "started", label: "Started" },
+    { key: "started", label: "Started", nowrap: true },
   ];
   const rows: Row[] = runs.map((run, index) => {
     const { overall } = run.elicitation;

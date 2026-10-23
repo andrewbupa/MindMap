@@ -3,8 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import styles from "@/components/agents/agents.module.css";
-import { Button, Notice } from "@/components/ui";
+import { Button, Notice, Select } from "@/components/ui";
 import { launchEthos, type EthosSourceOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 
@@ -32,25 +31,19 @@ export function LaunchEthos({ sources, initial }: { sources: EthosSourceOut[]; i
 
   if (!sources.length) return <p>No finished runs to read yet. Run an audit or a suite first.</p>;
   return (
-    <div>
+    <div className="ag-form">
       {error ? <Notice tone="danger">{error}</Notice> : null}
-      <div className={styles.inlineForm}>
-        <label className={styles.field}>
-          Run to read
-          <select value={source} onChange={(event) => setSource(event.target.value)}>
-            {sources.map((item) => (
-              <option key={item.run.id} value={item.run.id}>
-                {item.run.title} ({item.transcripts} transcripts)
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <p>
+      <div className="ag-form-row">
+        <Select
+          label="Run to read"
+          value={source}
+          onChange={(event) => setSource(event.target.value)}
+          options={sources.map((item) => ({ value: item.run.id, label: `${item.run.title} (${item.transcripts} transcripts)` }))}
+        />
         <Button onClick={start} disabled={busy || !source}>
           Read {chosen?.transcripts ?? 0} transcripts with the panel
         </Button>
-      </p>
+      </div>
     </div>
   );
 }

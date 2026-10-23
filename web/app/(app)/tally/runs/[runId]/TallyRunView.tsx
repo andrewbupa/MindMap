@@ -4,11 +4,13 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-import { meanText, percent, spreadText, tallyText } from "@/components/tally/format";
-import styles from "@/components/tally/tally.module.css";
+import { DataTable, type Row } from "@/components/data/DataTable";
+import { ScoreCell } from "@/components/data/ScoreCell";
 import { Provenance } from "@/components/runs/Provenance";
-import runStyles from "@/components/runs/runs.module.css";
-import { Badge, Card, Mono, Notice, PageHeader, sentenceCase } from "@/components/ui";
+import { RunProgress } from "@/components/runs/RunProgress";
+import { StatusBadge } from "@/components/runs/StatusBadge";
+import { meanText, percent, spreadText, tallyText } from "@/components/tally/format";
+import { Badge, Card, LinkButton, Mono, Notice, PageHeader, sentenceCase } from "@/components/ui";
 import { readTallyRun, type TallyRunOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 import { useLiveStatus } from "@/lib/useLiveStatus";
@@ -49,168 +51,162 @@ export function TallyRunView({ run }: { run: TallyRunOut }) {
     }
   }, [live, router]);
 
+  const status = live?.status ?? run.run.status;
   const counts = live?.counts ?? run.counts;
-  const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
   const { elicitation } = run;
   const threshold = elicitation.threshold;
+
+  const epochs: Row[] = elicitation.by_epoch.map((epoch) => ({
+    id: String(epoch.epoch),
+    cells: {
+      epoch: epoch.epoch,
+      rate: percent(epoch.rate),
+      scored: <Link href={`?repetition=${epoch.epoch}#rollouts`}>{tallyText(epoch)}</Link>,
+      mean: meanText(epoch),
+    },
+    sort: { epoch: epoch.epoch, rate: epoch.rate, scored: epoch.elicited, mean: epoch.mean_score },
+  }));
+  const scenarios: Row[] = run.by_scenario.map((scenario) => ({
+    id: scenario.scenario,
+    cells: {
+      scenario: (
+        <Link href={`/tally/scenario-sets/${run.scenario_set}#scenario-${scenario.scenario}`}>{label(scenario.scenario)}</Link>
+      ),
+      variation: scenario.variation ? label(scenario.variation) : "Base",
+      scored: <Link href={`?scenario=${scenario.scenario}#rollouts`}>{tallyText(scenario)}</Link>,
+      mean: meanText(scenario),
+    },
+    sort: { scenario: scenario.scenario, variation: scenario.variation ?? "", scored: scenario.elicited, mean: scenario.mean_score },
+  }));
+  const rows: Row[] = rollouts.map((rollout) => ({
+    id: rollout.transcript_id,
+    cells: {
+      presence:
+        rollout.score === null || rollout.score === undefined ? (
+          <Link href={`/tally/transcripts/${rollout.transcript_id}`}>
+            <Badge>Not scored</Badge>
+          </Link>
+        ) : (
+          <ScoreCell
+            value={rollout.score}
+            threshold={threshold}
+            label="Presence"
+            href={`/tally/transcripts/${rollout.transcript_id}`}
+          />
+        ),
+      scenario: (
+        <span className="ag-row" style={{ gap: "var(--space-2)" }}>
+          {label(rollout.scenario)}
+          {rollout.content_notes.map((note) => (
+            <Badge key={note} tone="warn">
+              Content note: {label(note).toLowerCase()}
+            </Badge>
+          ))}
+        </span>
+      ),
+      epoch: rollout.epoch,
+      summary: <span className="ag-muted">{rollout.summary}</span>,
+    },
+    sort: { presence: rollout.score ?? -1, scenario: rollout.scenario, epoch: rollout.epoch },
+  }));
+
   return (
     <>
-      <PageHeader title={run.run.title}>
+      <PageHeader
+        title={run.run.title}
+        actions={OPEN.has(status) ? null : <LinkButton href={`/ethos?source=${run.run.id}`}>Read these conversations with Ethos</LinkButton>}
+      >
         <p>
           <Link href={`/agents/${run.agent}/versions/${run.version}`}>
             {run.agent} {run.version}
           </Link>{" "}
-          on{" "}
-          <Link href={`/tally/behaviours/${run.behaviour}?set=${run.scenario_set}`}>
-            {label(run.behaviour)}
-          </Link>
-          , using <Link href={`/tally/scenario-sets/${run.scenario_set}`}>its scenario set</Link>.
+          on <Link href={`/tally/behaviours/${run.behaviour}?set=${run.scenario_set}`}>{label(run.behaviour)}</Link>, using{" "}
+          <Link href={`/tally/scenario-sets/${run.scenario_set}`}>its scenario set</Link>. <StatusBadge status={status} />
         </p>
       </PageHeader>
       <Card title="Progress">
-        <div className={runStyles.counts}>
-          {Object.entries(counts).map(([status, n]) => (
-            <Badge key={status}>
-              {sentenceCase(status)}: {n}
-            </Badge>
-          ))}
-          <span className={runStyles.quiet}>{total} rollouts in all.</span>
-        </div>
+        <RunProgress counts={counts} unit="rollouts" />
         {run.run.error ? <Notice tone="danger">{run.run.error}</Notice> : null}
-        {OPEN.has(live?.status ?? run.run.status) ? null : (
-          <p>
-            <Link href={`/ethos?source=${run.run.id}`}>Read these conversations with Ethos</Link>
-          </p>
-        )}
       </Card>
       <Card title="Elicitation rate">
-        <div className={styles.stats}>
-          <div className={styles.stat}>
-            <span className={styles.statLabel}>Rate</span>
-            <a className={styles.statValue} href="#rollouts">
-              {percent(elicitation.overall.rate)}
-            </a>
+        <dl className="ag-stats">
+          <div className="ag-stat">
+            <dt>Rate</dt>
+            <dd>
+              <a href="#rollouts">{percent(elicitation.overall.rate)}</a>
+            </dd>
           </div>
-          <div className={styles.stat}>
-            <span className={styles.statLabel}>Scored {threshold} or more</span>
-            <a className={styles.statValue} href="#rollouts">
-              {tallyText(elicitation.overall)}
-            </a>
+          <div className="ag-stat">
+            <dt>Scored {threshold} or more</dt>
+            <dd>
+              <a href="#rollouts">{tallyText(elicitation.overall)}</a>
+            </dd>
           </div>
-          <div className={styles.stat}>
-            <span className={styles.statLabel}>Across repetitions</span>
-            <a className={styles.statValue} href="#repetitions">
-              {spreadText(elicitation)}
-            </a>
+          <div className="ag-stat">
+            <dt>Across repetitions</dt>
+            <dd>
+              <a href="#repetitions">{spreadText(elicitation)}</a>
+            </dd>
           </div>
-          <div className={styles.stat}>
-            <span className={styles.statLabel}>Mean presence</span>
-            <span className={styles.statValue}>{meanText(elicitation.overall)}</span>
+          <div className="ag-stat">
+            <dt>Mean presence</dt>
+            <dd>
+              <a href="#rollouts">{meanText(elicitation.overall)}</a>
+            </dd>
           </div>
-        </div>
-        <p className={styles.quiet}>
-          Cite this rate with its seed hash, <Mono>{run.run.seed_hash?.slice(0, 16)}</Mono>.
+        </dl>
+        <p className="ag-quiet">
+          Cite this rate with its seed hash, <Mono truncate={16}>{run.run.seed_hash ?? ""}</Mono>.
           {elicitation.overall.unscored
             ? ` ${elicitation.overall.unscored} rollouts the judge did not score are left out.`
             : ""}
         </p>
         <h3 id="repetitions">Each repetition</h3>
-        <table className={styles.numbers}>
-          <thead>
-            <tr>
-              <th scope="col">Repetition</th>
-              <th scope="col">Rate</th>
-              <th scope="col">Scored {threshold} or more</th>
-              <th scope="col">Mean presence</th>
-            </tr>
-          </thead>
-          <tbody>
-            {elicitation.by_epoch.map((epoch) => (
-              <tr key={epoch.epoch}>
-                <td>{epoch.epoch}</td>
-                <td>{percent(epoch.rate)}</td>
-                <td>
-                  <Link href={`?repetition=${epoch.epoch}#rollouts`}>{tallyText(epoch)}</Link>
-                </td>
-                <td>{meanText(epoch)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable
+          density="dense"
+          columns={[
+            { key: "epoch", label: "Repetition", align: "right" },
+            { key: "rate", label: "Rate", align: "right" },
+            { key: "scored", label: `Scored ${threshold} or more`, align: "right" },
+            { key: "mean", label: "Mean presence", align: "right" },
+          ]}
+          rows={epochs}
+        />
       </Card>
       <Card title="By scenario">
-        <table className={styles.numbers}>
-          <thead>
-            <tr>
-              <th scope="col">Scenario</th>
-              <th scope="col">Variation</th>
-              <th scope="col">Scored {threshold} or more</th>
-              <th scope="col">Mean presence</th>
-            </tr>
-          </thead>
-          <tbody>
-            {run.by_scenario.map((scenario) => (
-              <tr key={scenario.scenario}>
-                <td>
-                  <Link href={`/tally/scenario-sets/${run.scenario_set}#scenario-${scenario.scenario}`}>
-                    {label(scenario.scenario)}
-                  </Link>
-                </td>
-                <td>{scenario.variation ? label(scenario.variation) : "Base"}</td>
-                <td>
-                  <Link href={`?scenario=${scenario.scenario}#rollouts`}>{tallyText(scenario)}</Link>
-                </td>
-                <td>{meanText(scenario)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable
+          columns={[
+            { key: "scenario", label: "Scenario" },
+            { key: "variation", label: "Variation" },
+            { key: "scored", label: `Scored ${threshold} or more`, align: "right" },
+            { key: "mean", label: "Mean presence", align: "right" },
+          ]}
+          rows={scenarios}
+          maxHeight={480}
+        />
       </Card>
-      <Card title="Rollouts, highest presence first">
-        {repetition || only ? (
-          <p>
-            Showing {only ? label(only) : "every scenario"}
-            {repetition ? `, repetition ${repetition}` : ""}.{" "}
-            <Link href="?#rollouts">Show every rollout</Link>
-          </p>
-        ) : null}
-        <table id="rollouts" className={styles.numbers}>
-          <thead>
-            <tr>
-              <th scope="col">Presence</th>
-              <th scope="col">Scenario</th>
-              <th scope="col">Repetition</th>
-              <th scope="col">Judge&apos;s summary</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rollouts.map((rollout) => (
-              <tr key={rollout.transcript_id}>
-                <td>
-                  <Link href={`/tally/transcripts/${rollout.transcript_id}`}>
-                    {rollout.score === null || rollout.score === undefined ? (
-                      <Badge>Not scored</Badge>
-                    ) : (
-                      <Badge tone={rollout.score >= threshold ? "danger" : "neutral"}>
-                        {rollout.score} of 10
-                      </Badge>
-                    )}
-                  </Link>
-                </td>
-                <td>
-                  {label(rollout.scenario)}
-                  {rollout.content_notes.map((note) => (
-                    <Badge key={note} tone="warn">
-                      Content note: {sentenceCase(note)}
-                    </Badge>
-                  ))}
-                </td>
-                <td>{rollout.epoch}</td>
-                <td className={styles.quiet}>{rollout.summary}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <Card
+        title="Rollouts"
+        id="rollouts"
+        actions={repetition || only ? <LinkButton href="?#rollouts">Show every rollout</LinkButton> : null}
+      >
+        <p className="ag-quiet">
+          {repetition || only
+            ? `Showing ${only ? label(only) : "every scenario"}${repetition ? `, repetition ${repetition}` : ""}: `
+            : ""}
+          {rows.length} {rows.length === 1 ? "rollout" : "rollouts"}, the highest presence first.
+        </p>
+        <DataTable
+          columns={[
+            { key: "presence", label: "Presence" },
+            { key: "scenario", label: "Scenario" },
+            { key: "epoch", label: "Repetition", align: "right" },
+            { key: "summary", label: "Judge’s summary", sortable: false },
+          ]}
+          rows={rows}
+          initialSort={{ key: "presence", dir: "desc" }}
+          empty="No rollouts match."
+        />
       </Card>
       <Card title="Run">
         <Provenance run={run.run} />

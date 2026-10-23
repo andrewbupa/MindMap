@@ -4,7 +4,14 @@ import { useState, type ReactNode } from "react";
 
 import { cx } from "@/components/ui";
 
-export type Column = { key: string; label: ReactNode; align?: "left" | "right"; sortable?: boolean };
+export type Column = {
+  key: string;
+  label: ReactNode;
+  align?: "left" | "right";
+  sortable?: boolean;
+  /** Keep short values, such as dates, on one line. */
+  nowrap?: boolean;
+};
 export type Row = {
   id: string;
   cells: Record<string, ReactNode>;
@@ -93,7 +100,7 @@ export function DataTable({
                   <Cell
                     key={column.key}
                     scope={index === 0 && rowHeaders ? "row" : undefined}
-                    className={column.align === "right" ? "ag-right" : undefined}
+                    className={cx(column.align === "right" && "ag-right", column.nowrap && "ag-nowrap") || undefined}
                   >
                     {row.cells[column.key]}
                   </Cell>

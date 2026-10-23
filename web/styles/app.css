@@ -140,3 +140,16 @@
 a.ag-btn {
   text-decoration: none;
 }
+
+/* A group of choices under one label. */
+.ag-fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.ag-fieldset > legend { padding: 0; margin-bottom: var(--space-2); }
+
+/* A row of headline figures, each linking to the evidence behind it. */
+.ag-stats { display: flex; flex-wrap: wrap; gap: var(--space-5); margin: 0 0 var(--space-4); }
+.ag-stat { display: grid; gap: var(--space-1); min-width: 9rem; margin: 0; }
+.ag-stat dt { font-size: var(--text-sm); color: var(--color-text-muted); }
+.ag-stat dd { margin: 0; font-size: var(--text-xl); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ag-stat dd a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 5px; text-decoration-color: var(--color-border-strong); }
+.ag-stat dd a:hover { text-decoration-color: currentColor; }
+.ag-nowrap { white-space: nowrap; }

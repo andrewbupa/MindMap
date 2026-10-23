@@ -14,9 +14,19 @@ function roleOf(message: MessageOut): Role {
   return message.role === "system" ? "system" : "tool";
 }
 
-export function Fold({ summary, code = false, children }: { summary: ReactNode; code?: boolean; children: ReactNode }) {
+export function Fold({
+  summary,
+  code = false,
+  open,
+  children,
+}: {
+  summary: ReactNode;
+  code?: boolean;
+  open?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <details className="ag-fold">
+    <details className="ag-fold" open={open}>
       <summary>{summary}</summary>
       <div className={cx("ag-fold-body", code && "ag-code")}>{children}</div>
     </details>

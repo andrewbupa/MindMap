@@ -1,6 +1,6 @@
-import { ETHOS_NOTE, familyColour, labelName } from "@/components/ethos/family";
-import styles from "@/components/ethos/ethos.module.css";
-import { Badge, Card, PageHeader, sentenceCase } from "@/components/ui";
+import { ETHOS_NOTE } from "@/components/ethos/family";
+import { LabelChip, TrustBadge } from "@/components/ethos/LabelChip";
+import { Bead, Card, Mono, PageHeader } from "@/components/ui";
 import { readTaxonomy } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";
 
@@ -12,33 +12,39 @@ export default async function TaxonomyPage() {
     <>
       <PageHeader title="Ethos labels" note={ETHOS_NOTE}>
         <p>
-          Taxonomy {data.version}, from seeds/ethos/taxonomy.yaml. Every finding records the
-          version it used. A label&apos;s trust follows expert agreement on the gold set.
+          Taxonomy <Mono>{data.version}</Mono>, from seeds/ethos/taxonomy.yaml. Every finding records the version it
+          used. A label&apos;s trust follows expert agreement on the gold set.
         </p>
       </PageHeader>
       {data.families.map((family) => (
-        <Card key={family.key} title={family.name}>
-          <p className={styles.quiet}>
-            <span className={styles.swatch} style={{ background: familyColour(family.key) }} />
-            Source: {family.source}
-          </p>
-          {data.labels
-            .filter((label) => label.family === family.key)
-            .map((label) => (
-              <details key={label.key} id={label.key}>
-                <summary>
-                  {labelName(label.key)}{" "}
-                  <Badge tone={label.trust_status === "trusted" ? "ok" : "neutral"}>
-                    {sentenceCase(label.trust_status)}
-                  </Badge>
-                </summary>
-                <p>{label.definition}</p>
-                <p className={styles.quiet}>Shows it: {label.examples.map((e) => `“${e}”`).join(" ")}</p>
-                <p className={styles.quiet}>
-                  Does not: {label.counter_examples.map((e) => `“${e}”`).join(" ")}
-                </p>
-              </details>
-            ))}
+        <Card
+          key={family.key}
+          title={family.name}
+          actions={
+            <span className="ag-row ag-quiet" style={{ gap: "var(--space-2)" }}>
+              <Bead colour={`var(--family-${family.key})`} />
+              Source: {family.source}
+            </span>
+          }
+        >
+          <div style={{ display: "grid", gap: "var(--space-3)" }}>
+            {data.labels
+              .filter((label) => label.family === family.key)
+              .map((label) => (
+                <details key={label.key} id={label.key} className="ag-fold">
+                  <summary>
+                    <LabelChip family={label.family} label={label.key} /> <TrustBadge trust={label.trust_status} />
+                  </summary>
+                  <div className="ag-fold-body" style={{ whiteSpace: "normal" }}>
+                    <p>{label.definition}</p>
+                    <p className="ag-quiet">Shows it: {label.examples.map((e) => `“${e}”`).join(" ")}</p>
+                    <p className="ag-quiet" style={{ marginBottom: 0 }}>
+                      Does not: {label.counter_examples.map((e) => `“${e}”`).join(" ")}
+                    </p>
+                  </div>
+                </details>
+              ))}
+          </div>
         </Card>
       ))}
     </>

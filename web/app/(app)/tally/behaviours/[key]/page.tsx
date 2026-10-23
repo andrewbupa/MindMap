@@ -1,16 +1,20 @@
 import Link from "next/link";
 
+import { DataTable, type Row } from "@/components/data/DataTable";
+import { ScoreCell } from "@/components/data/ScoreCell";
+import { Fold } from "@/components/runs/Messages";
+import { StatusBadge } from "@/components/runs/StatusBadge";
 import { GenerationPanel } from "@/components/tally/GenerationPanel";
 import { RateChart } from "@/components/tally/RateChart";
 import { RateTable, latestByVersion } from "@/components/tally/RateTable";
-import styles from "@/components/tally/tally.module.css";
-import { StatusBadge } from "@/components/runs/StatusBadge";
-import { Badge, Card, Mono, PageHeader, formatWhen, sentenceCase } from "@/components/ui";
+import { Badge, ButtonLink, Card, EmptyState, Mono, PageHeader, formatNumber, formatWhen, sentenceCase } from "@/components/ui";
 import { readBehaviour } from "@/lib/api";
 import { getMe, serverClient } from "@/lib/api/server";
 import { hasRole } from "@/lib/auth";
 
 export const metadata = { title: "Behaviour" };
+
+const words = (value: string) => sentenceCase(value.replaceAll("_", " "));
 
 export default async function BehaviourPage({
   params,
@@ -29,26 +33,54 @@ export default async function BehaviourPage({
   const selected = behaviour.scenario_sets.find((item) => item.id === behaviour.selected_set);
   const latest = latestByVersion(behaviour.runs);
   const earlier = behaviour.runs.filter((run) => !latest.includes(run));
+  const start = author && selected ? `/tally/new?behaviour=${behaviour.key}&set=${selected.id}` : null;
+
+  const rollouts: Row[] = behaviour.top_rollouts.map((rollout) => ({
+    id: rollout.transcript_id,
+    cells: {
+      presence: (
+        <ScoreCell value={rollout.score ?? 0} label="Presence" href={`/tally/transcripts/${rollout.transcript_id}`} />
+      ),
+      scenario: (
+        <span className="ag-row" style={{ gap: "var(--space-2)" }}>
+          {words(rollout.scenario)}
+          {rollout.variation ? <Badge>{words(rollout.variation)}</Badge> : null}
+          {rollout.content_notes.map((note) => (
+            <Badge key={note} tone="warn">
+              Content note: {words(note).toLowerCase()}
+            </Badge>
+          ))}
+        </span>
+      ),
+      version: <Mono plain>{rollout.version}</Mono>,
+      epoch: rollout.epoch,
+      summary: <span className="ag-muted">{rollout.summary}</span>,
+    },
+    sort: { presence: rollout.score, scenario: rollout.scenario, version: rollout.version, epoch: rollout.epoch },
+  }));
 
   return (
     <>
-      <PageHeader title={behaviour.title}>
-        <p>{behaviour.definition.split("\n\n")[0]}</p>
-      </PageHeader>
+      <PageHeader
+        title={behaviour.title}
+        intro={behaviour.definition.split("\n\n")[0]}
+        actions={start ? <ButtonLink href={start}>Start a suite on this scenario set</ButtonLink> : null}
+      />
 
       <Card title="Elicitation rate by prompt version">
         {selected ? (
-          <p className={styles.quiet}>
+          <p className="ag-quiet">
             On scenario set{" "}
             <Link href={`/tally/scenario-sets/${selected.id}`}>
               <Mono>{selected.content_hash.slice(0, 12)}</Mono>
             </Link>{" "}
-            ({selected.scenario_count} scenarios, generated {formatWhen(selected.created_at)}).
-            Rates are comparable only within one scenario set.
+            ({selected.scenario_count} scenarios, generated {formatWhen(selected.created_at)}). The rate is the share of
+            rollouts scoring 7 or more of 10 for presence; the whiskers span the repetitions. Rates are comparable only
+            within one scenario set.
           </p>
         ) : null}
         {latest.length ? (
-          <>
+          <div style={{ display: "grid", gap: "var(--space-4)" }}>
             <RateChart
               points={latest.map((run) => ({
                 label: run.version,
@@ -56,68 +88,37 @@ export default async function BehaviourPage({
                 elicitation: run.elicitation,
               }))}
             />
-            <RateTable runs={latest} />
-          </>
+            <RateTable runs={latest} caption="The numbers behind the chart" />
+          </div>
         ) : (
-          <p>No finished suites on this scenario set yet.</p>
+          <EmptyState title="No finished suites on this scenario set" action={start ? <ButtonLink href={start}>Start a suite</ButtonLink> : null}>
+            A suite runs every scenario against each prompt version you choose.
+          </EmptyState>
         )}
-        {author && selected ? (
-          <p>
-            <Link href={`/tally/new?behaviour=${behaviour.key}&set=${selected.id}`}>
-              Start a suite on this scenario set
-            </Link>
-          </p>
-        ) : null}
         {earlier.length ? (
-          <details>
-            <summary>Earlier and unfinished runs ({earlier.length})</summary>
-            <RateTable runs={earlier} />
-          </details>
+          <div style={{ marginTop: "var(--space-4)" }}>
+            <Fold summary={`Earlier and unfinished runs (${earlier.length})`}>
+              <RateTable runs={earlier} />
+            </Fold>
+          </div>
         ) : null}
       </Card>
 
       <Card title="Highest presence scores">
-        {behaviour.top_rollouts.length === 0 ? (
+        {rollouts.length === 0 ? (
           <p>No scored rollouts yet.</p>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Presence</th>
-                <th scope="col">Scenario</th>
-                <th scope="col">Prompt version</th>
-                <th scope="col">Repetition</th>
-                <th scope="col">Judge&apos;s summary</th>
-              </tr>
-            </thead>
-            <tbody>
-              {behaviour.top_rollouts.map((rollout) => (
-                <tr key={rollout.transcript_id}>
-                  <td>
-                    <Link href={`/tally/transcripts/${rollout.transcript_id}`}>
-                      <Badge tone={(rollout.score ?? 0) >= 7 ? "danger" : "neutral"}>
-                        {rollout.score} of 10
-                      </Badge>
-                    </Link>
-                  </td>
-                  <td>
-                    {sentenceCase(rollout.scenario.replaceAll("_", " "))}
-                    {rollout.variation ? (
-                      <Badge>{sentenceCase(rollout.variation.replaceAll("_", " "))}</Badge>
-                    ) : null}
-                    {rollout.content_notes.map((note) => (
-                      <Badge key={note} tone="warn">
-                        Content note: {sentenceCase(note)}
-                      </Badge>
-                    ))}
-                  </td>
-                  <td>{rollout.version}</td>
-                  <td>{rollout.epoch}</td>
-                  <td className={styles.quiet}>{rollout.summary}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <DataTable
+            columns={[
+              { key: "presence", label: "Presence" },
+              { key: "scenario", label: "Scenario" },
+              { key: "version", label: "Prompt version" },
+              { key: "epoch", label: "Repetition", align: "right" },
+              { key: "summary", label: "Judge’s summary", sortable: false },
+            ]}
+            rows={rollouts}
+            initialSort={{ key: "presence", dir: "desc" }}
+          />
         )}
       </Card>
 
@@ -128,14 +129,14 @@ export default async function BehaviourPage({
             <Link href={`/tally/scenario-sets/${behaviour.scenario_set.id}`}>
               {behaviour.scenario_set.scenario_count} scenarios
             </Link>
-: base scenarios Bloom wrote from the definition, and a variation of each for{" "}
-            {behaviour.variations.map((v) => v.replaceAll("_", " ")).join(" and ")}. The judge
-            scores presence on <Mono>{behaviour.scenario_set.presence_dimension}</Mono>.
+            : base scenarios Bloom wrote from the definition, and a variation of each for{" "}
+            {behaviour.variations.map((v) => v.replaceAll("_", " ")).join(" and ")}. The judge scores presence on{" "}
+            <Mono>{behaviour.scenario_set.presence_dimension}</Mono>.
           </p>
         ) : (
           <p>
-            This version of the behaviour has no scenarios yet. Generation runs Bloom&apos;s
-            understanding and ideation once; every suite then reuses the result.
+            This version of the behaviour has no scenarios yet. Generation runs Bloom&apos;s understanding and ideation
+            once; every suite then reuses the result.
           </p>
         )}
         <GenerationPanel
@@ -145,89 +146,80 @@ export default async function BehaviourPage({
           hasCurrent={behaviour.scenario_set !== null}
         />
         {behaviour.scenario_sets.length > 1 ? (
-          <>
+          <div style={{ marginTop: "var(--space-5)" }}>
             <h3>Every scenario set</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Set</th>
-                  <th scope="col">Scenarios</th>
-                  <th scope="col">Behaviour version</th>
-                  <th scope="col">Generated</th>
-                </tr>
-              </thead>
-              <tbody>
-                {behaviour.scenario_sets.map((item) => (
-                  <tr key={item.id}>
-                    <td>
+            <DataTable
+              columns={[
+                { key: "set", label: "Set" },
+                { key: "count", label: "Scenarios", align: "right" },
+                { key: "version", label: "Behaviour version" },
+                { key: "generated", label: "Generated" },
+              ]}
+              rows={behaviour.scenario_sets.map((item) => ({
+                id: item.id,
+                cells: {
+                  set: (
+                    <span className="ag-row" style={{ gap: "var(--space-2)" }}>
                       <Link href={`/tally/behaviours/${behaviour.key}?set=${item.id}`}>
                         <Mono>{item.content_hash.slice(0, 12)}</Mono>
                       </Link>
                       {item.id === behaviour.selected_set ? <Badge>Shown</Badge> : null}
-                    </td>
-                    <td>
-                      <Link href={`/tally/scenario-sets/${item.id}`}>{item.scenario_count}</Link>
-                    </td>
-                    <td>{item.current ? "Current" : "Earlier"}</td>
-                    <td>{formatWhen(item.created_at)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
+                    </span>
+                  ),
+                  count: <Link href={`/tally/scenario-sets/${item.id}`}>{item.scenario_count}</Link>,
+                  version: item.current ? "Current" : "Earlier",
+                  generated: formatWhen(item.created_at),
+                },
+                sort: { count: item.scenario_count, generated: item.created_at },
+              }))}
+            />
+          </div>
         ) : null}
         {behaviour.generations.length ? (
-          <details>
-            <summary>Generation runs ({behaviour.generations.length})</summary>
-            <table>
-              <tbody>
-                {behaviour.generations.map((run) => (
-                  <tr key={run.id}>
-                    <td>{formatWhen(run.created_at)}</td>
-                    <td>
-                      <StatusBadge status={run.status} />
-                    </td>
-                    <td>{run.tokens_used.toLocaleString("en-AU")} tokens</td>
-                    <td className={styles.quiet}>{run.error}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </details>
+          <div style={{ marginTop: "var(--space-4)" }}>
+            <Fold summary={`Generation runs (${behaviour.generations.length})`}>
+              <DataTable
+                density="dense"
+                columns={[
+                  { key: "when", label: "Started" },
+                  { key: "status", label: "Status" },
+                  { key: "tokens", label: "Tokens", align: "right" },
+                  { key: "error", label: "Error", sortable: false },
+                ]}
+                rows={behaviour.generations.map((run) => ({
+                  id: run.id,
+                  cells: {
+                    when: formatWhen(run.created_at),
+                    status: <StatusBadge status={run.status} />,
+                    tokens: formatNumber(run.tokens_used),
+                    error: <span className="ag-muted">{run.error}</span>,
+                  },
+                }))}
+              />
+            </Fold>
+          </div>
         ) : null}
       </Card>
 
       <Card title="Behaviour version">
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">Seed hash</th>
-              <td>
-                <Mono>{behaviour.seed_hash.slice(0, 16)}</Mono>
-                <br />
-                <span className={styles.quiet}>
-                  Over seeds/bloom/{behaviour.key}. Cite every rate with its run&apos;s seed hash.
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Agents</th>
-              <td>{behaviour.agents.join(", ") || "Any"}</td>
-            </tr>
-            <tr>
-              <th scope="row">Variations</th>
-              <td>{behaviour.variations.map((v) => sentenceCase(v.replaceAll("_", " "))).join(", ")}</td>
-            </tr>
-            <tr>
-              <th scope="row">Ethos scenario type</th>
-              <td>{behaviour.scenario_type ? sentenceCase(behaviour.scenario_type.replaceAll("_", " ")) : "None"}</td>
-            </tr>
-          </tbody>
-        </table>
-        <details>
-          <summary>The full definition</summary>
-          <p className={styles.seed}>{behaviour.definition}</p>
-        </details>
+        <dl className="ag-prov">
+          <dt>Seed hash</dt>
+          <dd>
+            <Mono truncate={16}>{behaviour.seed_hash}</Mono>
+            <span className="ag-muted">
+              Over seeds/bloom/{behaviour.key}. Cite every rate with its run&apos;s seed hash.
+            </span>
+          </dd>
+          <dt>Agents</dt>
+          <dd>{behaviour.agents.join(", ") || "Any"}</dd>
+          <dt>Variations</dt>
+          <dd>{behaviour.variations.map(words).join(", ")}</dd>
+          <dt>Ethos scenario type</dt>
+          <dd>{behaviour.scenario_type ? words(behaviour.scenario_type) : "None"}</dd>
+        </dl>
+        <div style={{ marginTop: "var(--space-4)" }}>
+          <Fold summary="The full definition">{behaviour.definition}</Fold>
+        </div>
       </Card>
     </>
   );

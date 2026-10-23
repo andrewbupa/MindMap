@@ -3,9 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import styles from "@/components/agents/agents.module.css";
-import tallyStyles from "@/components/tally/tally.module.css";
-import { Button, Card, Mono, Notice } from "@/components/ui";
+import { LaunchEstimate } from "@/components/runs/LaunchEstimate";
+import { Button, Card, Checkbox, Field, Mono, Notice, Select } from "@/components/ui";
 import { launchTally, type AgentSummary, type ScenarioSetSummary } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 
@@ -25,6 +24,7 @@ export function SuiteForm({
   const [epochs, setEpochs] = useState(3);
   const [maxTurns, setMaxTurns] = useState(15);
   const [compaction, setCompaction] = useState(true);
+  const [budget, setBudget] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -49,89 +49,71 @@ export function SuiteForm({
         epochs,
         max_turns: maxTurns,
         compaction,
+        token_budget: budget,
       },
     });
     setBusy(false);
     if (!data) {
       const detail = (failed as { detail?: unknown } | undefined)?.detail;
-      setError(typeof detail === "string" ? detail : "The suite could not be started.");
+      setError(typeof detail === "string" ? detail : "The suite could not be started. Check the choices and try again.");
       return;
     }
     const [only] = data;
     router.push(data.length === 1 && only ? `/tally/runs/${only.id}` : `/tally/behaviours/${behaviour}`);
   }
 
-  const samples = versions.size * scenarioSet.scenario_count * epochs;
+  // Each prompt version runs as its own run, with its own budget.
+  const perVersion = scenarioSet.scenario_count * epochs;
+  const samples = versions.size * perVersion;
   return (
-    <Card>
+    <div className="ag-form" style={{ maxWidth: "none" }}>
       {error ? <Notice tone="danger">{error}</Notice> : null}
-      <p>
-        Scenario set <Mono>{scenarioSet.content_hash.slice(0, 12)}</Mono>, with{" "}
-        {scenarioSet.scenario_count} scenarios.
-      </p>
-      <div className={styles.inlineForm}>
-        <label className={styles.field}>
-          Agent
-          <select
+      <Card title="What to run">
+        <p className="ag-quiet">
+          Scenario set <Mono>{scenarioSet.content_hash.slice(0, 12)}</Mono>, with {scenarioSet.scenario_count} scenarios.
+        </p>
+        <div className="ag-form-row">
+          <Select
+            label="Agent"
             value={agentKey}
             onChange={(event) => {
               setAgentKey(event.target.value);
               const next = agents.find((item) => item.key === event.target.value);
               setVersions(new Set(next?.versions ?? []));
             }}
-          >
-            {agents.map((item) => (
-              <option key={item.key} value={item.key}>
-                {item.name}
-              </option>
+            options={agents.map((item) => ({ value: item.key, label: item.name }))}
+          />
+          <Field label="Repetitions" type="number" min={1} max={10} value={epochs} onChange={(event) => setEpochs(Number(event.target.value))} />
+          <Field label="Auditor turns" type="number" min={2} max={60} value={maxTurns} onChange={(event) => setMaxTurns(Number(event.target.value))} />
+        </div>
+        <fieldset className="ag-fieldset" style={{ marginTop: "var(--space-4)" }}>
+          <legend className="ag-label">Prompt versions</legend>
+          <div className="ag-row">
+            {(agent?.versions ?? []).map((version) => (
+              <Checkbox key={version} label={version} checked={versions.has(version)} onChange={() => toggle(version)} />
             ))}
-          </select>
-        </label>
-        <label className={styles.field}>
-          Repetitions
-          <input
-            type="number"
-            min={1}
-            max={10}
-            value={epochs}
-            onChange={(event) => setEpochs(Number(event.target.value))}
-          />
-        </label>
-        <label className={styles.field}>
-          Auditor turns
-          <input
-            type="number"
-            min={2}
-            max={60}
-            value={maxTurns}
-            onChange={(event) => setMaxTurns(Number(event.target.value))}
-          />
-        </label>
-      </div>
-      <fieldset className={tallyStyles.choices}>
-        <legend>Prompt versions</legend>
-        {(agent?.versions ?? []).map((version) => (
-          <label key={version}>
-            <input type="checkbox" checked={versions.has(version)} onChange={() => toggle(version)} />{" "}
-            {version}{" "}
-          </label>
-        ))}
-      </fieldset>
-      <p>
-        <label>
-          <input
-            type="checkbox"
+          </div>
+        </fieldset>
+        <div style={{ marginTop: "var(--space-4)" }}>
+          <Checkbox
+            label="Let Petri summarise long conversations for the auditor (compaction)"
             checked={compaction}
             onChange={(event) => setCompaction(event.target.checked)}
-          />{" "}
-          Let Petri summarise long conversations for the auditor (compaction)
-        </label>
-      </p>
-      <p>
-        <Button onClick={start} disabled={busy || versions.size === 0 || epochs < 1}>
-          Start {samples} {samples === 1 ? "rollout" : "rollouts"}
-        </Button>
-      </p>
-    </Card>
+          />
+        </div>
+      </Card>
+      <Card title="Cost and budget">
+        <p className="ag-quiet">
+          The estimate and the cap are for each prompt version: {perVersion} {perVersion === 1 ? "rollout" : "rollouts"}{" "}
+          apiece.
+        </p>
+        <LaunchEstimate kind="tally" samples={perVersion} unit="rollout" budget={budget} onBudget={setBudget} />
+        <div style={{ marginTop: "var(--space-4)" }}>
+          <Button onClick={start} disabled={busy || versions.size === 0 || epochs < 1}>
+            Start {samples} {samples === 1 ? "rollout" : "rollouts"}
+          </Button>
+        </div>
+      </Card>
+    </div>
   );
 }
