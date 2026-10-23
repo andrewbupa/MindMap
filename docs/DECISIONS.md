@@ -24,6 +24,13 @@ ingress sends `/api` to the API, so `next.config.ts` only forwards it in
 development. CI runs the production build with nothing in front, so a build made
 with `AGORA_FORWARD_API=1` forwards it too.
 
+**Charts are plain SVG.** The brief suggests D3 or Observable Plot. The design
+handoff draws the rate chart, interval bars, profile strips and turn timeline as
+small SVG and CSS components, each with a handful of marks, and every mark is a
+link to its evidence. A charting library would add weight here without adding
+anything. If a chart with many marks or interactions arrives, Observable Plot is
+the first choice.
+
 ### Design choices
 
 **The names come from the forum.** Agora is the platform. Its slices are Inquiry
