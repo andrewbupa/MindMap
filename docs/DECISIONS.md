@@ -4,6 +4,112 @@ Every design choice, and every place the brief and a library's current
 documentation disagree. Current documentation wins; the entry says so. Newest
 milestone first within each section.
 
+## Milestone 8: agora
+
+### Where the brief and current documentation differ
+
+**The design arrived as components, not screens.** The Claude Design handoff in
+`design/` holds tokens, 41 components and their documentation, but no mock-ups of
+the ten screens the brief lists. The screens are built from those components and
+will be refined once they are live, as agreed.
+
+**The theme script needs a wrapper.** Next.js 16's guide to avoiding a flash of the
+wrong theme puts an inline script in the root layout. React 19.3 warns when a
+component renders a `<script>` on the client. `InlineScript` renders the script
+for the server's HTML and marks it inert on the client, so it runs once, before
+the first paint.
+
+**A production build does not forward `/api`.** In production App Platform's
+ingress sends `/api` to the API, so `next.config.ts` only forwards it in
+development. CI runs the production build with nothing in front, so a build made
+with `AGORA_FORWARD_API=1` forwards it too.
+
+### Design choices
+
+**The names come from the forum.** Agora is the platform. Its slices are Inquiry
+(Petri audits, was Explore), Tally (Bloom rates, was Measure), Ethos (expressed
+dispositions, was Lens), Jury (review, was Review), Record (exports, was
+Reports), Rehearsal (chat with an agent, was Playground) and Witness (open-model
+signals, was Companion). Agents, Home and Settings keep plain names, as do gold
+sets, scenario sets, the taxonomy, label families and the runner. Engine names
+(Petri, Bloom, Scout, Inspect) never change. Internal identifiers were renamed
+too: packages, run kinds, queues, settings (`AGORA_`), routes and the witness
+contract (`agora.witness/1`).
+
+**Migrations were edited in place.** Nothing had been deployed, so the rename
+changed migrations 0001 to 0007 rather than adding one that renames. Any database
+made before the rename must be rebuilt.
+
+**The design's stylesheet is kept whole.** `design/system/components/bundle.css` is
+ported to `web/styles/agora.css` with only its prefix changed (`bn-` to `ag-`), so
+a later handoff can be diffed against it. What the app adds lives in
+`web/styles/app.css`. Tokens are `web/styles/tokens.css`, with every name the app
+used before kept.
+
+**Dark is the default, and the theme belongs to the account.** `user.theme` holds
+`system`, `dark` or `light`, set in Settings, preferences. A cookie mirrors it so
+an inline script can set `data-theme` before the first paint; `system` follows the
+device as it changes.
+
+**Ethos tints have three steps.** Faint, clear and dominant tint a family's colour
+at 18, 30 and 42%, so text stays readable on every tint in both themes.
+
+**Comparing two Ethos runs uses Newcombe's interval.** The difference in a label's
+prevalence carries a 95% interval from Newcombe's hybrid score method, built from
+the two runs' Wilson intervals. It behaves at small counts and near 0 or 1, where
+a normal approximation does not.
+
+**Launch estimates come from recent runs.** `GET /api/runs/estimate` averages
+tokens and cost per sample over the last 20 finished runs of the same kind. The
+launchers show it beside the budget cap, which can be changed there. For Tally the
+estimate and the cap are per prompt version, since each version is its own run.
+
+**Tables take ready-made cells.** A server page cannot pass functions to a client
+component, so `DataTable` rows carry their cells and a sort value per column.
+
+**DiffView keeps both sides level.** The two prompt versions share one CSS grid
+(subgrid), so a line that wraps on one side does not push the other out of step.
+Each change carries a sign and words as well as colour.
+
+**Jury is keyboard-first.** The queues show one item at a time beside the queue and
+the keys: J and K move, A, D and U or a number give a verdict, N opens the notes,
+Enter records and O opens the evidence. Gold labelling rates the label in focus
+with 0 to 3 and moves between replies with J and K. The keys are listed on screen
+and can be turned off (WCAG 2.1.4); that choice is kept per browser. A verdict
+starts unchosen, so Enter cannot record an agreement nobody made.
+
+**A regression is a Tally rate that rose.** Home's week in review names a prompt
+version whose elicitation rate rose over the version before it, on the same
+behaviour, agent and scenario set, where the newer run finished in the last seven
+days. Only Tally rates are comparable this way: Inquiry runs differ in their seeds,
+and an Ethos run's fit depends on the run it read. Queue counts stop at 50, so the
+page stays quick.
+
+**Times read in one zone.** Dates are formatted in Australia/Sydney, or
+`NEXT_PUBLIC_AGORA_TIME_ZONE`, on the server and in the browser alike. Formatting
+in each side's own zone made server-rendered pages disagree with the browser.
+
+**Accessibility is checked in CI.** Playwright with axe-core (WCAG 2.2 A and AA
+rules) opens all 34 screens in both themes on a fresh stack with one finished run
+of each kind. It also checks reflow at 200% zoom, that reduced motion stills
+transitions, and the gold-labelling keys. axe cannot measure contrast over
+gradients; there the design's token table, which states each pairing's ratio,
+stands.
+
+### Open questions
+
+1. **Should Ethos count towards regressions?** A fall in mean fit between prompt
+   versions could count, if both Ethos runs read runs over the same seeds or
+   scenarios. Is that the rule we want?
+2. **One time zone for everyone?** Sydney suits the team today. Should it become a
+   preference on the account, like the theme?
+3. **Are the Jury keys right?** J and K, A, D and U, and numbers follow common
+   review tools. Reviewers should try them before they settle.
+4. **Populated queues in CI.** The development judges leave both Jury queues empty
+   on a fresh stack, so CI checks their empty states. The populated queues were
+   checked by hand in both themes. Should the development model make one lasting
+   disagreement so CI covers them too?
+
 ## Milestone 7: runner
 
 ### Where the brief and current documentation differ

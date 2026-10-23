@@ -1,7 +1,7 @@
 # Runbook
 
 How to run Agora locally, set it up on DigitalOcean, deploy it, and look after it.
-Updated at the end of each milestone. Last updated: milestone 7.
+Updated at the end of each milestone. Last updated: milestone 8.
 
 ## Local development
 
@@ -65,9 +65,21 @@ ghcr.io/navikt/mock-oauth2-server:6.1.2`), then open <http://localhost:3000>.
 | `make openapi` | Regenerate `web/lib/api` from the API schema |
 | `make spec` | Check `.do/app.yaml` against App Platform's schema |
 | `make seed-demo` | Scan synthetic content, create the bucket, and load `agents/` |
+| `cd web && npm run test:a11y` | axe-core on every screen in both themes; needs the stack running |
 
 Tests expect a database `agora_test` owned by user `agora` (password `agora`) on
 `localhost:5432`, or set `AGORA_DATABASE_URL`. They migrate it from scratch.
+
+The accessibility checks sign in at the mock provider as the bootstrap admin, then
+look for one finished run of each kind and make any that are missing with the
+development models, so the worker must be running. They open
+`http://localhost:3000` unless `AGORA_WEB_URL` says otherwise; with Docker, set
+`AGORA_WEB_URL=http://agora.localhost:3000`. Chromium comes from `npx playwright
+install chromium`. The CI job `accessibility` does the same on a fresh stack.
+
+Each person's theme (dark, light or match my device) is saved on their account in
+Settings, preferences. Times on screen read in Australia/Sydney; to change that,
+set `NEXT_PUBLIC_AGORA_TIME_ZONE` when building the web app.
 
 ## Production setup (once)
 
@@ -102,6 +114,7 @@ Do these in order. Everything lives in the Sydney region.
    | `AGORA_OIDC_ROLE_MAP` | Optional JSON, e.g. `{"agora-reviewers": "reviewer"}` |
    | `ANTHROPIC_API_KEY` | The Anthropic console; one key per environment |
    | `OPENAI_API_KEY` | The OpenAI platform; for the Ethos panel's second judge |
+   | `NEXT_PUBLIC_AGORA_TIME_ZONE` | Optional, on the web component at build time; defaults to `Australia/Sydney` |
 
 5. **Keep secrets in the spec encrypted.** Run `doctl apps spec get <app-id>` and
    copy the `EV[...]` values it shows into `.do/app.yaml`, so later `doctl apps
@@ -293,6 +306,35 @@ Witness readers run open-weight models on our own runner, with no network, so
 transcripts they read do not leave our infrastructure.
 
 ## Milestone status
+
+### Milestone 8: agora
+
+Built: the rename to Agora, with Inquiry, Tally, Ethos, Jury, Record, Rehearsal
+and Witness, throughout the code, data model, routes and docs; the App Platform
+spec for the existing app `bupa-ai-poc`; the design system from the Claude Design
+handoff (tokens, fonts, the `ag-` stylesheet, and every component in
+`web/components/ui` and the domain folders), with dark as the default and the
+theme saved on the account; every screen rebuilt on it; a cost estimate and
+budget cap on the Inquiry and Tally launchers; Inquiry filters with the most
+concerning transcripts first; keyboard-first Jury queues and gold labelling;
+Home's week in review (new runs, Tally regressions by prompt version, and what
+waits in Jury); and axe-core checks of every screen in both themes, run in CI.
+
+Verified: 202 Python tests, ruff, mypy, ESLint and the TypeScript check. In a
+browser, by screenshot: the main screens of every area in dark, and Home, an
+Inquiry run, an Ethos response view, a behaviour, Jury and a prompt diff in light.
+In both themes: all 34 screens
+pass axe-core's WCAG 2.2 A and AA rules, reflow at 200% zoom, reduced motion and
+the gold-labelling keys, both on the local data and on a fresh stack with the
+production build, as CI runs it. By hand, in a browser: the score queue driven
+entirely by keys, recording a verdict; the theme switch saved, kept after a
+reload, and following the device. The populated Jury queues were checked with
+axe-core on local data only; on a fresh stack the development judges leave them
+empty.
+
+Waiting on: the first deploy to `bupa-ai-poc` (the steps above, with `main`
+created and the DigitalOcean GitHub app given access to `andrewbupa/agora`);
+review of the screens once live; the open questions in docs/DECISIONS.md.
 
 ### Milestone 7: runner
 
