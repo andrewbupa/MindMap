@@ -87,8 +87,8 @@ export function Provenance({ run }: { run: RunOut }) {
     add(
       "Engines",
       engines.map(([name, version]) => (
-        <Mono key={name} plain>
-          {name} {String(version)}
+        <Mono key={name} plain truncate={32}>
+          {`${name} ${String(version)}`}
         </Mono>
       )),
     );

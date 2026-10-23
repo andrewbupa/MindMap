@@ -190,3 +190,28 @@ a.ag-btn {
   font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--color-text-muted);
   border-left: 3px solid var(--fam);
 }
+
+/* DiffView rows share one grid across both columns, so wrapped lines stay level. */
+.ag-diff { row-gap: 0; }
+.ag-diff-col, .ag-diff-col > ol { display: grid; grid-template-rows: subgrid; row-gap: 0; }
+.ag-diff li > span:last-child { white-space: pre-wrap; overflow-wrap: anywhere; }
+.ag-diff .is-blank { background: repeating-linear-gradient(135deg, transparent 0 6px, var(--color-surface-muted) 6px 7px); }
+@media (max-width: 720px) {
+  .ag-diff { grid-template-columns: 1fr; grid-template-rows: none !important; }
+  .ag-diff-col, .ag-diff-col > ol { grid-row: auto !important; grid-template-rows: none; }
+}
+
+/* Tiles: cards in a grid, each opened by its title link, which covers the card. */
+.ag-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: var(--space-4); }
+.ag-tiles > .ag-card { margin: 0; }
+.ag-tile { position: relative; transition: box-shadow var(--motion-fast); }
+.ag-tile:hover { box-shadow: var(--shadow-raise); }
+.ag-tile-link { color: inherit; text-decoration: none; }
+.ag-tile-link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.ag-tile-link:focus-visible { outline: none; }
+.ag-tile:has(.ag-tile-link:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+
+/* Long hashes and model names wrap or truncate rather than widen a column. */
+.ag-split > section, .ag-split > aside { min-width: 0; }
+.ag-prov { grid-template-columns: max-content minmax(0, 1fr); }
+.ag-prov dd { min-width: 0; overflow-wrap: anywhere; }

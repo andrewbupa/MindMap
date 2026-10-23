@@ -3,8 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import styles from "@/components/agents/agents.module.css";
-import { Button, Card, Notice } from "@/components/ui";
+import { Button, Card, Notice, Select, TextArea } from "@/components/ui";
 import { startConversation, type AgentDetail } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 
@@ -45,70 +44,54 @@ export function StartForm({ agent, initialVersion }: { agent: AgentDetail; initi
 
   return (
     <Card>
-      {error ? <Notice tone="danger">{error}</Notice> : null}
-      <div className={styles.inlineForm}>
-        <label className={styles.field}>
-          Prompt version
-          <select value={version} onChange={(event) => setVersion(event.target.value)}>
-            {agent.versions.map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.field}>
-          Persona to play (optional)
-          <select value={persona} onChange={(event) => setPersona(event.target.value)}>
-            <option value="">None</option>
-            {agent.personas.map((item) => (
-              <option key={item.key} value={item.key}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.field}>
-          Mode
-          <select
+      <div className="ag-form" style={{ maxWidth: "none" }}>
+        {error ? <Notice tone="danger">{error}</Notice> : null}
+        <div className="ag-form-row">
+          <Select label="Prompt version" value={version} onChange={(event) => setVersion(event.target.value)} options={agent.versions} />
+          <Select
+            label="Persona to play (optional)"
+            value={persona}
+            onChange={(event) => setPersona(event.target.value)}
+            options={[{ value: "", label: "None" }, ...agent.personas.map((item) => ({ value: item.key, label: item.name }))]}
+          />
+          <Select
+            label="Mode"
             value={mode}
             onChange={(event) => setMode(event.target.value as "deployed" | "open")}
-          >
-            <option value="deployed">Deployed: our prompt and tools</option>
-            <option value="open">Open: your own system prompt, no tools</option>
-          </select>
-        </label>
-      </div>
-      {chosen ? (
-        <Notice>
-          <strong>Playing {chosen.name}.</strong> {profile.summary} {profile.situation}
-          <br />
-          <small>The agent does not see this note. It is for you, as the person in the chat.</small>
-        </Notice>
-      ) : null}
-      {mode === "deployed" ? (
-        <label className={styles.field}>
-          Context from connected systems (optional)
-          <textarea
+            options={[
+              { value: "deployed", label: "Deployed: our prompt and tools" },
+              { value: "open", label: "Open: your own system prompt, no tools" },
+            ]}
+          />
+        </div>
+        {chosen ? (
+          <Notice title={`Playing ${chosen.name}`}>
+            {profile.summary} {profile.situation} The agent does not see this note. It is for you, as the person in the
+            chat.
+          </Notice>
+        ) : null}
+        {mode === "deployed" ? (
+          <TextArea
+            label="Context from connected systems (optional)"
             value={context}
             onChange={(event) => setContext(event.target.value)}
             placeholder="For example: Signed-in member: TEST-100231"
+            hint="Added after the agent’s prompt in a clearly marked block."
           />
-          <small>Added after the agent&apos;s prompt in a clearly marked block.</small>
-        </label>
-      ) : (
-        <label className={styles.field}>
-          System prompt
-          <textarea
+        ) : (
+          <TextArea
+            label="System prompt"
             value={systemPrompt}
             onChange={(event) => setSystemPrompt(event.target.value)}
+            hint="Open mode tests the underlying model, not the agent we deploy."
           />
-          <small>Open mode tests the underlying model, not the agent we deploy.</small>
-        </label>
-      )}
-      <p>
-        <Button onClick={start} disabled={busy}>
-          Start conversation
-        </Button>
-      </p>
+        )}
+        <div>
+          <Button onClick={start} disabled={busy}>
+            Start conversation
+          </Button>
+        </div>
+      </div>
     </Card>
   );
 }

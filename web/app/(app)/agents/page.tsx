@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import styles from "@/components/agents/agents.module.css";
-import { Badge, PageHeader, sentenceCase } from "@/components/ui";
+import { Badge, Card, EmptyState, PageHeader, sentenceCase } from "@/components/ui";
 import { listAgents } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";
 
@@ -11,30 +10,38 @@ export default async function AgentsPage() {
   const { data: agents } = await listAgents({ client: await serverClient(), throwOnError: true });
   return (
     <>
-      <PageHeader title="Agents">
-        <p>
-          The agents we test. Prompts, tools, fixtures and personas live in git, so every change is
-          reviewed; Agora loads them on each deploy.
-        </p>
-      </PageHeader>
-      <div className={styles.grid}>
-        {agents.map((agent) => (
-          <Link key={agent.key} href={`/agents/${agent.key}`} className={styles.agentCard}>
-            <h2>{agent.name}</h2>
-            <p className={styles.meta}>{agent.owner}</p>
-            <p>{agent.description}</p>
-            <p>
-              {agent.domains.map((domain) => (
-                <Badge key={domain}>{sentenceCase(domain)}</Badge>
-              ))}
-            </p>
-            <p className={styles.meta}>
-              {agent.versions.length} prompt versions, latest {agent.latest_version}.{" "}
-              {agent.persona_count} personas.
-            </p>
-          </Link>
-        ))}
-      </div>
+      <PageHeader
+        title="Agents"
+        intro="The agents we test. Prompts, tools, fixtures and personas live in git, so every change is reviewed; Agora loads them on each deploy."
+      />
+      {agents.length === 0 ? (
+        <EmptyState title="No agents yet">Add one under agents/ in the repository, then deploy.</EmptyState>
+      ) : (
+        <div className="ag-tiles">
+          {agents.map((agent) => (
+            <Card key={agent.key} className="ag-tile">
+              <h2 className="ag-card-title">
+                <Link href={`/agents/${agent.key}`} className="ag-tile-link">
+                  {agent.name}
+                </Link>
+              </h2>
+              <p className="ag-quiet" style={{ margin: "var(--space-1) 0 var(--space-3)" }}>
+                {agent.owner}
+              </p>
+              <p>{agent.description}</p>
+              <p className="ag-row" style={{ gap: "var(--space-2)" }}>
+                {agent.domains.map((domain) => (
+                  <Badge key={domain}>{sentenceCase(domain)}</Badge>
+                ))}
+              </p>
+              <p className="ag-quiet" style={{ marginBottom: 0 }}>
+                {agent.versions.length} prompt {agent.versions.length === 1 ? "version" : "versions"}, latest{" "}
+                {agent.latest_version}. {agent.persona_count} {agent.persona_count === 1 ? "persona" : "personas"}.
+              </p>
+            </Card>
+          ))}
+        </div>
+      )}
     </>
   );
 }

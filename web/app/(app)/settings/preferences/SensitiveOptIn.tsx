@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Card, Notice } from "@/components/ui";
+import { Card, Checkbox, Notice } from "@/components/ui";
 import { updateMe } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 
@@ -25,15 +25,16 @@ export function SensitiveOptIn({ initial }: { initial: boolean }) {
 
   return (
     <Card title="Sensitive review queues">
-      <p>
-        Some scenarios touch self-harm, abuse or bereavement. They carry a content note, and you
-        only receive them in review if you opt in. You can change this at any time.
+      <p className="ag-quiet">
+        Some scenarios touch self-harm, abuse or bereavement. They carry a content note, and you only receive them in
+        review if you opt in. You can change this at any time.
       </p>
       {error ? <Notice tone="danger">{error}</Notice> : null}
-      <label>
-        <input type="checkbox" checked={value} onChange={(event) => change(event.target.checked)} />{" "}
-        Send me review items with sensitive content notes
-      </label>
+      <Checkbox
+        label="Send me review items with sensitive content notes"
+        checked={value}
+        onChange={(event) => void change(event.target.checked)}
+      />
     </Card>
   );
 }

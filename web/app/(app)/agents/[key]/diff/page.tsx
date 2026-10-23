@@ -1,14 +1,11 @@
 import Link from "next/link";
 
-import styles from "@/components/agents/agents.module.css";
-import { Mono, Notice, PageHeader } from "@/components/ui";
+import { DiffView, type DiffRow } from "@/components/agents/DiffView";
+import { ButtonLink, Card, Mono, Notice, PageHeader } from "@/components/ui";
 import { diffVersions } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";
 
 export const metadata = { title: "Compare prompt versions" };
-
-const LEFT: Record<string, string> = { removed: styles.removed!, changed: styles.changedLeft! };
-const RIGHT: Record<string, string> = { added: styles.added!, changed: styles.changedRight! };
 
 export default async function DiffPage({
   params,
@@ -20,7 +17,14 @@ export default async function DiffPage({
   const { key } = await params;
   const { base, head } = await searchParams;
   if (!base || !head) {
-    return <Notice>Choose two versions to compare from the agent&apos;s page.</Notice>;
+    return (
+      <>
+        <PageHeader title="Compare prompt versions" />
+        <Notice>
+          Choose two versions to compare from <Link href={`/agents/${key}`}>the agent&apos;s page</Link>.
+        </Notice>
+      </>
+    );
   }
   const { data: diff } = await diffVersions({
     client: await serverClient(),
@@ -28,40 +32,42 @@ export default async function DiffPage({
     query: { base, head },
     throwOnError: true,
   });
+  const rows: DiffRow[] = diff.rows.map((row) => {
+    const changed = row.kind === "changed";
+    return {
+      left: {
+        n: row.left_number,
+        text: row.left,
+        change: row.kind === "removed" || changed ? "removed" : null,
+        note: changed ? "Changed from: " : undefined,
+      },
+      right: {
+        n: row.right_number,
+        text: row.right,
+        change: row.kind === "added" || changed ? "added" : null,
+        note: changed ? "Changed to: " : undefined,
+      },
+    };
+  });
+  const title = (version: string, sha: string) => (
+    <span className="ag-row" style={{ gap: "var(--space-2)" }}>
+      <Link href={`/agents/${key}/versions/${version}`}>{version}</Link>
+      <Mono truncate={12}>{sha}</Mono>
+    </span>
+  );
   return (
     <>
-      <PageHeader title={`${key}: ${base} beside ${head}`}>
+      <PageHeader
+        title={`${key}: ${base} beside ${head}`}
+        actions={<ButtonLink href={`/agents/${key}`} variant="secondary">Back to the agent</ButtonLink>}
+      >
         <p>
-          {diff.added} lines added, {diff.removed} removed and {diff.changed} changed.{" "}
-          <Link href={`/agents/${key}`}>Back to the agent</Link>
+          {diff.added} {diff.added === 1 ? "line" : "lines"} added, {diff.removed} removed and {diff.changed} changed.
         </p>
       </PageHeader>
-      <table className={styles.diff}>
-        <thead>
-          <tr>
-            <th className={styles.lineNo} />
-            <th>
-              <Link href={`/agents/${key}/versions/${base}`}>{base}</Link>{" "}
-              <Mono>{diff.base.sha256.slice(0, 12)}</Mono>
-            </th>
-            <th className={styles.lineNo} />
-            <th>
-              <Link href={`/agents/${key}/versions/${head}`}>{head}</Link>{" "}
-              <Mono>{diff.head.sha256.slice(0, 12)}</Mono>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {diff.rows.map((row, index) => (
-            <tr key={index}>
-              <td className={styles.lineNo}>{row.left_number}</td>
-              <td className={LEFT[row.kind] ?? ""}>{row.left}</td>
-              <td className={styles.lineNo}>{row.right_number}</td>
-              <td className={RIGHT[row.kind] ?? ""}>{row.right}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Card label="Differences">
+        <DiffView left={title(base, diff.base.sha256)} right={title(head, diff.head.sha256)} rows={rows} />
+      </Card>
     </>
   );
 }

@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/ui";
 import { getMe } from "@/lib/api/server";
 
 import { SensitiveOptIn } from "./SensitiveOptIn";
+import { ThemeChoice } from "./ThemeChoice";
 
 export const metadata = { title: "Preferences" };
 
@@ -10,7 +11,8 @@ export default async function PreferencesPage() {
   if (!user) return null;
   return (
     <>
-      <PageHeader title="Preferences" />
+      <PageHeader title="Preferences" intro="Saved on your account, so they follow you to any browser you sign in on." />
+      <ThemeChoice initial={user.theme} />
       <SensitiveOptIn initial={user.sensitive_opt_in} />
     </>
   );

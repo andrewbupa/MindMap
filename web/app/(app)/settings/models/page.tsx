@@ -1,4 +1,5 @@
-import { Card, Mono, PageHeader, sentenceCase } from "@/components/ui";
+import { DataTable } from "@/components/data/DataTable";
+import { Card, Mono, PageHeader, formatNumber, sentenceCase } from "@/components/ui";
 import { modelRoles } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";
 
@@ -10,47 +11,43 @@ export default async function ModelsPage() {
     <>
       <PageHeader title="Model roles">
         <p>
-          The exact model behind each role, from <Mono>config/models.yaml</Mono>. Changing one is a
-          reviewed change in git, and every run records the model IDs it used.
+          The exact model behind each role, from <Mono plain>config/models.yaml</Mono>. Changing one is a reviewed
+          change in git, and every run records the model IDs it used.
         </p>
       </PageHeader>
-      <Card>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Role</th>
-              <th scope="col">Model</th>
-              <th scope="col">Family</th>
-              <th scope="col">Settings</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.roles.map((role) => (
-              <tr key={role.role}>
-                <td>{sentenceCase(role.role)}</td>
-                <td>
-                  <Mono>{role.model}</Mono>
-                </td>
-                <td>{role.family}</td>
-                <td>
-                  <Mono>{JSON.stringify(role.generate)}</Mono>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <Card label="Model roles">
+        <DataTable
+          columns={[
+            { key: "role", label: "Role" },
+            { key: "model", label: "Model" },
+            { key: "family", label: "Family" },
+            { key: "settings", label: "Settings", sortable: false },
+          ]}
+          rows={data.roles.map((role) => ({
+            id: role.role,
+            cells: {
+              role: sentenceCase(role.role.replaceAll("_", " ")),
+              model: <Mono plain>{role.model}</Mono>,
+              family: role.family,
+              settings: <Mono plain>{JSON.stringify(role.generate)}</Mono>,
+            },
+            sort: { role: role.role, model: role.model, family: role.family },
+          }))}
+        />
       </Card>
       <Card title="Default token budgets">
-        <table>
-          <tbody>
-            {Object.entries(data.budgets).map(([kind, tokens]) => (
-              <tr key={kind}>
-                <th scope="row">{sentenceCase(kind)}</th>
-                <td>{tokens.toLocaleString("en-AU")} tokens</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable
+          density="dense"
+          columns={[
+            { key: "kind", label: "Kind of run" },
+            { key: "tokens", label: "Budget", align: "right" },
+          ]}
+          rows={Object.entries(data.budgets).map(([kind, tokens]) => ({
+            id: kind,
+            cells: { kind: sentenceCase(kind), tokens: `${formatNumber(tokens)} tokens` },
+            sort: { kind, tokens },
+          }))}
+        />
       </Card>
     </>
   );

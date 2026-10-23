@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import styles from "@/components/runs/runs.module.css";
 import { MessageView } from "@/components/runs/Messages";
 import { Provenance } from "@/components/runs/Provenance";
-import { Button, Card, Notice, PageHeader } from "@/components/ui";
+import { StatusBadge } from "@/components/runs/StatusBadge";
+import { Button, Card, EmptyState, Notice, PageHeader, TextArea } from "@/components/ui";
 import { finishConversation, say, type RehearsalOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 
@@ -66,42 +66,45 @@ export function Conversation({ initial, canWrite }: { initial: RehearsalOut; can
       <PageHeader title={`Rehearsal: ${initial.agent} ${initial.version}`}>
         <p>
           {initial.persona ? `Playing ${initial.persona.name}. ` : null}
-          <Link href={`/agents/${initial.agent}`}>About this agent</Link>
+          <Link href={`/agents/${initial.agent}`}>About this agent</Link> <StatusBadge status={run.status} />
         </p>
       </PageHeader>
-      <div className={styles.layout}>
+      <div className="ag-split">
         <section aria-label="Conversation">
-          <div className={styles.thread}>
-            {messages.map((message) => (
-              <MessageView
-                key={message.id}
-                message={message}
-                memberName="You"
-                selected={message.id === selectedId}
-                onSelect={() => setSelectedId(message.id)}
-              />
-            ))}
-          </div>
+          {messages.length === 0 ? (
+            <EmptyState title="No messages yet">Write the first message as the member would.</EmptyState>
+          ) : (
+            <div className="ag-route">
+              {messages.map((message) => (
+                <MessageView
+                  key={message.id}
+                  message={message}
+                  memberName="You"
+                  selected={message.id === selectedId}
+                  onSelect={() => setSelectedId(message.id)}
+                />
+              ))}
+            </div>
+          )}
           {error ? <Notice tone="danger">{error}</Notice> : null}
           {run.status === "stopped_at_budget" ? (
             <Notice>This conversation reached its token budget and has been saved.</Notice>
           ) : null}
           {live && canWrite ? (
-            <div className={styles.composer}>
-              <label htmlFor="draft" className="visually-hidden">
-                Your message
-              </label>
-              <textarea
+            <div className="ag-form" style={{ marginTop: "var(--space-5)", maxWidth: "none" }}>
+              <TextArea
                 id="draft"
+                label="Your message"
                 value={draft}
                 onChange={(event) => setDraft(event.target.value)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) void send();
                 }}
                 placeholder="Write as the member would"
+                hint="Ctrl or ⌘ with Enter sends."
                 disabled={busy}
               />
-              <div className={styles.actions}>
+              <div className="ag-row">
                 <Button onClick={send} disabled={busy || !draft.trim()}>
                   {busy ? "Waiting for the agent" : "Send"}
                 </Button>
@@ -112,16 +115,15 @@ export function Conversation({ initial, canWrite }: { initial: RehearsalOut; can
             </div>
           ) : null}
         </section>
-        <aside className={styles.pane}>
+        <aside aria-label="Thinking summary and run">
           <Card title="Thinking summary">
-            <p className={styles.quiet}>
-              Written by a separate model. It summarises the agent&apos;s reasoning; it is not the
-              reasoning itself.
+            <p className="ag-pane-def">
+              Written by a separate model. It summarises the agent&apos;s reasoning; it is not the reasoning itself.
             </p>
             {selected?.thinking_summary ? (
-              <p className={styles.thinking}>{selected.thinking_summary}</p>
+              <div className="ag-fold-body">{selected.thinking_summary}</div>
             ) : (
-              <p className={styles.quiet}>Select an agent reply that has a summary.</p>
+              <p className="ag-quiet">Choose an agent reply that has a summary.</p>
             )}
           </Card>
           <Card title="Run">

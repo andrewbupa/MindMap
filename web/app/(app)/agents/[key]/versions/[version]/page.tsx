@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import styles from "@/components/agents/agents.module.css";
-import { Card, Mono, PageHeader, formatWhen } from "@/components/ui";
+import { ButtonLink, Card, Mono, PageHeader, formatWhen } from "@/components/ui";
 import { readVersion } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";
 
@@ -18,40 +17,35 @@ export default async function VersionPage({
   });
   return (
     <>
-      <PageHeader title={`${key} ${prompt.version}`}>
+      <PageHeader
+        title={`${key} ${prompt.version}`}
+        intro={prompt.notes}
+        actions={<ButtonLink href={`/agents/${key}/rehearsal?version=${version}`}>Try it in rehearsal</ButtonLink>}
+      >
         <p>
-          {prompt.notes} <Link href={`/agents/${key}/rehearsal?version=${version}`}>Try it</Link>
+          <Link href={`/agents/${key}`}>Every version of {key}</Link>
         </p>
       </PageHeader>
       <Card title="Provenance">
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">SHA-256 of the prompt</th>
-              <td>
-                <Mono>{prompt.sha256}</Mono>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Source</th>
-              <td>
-                <Mono>{prompt.source_path}</Mono>, first loaded at commit{" "}
-                <Mono>{prompt.git_commit.slice(0, 12)}</Mono>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Author</th>
-              <td>{prompt.author}</td>
-            </tr>
-            <tr>
-              <th scope="row">Loaded</th>
-              <td>{formatWhen(prompt.created_at)}</td>
-            </tr>
-          </tbody>
-        </table>
+        <dl className="ag-prov">
+          <dt>SHA-256 of the prompt</dt>
+          <dd>
+            <Mono>{prompt.sha256}</Mono>
+          </dd>
+          <dt>Source</dt>
+          <dd>
+            <Mono plain>{prompt.source_path}</Mono>, first loaded at commit <Mono truncate={12}>{prompt.git_commit}</Mono>
+          </dd>
+          <dt>Author</dt>
+          <dd>{prompt.author}</dd>
+          <dt>Loaded</dt>
+          <dd>{formatWhen(prompt.created_at)}</dd>
+        </dl>
       </Card>
       <Card title="System prompt, exactly as the agent receives it">
-        <pre className={styles.prompt}>{prompt.text}</pre>
+        <pre className="ag-fold-body ag-code" style={{ margin: 0 }}>
+          {prompt.text}
+        </pre>
       </Card>
     </>
   );

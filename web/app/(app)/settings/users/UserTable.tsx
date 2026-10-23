@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-import { Badge, LinkButton, Notice, formatWhen } from "@/components/ui";
+import { DataTable, type Row } from "@/components/data/DataTable";
+import { Badge, Checkbox, LinkButton, Notice, formatWhen } from "@/components/ui";
 import { updateUser, type Role, type UserOut } from "@/lib/api";
 import { browserClient } from "@/lib/api/browser";
 import { ROLE_LABELS } from "@/lib/auth";
@@ -35,54 +36,55 @@ export function UserTable({ users, currentUserId }: { users: UserOut[]; currentU
     return save(user, { roles });
   }
 
+  const table: Row[] = rows.map((user) => ({
+    id: user.id,
+    cells: {
+      person: (
+        <span style={{ display: "grid" }}>
+          <span>{user.name}</span>
+          <span className="ag-hint">{user.email}</span>
+        </span>
+      ),
+      ...Object.fromEntries(
+        ROLES.map((role) => [
+          role,
+          <Checkbox
+            key={role}
+            label={<span className="ag-sr">{`${ROLE_LABELS[role]} role for ${user.name}`}</span>}
+            checked={user.roles.includes(role)}
+            disabled={user.id === currentUserId && role === "admin"}
+            onChange={() => void toggleRole(user, role)}
+          />,
+        ]),
+      ),
+      status: (
+        <span className="ag-row" style={{ gap: "var(--space-2)" }}>
+          {user.is_active ? <Badge tone="ok">Active</Badge> : <Badge>Deactivated</Badge>}
+          {user.id === currentUserId ? null : (
+            <LinkButton onClick={() => void save(user, { is_active: !user.is_active })}>
+              {user.is_active ? "Deactivate" : "Reactivate"}
+              <span className="ag-sr"> {user.name}</span>
+            </LinkButton>
+          )}
+        </span>
+      ),
+      seen: formatWhen(user.last_seen_at, "Not yet"),
+    },
+    sort: { person: user.name, seen: user.last_seen_at ?? "" },
+  }));
+
   return (
     <>
       {error ? <Notice tone="danger">{error}</Notice> : null}
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Person</th>
-            {ROLES.map((role) => (
-              <th scope="col" key={role}>
-                {ROLE_LABELS[role]}
-              </th>
-            ))}
-            <th scope="col">Status</th>
-            <th scope="col">Last seen</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((user) => (
-            <tr key={user.id}>
-              <td>
-                {user.name}
-                <br />
-                <small>{user.email}</small>
-              </td>
-              {ROLES.map((role) => (
-                <td key={role}>
-                  <input
-                    type="checkbox"
-                    aria-label={`${ROLE_LABELS[role]} role for ${user.name}`}
-                    checked={user.roles.includes(role)}
-                    disabled={user.id === currentUserId && role === "admin"}
-                    onChange={() => toggleRole(user, role)}
-                  />
-                </td>
-              ))}
-              <td>
-                {user.is_active ? <Badge tone="ok">Active</Badge> : <Badge>Deactivated</Badge>}{" "}
-                {user.id === currentUserId ? null : (
-                  <LinkButton onClick={() => save(user, { is_active: !user.is_active })}>
-                    {user.is_active ? "Deactivate" : "Reactivate"}
-                  </LinkButton>
-                )}
-              </td>
-              <td>{formatWhen(user.last_seen_at, "Not yet")}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DataTable
+        columns={[
+          { key: "person", label: "Person" },
+          ...ROLES.map((role) => ({ key: role, label: ROLE_LABELS[role], sortable: false })),
+          { key: "status", label: "Status", sortable: false },
+          { key: "seen", label: "Last seen", nowrap: true },
+        ]}
+        rows={table}
+      />
     </>
   );
 }

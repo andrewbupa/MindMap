@@ -6,6 +6,7 @@ import {
   Badge,
   Button,
   Card,
+  EmptyState,
   LinkButton,
   Mono,
   Notice,
@@ -67,7 +68,11 @@ function CheckRow({ check }: { check: SystemCheckOut }) {
         ) : (
           (detail.error ?? "Not written yet")
         )}
-        {error ? <div role="alert">{error}</div> : null}
+        {error ? (
+          <p role="alert" className="ag-error">
+            {error}
+          </p>
+        ) : null}
       </td>
       <td>{detail.sha256 ? <Mono>{detail.sha256.slice(0, 12)}</Mono> : null}</td>
       <td>{detail.worker ?? null}</td>
@@ -93,36 +98,38 @@ export function SystemChecks({ initial }: { initial: SystemCheckOut[] }) {
   }
 
   return (
-    <Card>
-      <p>
+    <Card
+      title="Checks"
+      actions={
         <Button onClick={launch} disabled={busy}>
           Run a system check
         </Button>
-      </p>
+      }
+    >
       {error ? <Notice tone="danger">{error}</Notice> : null}
       {checks.length === 0 ? (
-        <p>No checks yet.</p>
+        <EmptyState title="No checks yet">
+          A check sends a job through the queue and the worker, which writes an object to storage.
+        </EmptyState>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Started</th>
-              <th scope="col">Status</th>
-              <th scope="col">Object written</th>
-              <th scope="col">SHA-256</th>
-              <th scope="col">Worker</th>
-            </tr>
-          </thead>
-          <tbody>
-            {checks.map((check) =>
-              isDone(check) ? (
-                <CheckRow key={check.id} check={check} />
-              ) : (
-                <LiveCheck key={check.id} check={check} />
-              ),
-            )}
-          </tbody>
-        </table>
+        <div className="ag-table-wrap">
+          <table className="ag-table">
+            <thead>
+              <tr>
+                <th scope="col">Started</th>
+                <th scope="col">Status</th>
+                <th scope="col">Object written</th>
+                <th scope="col">SHA-256</th>
+                <th scope="col">Worker</th>
+              </tr>
+            </thead>
+            <tbody>
+              {checks.map((check) =>
+                isDone(check) ? <CheckRow key={check.id} check={check} /> : <LiveCheck key={check.id} check={check} />,
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
     </Card>
   );

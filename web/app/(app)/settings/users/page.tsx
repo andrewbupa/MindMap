@@ -1,4 +1,4 @@
-import { Notice, PageHeader } from "@/components/ui";
+import { Card, Notice, PageHeader } from "@/components/ui";
 import { listUsers } from "@/lib/api";
 import { getMe, serverClient } from "@/lib/api/server";
 import { hasRole } from "@/lib/auth";
@@ -27,7 +27,9 @@ export default async function UsersPage() {
           and are recorded in the audit log.
         </p>
       </PageHeader>
-      <UserTable users={users} currentUserId={user.id} />
+      <Card label="Users">
+        <UserTable users={users} currentUserId={user.id} />
+      </Card>
     </>
   );
 }
