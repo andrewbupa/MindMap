@@ -77,6 +77,87 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
 
+  # Every screen in both themes against WCAG 2.2 AA with axe-core, on a real stack:
+  # Postgres, the mock identity provider, a storage stand-in, the API, a worker with
+  # the development models, and the production build of the web app.
+  accessibility:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: agora
+          POSTGRES_PASSWORD: agora
+          POSTGRES_DB: agora
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U agora" --health-interval 2s --health-retries 30
+    env:
+      AGORA_DATABASE_URL: postgresql://agora:agora@localhost:5432/agora
+      AGORA_MODELS_FILE: ${{ github.workspace }}/config/models.dev.yaml
+      AGORA_WITNESS_FILE: ${{ github.workspace }}/config/witness.dev.yaml
+      AGORA_BOOTSTRAP_ADMINS: admin@example.test
+      AGORA_GIT_COMMIT: ${{ github.sha }}
+      AGORA_API_INTERNAL_URL: http://localhost:8000
+      # No ingress in CI, so the web build forwards /api to the API itself.
+      AGORA_FORWARD_API: "1"
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          version: "0.11.32"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22.22.0"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Start the identity provider
+        run: >-
+          docker run -d --name mock-oidc -p 8080:8080
+          -e SERVER_PORT=8080 -e JSON_CONFIG_PATH=/config/mock-oidc.json
+          -v "$PWD/infra/dev/mock-oidc.json:/config/mock-oidc.json:ro"
+          ghcr.io/navikt/mock-oauth2-server:6.1.2
+      - name: Start storage, migrate and load the registry
+        working-directory: python
+        run: |
+          uv sync --frozen --python 3.12
+          nohup uv run moto_server -p 9000 > "$RUNNER_TEMP/storage.log" 2>&1 &
+          uv run alembic upgrade head
+          uv run python -m agora_worker.cli seed-demo
+      - name: Start the API and a worker
+        working-directory: python
+        run: |
+          nohup uv run uvicorn agora_api.main:app --host 127.0.0.1 --port 8000 > "$RUNNER_TEMP/api.log" 2>&1 &
+          nohup uv run procrastinate --app=agora_worker.app.app worker > "$RUNNER_TEMP/worker.log" 2>&1 &
+      - name: Build and start the web app
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+          nohup npm start -- -p 3000 > "$RUNNER_TEMP/web.log" 2>&1 &
+          for i in $(seq 1 60); do
+            curl -fsS http://localhost:8000/api/health > /dev/null && curl -s -o /dev/null http://localhost:3000/ && exit 0
+            sleep 1
+          done
+          echo "The stack did not start." && exit 1
+      - name: Install Chromium
+        working-directory: web
+        run: npx playwright install --with-deps chromium
+      - name: Check every screen in both themes
+        working-directory: web
+        run: npm run test:a11y
+      - name: Keep the report and logs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: accessibility
+          path: |
+            web/playwright-report/
+            web/test-results/
+            ${{ runner.temp }}/*.log
+          retention-days: 7
+
   spec:
     runs-on: ubuntu-24.04
     steps:

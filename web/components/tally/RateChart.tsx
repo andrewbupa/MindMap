@@ -45,17 +45,18 @@ export function RateChart({ points }: { points: RatePoint[] }) {
 
   return (
     <div className="ag-chart-wrap">
-      <svg className="ag-chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={summary}>
+      {/* A group, not an image: each version inside is a link to its run. */}
+      <svg className="ag-chart" viewBox={`0 0 ${W} ${H}`} role="group" aria-label={summary}>
         {ticks.map((tick) => (
-          <g key={tick}>
+          <g key={tick} aria-hidden="true">
             <line className="c-grid" x1={L} x2={W - R} y1={y(tick)} y2={y(tick)} />
             <text className="c-axis" x={L - 10} y={y(tick) + 4} textAnchor="end">
               {tick}%
             </text>
           </g>
         ))}
-        <path className="c-route-bed" d={route} />
-        <path className="c-route" d={route} />
+        <path className="c-route-bed" d={route} aria-hidden="true" />
+        <path className="c-route" d={route} aria-hidden="true" />
         {data.map((d, i) => {
           const cx = x(i);
           const previous = data[i - 1];

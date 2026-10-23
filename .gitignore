@@ -23,3 +23,8 @@ web/next-env.d.ts
 logs/
 *.eval
 .tmp/
+
+# Browser checks: the signed-in session and reports stay local.
+web/e2e/.state/
+web/playwright-report/
+web/test-results/

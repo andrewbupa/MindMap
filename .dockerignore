@@ -13,3 +13,6 @@ docs
 python/conftest.py
 python/*/tests
 python/testsupport
+web/e2e/.state
+web/test-results
+web/playwright-report
