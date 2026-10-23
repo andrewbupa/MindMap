@@ -221,6 +221,10 @@ async def test_model_roles_are_readable(client: httpx.AsyncClient, idp: FakeOIDC
         "family": "anthropic",
         "generate": {"reasoning_effort": "medium", "max_tokens": 16000},
     }
+    providers = {p["key"]: p for p in roles["providers"]}
+    assert "target" in providers["anthropic"]["roles"]
+    assert providers["openai"]["roles"] == ["judge_b"]
+    assert providers["openai"]["confirmed"] is False and providers["openai"]["confirmed_by"] is None
 
 
 def _bearer(token: str) -> dict[str, Any]:

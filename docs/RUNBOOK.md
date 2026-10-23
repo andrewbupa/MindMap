@@ -318,10 +318,13 @@ provider's retention terms here before it is used, and use zero data retention
 arrangements where available. Agora sends only synthetic content until an admin
 approves an import.
 
-| Provider | Used for | Retention terms | Zero data retention | Confirmed by, date |
-| --- | --- | --- | --- | --- |
-| Anthropic | Target, auditor, judge A, scanner, Bloom scenarios (`config/models.yaml`) | To confirm for our account | To confirm. Claude Fable 5.1 is not available under zero data retention | |
-| OpenAI | Judge B on the Ethos panel (`openai/gpt-6.1-sol`) | To confirm for our account | To confirm | |
+The terms are kept under `providers` in `config/models.yaml`, beside the models
+they cover, and shown in Settings, model roles. Production refuses to start while a
+role uses a provider with no terms recorded. Today both Anthropic and OpenAI read
+"to confirm". When the terms for our account are confirmed, set `retention` and
+`zero_data_retention` to what was agreed, and `confirmed_by` and `confirmed_on`
+to who confirmed them and when, then deploy. Claude Fable 5.1 is not available
+under zero data retention.
 
 Witness readers run open-weight models on our own runner, with no network, so
 transcripts they read do not leave our infrastructure.

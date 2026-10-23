@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -249,10 +249,23 @@ class ModelRoleOut(BaseModel):
     generate: dict[str, Any]
 
 
+class ProviderOut(BaseModel):
+    key: str = Field(description="The family in each model ID, such as anthropic.")
+    name: str
+    roles: list[str] = Field(description="The roles whose model this provider serves.")
+    retention: str
+    zero_data_retention: str
+    sends_content: bool = Field(description="False for models that run inside Agora.")
+    confirmed_by: str | None
+    confirmed_on: date | None
+    confirmed: bool
+
+
 class ModelRolesOut(BaseModel):
     roles: list[ModelRoleOut]
     budgets: dict[str, int]
     prices: dict[str, dict[str, float]]
+    providers: list[ProviderOut]
 
 
 class ApiTokenOut(Out):

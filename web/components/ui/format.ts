@@ -18,6 +18,13 @@ export function formatWhen(value: string | null | undefined, fallback = "Not rec
   return WHEN.format(new Date(value));
 }
 
+const DAY = new Intl.DateTimeFormat("en-AU", { dateStyle: "medium", timeZone: "UTC" });
+
+/** A calendar date with no time, such as 2026-10-23, read the same everywhere. */
+export function formatDay(value: string): string {
+  return DAY.format(new Date(`${value.slice(0, 10)}T00:00:00Z`));
+}
+
 export function formatNumber(value: number): string {
   return Math.round(value).toLocaleString("en-GB");
 }

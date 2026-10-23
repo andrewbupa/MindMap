@@ -7,6 +7,7 @@ a different model (``latest``, ``-preview``, wildcards) are refused at load time
 from __future__ import annotations
 
 import re
+from datetime import date
 from decimal import Decimal
 from functools import lru_cache
 from pathlib import Path
@@ -85,6 +86,24 @@ class Price(BaseModel):
     output: Decimal
 
 
+class ProviderTerms(BaseModel):
+    """What a provider keeps of what we send it, and who confirmed that, and when."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    name: str
+    retention: str
+    zero_data_retention: str
+    # False for models that run inside Agora, which have no terms to confirm.
+    sends_content: bool = True
+    confirmed_by: str | None = None
+    confirmed_on: date | None = None
+
+    @property
+    def confirmed(self) -> bool:
+        return bool(self.confirmed_by and self.confirmed_on)
+
+
 class ModelRoles(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -93,6 +112,8 @@ class ModelRoles(BaseModel):
     panels: dict[str, list[str]] = Field(default_factory=dict)
     prices: dict[str, Price] = Field(default_factory=dict)
     budgets: dict[str, int] = Field(default_factory=dict)
+    # Retention terms per provider, keyed by the family in each model ID.
+    providers: dict[str, ProviderTerms] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def _panels_name_roles(self) -> ModelRoles:
@@ -114,6 +135,11 @@ class ModelRoles(BaseModel):
         if not members:
             raise ModelRolesError(f"config/models.yaml has no {name!r} panel")
         return {role: self.role(role).model for role in members}
+
+    def unrecorded_providers(self) -> list[str]:
+        """Providers a role uses whose retention terms are not recorded."""
+        used = {role.family for role in self.roles.values()} - DEV_FAMILIES
+        return sorted(used - set(self.providers))
 
     def resolved_ids(self, *names: str) -> dict[str, str]:
         return {name: self.role(name).model for name in names}
@@ -152,4 +178,10 @@ def get_model_roles() -> ModelRoles:
         dev = sorted(name for name, role in roles.roles.items() if role.family in DEV_FAMILIES)
         if dev:
             raise ModelRolesError(f"development models cannot be used in production: {dev}")
+        # Content goes to a provider only once its retention terms are written down.
+        unrecorded = roles.unrecorded_providers()
+        if unrecorded:
+            raise ModelRolesError(
+                f"record the retention terms of {', '.join(unrecorded)} under providers first"
+            )
     return roles

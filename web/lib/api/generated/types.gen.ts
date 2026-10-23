@@ -1806,6 +1806,10 @@ export type ModelRolesOut = {
         };
     };
     /**
+     * Providers
+     */
+    providers: Array<ProviderOut>;
+    /**
      * Roles
      */
     roles: Array<ModelRoleOut>;
@@ -1969,6 +1973,54 @@ export type PromptVersionText = {
      * Version
      */
     version: string;
+};
+
+/**
+ * ProviderOut
+ */
+export type ProviderOut = {
+    /**
+     * Confirmed
+     */
+    confirmed: boolean;
+    /**
+     * Confirmed By
+     */
+    confirmed_by: string | null;
+    /**
+     * Confirmed On
+     */
+    confirmed_on: string | null;
+    /**
+     * Key
+     *
+     * The family in each model ID, such as anthropic.
+     */
+    key: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Retention
+     */
+    retention: string;
+    /**
+     * Roles
+     *
+     * The roles whose model this provider serves.
+     */
+    roles: Array<string>;
+    /**
+     * Sends Content
+     *
+     * False for models that run inside Agora.
+     */
+    sends_content: boolean;
+    /**
+     * Zero Data Retention
+     */
+    zero_data_retention: string;
 };
 
 /**

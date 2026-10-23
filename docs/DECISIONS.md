@@ -96,6 +96,12 @@ transitions, and the gold-labelling keys. axe cannot measure contrast over
 gradients; there the design's token table, which states each pairing's ratio,
 stands.
 
+**Retention terms live beside the models.** The brief asks for each provider's
+retention terms in the runbook, and for retention notes in Settings. They now sit
+under `providers` in `config/models.yaml`, so a change is reviewed in git like the
+model it covers, Settings can show them, and production can refuse to start while a
+role uses a provider with no terms recorded. The runbook says where they are.
+
 **The prototype keeps its files in Postgres.** Agora's screens read only Postgres;
 the files (an Inspect log per conversation, the judges' raw answers, system check
 objects) are kept for evidence and download. For a prototype they go to a

@@ -71,3 +71,30 @@ def test_production_refuses_development_models(monkeypatch: pytest.MonkeyPatch) 
     with pytest.raises(ModelRolesError, match="development models"):
         model_roles.get_model_roles()
     model_roles.get_model_roles.cache_clear()
+
+
+def test_every_provider_in_use_has_its_retention_terms_recorded() -> None:
+    roles = load_model_roles(REPO_ROOT / "config" / "models.yaml")
+    assert roles.unrecorded_providers() == []
+    assert {"anthropic", "openai"} <= set(roles.providers)
+    assert not roles.providers["openai"].confirmed
+
+
+def test_production_refuses_a_provider_without_retention_terms(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from agora_core import model_roles
+    from agora_core.config import Environment, Settings
+
+    body = "roles:\n  target:\n    model: anthropic/claude-opus-5-5\n"
+    settings = Settings(
+        models_file=write(tmp_path, body),
+        session_secret="not-the-local-default-but-long-enough",
+        public_url="https://agora.example.test",
+        environment=Environment.production,
+    )
+    monkeypatch.setattr(model_roles, "get_settings", lambda: settings)
+    model_roles.get_model_roles.cache_clear()
+    with pytest.raises(ModelRolesError, match="retention terms of anthropic"):
+        model_roles.get_model_roles()
+    model_roles.get_model_roles.cache_clear()

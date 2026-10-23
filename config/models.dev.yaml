@@ -17,3 +17,16 @@ panels:
   ethos: [judge_a, judge_b]
 budgets:
   rehearsal: 400000
+
+# The development models run inside Agora; nothing is sent to a provider.
+providers:
+  agoradev:
+    name: Agora development model
+    retention: Runs inside Agora. Nothing leaves our infrastructure.
+    zero_data_retention: Not applicable.
+    sends_content: false
+  agorapeer:
+    name: Agora development model (second family)
+    retention: Runs inside Agora. Nothing leaves our infrastructure.
+    zero_data_retention: Not applicable.
+    sends_content: false

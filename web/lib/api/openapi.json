@@ -2998,6 +2998,13 @@
             "title": "Prices",
             "type": "object"
           },
+          "providers": {
+            "items": {
+              "$ref": "#/components/schemas/ProviderOut"
+            },
+            "title": "Providers",
+            "type": "array"
+          },
           "roles": {
             "items": {
               "$ref": "#/components/schemas/ModelRoleOut"
@@ -3009,7 +3016,8 @@
         "required": [
           "roles",
           "budgets",
-          "prices"
+          "prices",
+          "providers"
         ],
         "title": "ModelRolesOut",
         "type": "object"
@@ -3237,6 +3245,80 @@
           "text"
         ],
         "title": "PromptVersionText",
+        "type": "object"
+      },
+      "ProviderOut": {
+        "properties": {
+          "confirmed": {
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "confirmed_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirmed By"
+          },
+          "confirmed_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirmed On"
+          },
+          "key": {
+            "description": "The family in each model ID, such as anthropic.",
+            "title": "Key",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "retention": {
+            "title": "Retention",
+            "type": "string"
+          },
+          "roles": {
+            "description": "The roles whose model this provider serves.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Roles",
+            "type": "array"
+          },
+          "sends_content": {
+            "description": "False for models that run inside Agora.",
+            "title": "Sends Content",
+            "type": "boolean"
+          },
+          "zero_data_retention": {
+            "title": "Zero Data Retention",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "roles",
+          "retention",
+          "zero_data_retention",
+          "sends_content",
+          "confirmed_by",
+          "confirmed_on",
+          "confirmed"
+        ],
+        "title": "ProviderOut",
         "type": "object"
       },
       "ReadinessOut": {

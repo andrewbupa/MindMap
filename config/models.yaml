@@ -45,3 +45,21 @@ budgets:
   tally: 5000000
   scenarios: 1000000
   ethos: 2000000
+
+# What each provider keeps of what we send it. Every auditor, target and judge call
+# sends content, so a provider is used only once its terms are here; production
+# refuses to start otherwise. Settings, model roles shows this table. When terms
+# are confirmed for our account, say by whom and when.
+providers:
+  anthropic:
+    name: Anthropic
+    retention: To confirm for our account.
+    zero_data_retention: To confirm. Claude Fable 5.1 is not available under zero data retention.
+    confirmed_by: null
+    confirmed_on: null
+  openai:
+    name: OpenAI
+    retention: To confirm for our account.
+    zero_data_retention: To confirm.
+    confirmed_by: null
+    confirmed_on: null
