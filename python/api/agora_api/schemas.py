@@ -960,3 +960,42 @@ class RunEstimateOut(BaseModel):
     estimated_tokens: int | None = None
     estimated_cost_usd: float | None = None
     default_budget: int
+
+
+# Home
+
+
+class RegressionOut(BaseModel):
+    """A prompt version whose elicitation rate rose over the version before it, on the
+    same behaviour and scenario set. A higher rate of the behaviour is worse."""
+
+    behaviour: str
+    behaviour_title: str
+    agent: str
+    scenario_set: uuid.UUID
+    version: str
+    run_id: uuid.UUID
+    rate: float
+    previous_version: str
+    previous_run_id: uuid.UUID
+    previous_rate: float
+
+
+class AwaitingOut(BaseModel):
+    scores: int = Field(description="Judge scores waiting for your verdict.")
+    ethos: int = Field(description="Ethos disagreements waiting for your verdict.")
+    gold: int = Field(description="Gold-set transcripts you have not labelled.")
+    capped: bool = Field(description="True when a queue holds more than the count shown.")
+    hidden_for_content_notes: int
+
+
+class WeekOut(BaseModel):
+    since: datetime
+    runs: list[RunOut] = Field(description="The newest runs started in the week.")
+    by_kind: dict[str, int] = Field(description="Runs started in the week, by kind.")
+    finished: int = Field(
+        description="Runs started in the week that succeeded or stopped at budget."
+    )
+    failed: int
+    regressions: list[RegressionOut]
+    awaiting: AwaitingOut | None = Field(description="Only for reviewers.")

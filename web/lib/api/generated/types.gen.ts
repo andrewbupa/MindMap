@@ -267,6 +267,40 @@ export type AuditEventOut = {
 };
 
 /**
+ * AwaitingOut
+ */
+export type AwaitingOut = {
+    /**
+     * Capped
+     *
+     * True when a queue holds more than the count shown.
+     */
+    capped: boolean;
+    /**
+     * Ethos
+     *
+     * Ethos disagreements waiting for your verdict.
+     */
+    ethos: number;
+    /**
+     * Gold
+     *
+     * Gold-set transcripts you have not labelled.
+     */
+    gold: number;
+    /**
+     * Hidden For Content Notes
+     */
+    hidden_for_content_notes: number;
+    /**
+     * Scores
+     *
+     * Judge scores waiting for your verdict.
+     */
+    scores: number;
+};
+
+/**
  * BehaviourDetail
  */
 export type BehaviourDetail = {
@@ -1956,6 +1990,55 @@ export type ReadinessOut = {
 };
 
 /**
+ * RegressionOut
+ *
+ * A prompt version whose elicitation rate rose over the version before it, on the
+ * same behaviour and scenario set. A higher rate of the behaviour is worse.
+ */
+export type RegressionOut = {
+    /**
+     * Agent
+     */
+    agent: string;
+    /**
+     * Behaviour
+     */
+    behaviour: string;
+    /**
+     * Behaviour Title
+     */
+    behaviour_title: string;
+    /**
+     * Previous Rate
+     */
+    previous_rate: number;
+    /**
+     * Previous Run Id
+     */
+    previous_run_id: string;
+    /**
+     * Previous Version
+     */
+    previous_version: string;
+    /**
+     * Rate
+     */
+    rate: number;
+    /**
+     * Run Id
+     */
+    run_id: string;
+    /**
+     * Scenario Set
+     */
+    scenario_set: string;
+    /**
+     * Version
+     */
+    version: string;
+};
+
+/**
  * RehearsalOut
  */
 export type RehearsalOut = {
@@ -3227,6 +3310,48 @@ export type ValidationError = {
 };
 
 /**
+ * WeekOut
+ */
+export type WeekOut = {
+    /**
+     * Only for reviewers.
+     */
+    awaiting: AwaitingOut | null;
+    /**
+     * By Kind
+     *
+     * Runs started in the week, by kind.
+     */
+    by_kind: {
+        [key: string]: number;
+    };
+    /**
+     * Failed
+     */
+    failed: number;
+    /**
+     * Finished
+     *
+     * Runs started in the week that succeeded or stopped at budget.
+     */
+    finished: number;
+    /**
+     * Regressions
+     */
+    regressions: Array<RegressionOut>;
+    /**
+     * Runs
+     *
+     * The newest runs started in the week.
+     */
+    runs: Array<RunOut>;
+    /**
+     * Since
+     */
+    since: string;
+};
+
+/**
  * WitnessLaunch
  */
 export type WitnessLaunch = {
@@ -3908,6 +4033,22 @@ export type ReadyResponses = {
 };
 
 export type ReadyResponse = ReadyResponses[keyof ReadyResponses];
+
+export type WeekInReviewData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/home/week';
+};
+
+export type WeekInReviewResponses = {
+    /**
+     * Successful Response
+     */
+    200: WeekOut;
+};
+
+export type WeekInReviewResponse = WeekInReviewResponses[keyof WeekInReviewResponses];
 
 export type ListDimensionsData = {
     body?: never;

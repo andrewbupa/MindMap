@@ -1,72 +1,83 @@
-import { StatusBadge } from "@/components/runs/StatusBadge";
-import { Card, PageHeader, formatWhen, sentenceCase } from "@/components/ui";
-import { listReportRuns } from "@/lib/api";
+import Link from "next/link";
+
+import { RunTable } from "@/components/runs/RunTable";
+import { KIND_NAMES, runHref } from "@/components/runs/href";
+import { Card, EmptyState, PageHeader } from "@/components/ui";
+import { listReportRuns, type RunOut } from "@/lib/api";
 import { serverClient } from "@/lib/api/server";
 
 export const metadata = { title: "Record" };
 
 const FINISHED = new Set(["succeeded", "failed", "cancelled", "stopped_at_budget"]);
 
-export default async function ReportsPage() {
+function Exports({ run }: { run: RunOut }) {
+  const base = `/api/record/runs/${run.id}`;
+  const links: { href: string; label: string }[] = [];
+  if (FINISHED.has(run.status)) {
+    links.push({ href: `${base}/report.pdf`, label: "Report (PDF)" });
+    if (run.kind === "inquiry" || run.kind === "tally") links.push({ href: `${base}/scores.csv`, label: "Scores (CSV)" });
+    if (run.kind === "ethos") links.push({ href: `${base}/findings.csv`, label: "Findings (CSV)" });
+  }
+  links.push({ href: `${base}/provenance`, label: "Provenance (JSON)" });
+  return (
+    <span className="ag-row" style={{ gap: "var(--space-3)" }}>
+      {links.map((link) => (
+        <a key={link.href} href={link.href} className="ag-link">
+          {link.label}
+          <span className="ag-sr">: {run.title}</span>
+        </a>
+      ))}
+    </span>
+  );
+}
+
+export default async function RecordPage({ searchParams }: { searchParams: Promise<{ kind?: string }> }) {
+  const { kind } = await searchParams;
   const { data: runs } = await listReportRuns({ client: await serverClient(), throwOnError: true });
+  const kinds = [...new Set(runs.map((run) => run.kind))].sort();
+  const shown = kind ? runs.filter((run) => run.kind === kind) : runs;
+  const tabs = [{ value: "", label: "Every kind" }, ...kinds.map((k) => ({ value: k, label: KIND_NAMES[k] ?? k }))];
   return (
     <>
-      <PageHeader title="Record">
-        <p>
-          Export a run with its full provenance: commit, config hash, prompt, seed hash, taxonomy
-          version and the exact models. The PDF opens with all of it; every CSV row carries it.
-          Every export is recorded in the audit log.
-        </p>
-      </PageHeader>
-      <Card title="Runs">
-        {runs.length === 0 ? (
-          <p>No runs yet.</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Run</th>
-                <th scope="col">Kind</th>
-                <th scope="col">Status</th>
-                <th scope="col">Started</th>
-                <th scope="col">Exports</th>
-              </tr>
-            </thead>
-            <tbody>
-              {runs.map((run) => (
-                <tr key={run.id}>
-                  <td>{run.title}</td>
-                  <td>{sentenceCase(run.kind)}</td>
-                  <td>
-                    <StatusBadge status={run.status} />
-                  </td>
-                  <td>{formatWhen(run.created_at)}</td>
-                  <td>
-                    {FINISHED.has(run.status) ? (
-                      <>
-                        <a href={`/api/record/runs/${run.id}/report.pdf`}>Report (PDF)</a>
-                        {run.kind === "inquiry" || run.kind === "tally" ? (
-                          <>
-                            {" · "}
-                            <a href={`/api/record/runs/${run.id}/scores.csv`}>Scores (CSV)</a>
-                          </>
-                        ) : null}
-                        {run.kind === "ethos" ? (
-                          <>
-                            {" · "}
-                            <a href={`/api/record/runs/${run.id}/findings.csv`}>Findings (CSV)</a>
-                          </>
-                        ) : null}
-                        {" · "}
-                      </>
-                    ) : null}
-                    <a href={`/api/record/runs/${run.id}/provenance`}>Provenance (JSON)</a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+      <PageHeader
+        title="Record"
+        intro="Export a run with its full provenance: commit, config hash, prompt, seed hash, taxonomy version and the exact models. The PDF opens with all of it; every CSV row carries it. Every export is recorded in the audit log."
+      />
+      <nav aria-label="Kinds of run" style={{ marginBottom: "var(--space-5)" }}>
+        <ul className="ag-tabs ag-tab-links">
+          {tabs.map((tab) => (
+            <li key={tab.value}>
+              <Link
+                href={tab.value ? `/record?kind=${tab.value}` : "/record"}
+                className="ag-tab"
+                aria-current={(kind ?? "") === tab.value ? "page" : undefined}
+              >
+                {tab.label}
+                <span className="ag-count">
+                  {tab.value ? runs.filter((run) => run.kind === tab.value).length : runs.length}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <Card label="Runs">
+        <RunTable
+          runs={shown}
+          href={(run) => runHref(run) ?? "/record"}
+          extra={[
+            {
+              column: { key: "kind", label: "Kind" },
+              cell: (run) => KIND_NAMES[run.kind] ?? run.kind,
+              sort: (run) => run.kind,
+            },
+            {
+              column: { key: "exports", label: "Exports", sortable: false },
+              cell: (run) => <Exports run={run} />,
+            },
+          ]}
+          empty={<EmptyState title="No runs yet">Runs appear here as soon as they are launched.</EmptyState>}
+        />
       </Card>
     </>
   );

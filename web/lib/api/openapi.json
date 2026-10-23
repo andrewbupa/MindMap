@@ -414,6 +414,43 @@
         "title": "AuditEventOut",
         "type": "object"
       },
+      "AwaitingOut": {
+        "properties": {
+          "capped": {
+            "description": "True when a queue holds more than the count shown.",
+            "title": "Capped",
+            "type": "boolean"
+          },
+          "ethos": {
+            "description": "Ethos disagreements waiting for your verdict.",
+            "title": "Ethos",
+            "type": "integer"
+          },
+          "gold": {
+            "description": "Gold-set transcripts you have not labelled.",
+            "title": "Gold",
+            "type": "integer"
+          },
+          "hidden_for_content_notes": {
+            "title": "Hidden For Content Notes",
+            "type": "integer"
+          },
+          "scores": {
+            "description": "Judge scores waiting for your verdict.",
+            "title": "Scores",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "scores",
+          "ethos",
+          "gold",
+          "capped",
+          "hidden_for_content_notes"
+        ],
+        "title": "AwaitingOut",
+        "type": "object"
+      },
       "BehaviourDetail": {
         "properties": {
           "agents": {
@@ -3225,6 +3262,68 @@
         "title": "ReadinessOut",
         "type": "object"
       },
+      "RegressionOut": {
+        "description": "A prompt version whose elicitation rate rose over the version before it, on the\nsame behaviour and scenario set. A higher rate of the behaviour is worse.",
+        "properties": {
+          "agent": {
+            "title": "Agent",
+            "type": "string"
+          },
+          "behaviour": {
+            "title": "Behaviour",
+            "type": "string"
+          },
+          "behaviour_title": {
+            "title": "Behaviour Title",
+            "type": "string"
+          },
+          "previous_rate": {
+            "title": "Previous Rate",
+            "type": "number"
+          },
+          "previous_run_id": {
+            "format": "uuid",
+            "title": "Previous Run Id",
+            "type": "string"
+          },
+          "previous_version": {
+            "title": "Previous Version",
+            "type": "string"
+          },
+          "rate": {
+            "title": "Rate",
+            "type": "number"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "scenario_set": {
+            "format": "uuid",
+            "title": "Scenario Set",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "behaviour",
+          "behaviour_title",
+          "agent",
+          "scenario_set",
+          "version",
+          "run_id",
+          "rate",
+          "previous_version",
+          "previous_run_id",
+          "previous_rate"
+        ],
+        "title": "RegressionOut",
+        "type": "object"
+      },
       "RehearsalOut": {
         "properties": {
           "agent": {
@@ -5454,6 +5553,69 @@
         "title": "ValidationError",
         "type": "object"
       },
+      "WeekOut": {
+        "properties": {
+          "awaiting": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AwaitingOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Only for reviewers."
+          },
+          "by_kind": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Runs started in the week, by kind.",
+            "title": "By Kind",
+            "type": "object"
+          },
+          "failed": {
+            "title": "Failed",
+            "type": "integer"
+          },
+          "finished": {
+            "description": "Runs started in the week that succeeded or stopped at budget.",
+            "title": "Finished",
+            "type": "integer"
+          },
+          "regressions": {
+            "items": {
+              "$ref": "#/components/schemas/RegressionOut"
+            },
+            "title": "Regressions",
+            "type": "array"
+          },
+          "runs": {
+            "description": "The newest runs started in the week.",
+            "items": {
+              "$ref": "#/components/schemas/RunOut"
+            },
+            "title": "Runs",
+            "type": "array"
+          },
+          "since": {
+            "format": "date-time",
+            "title": "Since",
+            "type": "string"
+          }
+        },
+        "required": [
+          "since",
+          "runs",
+          "by_kind",
+          "finished",
+          "failed",
+          "regressions",
+          "awaiting"
+        ],
+        "title": "WeekOut",
+        "type": "object"
+      },
       "WitnessLaunch": {
         "properties": {
           "reader": {
@@ -6579,6 +6741,27 @@
         "summary": "Ready",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/api/home/week": {
+      "get": {
+        "operationId": "week_in_review",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeekOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Week In Review",
+        "tags": [
+          "home"
         ]
       }
     },

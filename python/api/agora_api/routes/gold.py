@@ -61,7 +61,7 @@ async def _gold_set(db: Db, set_id: uuid.UUID) -> GoldSet:
     return found
 
 
-async def _summary(db: Db, gold_set: GoldSet, user: User) -> GoldSetSummary:
+async def gold_summary(db: Db, gold_set: GoldSet, user: User) -> GoldSetSummary:
     version = await db.get(TaxonomyVersion, gold_set.taxonomy_version_id)
     items = list(
         (await db.execute(select(GoldItem).where(GoldItem.gold_set_id == gold_set.id))).scalars()
@@ -84,7 +84,7 @@ async def _summary(db: Db, gold_set: GoldSet, user: User) -> GoldSetSummary:
 @router.get("")
 async def list_gold_sets(user: ReviewerUser, db: Db) -> list[GoldSetSummary]:
     sets = (await db.execute(select(GoldSet).order_by(GoldSet.created_at.desc()))).scalars()
-    return [await _summary(db, gold_set, user) for gold_set in sets]
+    return [await gold_summary(db, gold_set, user) for gold_set in sets]
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
@@ -113,7 +113,7 @@ async def create_gold_set(body: GoldSetCreate, user: AdminUser, db: Db) -> GoldS
     except gold.GoldError as error:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, str(error)) from error
     await db.commit()
-    return await _summary(db, gold_set, user)
+    return await gold_summary(db, gold_set, user)
 
 
 @router.post("/{set_id}/items", status_code=status.HTTP_201_CREATED)
@@ -129,7 +129,7 @@ async def add_gold_items(
     except gold.GoldError as error:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, str(error)) from error
     await db.commit()
-    return await _summary(db, gold_set, user)
+    return await gold_summary(db, gold_set, user)
 
 
 async def _agreement(db: Db, gold_set: GoldSet, rank: dict[str, int]) -> list[AgreementOut]:
@@ -163,7 +163,7 @@ async def read_gold_set(
     set_id: uuid.UUID, user: ReviewerUser, db: Db, settings: AppSettings
 ) -> GoldSetOut:
     gold_set = await _gold_set(db, set_id)
-    summary = await _summary(db, gold_set, user)
+    summary = await gold_summary(db, gold_set, user)
     labellers = await gold.labellers_by_item(db, gold_set)
     rows = (
         await db.execute(
